@@ -140,12 +140,12 @@ export default function AppPage() {
   const generateProduct = () => fetcher.submit({}, { method: "POST" });
 
   return (
-    <s-page heading="App Main Page">
+    <s-page heading="AVD - Age Verification">
       <s-button slot="primary-action" onClick={generateProduct}>
         Generate a product
       </s-button>
 
-      <s-section heading="Main App Content">
+      <s-section heading="Terms and Conditions">
         <s-paragraph>
           This is the main application interface, now located at{" "}
           <code>/app</code>.

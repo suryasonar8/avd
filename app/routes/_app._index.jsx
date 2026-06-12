@@ -7,7 +7,7 @@ export const loader = async ({ request }) => {
 
 export default function Dashboard() {
   return (
-    <s-page heading="Dashboard">
+    <s-page heading="AVD - Age Verification">
       <s-section heading="Welcome to your Dashboard 🚀">
         <s-paragraph>
           This is your app's landing page inside Shopify Admin, accessible at
@@ -28,7 +28,7 @@ export default function Dashboard() {
 
       <s-section slot="aside" heading="App Info">
         <s-paragraph>
-          <s-text variant="subdued">App: avd - age verification dialog</s-text>
+          <s-text variant="subdued">App: AVD - Age Verification</s-text>
         </s-paragraph>
         <s-paragraph>
           <s-text variant="subdued">Status: Active</s-text>

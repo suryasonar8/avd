@@ -3,7 +3,7 @@
 client_id = "64f79ffe386fc14827902438c2655d77"
 application_url = "https://example.com"
 embedded = true
-name = "avd - age verification dialog"
+name = "AVD - Age Verification"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
