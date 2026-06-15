@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "64f79ffe386fc14827902438c2655d77"
-application_url = "https://example.com"
+application_url = "https://limo-store-otswuh2r.myshopify.com"
 embedded = true
 name = "AVD - Age Verification"
 
@@ -45,7 +45,7 @@ api_version = "2026-07"
   topics = [ "app/scopes_update" ]
 
 [auth]
-redirect_urls = [ "https://example.com/api/auth" ]
+redirect_urls = [ "https://limo-store-otswuh2r.myshopify.com/api/auth" ]
 
 [build]
 include_config_on_deploy = true

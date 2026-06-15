@@ -1,8 +1,14 @@
-<div id="age-verification-overlay" class="age-verification-overlay" style="display: none;">
+{% assign settings = shop.metafields.avd_app.settings.value %}
+{% assign min_age = settings.minAge | default: 18 %}
+{% assign redirect_url = settings.redirectUrl | default: "https://www.google.com" %}
+
+<div id="age-verification-overlay" class="age-verification-overlay" style="display: none;" 
+     data-min-age="{{ min_age }}" 
+     data-redirect-url="{{ redirect_url }}">
   <div class="age-verification-modal">
     <div class="age-verification-content">
       <h1>Welcome!</h1>
-      <p>Please verify that you are 18 years of age or older to enter this site.</p>
+      <p>Please verify that you are {{ min_age }} years of age or older to enter this site.</p>
       <div class="age-verification-buttons">
         <button id="age-verify-agree" class="age-verify-button agree">Agree</button>
         <button id="age-verify-disagree" class="age-verify-button disagree">Disagree</button>

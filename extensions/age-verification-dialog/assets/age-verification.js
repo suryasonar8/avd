@@ -6,6 +6,8 @@
 
         if (!overlay || !agreeBtn || !disagreeBtn) return;
 
+        const redirectUrl = overlay.getAttribute('data-redirect-url') || 'https://www.google.com';
+
         if (!localStorage.getItem('age-verified')) {
             overlay.style.display = 'flex';
             document.body.style.overflow = 'hidden';
@@ -18,7 +20,7 @@
         });
 
         disagreeBtn.addEventListener('click', function () {
-            window.location.href = 'https://www.google.com';
+            window.location.href = redirectUrl;
         });
     }
 

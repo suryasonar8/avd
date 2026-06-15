@@ -1,95 +1,75 @@
-import { useEffect } from "react";
-import { useFetcher } from "react-router";
+import { useEffect, useRef } from "react";
+import { useFetcher, useLoaderData } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
+import prisma from "../db.server";
 
 export const loader = async ({ request }) => {
-  await authenticate.admin(request);
+  const { session } = await authenticate.admin(request);
+  const shop = session.shop;
 
-  return null;
+  let settings = { minAge: 18, redirectUrl: "https://www.google.com" };
+
+  try {
+    if (prisma.appSettings) {
+      const dbSettings = await prisma.appSettings.findUnique({
+        where: { shop },
+      });
+      if (dbSettings) {
+        settings = dbSettings;
+      } else {
+        // Only try to create if model exists
+        try {
+          const newSettings = await prisma.appSettings.create({
+            data: { shop },
+          });
+          settings = newSettings;
+        } catch (e) {
+          console.error("Failed to create settings:", e);
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Prisma error in loader:", error);
+  }
+
+  return { settings };
 };
 
 export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
-  const color = ["Red", "Orange", "Yellow", "Green"][
-    Math.floor(Math.random() * 4)
-  ];
-  const response = await admin.graphql(
+  const { admin, session } = await authenticate.admin(request);
+  const formData = await request.formData();
+  const shop = session.shop;
+
+  const minAge = parseInt(formData.get("minAge"), 10) || 18;
+  const redirectUrl = formData.get("redirectUrl") || "https://www.google.com";
+
+  // Update DB
+  let settings = { minAge, redirectUrl };
+  try {
+    if (prisma.appSettings) {
+      settings = await prisma.appSettings.upsert({
+        where: { shop },
+        update: { minAge, redirectUrl },
+        create: { shop, minAge, redirectUrl },
+      });
+    }
+  } catch (error) {
+    console.error("Prisma error in action:", error);
+  }
+
+  // Get Shop ID for metafield owner
+  const shopIdResponse = await admin.graphql("{ shop { id } }");
+  const shopIdJson = await shopIdResponse.json();
+  const shopId = shopIdJson.data.shop.id;
+
+  // Sync to Metafields for Liquid access
+  await admin.graphql(
     `#graphql
-      mutation populateProduct($product: ProductCreateInput!) {
-        productCreate(product: $product) {
-          product {
-            id
-            title
-            handle
-            status
-            variants(first: 10) {
-              edges {
-                node {
-                  id
-                  price
-                  barcode
-                  createdAt
-                }
-              }
-            }
-            demoInfo: metafield(namespace: "$app", key: "demo_info") {
-              jsonValue
-            }
-          }
-        }
-      }`,
-    {
-      variables: {
-        product: {
-          title: `${color} Snowboard`,
-          metafields: [
-            {
-              namespace: "$app",
-              key: "demo_info",
-              value: "Created by React Router Template",
-            },
-          ],
-        },
-      },
-    },
-  );
-  const responseJson = await response.json();
-  const product = responseJson.data.productCreate.product;
-  const variantId = product.variants.edges[0].node.id;
-  const variantResponse = await admin.graphql(
-    `#graphql
-    mutation shopifyReactRouterTemplateUpdateVariant($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
-      productVariantsBulkUpdate(productId: $productId, variants: $variants) {
-        productVariants {
+    mutation CreateMetafield($metafieldsSetInput: [MetafieldsSetInput!]!) {
+      metafieldsSet(metafields: $metafieldsSetInput) {
+        metafields {
           id
-          price
-          barcode
-          createdAt
-        }
-      }
-    }`,
-    {
-      variables: {
-        productId: product.id,
-        variants: [{ id: variantId, price: "100.00" }],
-      },
-    },
-  );
-  const variantResponseJson = await variantResponse.json();
-  const metaobjectResponse = await admin.graphql(
-    `#graphql
-    mutation shopifyReactRouterTemplateUpsertMetaobject($handle: MetaobjectHandleInput!, $metaobject: MetaobjectUpsertInput!) {
-      metaobjectUpsert(handle: $handle, metaobject: $metaobject) {
-        metaobject {
-          id
-          handle
-          title: field(key: "title") {
-            jsonValue
-          }
-          description: field(key: "description") {
-            jsonValue
-          }
         }
         userErrors {
           field
@@ -99,93 +79,89 @@ export const action = async ({ request }) => {
     }`,
     {
       variables: {
-        handle: {
-          type: "$app:example",
-          handle: "demo-entry",
-        },
-        metaobject: {
-          fields: [
-            { key: "title", value: "Demo Entry" },
-            {
-              key: "description",
-              value:
-                "This metaobject was created by the Shopify app template to demonstrate the metaobject API.",
-            },
-          ],
-        },
+        metafieldsSetInput: [
+          {
+            namespace: "avd_app",
+            key: "settings",
+            type: "json",
+            value: JSON.stringify({ minAge, redirectUrl }),
+            ownerId: shopId,
+          },
+        ],
       },
     },
   );
-  const metaobjectResponseJson = await metaobjectResponse.json();
 
-  return {
-    product: responseJson.data.productCreate.product,
-    variant: variantResponseJson.data.productVariantsBulkUpdate.productVariants,
-    metaobject: metaobjectResponseJson.data.metaobjectUpsert.metaobject,
-  };
+  return { settings };
 };
 
-export default function AppPage() {
+export default function CheckoutVerification() {
+  const { settings } = useLoaderData();
   const fetcher = useFetcher();
   const shopify = useAppBridge();
-  const isLoading =
-    ["loading", "submitting"].includes(fetcher.state) &&
-    fetcher.formMethod === "POST";
 
-  useEffect(() => {
-    if (fetcher.data?.product?.id) {
-      shopify.toast.show("Product created");
+  const isLoading = fetcher.state !== "idle";
+  const formRef = useRef(null);
+
+  const handleSave = () => {
+    if (formRef.current) {
+      fetcher.submit(formRef.current, { method: "POST" });
     }
-  }, [fetcher.data?.product?.id, shopify]);
-  const generateProduct = () => fetcher.submit({}, { method: "POST" });
+  };
+
+  const wasLoading = useRef(false);
+  useEffect(() => {
+    if (isLoading) {
+      wasLoading.current = true;
+    } else if (wasLoading.current && fetcher.data?.settings) {
+      shopify.toast.show("Settings saved successfully");
+      wasLoading.current = false;
+    }
+  }, [isLoading, fetcher.data, shopify]);
 
   return (
-    <s-page heading="AVD - Age Verification">
-      <s-button slot="primary-action" onClick={generateProduct}>
-        Generate a product
-      </s-button>
-
-      <s-section heading="Main App Content">
+    <s-page heading="AVD - Checkout Verification Settings">
+      <s-section heading="Age Verification Configuration">
         <s-paragraph>
-          This is the main application interface, now located at{" "}
-          <code>/app</code>.
+          Configure the minimum age and the redirect URL for users who do not
+          meet the age requirement.
         </s-paragraph>
+
+        <fetcher.Form method="post" ref={formRef}>
+          <s-stack gap="base">
+            <s-text-field
+              label="Minimum Age"
+              name="minAge"
+              type="number"
+              defaultValue={settings?.minAge || 18}
+            />
+            <s-text-field
+              label="Redirect URL"
+              name="redirectUrl"
+              type="url"
+              defaultValue={settings?.redirectUrl || "https://www.google.com"}
+            />
+            <s-button
+              variant="primary"
+              onClick={handleSave}
+              {...(isLoading ? { loading: true } : {})}
+            >
+              Save Settings
+            </s-button>
+          </s-stack>
+        </fetcher.Form>
       </s-section>
 
-      <s-section heading="Get started with products">
+      <s-section heading="Preview Message">
         <s-paragraph>
-          Generate a product with GraphQL and get the JSON output for that
-          product. Learn more about the{" "}
-          <s-link
-            href="https://shopify.dev/docs/api/admin-graphql/latest/mutations/productCreate"
-            target="_blank"
-          >
-            productCreate
-          </s-link>{" "}
-          mutation in our API references. Includes a product{" "}
-          <s-link
-            href="https://shopify.dev/docs/apps/build/custom-data/metafields"
-            target="_blank"
-          >
-            metafield
-          </s-link>{" "}
-          and{" "}
-          <s-link
-            href="https://shopify.dev/docs/apps/build/custom-data/metaobjects"
-            target="_blank"
-          >
-            metaobject
-          </s-link>
-          .
+          The message shown to users will be:
+          <strong>
+            {" "}
+            "Please verify that you are{" "}
+            {fetcher.formData?.get("minAge") || settings?.minAge || 18} years of
+            age or older to enter this site."
+          </strong>
         </s-paragraph>
-        <s-stack direction="inline" gap="base">
-          <s-button
-            onClick={generateProduct}
-            {...(isLoading ? { loading: true } : {})}
-          >
-            Generate a product
-          </s-button>
-        </s-stack>
       </s-section>
     </s-page>
   );

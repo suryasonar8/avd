@@ -32,3 +32,12 @@ model Session {
   refreshToken        String?
   refreshTokenExpires DateTime?
 }
+
+model AppSettings {
+  id          Int      @id @default(autoincrement())
+  shop        String   @unique
+  minAge      Int      @default(18)
+  redirectUrl String   @default("https://www.google.com")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
