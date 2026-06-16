@@ -8,13 +8,13 @@
 
         const redirectUrl = overlay.getAttribute('data-redirect-url') || 'https://www.google.com';
 
-        if (!localStorage.getItem('age-verified')) {
+        if (!localStorage.getItem('avd-age-verified')) {
             overlay.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
 
         agreeBtn.addEventListener('click', function () {
-            localStorage.setItem('age-verified', 'true');
+            localStorage.setItem('avd-age-verified', 'true');
             overlay.style.display = 'none';
             document.body.style.overflow = '';
         });

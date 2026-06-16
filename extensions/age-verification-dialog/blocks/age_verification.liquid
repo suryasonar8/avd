@@ -1,11 +1,12 @@
 {% assign settings = shop.metafields.avd_app.settings.value %}
 {% assign min_age = settings.minAge | default: 18 %}
 {% assign redirect_url = settings.redirectUrl | default: "https://www.google.com" %}
+{% assign background = settings.background %}
 
-<div id="age-verification-overlay" class="age-verification-overlay" style="display: none;" 
+<div id="age-verification-overlay" class="age-verification-overlay" style="display: none; background-color: {{ background.pageColor | default: 'rgba(0,0,0,0.7)' }};" 
      data-min-age="{{ min_age }}" 
      data-redirect-url="{{ redirect_url }}">
-  <div class="age-verification-modal">
+  <div class="age-verification-modal" style="background-color: {{ background.bgColor | default: '#FFFFFF' }}; border: {{ background.borderWidth | default: 0 }}px solid {{ background.borderColor | default: '#FFFFFF' }}; border-radius: {{ background.borderRadius | default: 0 }}px;">
     <div class="age-verification-content">
       <h1>Welcome!</h1>
       <p>Please verify that you are {{ min_age }} years of age or older to enter this site.</p>
