@@ -1,18 +1,97 @@
-import { useNavigate } from "react-router";
+import { useLoaderData, useFetcher, useNavigate } from "react-router";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }) => {
-  await authenticate.admin(request);
+  const { admin } = await authenticate.admin(request);
+  const response = await admin.graphql(
+    `#graphql
+    query getPopups {
+      shop {
+        metafield(namespace: "avd_app", key: "popups") {
+          value
+        }
+      }
+    }`,
+  );
+  const data = await response.json();
+  const popups = data.data.shop.metafield
+    ? JSON.parse(data.data.shop.metafield.value)
+    : [];
+
+  return { popups };
+};
+
+export const action = async ({ request }) => {
+  const { admin } = await authenticate.admin(request);
+  const formData = await request.formData();
+  const actionType = formData.get("action");
+  const popupId = formData.get("id");
+
+  if (actionType === "delete") {
+    // Fetch existing popups
+    const response = await admin.graphql(
+      `#graphql
+      query getPopups {
+        shop {
+          id
+          metafield(namespace: "avd_app", key: "popups") {
+            value
+          }
+        }
+      }`,
+    );
+    const data = await response.json();
+    const shopId = data.data.shop.id;
+    const existingPopups = data.data.shop.metafield
+      ? JSON.parse(data.data.shop.metafield.value)
+      : [];
+
+    const updatedPopups = existingPopups.filter((p) => p.id !== popupId);
+
+    await admin.graphql(
+      `#graphql
+      mutation setPopups($metafields: [MetafieldsSetInput!]!) {
+        metafieldsSet(metafields: $metafields) {
+          metafields { id }
+          userErrors { field message }
+        }
+      }`,
+      {
+        variables: {
+          metafields: [
+            {
+              namespace: "avd_app",
+              key: "popups",
+              type: "json",
+              value: JSON.stringify(updatedPopups),
+              ownerId: shopId,
+            },
+          ],
+        },
+      },
+    );
+    return { success: true };
+  }
   return null;
 };
 
-export const action = async ({ request }) => {};
-
 export default function AppPage() {
+  const { popups } = useLoaderData();
   const navigate = useNavigate();
+  const fetcher = useFetcher();
 
   const handleCreatePopUp = () => {
     navigate("/store_verification/customization");
+  };
+
+  const handleEdit = (id) => {
+    navigate(`/store_verification/${id}`);
+  };
+
+  const handleDelete = (id) => {
+    if (confirm("Are you sure you want to delete this pop-up?")) {
+      fetcher.submit({ action: "delete", id }, { method: "POST" });
+    }
   };
 
   return (
@@ -38,20 +117,6 @@ export default function AppPage() {
           >
             Free Plan Limit
           </span>
-          <button
-            style={{
-              position: "absolute",
-              right: "12px",
-              top: "12px",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "16px",
-              color: "#4A4D4F",
-            }}
-          >
-            ✕
-          </button>
         </div>
         <div
           style={{
@@ -61,25 +126,8 @@ export default function AppPage() {
             maxWidth: "800px",
           }}
         >
-          Your current plan includes 1 pop-up (0/1 used). Upgrade to unlock more
-          pop-ups, advanced customization and more.
-        </div>
-        <div>
-          <button
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid #CBCFD2",
-              borderRadius: "6px",
-              padding: "6px 12px",
-              fontSize: "12px",
-              fontWeight: "600",
-              color: "#1A1C1D",
-              cursor: "pointer",
-              boxShadow: "0 1px 0 rgba(0, 0, 0, 0.05)",
-            }}
-          >
-            Increase limit
-          </button>
+          Your current plan includes 1 pop-up ({popups.length}/1 used). Upgrade
+          to unlock more pop-ups, advanced customization and more.
         </div>
       </div>
 
@@ -155,44 +203,140 @@ export default function AppPage() {
         </h3>
       </div>
 
-      {/* Empty State Card */}
-      <div
-        style={{
-          background: "#FFFFFF",
-          border: "1px solid #E1E3E5",
-          borderRadius: "12px",
-          padding: "64px 32px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          textAlign: "center",
-          boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
-        }}
-      >
-        <div style={{ marginBottom: "24px" }}>
-          <img
-            src="/empty-state.png"
-            alt="Empty state"
-            style={{ width: "200px", height: "auto" }}
-          />
-        </div>
-        <h2
-          style={{ fontSize: "18px", fontWeight: "700", marginBottom: "8px" }}
-        >
-          Whoops! You don&apos;t have any pop-ups yet.
-        </h2>
-        <p
+      {popups.length > 0 ? (
+        <div
           style={{
-            fontSize: "14px",
-            color: "#6D7175",
-            maxWidth: "400px",
-            lineHeight: "1.5",
+            background: "#FFFFFF",
+            border: "1px solid #E1E3E5",
+            borderRadius: "12px",
+            overflow: "hidden",
+            boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
           }}
         >
-          Create and customize a new pop-up now to start verify customers&apos;
-          age.
-        </p>
-      </div>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ background: "#F6F6F7", textAlign: "left" }}>
+                <th style={{ padding: "12px 16px", fontSize: "13px" }}>Name</th>
+                <th style={{ padding: "12px 16px", fontSize: "13px" }}>
+                  Status
+                </th>
+                <th style={{ padding: "12px 16px", fontSize: "13px" }}>
+                  Methods
+                </th>
+                <th
+                  style={{
+                    padding: "12px 16px",
+                    fontSize: "13px",
+                    textAlign: "right",
+                  }}
+                >
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {popups.map((popup) => (
+                <tr
+                  key={popup.id}
+                  style={{ borderTop: "1px solid #E1E3E5", fontSize: "13px" }}
+                >
+                  <td style={{ padding: "12px 16px" }}>{popup.name}</td>
+                  <td style={{ padding: "12px 16px" }}>
+                    <span
+                      style={{
+                        background:
+                          popup.status === "Enabled" ? "#E3FBE3" : "#F1F2F3",
+                        color:
+                          popup.status === "Enabled" ? "#007F5F" : "#4A4D4F",
+                        padding: "2px 8px",
+                        borderRadius: "10px",
+                        fontSize: "11px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      {popup.status}
+                    </span>
+                  </td>
+                  <td style={{ padding: "12px 16px" }}>{popup.method}</td>
+                  <td
+                    style={{
+                      padding: "12px 16px",
+                      textAlign: "right",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      gap: "8px",
+                    }}
+                  >
+                    <button
+                      onClick={() => handleEdit(popup.id)}
+                      style={{
+                        background: "none",
+                        border: "1px solid #CBCFD2",
+                        borderRadius: "4px",
+                        padding: "4px 8px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(popup.id)}
+                      style={{
+                        background: "none",
+                        border: "1px solid #FF4D4D",
+                        color: "#FF4D4D",
+                        borderRadius: "4px",
+                        padding: "4px 8px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #E1E3E5",
+            borderRadius: "12px",
+            padding: "64px 32px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
+            boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
+          }}
+        >
+          <div style={{ marginBottom: "24px" }}>
+            <img
+              src="/empty-state.png"
+              alt="Empty state"
+              style={{ width: "200px", height: "auto" }}
+            />
+          </div>
+          <h2
+            style={{ fontSize: "18px", fontWeight: "700", marginBottom: "8px" }}
+          >
+            Whoops! You don&apos;t have any pop-ups yet.
+          </h2>
+          <p
+            style={{
+              fontSize: "14px",
+              color: "#6D7175",
+              maxWidth: "400px",
+              lineHeight: "1.5",
+            }}
+          >
+            Create and customize a new pop-up now to start verify
+            customers&apos; age.
+          </p>
+        </div>
+      )}
     </s-page>
   );
 }

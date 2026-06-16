@@ -1,28 +1,46 @@
-import { useSubmit, useLoaderData } from "react-router";
+import {
+  useFetcher,
+  useLoaderData,
+  useParams,
+} from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { PopupEditor } from "../components/customization/PopupEditor";
-import { useEffect } from "react";
 
-export const loader = async ({ request }) => {
-  await authenticate.admin(request);
-  // Return null settings so PopupEditor uses DEFAULT_CONFIG for new popups
-  return { settings: null };
+export const loader = async ({ request, params }) => {
+  const { admin } = await authenticate.admin(request);
+  const { id } = params;
+
+  const response = await admin.graphql(
+    `#graphql
+    query getPopups {
+      shop {
+        metafield(namespace: "avd_app", key: "popups") {
+          value
+        }
+      }
+    }`,
+  );
+  const data = await response.json();
+  const popups = data.data.shop.metafield
+    ? JSON.parse(data.data.shop.metafield.value)
+    : [];
+
+  const popup = popups.find((p) => p.id === id);
+
+  if (!popup) {
+    throw new Response("Not Found", { status: 404 });
+  }
+
+  return { settings: popup };
 };
 
-export const action = async ({ request }) => {
+export const action = async ({ request, params }) => {
   const { admin } = await authenticate.admin(request);
+  const { id } = params;
   const formData = await request.formData();
   const configStr = formData.get("config");
   const config = JSON.parse(configStr);
-
-  // Generate a unique ID for the new popup
-  const newPopup = {
-    id: Date.now().toString(),
-    ...config,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
 
   const shopResponse = await admin.graphql(`{ shop { id } }`);
   const shopData = await shopResponse.json();
@@ -44,7 +62,12 @@ export const action = async ({ request }) => {
     ? JSON.parse(existingPopupsData.data.shop.metafield.value)
     : [];
 
-  const updatedPopups = [...existingPopups, newPopup];
+  const updatedPopups = existingPopups.map((p) => {
+    if (p.id === id) {
+      return { ...p, ...config, updatedAt: new Date().toISOString() };
+    }
+    return p;
+  });
 
   const response = await admin.graphql(
     `#graphql
@@ -69,26 +92,28 @@ export const action = async ({ request }) => {
     },
   );
   const responseData = await response.json();
-  return { ...responseData, success: false };
+  const success = !responseData.data.metafieldsSet.userErrors?.length;
+  return { ...responseData, success };
 };
 
-export default function StoreVerificationCustomization() {
+export default function StoreVerificationEdit() {
   const loaderData = useLoaderData();
-  const submit = useSubmit();
+  const fetcher = useFetcher();
   const shopify = useAppBridge();
+  const { id } = useParams();
 
   const handleSave = (config) => {
-    // Use useSubmit instead of useFetcher to ensure full page transition and URL update
-    submit({ config: JSON.stringify(config) }, { method: "POST" });
+    fetcher.submit({ config: JSON.stringify(config) }, { method: "POST" });
   };
+
   return (
     <PopupEditor
       settings={loaderData?.settings}
       onSave={handleSave}
-      heading="Configuration"
-      description="Customization the pop-up to match your brand."
-      saveBarId="customization-save-bar"
-      submit={submit}
+      heading="Edit Pop-up"
+      description="Edit your pop-up configuration."
+      saveBarId={`edit-save-bar-${id}`}
+      fetcher={fetcher}
       shopify={shopify}
     />
   );

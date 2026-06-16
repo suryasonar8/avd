@@ -15,7 +15,7 @@ export default function App() {
 
   return (
     <AppProvider embedded apiKey={apiKey}>
-      <s-app-nav>
+      <s-app-nav slot="app-nav">
         <s-link href="/store_verification">Store verification</s-link>
         <s-link href="/checkout_verification">Checkout Verification</s-link>
         <s-link href="/translation">Translation</s-link>
