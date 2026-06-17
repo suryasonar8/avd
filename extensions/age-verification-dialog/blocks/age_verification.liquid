@@ -37,7 +37,11 @@
   {% assign cancel_btn_bg = active_popup.button.cancelBgColor | default: '#A0A0A0' %}
   {% assign cancel_btn_border_color = active_popup.button.cancelBorderColor | default: '#FFFFFF' %}
   {% assign cancel_btn_border_width = active_popup.button.cancelBorderWidth | default: 0 %}
+  {% assign cancel_btn_border_width = active_popup.button.cancelBorderWidth | default: 0 %}
   {% assign cancel_btn_border_radius = active_popup.button.cancelBorderRadius | default: 0 %}
+
+  {% assign remember_visitor = settings.rememberVisitor | default: 'Session only' %}
+  {% assign remember_days = settings.rememberDays | default: 30 %}
 {% else %}
   {% assign background_page = 'rgba(0,0,0,0.7)' %}
   {% assign background_bg = '#FFFFFF' %}
@@ -64,6 +68,9 @@
   {% assign cancel_btn_border_color = 'transparent' %}
   {% assign cancel_btn_border_width = 0 %}
   {% assign cancel_btn_border_radius = 4 %}
+
+  {% assign remember_visitor = 'Session only' %}
+  {% assign remember_days = 30 %}
 {% endif %}
 
 <div id="age-verification-overlay" class="age-verification-overlay" style="display: none; background-color: {{ background_page }};" 
@@ -72,15 +79,24 @@
      data-cancel-action="{{ cancel_action }}"
      data-cancel-redirect-url="{{ cancel_redirect_url }}"
      data-cancel-error-msg="{{ cancel_error_msg | escape }}"
-     data-submit-error-msg="{{ submit_error_msg | escape }}">
+     data-submit-error-msg="{{ submit_error_msg | escape }}"
+     data-remember-visitor="{{ remember_visitor }}"
+     data-remember-days="{{ remember_days }}">
   <div class="age-verification-modal" style="background-color: {{ background_bg }}; border: {{ background_border_width }}px solid {{ background_border_color }}; border-radius: {{ background_border_radius }}px;">
     <div class="age-verification-content">
       <h1>{{ text_heading }}</h1>
       <p>{{ text_subheading }}</p>
       <div class="age-verification-buttons">
         <button id="age-verify-agree" class="age-verify-button agree" style="background-color: {{ btn_bg }}; border: {{ btn_border_width }}px solid {{ btn_border_color }}; border-radius: {{ btn_border_radius }}px;">{{ btn_submit }}</button>
-        <button id="age-verify-disagree" class="age-verify-button disagree" style="background-color: {{ cancel_btn_bg }}; border: {{ cancel_btn_border_width }}px solid {{ cancel_btn_border_color }}; border-radius: {{ cancel_btn_border_radius }}px;">{{ btn_cancel }}</button>
+         <button id="age-verify-disagree" class="age-verify-button disagree" style="background-color: {{ cancel_btn_bg }}; border: {{ cancel_btn_border_width }}px solid {{ cancel_btn_border_color }}; border-radius: {{ cancel_btn_border_radius }}px;">{{ btn_cancel }}</button>
       </div>
+      {% if remember_visitor == 'Allow visitor to choose' %}
+        <div class="age-verification-remember">
+          <label>
+            <input type="checkbox" id="age-verify-remember-me"> Remember my information for next time.
+          </label>
+        </div>
+      {% endif %}
       <p id="age-verify-error-text" style="display: none; color: red; margin-top: 15px;"></p>
     </div>
   </div>

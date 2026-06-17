@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { authenticate } from "../shopify.server";
+import { Card } from "../components/Card";
+import { ColorInput } from "../components/ColorInput";
+import { NumberInput } from "../components/NumberInput";
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
@@ -77,9 +80,105 @@ function DisabledCheck({ label }) {
   );
 }
 
+// ─── Text Input ─────────────────────────────────────────────────────────────
+function TextInput({
+  label,
+  value,
+  onChange,
+  placeholder,
+  required,
+  subtitle,
+  maxLength,
+}) {
+  return (
+    <div style={{ marginBottom: "12px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "4px",
+          marginBottom: "4px",
+        }}
+      >
+        <label style={{ fontSize: "13px", color: "#6D7175" }}>{label}</label>
+        {required && <span style={{ color: "red" }}>*</span>}
+      </div>
+      <div style={{ position: "relative" }}>
+        <input
+          type="text"
+          value={value}
+          onChange={(e) =>
+            onChange(
+              maxLength ? e.target.value.slice(0, maxLength) : e.target.value,
+            )
+          }
+          placeholder={placeholder}
+          style={{
+            width: "100%",
+            padding: "8px 12px",
+            paddingRight: maxLength ? "60px" : "12px",
+            borderRadius: "8px",
+            border: "1px solid #E1E3E5",
+            fontSize: "13px",
+            backgroundColor: "#F6F6F7",
+            color: "#202223",
+            boxSizing: "border-box",
+          }}
+        />
+        {maxLength && (
+          <span
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              fontSize: "12px",
+              color: "#6D7175",
+            }}
+          >
+            {value.length}/{maxLength}
+          </span>
+        )}
+      </div>
+      {subtitle && (
+        <p
+          style={{
+            fontSize: "11px",
+            color: "#6D7175",
+            marginTop: "4px",
+            marginBottom: 0,
+          }}
+        >
+          {subtitle}
+        </p>
+      )}
+    </div>
+  );
+}
+
 // ─── Preview Panel ────────────────────────────────────────────────────────────
-function PreviewPanel() {
+function PreviewPanel({ checkboxText, keyword, link, size, color }) {
   const [device, setDevice] = useState("desktop");
+
+  const renderText = () => {
+    if (!keyword) return checkboxText;
+    const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const parts = checkboxText.split(new RegExp(`(${escapedKeyword})`, "gi"));
+    return parts.map((part, i) =>
+      part.toLowerCase() === keyword.toLowerCase() ? (
+        <a
+          key={i}
+          href={link}
+          onClick={(e) => e.preventDefault()}
+          style={{ color: "#2C6ECB", textDecoration: "underline" }}
+        >
+          {part}
+        </a>
+      ) : (
+        part
+      ),
+    );
+  };
 
   return (
     <div
@@ -228,9 +327,9 @@ function PreviewPanel() {
               }}
             />
             <span
-              style={{ fontSize: "12px", color: "#333", lineHeight: "1.4" }}
+              style={{ fontSize: `${size}px`, color: color, lineHeight: "1.4" }}
             >
-              I understand and agree to the terms and conditions.
+              {renderText()}
             </span>
           </div>
 
@@ -239,28 +338,44 @@ function PreviewPanel() {
             <span style={{ fontSize: "11px", color: "#6D7175" }}>
               Protected by
             </span>
-            <span
+            <div
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "4px",
                 fontSize: "11px",
                 fontWeight: 600,
-                color: "#7C3AED",
               }}
             >
-              <span
+              <div
                 style={{
                   width: "16px",
                   height: "16px",
-                  borderRadius: "50%",
+                  borderRadius: "4px",
                   background: "linear-gradient(135deg,#7C3AED,#EC4899)",
-                  display: "inline-block",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   flexShrink: 0,
                 }}
-              />
-              Blockify™
-            </span>
+              >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="white">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                </svg>
+              </div>
+              <a
+                href="https://blockify.app"
+                onClick={(e) => e.preventDefault()}
+                style={{
+                  color: "#2C6ECB",
+                  textDecoration: "underline",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                }}
+              >
+                Blockify™
+              </a>
+            </div>
           </div>
 
           {/* More skeleton lines */}
@@ -308,6 +423,16 @@ function PreviewPanel() {
 export default function TermsAndConditionsSetup() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("condition");
+
+  // Checkbox tab state
+  const [checkboxText, setCheckboxText] = useState(
+    "I understand and agree to the terms and conditions.",
+  );
+  const [keyword, setKeyword] = useState("terms and conditions");
+  const [link, setLink] = useState("https://");
+  const [size, setSize] = useState(16);
+  const [color, setColor] = useState("#000000");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const tabStyle = (tab) => ({
     padding: "8px 20px",
@@ -384,101 +509,172 @@ export default function TermsAndConditionsSetup() {
         {/* ─── Left Settings Panel ─── */}
         <div
           style={{
-            width: "280px",
+            width: "300px",
             flexShrink: 0,
             display: "flex",
             flexDirection: "column",
             gap: "12px",
           }}
         >
-          {/* Status */}
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid #E1E3E5",
-              borderRadius: "10px",
-              padding: "16px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <span style={{ fontSize: "13px", fontWeight: 700 }}>Status</span>
-              <PremiumBadge />
-            </div>
-            <DisabledRadio label="Enabled" />
-            <DisabledRadio label="Disabled" />
-          </div>
-
-          {/* Display page(s) + Trigger condition */}
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid #E1E3E5",
-              borderRadius: "10px",
-              padding: "16px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "12px",
-            }}
-          >
-            {/* Display page(s) */}
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "8px" }}
-            >
+          {activeTab === "condition" ? (
+            <>
+              {/* Status */}
               <div
                 style={{
+                  background: "#fff",
+                  border: "1px solid #E1E3E5",
+                  borderRadius: "10px",
+                  padding: "16px",
                   display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  flexWrap: "wrap",
+                  flexDirection: "column",
+                  gap: "10px",
                 }}
               >
-                <span style={{ fontSize: "13px", fontWeight: 700 }}>
-                  Display page(s)
-                </span>
-                <span style={{ fontSize: "12px", color: "#6D7175" }}>*</span>
-                <PremiumBadge />
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <span style={{ fontSize: "13px", fontWeight: 700 }}>
+                    Status
+                  </span>
+                  <PremiumBadge />
+                </div>
+                <DisabledRadio label="Enabled" />
+                <DisabledRadio label="Disabled" />
               </div>
-              <DisabledCheck label="Product page" />
-              <DisabledCheck label="Cart page" />
-            </div>
 
-            <hr
-              style={{
-                border: "none",
-                borderTop: "1px solid #E1E3E5",
-                margin: "4px 0",
-              }}
-            />
-
-            {/* Trigger condition */}
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "8px" }}
-            >
+              {/* Display page(s) + Trigger condition */}
               <div
                 style={{
+                  background: "#fff",
+                  border: "1px solid #E1E3E5",
+                  borderRadius: "10px",
+                  padding: "16px",
                   display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  flexWrap: "wrap",
+                  flexDirection: "column",
+                  gap: "12px",
                 }}
               >
-                <span style={{ fontSize: "13px", fontWeight: 700 }}>
-                  Trigger condition
-                </span>
-                <PremiumBadge />
+                {/* Display page(s) */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <span style={{ fontSize: "13px", fontWeight: 700 }}>
+                      Display page(s)
+                    </span>
+                    <span style={{ fontSize: "12px", color: "#6D7175" }}>
+                      *
+                    </span>
+                    <PremiumBadge />
+                  </div>
+                  <DisabledCheck label="Product page" />
+                  <DisabledCheck label="Cart page" />
+                </div>
+
+                <hr
+                  style={{
+                    border: "none",
+                    borderTop: "1px solid #E1E3E5",
+                    margin: "4px 0",
+                  }}
+                />
+
+                {/* Trigger condition */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <span style={{ fontSize: "13px", fontWeight: 700 }}>
+                      Trigger condition
+                    </span>
+                    <PremiumBadge />
+                  </div>
+                  <DisabledRadio label="Always show" />
+                  <DisabledRadio label="Logged customers" />
+                  <DisabledRadio label="Not logged customers" />
+                </div>
               </div>
-              <DisabledRadio label="Always show" />
-              <DisabledRadio label="Logged customers" />
-              <DisabledRadio label="Not logged customers" />
-            </div>
-          </div>
+            </>
+          ) : (
+            <Card title="Message" badge={<PremiumBadge />}>
+              <TextInput
+                label="Text"
+                required
+                value={checkboxText}
+                onChange={setCheckboxText}
+                maxLength={255}
+              />
+              <TextInput
+                label="Keyword"
+                required
+                value={keyword}
+                onChange={setKeyword}
+              />
+              <TextInput
+                label="Link to keyword (Optional)"
+                value={link}
+                onChange={setLink}
+                subtitle="The URL will be hyperlinked if it matches the keyword."
+              />
+              <NumberInput label="Size" value={size} onChange={setSize} />
+              <ColorInput label="Color" value={color} onChange={setColor} />
+              <TextInput
+                label="Error message (Optional)"
+                value={errorMessage}
+                onChange={setErrorMessage}
+                maxLength={255}
+                placeholder="Enter error message"
+              />
+
+              <p
+                style={{
+                  fontSize: "12px",
+                  color: "#6D7175",
+                  marginTop: "12px",
+                }}
+              >
+                Need more customization options?{" "}
+                <a
+                  href="#"
+                  style={{ color: "#2C6ECB", textDecoration: "none" }}
+                >
+                  Contact us.
+                </a>
+              </p>
+            </Card>
+          )}
         </div>
 
         {/* ─── Right Preview Panel ─── */}
-        <PreviewPanel />
+        <PreviewPanel
+          checkboxText={checkboxText}
+          keyword={keyword}
+          link={link}
+          size={size}
+          color={color}
+        />
       </div>
 
       {/* Footer */}
