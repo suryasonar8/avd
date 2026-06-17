@@ -38,11 +38,18 @@ const DEFAULT_CONFIG = {
   button: {
     submitText: "OK",
     cancelText: "CANCEL",
+    cancelAction: "redirect", // 'redirect' or 'errorMsg'
+    redirectUrl: "https://www.google.com/",
     errorMsg: "Enter error message",
+    cancelErrorMsg: "Enter error message",
     bgColor: "#FE4D01",
     borderColor: "#FFFFFF",
     borderRadius: 0,
     borderWidth: 0,
+    cancelBgColor: "#A0A0A0",
+    cancelBorderColor: "#FFFFFF",
+    cancelBorderRadius: 0,
+    cancelBorderWidth: 0,
   },
   css: "",
 };

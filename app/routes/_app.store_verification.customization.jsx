@@ -44,7 +44,12 @@ export const action = async ({ request }) => {
     ? JSON.parse(existingPopupsData.data.shop.metafield.value)
     : [];
 
-  const updatedPopups = [...existingPopups, newPopup];
+  const finalExistingPopups =
+    config.status === "Enabled"
+      ? existingPopups.map((p) => ({ ...p, status: "Disabled" }))
+      : existingPopups;
+
+  const updatedPopups = [...finalExistingPopups, newPopup];
 
   const response = await admin.graphql(
     `#graphql

@@ -6,7 +6,10 @@
 
         if (!overlay || !agreeBtn || !disagreeBtn) return;
 
-        const redirectUrl = overlay.getAttribute('data-redirect-url') || 'https://www.google.com';
+        const cancelAction = overlay.getAttribute('data-cancel-action') || 'redirect';
+        const cancelRedirectUrl = overlay.getAttribute('data-cancel-redirect-url') || 'https://www.google.com';
+        const cancelErrorMsg = overlay.getAttribute('data-cancel-error-msg') || '';
+        const errorText = document.getElementById('age-verify-error-text');
 
         if (!localStorage.getItem('avd-age-verified')) {
             overlay.style.display = 'flex';
@@ -20,7 +23,14 @@
         });
 
         disagreeBtn.addEventListener('click', function () {
-            window.location.href = redirectUrl;
+            if (cancelAction === 'redirect') {
+                window.location.href = cancelRedirectUrl;
+            } else if (cancelAction === 'errorMsg') {
+                if (errorText) {
+                    errorText.textContent = cancelErrorMsg;
+                    errorText.style.display = 'block';
+                }
+            }
         });
     }
 

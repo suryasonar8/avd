@@ -1,8 +1,4 @@
-import {
-  useFetcher,
-  useLoaderData,
-  useParams,
-} from "react-router";
+import { useFetcher, useLoaderData, useParams } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { PopupEditor } from "../components/customization/PopupEditor";
@@ -65,6 +61,9 @@ export const action = async ({ request, params }) => {
   const updatedPopups = existingPopups.map((p) => {
     if (p.id === id) {
       return { ...p, ...config, updatedAt: new Date().toISOString() };
+    }
+    if (config.status === "Enabled") {
+      return { ...p, status: "Disabled" };
     }
     return p;
   });

@@ -83,8 +83,9 @@ export const Preview = ({ config, previewMode, setPreviewMode }) => {
               boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
               position: "relative",
               borderRadius:
-                (previewMode === "mobile" ? "20px" : "4px") ||
-                `${config.background.borderRadius}px`,
+                previewMode === "mobile"
+                  ? "20px"
+                  : `${config.background.borderRadius}px`,
               border: `${config.background.borderWidth}px solid ${config.background.borderColor}`,
             }}
           >
@@ -135,9 +136,10 @@ export const Preview = ({ config, previewMode, setPreviewMode }) => {
               </button>
               <button
                 style={{
-                  background: "#6D7175",
+                  background: config.button.cancelBgColor,
                   color: "#FFF",
-                  border: "none",
+                  border: `${config.button.cancelBorderWidth}px solid ${config.button.cancelBorderColor}`,
+                  borderRadius: `${config.button.cancelBorderRadius}px`,
                   padding: "14px 0",
                   fontWeight: "700",
                   width: previewMode === "desktop" ? "160px" : "100%",

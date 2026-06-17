@@ -1,19 +1,87 @@
 {% assign settings = shop.metafields.avd_app.settings.value %}
 {% assign min_age = settings.minAge | default: 18 %}
 {% assign redirect_url = settings.redirectUrl | default: "https://www.google.com" %}
-{% assign background = settings.background %}
 
-<div id="age-verification-overlay" class="age-verification-overlay" style="display: none; background-color: {{ background.pageColor | default: 'rgba(0,0,0,0.7)' }};" 
+{% assign popups = shop.metafields.avd_app.popups.value %}
+{% assign active_popup = null %}
+
+{% for popup in popups %}
+  {% if popup.status == 'Enabled' %}
+    {% assign active_popup = popup %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% if active_popup %}
+  {% assign background_page = active_popup.background.pageColor | default: 'rgba(0,0,0,0.7)' %}
+  {% assign background_bg = active_popup.background.bgColor | default: '#FFFFFF' %}
+  {% assign background_border_color = active_popup.background.borderColor | default: '#FFFFFF' %}
+  {% assign background_border_width = active_popup.background.borderWidth | default: 0 %}
+  {% assign background_border_radius = active_popup.background.borderRadius | default: 0 %}
+  
+  {% assign text_heading = active_popup.text.heading | default: 'Welcome!' %}
+  {% assign text_subheading = active_popup.text.subheading | default: 'Please verify your age to enter this site.' %}
+  
+  {% assign btn_submit = active_popup.button.submitText | default: 'Agree' %}
+  {% assign btn_cancel = active_popup.button.cancelText | default: 'Disagree' %}
+  {% assign btn_bg = active_popup.button.bgColor | default: '#FE4D01' %}
+  {% assign btn_border_color = active_popup.button.borderColor | default: '#FFFFFF' %}
+  {% assign btn_border_width = active_popup.button.borderWidth | default: 0 %}
+  {% assign btn_border_radius = active_popup.button.borderRadius | default: 0 %}
+  
+  {% assign cancel_action = active_popup.button.cancelAction | default: 'redirect' %}
+  {% assign cancel_redirect_url = active_popup.button.redirectUrl | default: redirect_url %}
+  {% assign cancel_error_msg = active_popup.button.cancelErrorMsg | default: '' %}
+  {% assign submit_error_msg = active_popup.button.errorMsg | default: '' %}
+  
+  {% assign cancel_btn_bg = active_popup.button.cancelBgColor | default: '#A0A0A0' %}
+  {% assign cancel_btn_border_color = active_popup.button.cancelBorderColor | default: '#FFFFFF' %}
+  {% assign cancel_btn_border_width = active_popup.button.cancelBorderWidth | default: 0 %}
+  {% assign cancel_btn_border_radius = active_popup.button.cancelBorderRadius | default: 0 %}
+{% else %}
+  {% assign background_page = 'rgba(0,0,0,0.7)' %}
+  {% assign background_bg = '#FFFFFF' %}
+  {% assign background_border_color = '#FFFFFF' %}
+  {% assign background_border_width = 0 %}
+  {% assign background_border_radius = 0 %}
+  
+  {% assign text_heading = 'Welcome!' %}
+  {% assign text_subheading = 'Please verify that you are ' | append: min_age | append: ' years of age or older to enter this site.' %}
+  
+  {% assign btn_submit = 'Agree' %}
+  {% assign btn_cancel = 'Disagree' %}
+  {% assign btn_bg = '#000000' %}
+  {% assign btn_border_color = 'transparent' %}
+  {% assign btn_border_width = 0 %}
+  {% assign btn_border_radius = 4 %}
+  
+  {% assign cancel_action = 'redirect' %}
+  {% assign cancel_redirect_url = redirect_url %}
+  {% assign cancel_error_msg = '' %}
+  {% assign submit_error_msg = '' %}
+  
+  {% assign cancel_btn_bg = '#A0A0A0' %}
+  {% assign cancel_btn_border_color = 'transparent' %}
+  {% assign cancel_btn_border_width = 0 %}
+  {% assign cancel_btn_border_radius = 4 %}
+{% endif %}
+
+<div id="age-verification-overlay" class="age-verification-overlay" style="display: none; background-color: {{ background_page }};" 
      data-min-age="{{ min_age }}" 
-     data-redirect-url="{{ redirect_url }}">
-  <div class="age-verification-modal" style="background-color: {{ background.bgColor | default: '#FFFFFF' }}; border: {{ background.borderWidth | default: 0 }}px solid {{ background.borderColor | default: '#FFFFFF' }}; border-radius: {{ background.borderRadius | default: 0 }}px;">
+     data-redirect-url="{{ redirect_url }}"
+     data-cancel-action="{{ cancel_action }}"
+     data-cancel-redirect-url="{{ cancel_redirect_url }}"
+     data-cancel-error-msg="{{ cancel_error_msg | escape }}"
+     data-submit-error-msg="{{ submit_error_msg | escape }}">
+  <div class="age-verification-modal" style="background-color: {{ background_bg }}; border: {{ background_border_width }}px solid {{ background_border_color }}; border-radius: {{ background_border_radius }}px;">
     <div class="age-verification-content">
-      <h1>Welcome!</h1>
-      <p>Please verify that you are {{ min_age }} years of age or older to enter this site.</p>
+      <h1>{{ text_heading }}</h1>
+      <p>{{ text_subheading }}</p>
       <div class="age-verification-buttons">
-        <button id="age-verify-agree" class="age-verify-button agree">Agree</button>
-        <button id="age-verify-disagree" class="age-verify-button disagree">Disagree</button>
+        <button id="age-verify-agree" class="age-verify-button agree" style="background-color: {{ btn_bg }}; border: {{ btn_border_width }}px solid {{ btn_border_color }}; border-radius: {{ btn_border_radius }}px;">{{ btn_submit }}</button>
+        <button id="age-verify-disagree" class="age-verify-button disagree" style="background-color: {{ cancel_btn_bg }}; border: {{ cancel_btn_border_width }}px solid {{ cancel_btn_border_color }}; border-radius: {{ cancel_btn_border_radius }}px;">{{ btn_cancel }}</button>
       </div>
+      <p id="age-verify-error-text" style="display: none; color: red; margin-top: 15px;"></p>
     </div>
   </div>
 </div>
