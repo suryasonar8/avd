@@ -1,6 +1,20 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+} from "react-router";
+import { AppProvider } from "@shopify/shopify-app-react-router/react";
+
+export const loader = async () => {
+  return { apiKey: process.env.SHOPIFY_API_KEY || "" };
+};
 
 export default function App() {
+  const { apiKey } = useLoaderData();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head suppressHydrationWarning>
@@ -12,6 +26,11 @@ export default function App() {
           href="https://cdn.shopify.com/static/fonts/inter/v4/styles.css"
         />
         <Meta />
+        <link
+          rel="stylesheet"
+          href="https://cdn.shopify.com/static/fonts/inter/v4/styles.css"
+        />
+        <meta name="shopify-api-key" content={apiKey} />
         <Links />
         <script
           key="app-bridge-js"
@@ -20,7 +39,9 @@ export default function App() {
         ></script>
       </head>
       <body suppressHydrationWarning>
-        <Outlet />
+        <AppProvider embedded apiKey={apiKey}>
+          <Outlet />
+        </AppProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
