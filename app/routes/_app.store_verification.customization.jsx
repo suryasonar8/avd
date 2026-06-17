@@ -1,4 +1,4 @@
-import { useSubmit, useLoaderData } from "react-router";
+import { useSubmit, useLoaderData, redirect } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { PopupEditor } from "../components/customization/PopupEditor";
@@ -69,7 +69,12 @@ export const action = async ({ request }) => {
     },
   );
   const responseData = await response.json();
-  return { ...responseData, success: false };
+  const errors = responseData.data?.metafieldsSet?.userErrors;
+  if (errors && errors.length > 0) {
+    return { success: false, errors };
+  }
+  // Redirect to the newly created popup's edit page
+  return redirect(`/store_verification/${newPopup.id}`);
 };
 
 export default function StoreVerificationCustomization() {
