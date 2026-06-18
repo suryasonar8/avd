@@ -1,8 +1,9 @@
+import { BANNER_TEXT_MAX_LENGTH } from "../../constants/checkout-verification";
 import SettingsSection from "./SettingsSection";
 
 export default function BannerSettings({ config, onChange }) {
   const heading = config.heading || "";
-  const maxLength = 255;
+  const maxLength = BANNER_TEXT_MAX_LENGTH;
 
   const handleHeadingChange = (e) => {
     const value = e.target.value;

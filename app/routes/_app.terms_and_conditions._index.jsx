@@ -10,7 +10,6 @@ export const loader = async ({ request }) => {
 export const action = async ({ request }) => {};
 
 export default function TermsAndConditions() {
-  const fetcher = useFetcher();
   const navigate = useNavigate();
   const [bannerVisible, setBannerVisible] = useState(true);
 

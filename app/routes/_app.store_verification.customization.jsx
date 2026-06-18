@@ -2,7 +2,6 @@ import { useSubmit, useLoaderData, redirect } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { PopupEditor } from "../components/customization/PopupEditor";
-import { useEffect } from "react";
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
@@ -16,70 +15,100 @@ export const action = async ({ request }) => {
   const configStr = formData.get("config");
   const config = JSON.parse(configStr);
 
-  // Generate a unique ID for the new popup
-  const newPopup = {
-    id: Date.now().toString(),
-    ...config,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
+  const popupId = Date.now().toString();
 
-  const shopResponse = await admin.graphql(`{ shop { id } }`);
-  const shopData = await shopResponse.json();
-  const shopId = shopData.data.shop.id;
-
-  // Fetch existing popups
-  const existingPopupsResponse = await admin.graphql(
+  // Discover the actual Metaobject type handles
+  const popupsDefResponse = await admin.graphql(
     `#graphql
-    query getPopups {
-      shop {
-        metafield(namespace: "avd_app", key: "popups") {
-          value
-        }
+    query getPopupsDef {
+      metaobjectDefinitionByType(type: "$app:popups") {
+        type
       }
     }`,
   );
-  const existingPopupsData = await existingPopupsResponse.json();
-  const existingPopups = existingPopupsData.data.shop.metafield
-    ? JSON.parse(existingPopupsData.data.shop.metafield.value)
-    : [];
+  const popupsDefData = await popupsDefResponse.json();
+  const popupsTypeHandle =
+    popupsDefData.data.metaobjectDefinitionByType?.type || "app--popups";
 
-  const finalExistingPopups =
-    config.status === "Enabled"
-      ? existingPopups.map((p) => ({ ...p, status: "Disabled" }))
-      : existingPopups;
-
-  const updatedPopups = [...finalExistingPopups, newPopup];
-
+  // Create the Metaobject
   const response = await admin.graphql(
     `#graphql
-    mutation setPopups($metafields: [MetafieldsSetInput!]!) {
-      metafieldsSet(metafields: $metafields) {
-        metafields { id }
-        userErrors { field message }
+    mutation createPopup($metaobject: MetaobjectCreateInput!) {
+      metaobjectCreate(metaobject: $metaobject) {
+        metaobject {
+          id
+          handle
+        }
+        userErrors {
+          field
+          message
+        }
       }
     }`,
     {
       variables: {
-        metafields: [
-          {
-            namespace: "avd_app",
-            key: "popups",
-            type: "json",
-            value: JSON.stringify(updatedPopups),
-            ownerId: shopId,
-          },
-        ],
+        metaobject: {
+          type: popupsTypeHandle,
+          handle: popupId,
+          fields: [
+            { key: "popup_id", value: popupId },
+            {
+              key: "config",
+              value: JSON.stringify(
+                Object.fromEntries(
+                  Object.entries(config).filter(([k]) => k !== "status"),
+                ),
+              ),
+            },
+          ],
+        },
       },
     },
   );
+
   const responseData = await response.json();
-  const errors = responseData.data?.metafieldsSet?.userErrors;
+  const errors = responseData.data?.metaobjectCreate?.userErrors;
   if (errors && errors.length > 0) {
+    console.error(
+      "Metaobject creation failed:",
+      JSON.stringify(errors, null, 2),
+    );
     return { success: false, errors };
   }
+
+  const gid = responseData.data.metaobjectCreate.metaobject.id;
+
+  // If enabled, set as the shop's active popup in Shop Metafield
+  if (config.status === "Enabled") {
+    const shopResponse = await admin.graphql(`{ shop { id } }`);
+    const shopId = (await shopResponse.json()).data.shop.id;
+
+    await admin.graphql(
+      `#graphql
+      mutation updateActive($metafields: [MetafieldsSetInput!]!) {
+        metafieldsSet(metafields: $metafields) {
+          metafields { id }
+          userErrors { field message }
+        }
+      }`,
+      {
+        variables: {
+          metafields: [
+            {
+              namespace: "avd",
+              key: "active_popup",
+              type: "mixed_reference",
+              ownerId: shopId,
+              value: gid,
+            },
+          ],
+        },
+      },
+    );
+  }
+
   // Redirect to the newly created popup's edit page
-  return redirect(`/store_verification/${newPopup.id}`);
+  return redirect(`/store_verification/${popupId}`);
 };
 
 export default function StoreVerificationCustomization() {
@@ -93,6 +122,7 @@ export default function StoreVerificationCustomization() {
   };
   return (
     <PopupEditor
+      key="new-popup"
       settings={loaderData?.settings}
       onSave={handleSave}
       heading="Configuration"

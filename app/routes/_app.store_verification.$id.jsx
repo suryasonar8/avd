@@ -5,28 +5,63 @@ import { PopupEditor } from "../components/customization/PopupEditor";
 
 export const loader = async ({ request, params }) => {
   const { admin } = await authenticate.admin(request);
-  const { id } = params;
+  const { id } = params; // This is the popup_id
+
+  // Discover the actual Metaobject type handles
+  const popupsDefResponse = await admin.graphql(
+    `#graphql
+    query getPopupsDef {
+      metaobjectDefinitionByType(type: "$app:popups") {
+        type
+      }
+    }`,
+  );
+  const popupsDefData = await popupsDefResponse.json();
+  const popupsTypeHandle =
+    popupsDefData.data.metaobjectDefinitionByType?.type || "app--popups";
 
   const response = await admin.graphql(
     `#graphql
-    query getPopups {
+    query findPopup($query: String!, $type: String!) {
+      metaobjects(type: $type, first: 1, query: $query) {
+        nodes {
+          id
+          handle
+          popup_id: field(key: "popup_id") { value }
+          config: field(key: "config") { value }
+        }
+      }
+    }`,
+    { variables: { query: `handle:${id}`, type: popupsTypeHandle } },
+  );
+  const data = await response.json();
+  const node = data.data.metaobjects.nodes[0];
+
+  if (!node) {
+    throw new Response("Not Found", { status: 404 });
+  }
+
+  // Derive status from Shop Metafield
+  const activeResponse = await admin.graphql(
+    `#graphql
+    query getActiveSetting {
       shop {
-        metafield(namespace: "avd_app", key: "popups") {
+        metafield(namespace: "avd", key: "active_popup") {
           value
         }
       }
     }`,
   );
-  const data = await response.json();
-  const popups = data.data.shop.metafield
-    ? JSON.parse(data.data.shop.metafield.value)
-    : [];
+  const activeData = await activeResponse.json();
+  const activeGid = activeData.data.shop.metafield?.value;
+  const isActive = activeGid === node.id;
 
-  const popup = popups.find((p) => p.id === id);
-
-  if (!popup) {
-    throw new Response("Not Found", { status: 404 });
-  }
+  const popup = {
+    ...JSON.parse(node.config.value),
+    id: node.popup_id.value,
+    gid: node.id,
+    status: isActive ? "Enabled" : "Disabled",
+  };
 
   return { settings: popup };
 };
@@ -38,60 +73,126 @@ export const action = async ({ request, params }) => {
   const configStr = formData.get("config");
   const config = JSON.parse(configStr);
 
-  const shopResponse = await admin.graphql(`{ shop { id } }`);
-  const shopData = await shopResponse.json();
-  const shopId = shopData.data.shop.id;
-
-  // Fetch existing popups
-  const existingPopupsResponse = await admin.graphql(
+  // Discover the actual Metaobject type handles
+  const popupsDefResponse = await admin.graphql(
     `#graphql
-    query getPopups {
-      shop {
-        metafield(namespace: "avd_app", key: "popups") {
-          value
-        }
+    query getPopupsDef {
+      metaobjectDefinitionByType(type: "$app:popups") {
+        type
       }
     }`,
   );
-  const existingPopupsData = await existingPopupsResponse.json();
-  const existingPopups = existingPopupsData.data.shop.metafield
-    ? JSON.parse(existingPopupsData.data.shop.metafield.value)
-    : [];
+  const popupsDefData = await popupsDefResponse.json();
+  const popupsTypeHandle =
+    popupsDefData.data.metaobjectDefinitionByType?.type || "app--popups";
 
-  const updatedPopups = existingPopups.map((p) => {
-    if (p.id === id) {
-      return { ...p, ...config, updatedAt: new Date().toISOString() };
-    }
-    if (config.status === "Enabled") {
-      return { ...p, status: "Disabled" };
-    }
-    return p;
-  });
+  // 1. Find the GID of the Metaobject
+  const searchResponse = await admin.graphql(
+    `#graphql
+    query findPopupGID($query: String!, $type: String!) {
+      metaobjects(type: $type, first: 1, query: $query) {
+        nodes { id }
+      }
+    }`,
+    { variables: { query: `field:popup_id:${id}`, type: popupsTypeHandle } },
+  );
+  const searchData = await searchResponse.json();
+  const gid = searchData.data.metaobjects.nodes[0]?.id;
 
+  if (!gid) {
+    return { success: false, errors: [{ message: "Popup not found" }] };
+  }
+
+  // 2. Update the Metaobject
   const response = await admin.graphql(
     `#graphql
-    mutation setPopups($metafields: [MetafieldsSetInput!]!) {
-      metafieldsSet(metafields: $metafields) {
-        metafields { id }
+    mutation updatePopup($id: ID!, $metaobject: MetaobjectUpdateInput!) {
+      metaobjectUpdate(id: $id, metaobject: $metaobject) {
+        metaobject { id }
         userErrors { field message }
       }
     }`,
     {
       variables: {
-        metafields: [
-          {
-            namespace: "avd_app",
-            key: "popups",
-            type: "json",
-            value: JSON.stringify(updatedPopups),
-            ownerId: shopId,
-          },
-        ],
+        id: gid,
+        metaobject: {
+          fields: [
+            {
+              key: "config",
+              value: JSON.stringify(
+                Object.fromEntries(
+                  Object.entries(config).filter(([k]) => k !== "status"),
+                ),
+              ),
+            },
+          ],
+        },
       },
     },
   );
+
   const responseData = await response.json();
-  const success = !responseData.data.metafieldsSet.userErrors?.length;
+  const success = !responseData.data.metaobjectUpdate.userErrors?.length;
+
+  // 3. Update the Shop Metafield based on status
+  if (success) {
+    const shopResponse = await admin.graphql(
+      `{ shop { id metafield(namespace: "avd", key: "active_popup") { value } } }`,
+    );
+    const shopData = (await shopResponse.json()).data;
+    const shopId = shopData.shop.id;
+    const activeGid = shopData.shop.metafield?.value;
+
+    if (config.status === "Enabled") {
+      await admin.graphql(
+        `#graphql
+        mutation updateActive($metafields: [MetafieldsSetInput!]!) {
+          metafieldsSet(metafields: $metafields) {
+            metafields { id }
+            userErrors { field message }
+          }
+        }`,
+        {
+          variables: {
+            metafields: [
+              {
+                namespace: "avd",
+                key: "active_popup",
+                type: "mixed_reference",
+                ownerId: shopId,
+                value: gid,
+              },
+            ],
+          },
+        },
+      );
+    } else if (activeGid === gid) {
+      // If disabling and it was the active one, clear it
+      await admin.graphql(
+        `#graphql
+        mutation clearActive($metafields: [MetafieldsSetInput!]!) {
+          metafieldsSet(metafields: $metafields) {
+            metafields { id }
+            userErrors { field message }
+          }
+        }`,
+        {
+          variables: {
+            metafields: [
+              {
+                namespace: "avd",
+                key: "active_popup",
+                type: "mixed_reference",
+                ownerId: shopId,
+                value: "",
+              },
+            ],
+          },
+        },
+      );
+    }
+  }
+
   return { ...responseData, success };
 };
 
@@ -107,6 +208,7 @@ export default function StoreVerificationEdit() {
 
   return (
     <PopupEditor
+      key={id}
       settings={loaderData?.settings}
       onSave={handleSave}
       heading="Edit Pop-up"

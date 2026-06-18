@@ -17,28 +17,34 @@ function Extension() {
     api = useApi();
   } catch (e) {}
 
-  const appMetafields = useAppMetafields();
+  const [config, setConfig] = useState(null);
   const cartLines = useCartLines();
 
-  const config = useMemo(() => {
-    if (!appMetafields || appMetafields.length === 0) return null;
+  useEffect(() => {
+    async function fetchConfig() {
+      if (!api?.query) return;
 
-    const bannerMeta = appMetafields.find(
-      (mf) =>
-        mf.metafield?.namespace === "avd_app" &&
-        mf.metafield?.key === "checkout_banner",
-    );
-
-    if (bannerMeta?.metafield?.value) {
       try {
-        return JSON.parse(bannerMeta.metafield.value);
+        const result = await api.query(
+          `query getCheckoutConfig {
+            metaobjects(type: "app--checkout_settings", first: 1) {
+              nodes {
+                config: field(key: "config") { value }
+              }
+            }
+          }`,
+        );
+        const node = result?.data?.metaobjects?.nodes[0];
+        if (node?.config?.value) {
+          setConfig(JSON.parse(node.config.value));
+        }
       } catch (err) {
-        console.error("Failed to parse banner config", err);
-        return null;
+        console.error("Failed to fetch checkout config", err);
       }
     }
-    return null;
-  }, [appMetafields]);
+
+    fetchConfig();
+  }, [api]);
 
   const showSync = useMemo(() => {
     if (!config || config.status !== "enabled") return false;

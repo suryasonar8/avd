@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { DEFAULT_BANNER_HEADING } from "../../constants/checkout-verification";
 
 export default function PreviewPanel({ config }) {
   const [device, setDevice] = useState("desktop");
   const showBanner = config?.status === "enabled";
-  const bannerHeading = config?.heading || "Age restriction applies";
+  const bannerHeading = config?.heading || DEFAULT_BANNER_HEADING;
 
   return (
     <div

@@ -35,14 +35,54 @@
             return null;
         }
 
+        const method = overlay.getAttribute('data-method') || 'No input';
+        const minAge = parseInt(overlay.getAttribute('data-min-age')) || 18;
+
         if (!getCookie('avd-age-verified')) {
             overlay.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
 
         agreeBtn.addEventListener('click', function () {
-            let expiryDays = null;
+            function triggerShake() {
+                const modal = overlay.querySelector('.age-verification-modal');
+                if (modal) {
+                    modal.classList.remove('shake');
+                    void modal.offsetWidth; // Force reflow
+                    modal.classList.add('shake');
+                    setTimeout(() => {
+                        modal.classList.remove('shake');
+                    }, 500);
+                }
+            }
 
+            if (method.toLowerCase().includes('birthdate')) {
+                const month = document.getElementById('age-verify-month').value;
+                const day = document.getElementById('age-verify-day').value;
+                const year = document.getElementById('age-verify-year').value;
+
+                if (!month || !day || !year) {
+                    triggerShake();
+                    return;
+                }
+
+                const birthDate = new Date(year, month - 1, day);
+                const today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const m = today.getMonth() - birthDate.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+
+                if (age < minAge) {
+                    triggerShake();
+                    return;
+                }
+
+            }
+
+
+            let expiryDays = null;
             if (rememberVisitor === 'Days') {
                 expiryDays = rememberDays;
             } else if (rememberVisitor === 'Allow visitor to choose') {
@@ -50,10 +90,8 @@
                     expiryDays = 365;
                 }
             }
-            // If 'Session only' or 'Allow visitor to choose' but unchecked, expiryDays remains null (session cookie)
 
             setCookie('avd-age-verified', 'true', expiryDays);
-
             overlay.style.display = 'none';
             document.body.style.overflow = '';
         });

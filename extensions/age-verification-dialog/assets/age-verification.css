@@ -12,51 +12,68 @@
 }
 
 .age-verification-modal {
-  background-color: #e1e1e1;
-  padding: 40px;
+  padding: 30px;
   text-align: center;
-  max-width: 600px;
+  max-width: 540px;
   width: 95%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #FFF;
+  /* Base color for all text in modal */
 }
 
-.age-verification-modal h1 {
-  font-size: 48px;
+.age-verification-modal h3 {
+  font-size: 26px;
+  font-weight: 700;
   margin: 0 0 20px 0;
-  color: #000;
-  font-family: inherit;
+  letter-spacing: 0.5px;
+  color: #FFF;
 }
 
 .age-verification-modal p {
-  font-size: 18px;
+  font-size: 15px;
   margin: 0 0 30px 0;
-  color: #333;
+  opacity: 0.9;
   line-height: 1.5;
+  color: #FFF;
+}
+
+.age-verification-birthdate {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  justify-content: center;
+}
+
+.age-verify-select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #CBCFD2;
+  background: #FFF;
+  color: #000;
+  /* Keeping this black for readability inside the white select box, unless the user meant EVERYTHING including input values */
+  font-size: 14px;
 }
 
 .age-verification-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 12px;
+  width: 100%;
 }
 
 .age-verify-button {
-  padding: 15px 40px;
+  padding: 14px 0;
   border: none;
-  border-radius: 6px;
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-}
-
-.agree {
-  background-color: #006e52;
-  color: #ffffff;
-}
-
-.disagree {
-  background-color: #d1d1d1;
-  color: #4a4a4a;
-  border: 1px solid #b5b5b5;
+  width: 160px;
+  color: #FFF;
 }
 
 .age-verification-remember {
@@ -65,19 +82,98 @@
   justify-content: center;
   align-items: center;
   gap: 8px;
-  color: #333;
+  font-size: 11px;
+  color: #FFF;
+}
+
+.age-verification-footer {
+  margin-top: 50px;
+  font-size: 11px;
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.brand-mark {
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.brand-shield {
+  color: #FF5C00;
   font-size: 14px;
 }
 
-.age-verification-remember label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
+.brand-name {
+  color: #FFF;
+  text-decoration: underline;
 }
 
-.age-verification-remember input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
+@media (max-width: 767px) {
+  .age-verification-modal h3 {
+    font-size: 18px;
+  }
+
+  .age-verification-modal p {
+    font-size: 13px;
+  }
+
+  .age-verification-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .age-verify-button {
+    width: 100%;
+  }
+
+  #age-verify-month {
+    width: 80px;
+  }
+
+  #age-verify-day {
+    width: 60px;
+  }
+
+  #age-verify-year {
+    width: 80px;
+  }
+
+  .age-verification-footer {
+    margin-top: 30px;
+  }
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-10px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(10px);
+  }
+}
+
+.shake {
+  animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }

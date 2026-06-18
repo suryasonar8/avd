@@ -1,0 +1,16 @@
+[
+  {
+    "namespace": "test_data",
+    "key": "alpine_sports",
+    "type": {
+      "name": "list.single_line_text_field"
+    }
+  },
+  {
+    "namespace": "app--380797878273--avd_app",
+    "key": "active_popup",
+    "type": {
+      "name": "metaobject_reference"
+    }
+  }
+]

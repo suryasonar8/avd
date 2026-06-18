@@ -12,19 +12,23 @@ export const loader = async ({ request }) => {
     `#graphql
     query getSettings {
       shop {
-        metafield(namespace: "avd_app", key: "settings") {
+        metafield(namespace: "avd", key: "settings") {
           value
         }
       }
     }`,
   );
   const data = await response.json();
-  const settings = data.data.shop.metafield
-    ? JSON.parse(data.data.shop.metafield.value)
+  const metafieldValue = data.data.shop.metafield?.value;
+
+  const settings = metafieldValue
+    ? JSON.parse(metafieldValue)
     : {
         adminLanguage: "English",
         rememberVisitor: "Session only",
         rememberDays: 30,
+        minAge: 18,
+        redirectUrl: "https://www.google.com",
       };
 
   return { settings };
@@ -36,34 +40,41 @@ export const action = async ({ request }) => {
   const settingsStr = formData.get("settings");
   const settings = JSON.parse(settingsStr);
 
-  const shopResponse = await admin.graphql(`{ shop { id } }`);
-  const shopData = await shopResponse.json();
-  const shopId = shopData.data.shop.id;
-
   const response = await admin.graphql(
     `#graphql
-    mutation setSettings($metafields: [MetafieldsSetInput!]!) {
+    mutation metafieldUpsert($metafields: [MetafieldsSetInput!]!) {
       metafieldsSet(metafields: $metafields) {
-        metafields { id }
-        userErrors { field message }
+        metafields {
+          id
+          namespace
+          key
+          value
+        }
+        userErrors {
+          field
+          message
+        }
       }
     }`,
     {
       variables: {
         metafields: [
           {
-            namespace: "avd_app",
+            namespace: "avd",
             key: "settings",
             type: "json",
+            ownerId: (await (await admin.graphql(`{ shop { id } }`)).json()).data.shop.id,
             value: JSON.stringify(settings),
-            ownerId: shopId,
           },
         ],
       },
     },
   );
+
   const responseData = await response.json();
-  return { success: !responseData.data.metafieldsSet.userErrors?.length };
+  const errors = responseData.data?.metafieldsSet?.userErrors;
+
+  return { success: !errors?.length };
 };
 
 export default function SettingsPage() {

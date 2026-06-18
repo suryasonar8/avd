@@ -1,18 +1,16 @@
-{% assign settings = shop.metafields.avd_app.settings.value %}
+{% assign settings = shop.metafields.avd.settings.value %}
 {% assign min_age = settings.minAge | default: 18 %}
 {% assign redirect_url = settings.redirectUrl | default: "https://www.google.com" %}
 
-{% assign popups = shop.metafields.avd_app.popups.value %}
+{% assign active_popup_node = shop.metafields.avd.active_popup.value %}
 {% assign active_popup = null %}
 
-{% for popup in popups %}
-  {% if popup.status == 'Enabled' %}
-    {% assign active_popup = popup %}
-    {% break %}
-  {% endif %}
-{% endfor %}
+{% if active_popup_node %}
+  {% assign active_popup = active_popup_node.config.value %}
+{% endif %}
 
 {% if active_popup %}
+  <!-- Debug: active_popup ID is {{ active_popup.id }} -->
   {% assign background_page = active_popup.background.pageColor | default: 'rgba(0,0,0,0.7)' %}
   {% assign background_bg = active_popup.background.bgColor | default: '#FFFFFF' %}
   {% assign background_border_color = active_popup.background.borderColor | default: '#FFFFFF' %}
@@ -40,6 +38,9 @@
   {% assign cancel_btn_border_width = active_popup.button.cancelBorderWidth | default: 0 %}
   {% assign cancel_btn_border_radius = active_popup.button.cancelBorderRadius | default: 0 %}
 
+  {% assign method = active_popup.method | default: 'No input' %}
+  {% assign date_order = active_popup.dateOrder | default: 'MM,DD,YY' %}
+
   {% assign remember_visitor = settings.rememberVisitor | default: 'Session only' %}
   {% assign remember_days = settings.rememberDays | default: 30 %}
 {% else %}
@@ -59,6 +60,9 @@
   {% assign btn_border_width = 0 %}
   {% assign btn_border_radius = 4 %}
   
+  {% assign method = 'No input' %}
+  {% assign date_order = 'MM,DD,YY' %}
+
   {% assign cancel_action = 'redirect' %}
   {% assign cancel_redirect_url = redirect_url %}
   {% assign cancel_error_msg = '' %}
@@ -81,15 +85,59 @@
      data-cancel-error-msg="{{ cancel_error_msg | escape }}"
      data-submit-error-msg="{{ submit_error_msg | escape }}"
      data-remember-visitor="{{ remember_visitor }}"
-     data-remember-days="{{ remember_days }}">
+     data-remember-days="{{ remember_days }}"
+     data-method="{{ method }}">
   <div class="age-verification-modal" style="background-color: {{ background_bg }}; border: {{ background_border_width }}px solid {{ background_border_color }}; border-radius: {{ background_border_radius }}px;">
     <div class="age-verification-content">
-      <h1>{{ text_heading }}</h1>
+      <h3>{{ text_heading }}</h3>
       <p>{{ text_subheading }}</p>
+
+      <!-- Debug: Method is "{{ method }}", Method down is "{{ method_down }}" -->
+      {% assign method_down = method | downcase %}
+      {% if method_down contains 'birthdate' %}
+        <div class="age-verification-birthdate">
+          {% assign parts = date_order | split: ',' %}
+          {% for part in parts %}
+            {% assign trimmed_part = part | strip %}
+            {% if trimmed_part == 'MM' %}
+              <select id="age-verify-month" class="age-verify-select">
+                <option value="1" selected>January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+            {% elsif trimmed_part == 'DD' %}
+              <select id="age-verify-day" class="age-verify-select">
+                {% for i in (1..31) %}
+                  <option value="{{ i }}" {% if i == 1 %}selected{% endif %}>{{ i }}</option>
+                {% endfor %}
+              </select>
+            {% elsif trimmed_part == 'YY' %}
+              <select id="age-verify-year" class="age-verify-select">
+                {% assign current_year = "now" | date: "%Y" | plus: 0 %}
+                {% assign start_year = current_year | minus: 100 %}
+                {% for i in (start_year..current_year) reversed %}
+                  <option value="{{ i }}" {% if i == 2026 %}selected{% endif %}>{{ i }}</option>
+                {% endfor %}
+              </select>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
       <div class="age-verification-buttons">
-        <button id="age-verify-agree" class="age-verify-button agree" style="background-color: {{ btn_bg }}; border: {{ btn_border_width }}px solid {{ btn_border_color }}; border-radius: {{ btn_border_radius }}px;">{{ btn_submit }}</button>
-         <button id="age-verify-disagree" class="age-verify-button disagree" style="background-color: {{ cancel_btn_bg }}; border: {{ cancel_btn_border_width }}px solid {{ cancel_btn_border_color }}; border-radius: {{ cancel_btn_border_radius }}px;">{{ btn_cancel }}</button>
+        <button id="age-verify-agree" class="age-verify-button agree" style="background-color: {{ btn_bg }}; color: #FFF; border: {{ btn_border_width }}px solid {{ btn_border_color }}; border-radius: {{ btn_border_radius }}px;">{{ btn_submit }}</button>
+         <button id="age-verify-disagree" class="age-verify-button disagree" style="background-color: {{ cancel_btn_bg }}; color: #FFF; border: {{ cancel_btn_border_width }}px solid {{ cancel_btn_border_color }}; border-radius: {{ cancel_btn_border_radius }}px;">{{ btn_cancel }}</button>
       </div>
+
       {% if remember_visitor == 'Allow visitor to choose' %}
         <div class="age-verification-remember">
           <label>
@@ -97,7 +145,12 @@
           </label>
         </div>
       {% endif %}
+
       <p id="age-verify-error-text" style="display: none; color: red; margin-top: 15px;"></p>
+
+      <div class="age-verification-footer">
+        Protected by <span class="brand-mark"><span class="brand-shield">🛡️</span> <span class="brand-name">Blockify™</span></span>
+      </div>
     </div>
   </div>
 </div>

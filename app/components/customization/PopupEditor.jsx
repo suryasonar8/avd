@@ -20,6 +20,8 @@ const DEFAULT_CONFIG = {
   name: "My Pop-up",
   status: "Enabled",
   method: "No input",
+  verifyAge: 18,
+  dateOrder: "MM,DD,YY",
   pages: "All pages",
   trigger: "Always show",
   background: {
@@ -92,6 +94,7 @@ export function PopupEditor({
 
   const [config, setConfig] = useState(initialConfig);
 
+
   const isDirty = useMemo(() => {
     const isSubmitting = fetcher
       ? fetcher.state !== "idle"
@@ -116,13 +119,18 @@ export function PopupEditor({
 
       if (isSubmitting.current && fetcher.state === "idle") {
         if (fetcher.data?.success) {
-          shopify.toast.show("Settings saved successfully");
+          shopify.toast.show("Saved successfully");
           isSubmitting.current = false;
           if (onSaveSuccess) {
             onSaveSuccess();
           }
-        } else if (fetcher.data?.data?.metafieldsSet?.userErrors?.length > 0) {
-          shopify.toast.show("Error saving settings", { isError: true });
+        } else if (
+          fetcher.data?.errors ||
+          fetcher.data?.data?.metafieldsSet?.userErrors?.length > 0
+        ) {
+          shopify.toast.show("Error saving: check terminal for details", {
+            isError: true,
+          });
           isSubmitting.current = false;
         }
       }

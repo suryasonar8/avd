@@ -109,6 +109,94 @@ export const Preview = ({ config, previewMode, setPreviewMode }) => {
               {config.text.subheading}
             </p>
 
+            {config.method === "Birthdate entry" && (
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  marginBottom: "30px",
+                  justifyContent: "center",
+                }}
+              >
+                {(config.dateOrder || "MM,DD,YY")
+                  .split(",")
+                  .map((part, index) => {
+                    if (part === "MM") {
+                      return (
+                        <select
+                          key="month"
+                          style={{
+                            padding: "8px 12px",
+                            borderRadius: "6px",
+                            border: "1px solid #CBCFD2",
+                            background: "#FFF",
+                            color: "#000",
+                            fontSize: "14px",
+                            width: previewMode === "desktop" ? "120px" : "80px",
+                          }}
+                        >
+                          <option>January</option>
+                          <option>February</option>
+                          <option>March</option>
+                          <option>April</option>
+                          <option>May</option>
+                          <option>June</option>
+                          <option>July</option>
+                          <option>August</option>
+                          <option>September</option>
+                          <option>October</option>
+                          <option>November</option>
+                          <option>December</option>
+                        </select>
+                      );
+                    }
+                    if (part === "DD") {
+                      return (
+                        <select
+                          key="day"
+                          style={{
+                            padding: "8px 12px",
+                            borderRadius: "6px",
+                            border: "1px solid #CBCFD2",
+                            background: "#FFF",
+                            color: "#000",
+                            fontSize: "14px",
+                            width: previewMode === "desktop" ? "70px" : "60px",
+                          }}
+                        >
+                          {[...Array(31)].map((_, i) => (
+                            <option key={i + 1}>
+                              {String(i + 1).padStart(2, "0")}
+                            </option>
+                          ))}
+                        </select>
+                      );
+                    }
+                    if (part === "YY") {
+                      return (
+                        <select
+                          key="year"
+                          style={{
+                            padding: "8px 12px",
+                            borderRadius: "6px",
+                            border: "1px solid #CBCFD2",
+                            background: "#FFF",
+                            color: "#000",
+                            fontSize: "14px",
+                            width: previewMode === "desktop" ? "90px" : "80px",
+                          }}
+                        >
+                          {[...Array(100)].map((_, i) => (
+                            <option key={i}>{2024 - i}</option>
+                          ))}
+                        </select>
+                      );
+                    }
+                    return null;
+                  })}
+              </div>
+            )}
+
             <div
               style={{
                 display: "flex",
@@ -171,7 +259,9 @@ export const Preview = ({ config, previewMode, setPreviewMode }) => {
                 }}
               >
                 <span style={{ color: "#FF5C00", fontSize: "14px" }}>🛡️</span>{" "}
-                AVD
+                <span style={{ color: "#005F99", textDecoration: "underline" }}>
+                  AVD
+                </span>
               </span>
             </div>
           </div>

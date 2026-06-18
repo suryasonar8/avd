@@ -18,22 +18,36 @@ const DEFAULT_CONFIG = {
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
 
-  const response = await admin.graphql(
+  // Discover the actual Metaobject type handle
+  const defResponse = await admin.graphql(
     `#graphql
-    query getCheckoutBanner {
-      shop {
-        metafield(namespace: "avd_app", key: "checkout_banner") {
-          value
-        }
+    query getDefinition {
+      metaobjectDefinitionByType(type: "$app:checkout_settings") {
+        type
       }
     }`,
   );
-  const data = await response.json();
-  const config = data.data.shop.metafield
-    ? JSON.parse(data.data.shop.metafield.value)
-    : DEFAULT_CONFIG;
+  const defData = await defResponse.json();
+  const typeHandle =
+    defData.data.metaobjectDefinitionByType?.type || "app--checkout_settings";
 
-  return { config };
+  const response = await admin.graphql(
+    `#graphql
+    query getCheckoutBanner($type: String!) {
+      metaobjects(type: $type, first: 1) {
+        nodes {
+          id
+          config: field(key: "config") { value }
+        }
+      }
+    }`,
+    { variables: { type: typeHandle } },
+  );
+  const data = await response.json();
+  const node = data.data.metaobjects.nodes[0];
+  const config = node ? JSON.parse(node.config.value) : DEFAULT_CONFIG;
+
+  return { config, metaobjectId: node?.id };
 };
 
 export const action = async ({ request }) => {
@@ -42,34 +56,77 @@ export const action = async ({ request }) => {
   const configStr = formData.get("config");
   const config = JSON.parse(configStr);
 
-  const shopResponse = await admin.graphql(`{ shop { id } }`);
-  const shopData = await shopResponse.json();
-  const shopId = shopData.data.shop.id;
-
-  const response = await admin.graphql(
+  // Discover the actual Metaobject type handle
+  const defResponse = await admin.graphql(
     `#graphql
-    mutation setCheckoutBanner($metafields: [MetafieldsSetInput!]!) {
-      metafieldsSet(metafields: $metafields) {
-        metafields { id }
-        userErrors { field message }
+    query getDefinition {
+      metaobjectDefinitionByType(type: "$app:checkout_settings") {
+        type
       }
     }`,
-    {
-      variables: {
-        metafields: [
-          {
-            namespace: "avd_app",
-            key: "checkout_banner",
-            type: "json",
-            value: JSON.stringify(config),
-            ownerId: shopId,
-          },
-        ],
-      },
-    },
   );
+  const defData = await defResponse.json();
+  const typeHandle =
+    defData.data.metaobjectDefinitionByType?.type || "app--checkout_settings";
+
+  // Check if we have an existing entry
+  const checkResponse = await admin.graphql(
+    `#graphql
+    query checkCheckout($type: String!) {
+      metaobjects(type: $type, first: 1) {
+        nodes { id }
+      }
+    }`,
+    { variables: { type: typeHandle } },
+  );
+  const checkData = await checkResponse.json();
+  const existingId = checkData.data.metaobjects.nodes[0]?.id;
+
+  let response;
+  if (existingId) {
+    response = await admin.graphql(
+      `#graphql
+      mutation updateCheckout($id: ID!, $metaobject: MetaobjectUpdateInput!) {
+        metaobjectUpdate(id: $id, metaobject: $metaobject) {
+          metaobject { id }
+          userErrors { field message }
+        }
+      }`,
+      {
+        variables: {
+          id: existingId,
+          metaobject: {
+            fields: [{ key: "config", value: JSON.stringify(config) }],
+          },
+        },
+      },
+    );
+  } else {
+    response = await admin.graphql(
+      `#graphql
+      mutation createCheckout($metaobject: MetaobjectCreateInput!) {
+        metaobjectCreate(metaobject: $metaobject) {
+          metaobject { id }
+          userErrors { field message }
+        }
+      }`,
+      {
+        variables: {
+          metaobject: {
+            type: typeHandle,
+            fields: [{ key: "config", value: JSON.stringify(config) }],
+          },
+        },
+      },
+    );
+  }
+
   const responseData = await response.json();
-  return { success: !responseData.data.metafieldsSet.userErrors?.length };
+  const errors =
+    responseData.data?.metaobjectUpdate?.userErrors ||
+    responseData.data?.metaobjectCreate?.userErrors;
+
+  return { success: !errors?.length };
 };
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -77,6 +134,11 @@ export default function CheckoutVerificationSetup() {
   const navigate = useNavigate();
   const { config: initialConfig } = useLoaderData();
   const [config, setConfig] = useState(initialConfig);
+  // Reset config when initialConfig changes (e.g. after save or navigation)
+  useEffect(() => {
+    setConfig(initialConfig);
+  }, [initialConfig]);
+
   const [activeTab, setActiveTab] = useState("condition");
   const fetcher = useFetcher();
   const shopify = useAppBridge();

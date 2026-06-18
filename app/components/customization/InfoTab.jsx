@@ -133,6 +133,75 @@ export function InfoTab({ config, setConfig }) {
             </label>
           </div>
         </div>
+
+        {config.method === "Birthdate entry" && (
+          <>
+            <div style={{ marginTop: "16px", marginBottom: "16px" }}>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  marginBottom: "8px",
+                }}
+              >
+                Verify age
+              </label>
+              <input
+                type="number"
+                value={config.verifyAge || 18}
+                onChange={(e) =>
+                  setConfig({ ...config, verifyAge: parseInt(e.target.value) })
+                }
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #CBCFD2",
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: "16px" }}>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  marginBottom: "8px",
+                }}
+              >
+                Date order
+              </label>
+              <select
+                value={config.dateOrder || "MM,DD,YY"}
+                onChange={(e) =>
+                  setConfig({ ...config, dateOrder: e.target.value })
+                }
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #CBCFD2",
+                  background: "#FFF",
+                }}
+              >
+                <option value="MM,DD,YY">MM,DD,YY</option>
+                <option value="DD,MM,YY">DD,MM,YY</option>
+                <option value="YY,MM,DD">YY,MM,DD</option>
+              </select>
+              <p
+                style={{
+                  fontSize: "11px",
+                  color: "#6D7175",
+                  marginTop: "4px",
+                }}
+              >
+                This format displays the date as May-01-2024.
+              </p>
+            </div>
+          </>
+        )}
       </Card>
 
       <Card

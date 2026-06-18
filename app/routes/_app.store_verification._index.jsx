@@ -3,20 +3,62 @@ import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
+
+  // Discover the actual Metaobject type handles
+  const popupsDefResponse = await admin.graphql(
+    `#graphql
+    query getPopupsDef {
+      metaobjectDefinitionByType(type: "$app:popups") {
+        type
+      }
+    }`,
+  );
+  const popupsDefData = await popupsDefResponse.json();
+  const popupsTypeHandle =
+    popupsDefData.data.metaobjectDefinitionByType?.type || "app--popups";
+
+  // Fetch popups from Metaobjects
   const response = await admin.graphql(
     `#graphql
-    query getPopups {
+    query getPopups($type: String!) {
+      metaobjects(type: $type, first: 50) {
+        nodes {
+          id
+          handle
+          popup_id: field(key: "popup_id") { value }
+          config: field(key: "config") { value }
+        }
+      }
+    }`,
+    { variables: { type: popupsTypeHandle } },
+  );
+  const data = await response.json();
+
+  // Get the active popup reference from Shop Metafield
+  const activeResponse = await admin.graphql(
+    `#graphql
+    query getActiveSetting {
       shop {
-        metafield(namespace: "avd_app", key: "popups") {
+        metafield(namespace: "avd", key: "active_popup") {
           value
         }
       }
     }`,
   );
-  const data = await response.json();
-  const popups = data.data.shop.metafield
-    ? JSON.parse(data.data.shop.metafield.value)
-    : [];
+  const activeData = await activeResponse.json();
+  const activeGid = activeData.data.shop.metafield?.value;
+
+  const popups = (data.data?.metaobjects?.nodes || []).map((node) => {
+    const config = JSON.parse(node.config?.value || "{}");
+    return {
+      id: node.popup_id?.value || node.handle,
+      gid: node.id,
+      handle: node.handle,
+      name: config.name || "Untitled Popup",
+      status: node.id === activeGid ? "Enabled" : "Disabled",
+      method: config.method || "No input",
+    };
+  });
 
   return { popups };
 };
@@ -27,49 +69,93 @@ export const action = async ({ request }) => {
   const actionType = formData.get("action");
   const popupId = formData.get("id");
 
+  // Discover the actual Metaobject type handles
+  const popupsDefResponse = await admin.graphql(
+    `#graphql
+    query getPopupsDef {
+      metaobjectDefinitionByType(type: "$app:popups") {
+        type
+      }
+    }`,
+  );
+  const popupsDefData = await popupsDefResponse.json();
+  const popupsTypeHandle =
+    popupsDefData.data.metaobjectDefinitionByType?.type || "app--popups";
+
   if (actionType === "delete") {
-    // Fetch existing popups
-    const response = await admin.graphql(
+    const searchResponse = await admin.graphql(
       `#graphql
-      query getPopups {
-        shop {
-          id
-          metafield(namespace: "avd_app", key: "popups") {
-            value
+      query findPopup($query: String!, $type: String!) {
+        metaobjects(type: $type, first: 1, query: $query) {
+          nodes {
+            id
           }
-        }
-      }`,
-    );
-    const data = await response.json();
-    const shopId = data.data.shop.id;
-    const existingPopups = data.data.shop.metafield
-      ? JSON.parse(data.data.shop.metafield.value)
-      : [];
-
-    const updatedPopups = existingPopups.filter((p) => p.id !== popupId);
-
-    await admin.graphql(
-      `#graphql
-      mutation setPopups($metafields: [MetafieldsSetInput!]!) {
-        metafieldsSet(metafields: $metafields) {
-          metafields { id }
-          userErrors { field message }
         }
       }`,
       {
         variables: {
-          metafields: [
-            {
-              namespace: "avd_app",
-              key: "popups",
-              type: "json",
-              value: JSON.stringify(updatedPopups),
-              ownerId: shopId,
-            },
-          ],
+          query: `handle:${popupId}`,
+          type: popupsTypeHandle,
         },
       },
     );
+    const searchData = await searchResponse.json();
+    const gid = searchData.data.metaobjects.nodes[0]?.id;
+
+    if (gid) {
+      // 1. Check if it's the active popup in Shop Metafield
+      const activeResponse = await admin.graphql(
+        `#graphql
+        query getActiveSetting {
+          shop {
+            id
+            metafield(namespace: "avd", key: "active_popup") {
+              value
+            }
+          }
+        }`,
+      );
+      const activeData = await activeResponse.json();
+      const shopId = activeData.data.shop.id;
+      const activeGid = activeData.data.shop.metafield?.value;
+
+      // 2. Delete the Metaobject
+      await admin.graphql(
+        `#graphql
+        mutation deletePopup($id: ID!) {
+          metaobjectDelete(id: $id) {
+            deletedId
+          }
+        }`,
+        { variables: { id: gid } },
+      );
+
+      // 3. If it was active, clear the reference in Shop Metafield
+      if (activeGid === gid) {
+        await admin.graphql(
+          `#graphql
+          mutation clearActive($metafields: [MetafieldsSetInput!]!) {
+            metafieldsSet(metafields: $metafields) {
+              metafields { id }
+              userErrors { field message }
+            }
+          }`,
+          {
+            variables: {
+              metafields: [
+                {
+                  namespace: "avd",
+                  key: "active_popup",
+                  type: "mixed_reference",
+                  ownerId: shopId,
+                  value: "",
+                },
+              ],
+            },
+          },
+        );
+      }
+    }
     return { success: true };
   }
   return null;

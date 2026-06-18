@@ -1,13 +1,31 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "64f79ffe386fc14827902438c2655d77"
-application_url = "https://limo-store-otswuh2r.myshopify.com"
+name = "avd - age verification dialog"
+application_url = "https://example.com"
 embedded = true
-name = "AVD - Age Verification"
+
+[build]
+automatically_update_urls_on_dev = true
+include_config_on_deploy = true
+
+[webhooks]
+api_version = "2026-07"
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/app/scopes_update"
+  topics = [ "app/scopes_update" ]
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/app/uninstalled"
+  topics = [ "app/uninstalled" ]
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "write_products,write_metaobjects,write_metaobject_definitions"
+
+[auth]
+redirect_urls = [ "https://example.com/api/auth" ]
 
 [product.metafields.app.demo_info]
 type = "single_line_text_field"
@@ -17,36 +35,62 @@ description = "Tracks products created by the Shopify app template for developme
   [product.metafields.app.demo_info.access]
   admin = "merchant_read_write"
 
-[metaobjects.app.example]
-name = "Example"
-description = "An example metaobject definition created by this template"
+[shop.metafields.avd_app.active_popup]
+type = "metaobject_reference<$app:popups>"
+name = "Active Age Verification Popup"
 
-  [metaobjects.app.example.access]
+  [shop.metafields.avd_app.active_popup.access]
   admin = "merchant_read_write"
+  storefront = "public_read"
 
-[metaobjects.app.example.fields.title]
-name = "Title"
+[metaobjects.app.popups]
+name = "Popups"
+description = "Stores all age verification popup entries."
+
+  [metaobjects.app.popups.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[metaobjects.app.popups.fields.popup_id]
+name = "Popup ID"
 type = "single_line_text_field"
-required = true
 
-[metaobjects.app.example.fields.description]
-name = "Description"
-type = "multi_line_text_field"
+[metaobjects.app.popups.fields.config]
+name = "Config"
+type = "json"
 
-[webhooks]
-api_version = "2026-07"
+[metaobjects.app.checkout_settings]
+name = "Checkout Settings"
+description = "Stores configuration for checkout age verification."
 
-  [[webhooks.subscriptions]]
-  uri = "/webhooks/app/uninstalled"
-  topics = [ "app/uninstalled" ]
+  [metaobjects.app.checkout_settings.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
 
-  [[webhooks.subscriptions]]
-  uri = "/webhooks/app/scopes_update"
-  topics = [ "app/scopes_update" ]
+[metaobjects.app.checkout_settings.fields.config]
+name = "Config"
+type = "json"
 
-[auth]
-redirect_urls = [ "https://limo-store-otswuh2r.myshopify.com/api/auth" ]
+[metaobjects.app.settings]
+name = "Settings"
+description = "Stores general app settings."
 
-[build]
-include_config_on_deploy = true
-automatically_update_urls_on_dev = true
+  [metaobjects.app.settings.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[metaobjects.app.settings.fields.config]
+name = "Config"
+type = "json"
+
+[metaobjects.app.popupsetting]
+name = "Popup Setting"
+description = "Stores the active popup reference."
+
+  [metaobjects.app.popupsetting.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[metaobjects.app.popupsetting.fields.active_popup]
+name = "Active Popup"
+type = "metaobject_reference<$app:popups>"
