@@ -1,10 +1,26 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }) => {
-  await authenticate.admin(request);
-  return null;
+  const { admin } = await authenticate.admin(request);
+
+  const response = await admin.graphql(
+    `#graphql
+    query getCheckoutBanner {
+      shop {
+        metafield(namespace: "avd_app", key: "checkout_banner") {
+          value
+        }
+      }
+    }`,
+  );
+  const data = await response.json();
+  const config = data.data.shop.metafield
+    ? JSON.parse(data.data.shop.metafield.value)
+    : { status: "disabled" };
+
+  return { config };
 };
 
 export const action = async ({ request }) => {
@@ -15,7 +31,9 @@ export const action = async ({ request }) => {
 
 export default function CheckoutVerification() {
   const navigate = useNavigate();
+  const { config } = useLoaderData();
   const [bannerVisible, setBannerVisible] = useState(true);
+  const isEnabled = config.status === "enabled";
 
   return (
     <s-page heading="Checkout verification">
@@ -201,14 +219,14 @@ export default function CheckoutVerification() {
                 <span
                   style={{
                     fontSize: "12px",
-                    color: "#555",
-                    backgroundColor: "#f1f1f1",
-                    border: "1px solid #ddd",
+                    color: isEnabled ? "#1e4620" : "#555",
+                    backgroundColor: isEnabled ? "#edf7ed" : "#f1f1f1",
+                    border: `1px solid ${isEnabled ? "#c3e6cb" : "#ddd"}`,
                     borderRadius: "4px",
                     padding: "1px 7px",
                   }}
                 >
-                  Disabled
+                  {isEnabled ? "Enabled" : "Disabled"}
                 </span>
               </div>
               <p

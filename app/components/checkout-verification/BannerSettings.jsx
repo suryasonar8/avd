@@ -1,8 +1,18 @@
 import SettingsSection from "./SettingsSection";
 
-export default function BannerSettings() {
+export default function BannerSettings({ config, onChange }) {
+  const heading = config.heading || "";
+  const maxLength = 255;
+
+  const handleHeadingChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= maxLength) {
+      onChange({ heading: value });
+    }
+  };
+
   return (
-    <SettingsSection title="Text customization" badge="Basic plan or higher">
+    <SettingsSection title="Text customization">
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
           <label style={{ fontSize: "14px", color: "#6D7175" }}>Heading</label>
@@ -11,19 +21,19 @@ export default function BannerSettings() {
         <div style={{ position: "relative" }}>
           <input
             type="text"
-            value="You must be at least 18 years old to"
+            value={heading}
+            onChange={handleHeadingChange}
+            placeholder="Enter banner heading text"
             style={{
               width: "100%",
               padding: "12px 60px 12px 12px",
               border: "1px solid #E1E3E5",
               borderRadius: "8px",
               fontSize: "14px",
-              color: "#6D7175",
-              backgroundColor: "#F9F9F9",
+              color: "#202223",
+              backgroundColor: "#fff",
               boxSizing: "border-box",
-              cursor: "not-allowed",
             }}
-            disabled
           />
           <span
             style={{
@@ -35,7 +45,7 @@ export default function BannerSettings() {
               color: "#6D7175",
             }}
           >
-            53/255
+            {heading.length}/{maxLength}
           </span>
         </div>
       </div>

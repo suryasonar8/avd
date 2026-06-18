@@ -1,23 +1,105 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import { useNavigate, useLoaderData, useFetcher } from "react-router";
+import { useAppBridge } from "@shopify/app-bridge-react";
+import { SaveBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import PreviewPanel from "../components/checkout-verification/PreviewPanel";
 import ConditionSettings from "../components/checkout-verification/ConditionSettings";
 import BannerSettings from "../components/checkout-verification/BannerSettings";
 
+const DEFAULT_CONFIG = {
+  status: "disabled",
+  target: "always",
+  heading: "You must be at least 18 years old to purchase these products",
+  selectedCollections: [],
+  selectedProducts: [],
+};
+
 export const loader = async ({ request }) => {
-  await authenticate.admin(request);
-  return null;
+  const { admin } = await authenticate.admin(request);
+
+  const response = await admin.graphql(
+    `#graphql
+    query getCheckoutBanner {
+      shop {
+        metafield(namespace: "avd_app", key: "checkout_banner") {
+          value
+        }
+      }
+    }`,
+  );
+  const data = await response.json();
+  const config = data.data.shop.metafield
+    ? JSON.parse(data.data.shop.metafield.value)
+    : DEFAULT_CONFIG;
+
+  return { config };
 };
 
 export const action = async ({ request }) => {
-  return null;
+  const { admin } = await authenticate.admin(request);
+  const formData = await request.formData();
+  const configStr = formData.get("config");
+  const config = JSON.parse(configStr);
+
+  const shopResponse = await admin.graphql(`{ shop { id } }`);
+  const shopData = await shopResponse.json();
+  const shopId = shopData.data.shop.id;
+
+  const response = await admin.graphql(
+    `#graphql
+    mutation setCheckoutBanner($metafields: [MetafieldsSetInput!]!) {
+      metafieldsSet(metafields: $metafields) {
+        metafields { id }
+        userErrors { field message }
+      }
+    }`,
+    {
+      variables: {
+        metafields: [
+          {
+            namespace: "avd_app",
+            key: "checkout_banner",
+            type: "json",
+            value: JSON.stringify(config),
+            ownerId: shopId,
+          },
+        ],
+      },
+    },
+  );
+  const responseData = await response.json();
+  return { success: !responseData.data.metafieldsSet.userErrors?.length };
 };
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function CheckoutVerificationSetup() {
   const navigate = useNavigate();
+  const { config: initialConfig } = useLoaderData();
+  const [config, setConfig] = useState(initialConfig);
   const [activeTab, setActiveTab] = useState("condition");
+  const fetcher = useFetcher();
+  const shopify = useAppBridge();
+
+  const isDirty = JSON.stringify(config) !== JSON.stringify(initialConfig);
+
+  useEffect(() => {
+    if (fetcher.data?.success) {
+      shopify.toast.show("Banner settings saved");
+    }
+  }, [fetcher.data, shopify]);
+
+  const handleSave = () => {
+    fetcher.submit({ config: JSON.stringify(config) }, { method: "POST" });
+  };
+
+  const handleDiscard = () => {
+    setConfig(initialConfig);
+  };
+
+  const handleConfigChange = (updates) => {
+    setConfig((prev) => ({ ...prev, ...updates }));
+  };
 
   const tabStyle = (tab) => ({
     padding: "8px 24px",
@@ -40,6 +122,13 @@ export default function CheckoutVerificationSetup() {
         fontFamily: "Inter, -apple-system, system-ui, sans-serif",
       }}
     >
+      <SaveBar id="checkout-banner-save-bar" open={isDirty}>
+        <button variant="primary" onClick={handleSave}>
+          Save
+        </button>
+        <button onClick={handleDiscard}>Discard</button>
+      </SaveBar>
+
       {/* Header */}
       <div
         style={{
@@ -115,14 +204,14 @@ export default function CheckoutVerificationSetup() {
           }}
         >
           {activeTab === "condition" ? (
-            <ConditionSettings />
+            <ConditionSettings config={config} onChange={handleConfigChange} />
           ) : (
-            <BannerSettings />
+            <BannerSettings config={config} onChange={handleConfigChange} />
           )}
         </div>
 
         {/* Right Panel */}
-        <PreviewPanel />
+        <PreviewPanel config={config} />
       </div>
     </div>
   );

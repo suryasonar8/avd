@@ -1,7 +1,9 @@
 import { useState } from "react";
 
-export default function PreviewPanel() {
+export default function PreviewPanel({ config }) {
   const [device, setDevice] = useState("desktop");
+  const showBanner = config?.status === "enabled";
+  const bannerHeading = config?.heading || "Age restriction applies";
 
   return (
     <div
@@ -129,6 +131,34 @@ export default function PreviewPanel() {
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
               </svg>
             </div>
+
+            {/* Age Restriction Banner Preview */}
+            {showBanner && (
+              <div
+                style={{
+                  backgroundColor: "#FFF4E5",
+                  border: "1px solid #FFCC80",
+                  borderRadius: "8px",
+                  padding: "12px 16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  marginBottom: "20px",
+                }}
+              >
+                <span style={{ fontSize: "16px" }}>⚠️</span>
+                <span
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    color: "#663C00",
+                    lineHeight: "1.4",
+                  }}
+                >
+                  {bannerHeading}
+                </span>
+              </div>
+            )}
 
             <div
               style={{ display: "flex", flexDirection: "column", gap: "20px" }}

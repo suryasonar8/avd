@@ -1,6 +1,13 @@
-export default function CustomRadio({ label, description, checked, disabled }) {
+export default function CustomRadio({
+  label,
+  description,
+  checked,
+  disabled,
+  onChange,
+}) {
   return (
     <label
+      onClick={() => !disabled && onChange && onChange()}
       style={{
         display: "flex",
         alignItems: "flex-start",
