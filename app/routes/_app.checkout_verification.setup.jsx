@@ -18,36 +18,21 @@ const DEFAULT_CONFIG = {
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
 
-  // Discover the actual Metaobject type handle
-  const defResponse = await admin.graphql(
-    `#graphql
-    query getDefinition {
-      metaobjectDefinitionByType(type: "$app:checkout_settings") {
-        type
-      }
-    }`,
-  );
-  const defData = await defResponse.json();
-  const typeHandle =
-    defData.data.metaobjectDefinitionByType?.type || "app--checkout_settings";
-
   const response = await admin.graphql(
     `#graphql
-    query getCheckoutBanner($type: String!) {
-      metaobjects(type: $type, first: 1) {
-        nodes {
-          id
-          config: field(key: "config") { value }
+    query getCheckoutBanner {
+      shop {
+        metafield(namespace: "avd", key: "checkout_banner") {
+          value
         }
       }
     }`,
-    { variables: { type: typeHandle } },
   );
   const data = await response.json();
-  const node = data.data.metaobjects.nodes[0];
-  const config = node ? JSON.parse(node.config.value) : DEFAULT_CONFIG;
+  const metafieldValue = data.data.shop.metafield?.value;
+  const config = metafieldValue ? JSON.parse(metafieldValue) : DEFAULT_CONFIG;
 
-  return { config, metaobjectId: node?.id };
+  return { config };
 };
 
 export const action = async ({ request }) => {
@@ -56,75 +41,40 @@ export const action = async ({ request }) => {
   const configStr = formData.get("config");
   const config = JSON.parse(configStr);
 
-  // Discover the actual Metaobject type handle
-  const defResponse = await admin.graphql(
+  const response = await admin.graphql(
     `#graphql
-    query getDefinition {
-      metaobjectDefinitionByType(type: "$app:checkout_settings") {
-        type
+    mutation metafieldUpsert($metafields: [MetafieldsSetInput!]!) {
+      metafieldsSet(metafields: $metafields) {
+        metafields {
+          id
+          namespace
+          key
+          value
+        }
+        userErrors {
+          field
+          message
+        }
       }
     }`,
-  );
-  const defData = await defResponse.json();
-  const typeHandle =
-    defData.data.metaobjectDefinitionByType?.type || "app--checkout_settings";
-
-  // Check if we have an existing entry
-  const checkResponse = await admin.graphql(
-    `#graphql
-    query checkCheckout($type: String!) {
-      metaobjects(type: $type, first: 1) {
-        nodes { id }
-      }
-    }`,
-    { variables: { type: typeHandle } },
-  );
-  const checkData = await checkResponse.json();
-  const existingId = checkData.data.metaobjects.nodes[0]?.id;
-
-  let response;
-  if (existingId) {
-    response = await admin.graphql(
-      `#graphql
-      mutation updateCheckout($id: ID!, $metaobject: MetaobjectUpdateInput!) {
-        metaobjectUpdate(id: $id, metaobject: $metaobject) {
-          metaobject { id }
-          userErrors { field message }
-        }
-      }`,
-      {
-        variables: {
-          id: existingId,
-          metaobject: {
-            fields: [{ key: "config", value: JSON.stringify(config) }],
+    {
+      variables: {
+        metafields: [
+          {
+            namespace: "avd",
+            key: "checkout_banner",
+            type: "json",
+            ownerId: (await (await admin.graphql(`{ shop { id } }`)).json())
+              .data.shop.id,
+            value: JSON.stringify(config),
           },
-        },
+        ],
       },
-    );
-  } else {
-    response = await admin.graphql(
-      `#graphql
-      mutation createCheckout($metaobject: MetaobjectCreateInput!) {
-        metaobjectCreate(metaobject: $metaobject) {
-          metaobject { id }
-          userErrors { field message }
-        }
-      }`,
-      {
-        variables: {
-          metaobject: {
-            type: typeHandle,
-            fields: [{ key: "config", value: JSON.stringify(config) }],
-          },
-        },
-      },
-    );
-  }
+    },
+  );
 
   const responseData = await response.json();
-  const errors =
-    responseData.data?.metaobjectUpdate?.userErrors ||
-    responseData.data?.metaobjectCreate?.userErrors;
+  const errors = responseData.data?.metafieldsSet?.userErrors;
 
   return { success: !errors?.length };
 };

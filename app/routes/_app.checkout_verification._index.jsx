@@ -9,7 +9,7 @@ export const loader = async ({ request }) => {
     `#graphql
     query getCheckoutBanner {
       shop {
-        metafield(namespace: "avd_app", key: "checkout_banner") {
+        metafield(namespace: "avd", key: "checkout_banner") {
           value
         }
       }

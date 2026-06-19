@@ -19,32 +19,28 @@ function Extension() {
 
   const [config, setConfig] = useState(null);
   const cartLines = useCartLines();
+  const appMetafields = useAppMetafields();
+
+  const bannerMetafield = useMemo(() => {
+    return appMetafields.find(
+      (m) =>
+        m.metafield.namespace === "avd" &&
+        m.metafield.key === "checkout_banner",
+    );
+  }, [appMetafields]);
 
   useEffect(() => {
-    async function fetchConfig() {
-      if (!api?.query) return;
-
+    if (bannerMetafield?.metafield?.value) {
       try {
-        const result = await api.query(
-          `query getCheckoutConfig {
-            metaobjects(type: "app--checkout_settings", first: 1) {
-              nodes {
-                config: field(key: "config") { value }
-              }
-            }
-          }`,
-        );
-        const node = result?.data?.metaobjects?.nodes[0];
-        if (node?.config?.value) {
-          setConfig(JSON.parse(node.config.value));
-        }
+        setConfig(JSON.parse(bannerMetafield.metafield.value));
       } catch (err) {
-        console.error("Failed to fetch checkout config", err);
+        console.error("Failed to parse checkout config", err);
       }
+    } else {
+      // Default config if not set
+      setConfig({ status: "disabled" });
     }
-
-    fetchConfig();
-  }, [api]);
+  }, [bannerMetafield]);
 
   const showSync = useMemo(() => {
     if (!config || config.status !== "enabled") return false;

@@ -1,13 +1,12 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "64f79ffe386fc14827902438c2655d77"
+client_id = "2a50d0cd373f79f212aee48b6d90502e"
 name = "avd - age verification dialog"
 application_url = "https://example.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-include_config_on_deploy = true
 
 [webhooks]
 api_version = "2026-07"
@@ -35,11 +34,27 @@ description = "Tracks products created by the Shopify app template for developme
   [product.metafields.app.demo_info.access]
   admin = "merchant_read_write"
 
-[shop.metafields.avd_app.active_popup]
+[shop.metafields.avd.active_popup]
 type = "metaobject_reference<$app:popups>"
 name = "Active Age Verification Popup"
 
-  [shop.metafields.avd_app.active_popup.access]
+  [shop.metafields.avd.active_popup.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[shop.metafields.avd.settings]
+type = "json"
+name = "App Settings"
+
+  [shop.metafields.avd.settings.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[shop.metafields.avd.checkout_banner]
+type = "json"
+name = "Checkout Banner"
+
+  [shop.metafields.avd.checkout_banner.access]
   admin = "merchant_read_write"
   storefront = "public_read"
 
@@ -58,39 +73,3 @@ type = "single_line_text_field"
 [metaobjects.app.popups.fields.config]
 name = "Config"
 type = "json"
-
-[metaobjects.app.checkout_settings]
-name = "Checkout Settings"
-description = "Stores configuration for checkout age verification."
-
-  [metaobjects.app.checkout_settings.access]
-  admin = "merchant_read_write"
-  storefront = "public_read"
-
-[metaobjects.app.checkout_settings.fields.config]
-name = "Config"
-type = "json"
-
-[metaobjects.app.settings]
-name = "Settings"
-description = "Stores general app settings."
-
-  [metaobjects.app.settings.access]
-  admin = "merchant_read_write"
-  storefront = "public_read"
-
-[metaobjects.app.settings.fields.config]
-name = "Config"
-type = "json"
-
-[metaobjects.app.popupsetting]
-name = "Popup Setting"
-description = "Stores the active popup reference."
-
-  [metaobjects.app.popupsetting.access]
-  admin = "merchant_read_write"
-  storefront = "public_read"
-
-[metaobjects.app.popupsetting.fields.active_popup]
-name = "Active Popup"
-type = "metaobject_reference<$app:popups>"
