@@ -8,7 +8,6 @@ export const loader = async ({ request }) => {
   // Return null settings so PopupEditor uses DEFAULT_CONFIG for new popups
   return { settings: null };
 };
-
 export const action = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
   const formData = await request.formData();
@@ -22,13 +21,15 @@ export const action = async ({ request }) => {
     `#graphql
     query getPopupsDef {
       metaobjectDefinitionByType(type: "$app:popups") {
+        id
         type
       }
     }`,
   );
   const popupsDefData = await popupsDefResponse.json();
-  const popupsTypeHandle =
-    popupsDefData.data.metaobjectDefinitionByType?.type || "app--popups";
+  const popupsDef = popupsDefData.data.metaobjectDefinitionByType;
+  const popupsTypeHandle = popupsDef?.type || "app--popups";
+  const popupsDefId = popupsDef?.id;
 
   // Create the Metaobject
   const response = await admin.graphql(
@@ -83,7 +84,76 @@ export const action = async ({ request }) => {
     const shopResponse = await admin.graphql(`{ shop { id } }`);
     const shopId = (await shopResponse.json()).data.shop.id;
 
-    await admin.graphql(
+    // Step 1: Check if metafield definition exists
+    const defCheck = await admin.graphql(
+      `#graphql
+      query {
+        metafieldDefinitions(
+          first: 1,
+          ownerType: SHOP,
+          namespace: "avd",
+          key: "active_popup"
+        ) {
+          edges {
+            node {
+              id
+              name
+              type { name }
+            }
+          }
+        }
+      }`,
+    );
+    const defData = await defCheck.json();
+    const defExists = defData?.data?.metafieldDefinitions?.edges?.length > 0;
+
+    // Step 2: Create definition if missing
+    if (!defExists && popupsDefId) {
+      const defCreate = await admin.graphql(
+        `#graphql
+        mutation {
+          metafieldDefinitionCreate(definition: {
+            name: "Active Popup"
+            namespace: "avd"
+            key: "active_popup"
+            type: "metaobject_reference"
+            description: "Reference to the currently active popup metaobject"
+            ownerType: SHOP
+            validations: [
+              {
+                name: "metaobject_definition_id"
+                value: "${popupsDefId}"
+              }
+            ]
+          }) {
+            createdDefinition {
+              id
+              name
+              type { name }
+            }
+            userErrors { field message }
+          }
+        }`,
+      );
+      const defCreateData = await defCreate.json();
+      if (defCreateData?.data?.metafieldDefinitionCreate?.userErrors?.length) {
+        console.error(
+          "Definition creation failed:",
+          JSON.stringify(
+            defCreateData.data.metafieldDefinitionCreate.userErrors,
+            null,
+            2,
+          ),
+        );
+        return {
+          success: false,
+          errors: defCreateData.data.metafieldDefinitionCreate.userErrors,
+        };
+      }
+    }
+
+    // Step 3: Set the metafield value
+    const result = await admin.graphql(
       `#graphql
       mutation updateActive($metafields: [MetafieldsSetInput!]!) {
         metafieldsSet(metafields: $metafields) {
@@ -97,7 +167,7 @@ export const action = async ({ request }) => {
             {
               namespace: "avd",
               key: "active_popup",
-              type: "mixed_reference",
+              type: "metaobject_reference",
               ownerId: shopId,
               value: gid,
             },
@@ -105,6 +175,21 @@ export const action = async ({ request }) => {
         },
       },
     );
+
+    const data = await result.json();
+    const setErrors = data?.data?.metafieldsSet?.userErrors;
+
+    if (setErrors && setErrors.length > 0) {
+      console.error(
+        "MetafieldsSet failed:",
+        JSON.stringify(setErrors, null, 2),
+      );
+    } else {
+      console.log(
+        "Metafield updated successfully:",
+        data?.data?.metafieldsSet?.metafields,
+      );
+    }
   }
 
   // Redirect to the newly created popup's edit page
