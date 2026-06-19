@@ -1,0 +1,72 @@
+{% assign settings = shop.metafields.avd.terms_settings.value %}
+
+{% if request.design_mode %}
+  {% if settings == blank %}
+    <div style="padding: 10px; border: 1px dashed #ccc; background: #f9f9f9; text-align: center;">
+      <strong>Age Verification App:</strong> Terms & Conditions settings not found. Please save settings in the App Admin.
+    </div>
+  {% elsif settings.enabled == false %}
+    <div style="padding: 10px; border: 1px dashed #ccc; background: #f9f9f9; text-align: center;">
+      <strong>Age Verification App:</strong> Terms & Conditions block is currently disabled in App Admin.
+    </div>
+  {% endif %}
+{% endif %}
+
+{% if settings.enabled %}
+  {% assign show_by_page = false %}
+  {% assign current_page = request.page_type | default: template.name %}
+  
+  {% if current_page == 'product' and settings.displayPages contains 'product' %}
+    {% assign show_by_page = true %}
+  {% elsif current_page == 'cart' and settings.displayPages contains 'cart' %}
+    {% assign show_by_page = true %}
+  {% endif %}
+
+  {% assign show_by_trigger = false %}
+  {% if settings.triggerCondition == 'always' or settings.triggerCondition == blank %}
+    {% assign show_by_trigger = true %}
+  {% elsif settings.triggerCondition == 'logged' and customer %}
+    {% assign show_by_trigger = true %}
+  {% elsif settings.triggerCondition == 'not_logged' and customer == nil %}
+    {% assign show_by_trigger = true %}
+  {% endif %}
+
+  {% if request.design_mode %}
+    {% if show_by_page == false or show_by_trigger == false %}
+      <div style="padding: 10px; border: 1px dashed #ccc; background: #f9f9f9; text-align: center; margin: 10px 0;">
+        <strong>Age Verification App:</strong> Terms & Conditions block is hidden on this page/for this customer based on your settings.
+      </div>
+      {% assign show_by_page = true %}
+      {% assign show_by_trigger = true %}
+    {% endif %}
+  {% endif %}
+
+  {% if show_by_page and show_by_trigger %}
+    <div id="avd-terms-wrapper" style="margin: 15px 0; color: {{ settings.color | default: '#000000' }}; font-size: {{ settings.size | default: 14 }}px; font-family: inherit;">
+      <label class="avd-terms-label" style="display: flex; align-items: flex-start; cursor: pointer; gap: 10px; line-height: 1.4;">
+        <input type="checkbox" id="avd-terms-checkbox" style="margin-top: 3px; flex-shrink: 0; width: 16px; height: 16px; accent-color: #000;">
+        <span>
+          {% if settings.keyword != blank and settings.link != blank %}
+            {% capture link_tag %}<a href="{{ settings.link }}" target="_blank" style="text-decoration: underline; color: inherit; font-weight: 600;">{{ settings.keyword }}</a>{% endcapture %}
+            {{ settings.checkboxText | replace: settings.keyword, link_tag }}
+          {% else %}
+            {{ settings.checkboxText }}
+          {% endif %}
+        </span>
+      </label>
+      <div id="avd-terms-error" style="color: #d93025; font-size: 13px; margin-top: 8px; display: none; font-weight: 500;">
+        {{ settings.errorMessage | default: 'Please agree to the terms and conditions before proceeding.' }}
+      </div>
+    </div>
+
+    <script src="{{ 'terms-conditions.js' | asset_url }}" defer></script>
+  {% endif %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Terms & Conditions",
+  "target": "section",
+  "settings": []
+}
+{% endschema %}
