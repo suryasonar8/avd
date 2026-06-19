@@ -1,16 +1,82 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import { useNavigate, useLoaderData, useFetcher } from "react-router";
+import { useAppBridge, SaveBar } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { Card } from "../components/Card";
 import { ColorInput } from "../components/ColorInput";
 import { NumberInput } from "../components/NumberInput";
 
 export const loader = async ({ request }) => {
-  await authenticate.admin(request);
-  return null;
+  const { admin } = await authenticate.admin(request);
+  const response = await admin.graphql(
+    `#graphql
+    query getShopMetafield {
+      shop {
+        metafield(namespace: "avd", key: "terms_settings") {
+          value
+        }
+      }
+    }`,
+  );
+  const data = await response.json();
+  const metafieldValue = data.data.shop.metafield?.value;
+  const settings = metafieldValue
+    ? JSON.parse(metafieldValue)
+    : {
+        enabled: false,
+        displayPages: [],
+        triggerCondition: "always",
+        checkboxText: "I understand and agree to the terms and conditions.",
+        keyword: "terms and conditions",
+        link: "https://",
+        size: 16,
+        color: "#000000",
+        errorMessage: "",
+      };
+
+  return { settings };
 };
 
-export const action = async ({ request }) => {};
+export const action = async ({ request }) => {
+  const { admin } = await authenticate.admin(request);
+  const formData = await request.formData();
+  const settings = formData.get("settings");
+
+  const response = await admin.graphql(
+    `#graphql
+    mutation CreateMetafield($metafields: [MetafieldsSetInput!]!) {
+      metafieldsSet(metafields: $metafields) {
+        metafields {
+          id
+          namespace
+          key
+          value
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }`,
+    {
+      variables: {
+        metafields: [
+          {
+            namespace: "avd",
+            key: "terms_settings",
+            type: "json",
+            value: settings,
+            ownerId: (
+              await admin.graphql(`{ shop { id } }`).then((r) => r.json())
+            ).data.shop.id,
+          },
+        ],
+      },
+    },
+  );
+
+  return { success: true };
+};
 
 // ─── Premium Badge ────────────────────────────────────────────────────────────
 function PremiumBadge() {
@@ -34,8 +100,8 @@ function PremiumBadge() {
   );
 }
 
-// ─── Disabled Radio ───────────────────────────────────────────────────────────
-function DisabledRadio({ label }) {
+// ─── Radio Input ──────────────────────────────────────────────────────────────
+function RadioInput({ label, name, value, checked, onChange, disabled }) {
   return (
     <label
       style={{
@@ -43,22 +109,26 @@ function DisabledRadio({ label }) {
         alignItems: "center",
         gap: "8px",
         fontSize: "13px",
-        color: "#AAAAAA",
-        cursor: "not-allowed",
+        color: disabled ? "#AAAAAA" : "#202223",
+        cursor: disabled ? "not-allowed" : "pointer",
       }}
     >
       <input
         type="radio"
-        disabled
-        style={{ accentColor: "#AAAAAA", width: 14, height: 14 }}
+        name={name}
+        value={value}
+        checked={checked}
+        onChange={() => !disabled && onChange(value)}
+        disabled={disabled}
+        style={{ accentColor: "#005BD3", width: 14, height: 14 }}
       />
       {label}
     </label>
   );
 }
 
-// ─── Disabled Checkbox ────────────────────────────────────────────────────────
-function DisabledCheck({ label }) {
+// ─── Checkbox Input ───────────────────────────────────────────────────────────
+function CheckboxInput({ label, checked, onChange, disabled }) {
   return (
     <label
       style={{
@@ -66,14 +136,16 @@ function DisabledCheck({ label }) {
         alignItems: "center",
         gap: "8px",
         fontSize: "13px",
-        color: "#AAAAAA",
-        cursor: "not-allowed",
+        color: disabled ? "#AAAAAA" : "#202223",
+        cursor: disabled ? "not-allowed" : "pointer",
       }}
     >
       <input
         type="checkbox"
-        disabled
-        style={{ accentColor: "#AAAAAA", width: 14, height: 14 }}
+        checked={checked}
+        onChange={(e) => !disabled && onChange(e.target.checked)}
+        disabled={disabled}
+        style={{ accentColor: "#005BD3", width: 14, height: 14 }}
       />
       {label}
     </label>
@@ -422,17 +494,36 @@ function PreviewPanel({ checkboxText, keyword, link, size, color }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function TermsAndConditionsSetup() {
   const navigate = useNavigate();
+  const { settings: initialSettings } = useLoaderData();
+  const [settings, setSettings] = useState(initialSettings);
+  const fetcher = useFetcher();
+  const shopify = useAppBridge();
   const [activeTab, setActiveTab] = useState("condition");
 
-  // Checkbox tab state
-  const [checkboxText, setCheckboxText] = useState(
-    "I understand and agree to the terms and conditions.",
-  );
-  const [keyword, setKeyword] = useState("terms and conditions");
-  const [link, setLink] = useState("https://");
-  const [size, setSize] = useState(16);
-  const [color, setColor] = useState("#000000");
-  const [errorMessage, setErrorMessage] = useState("");
+  const isDirty = JSON.stringify(settings) !== JSON.stringify(initialSettings);
+
+  useEffect(() => {
+    if (fetcher.data?.success) {
+      shopify.toast.show("Settings saved");
+    }
+  }, [fetcher.data, shopify]);
+
+  const handleSave = () => {
+    fetcher.submit({ settings: JSON.stringify(settings) }, { method: "post" });
+  };
+
+  const handleDiscard = () => {
+    setSettings(initialSettings);
+  };
+
+  const togglePage = (page) => {
+    setSettings((prev) => {
+      const displayPages = prev.displayPages.includes(page)
+        ? prev.displayPages.filter((p) => p !== page)
+        : [...prev.displayPages, page];
+      return { ...prev, displayPages };
+    });
+  };
 
   const tabStyle = (tab) => ({
     padding: "8px 20px",
@@ -447,40 +538,49 @@ export default function TermsAndConditionsSetup() {
 
   return (
     <div style={{ padding: "24px", fontFamily: "Inter, sans-serif" }}>
+      <SaveBar id="terms-save-bar" open={isDirty}>
+        <button variant="primary" onClick={handleSave}>
+          Save
+        </button>
+        <button onClick={handleDiscard}>Discard</button>
+      </SaveBar>
+
       {/* Header */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "10px",
+          justifyContent: "space-between",
           marginBottom: "6px",
         }}
       >
-        <button
-          onClick={() => navigate("/terms_and_conditions")}
-          style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "18px",
-            color: "#202223",
-            padding: 0,
-            lineHeight: 1,
-          }}
-          aria-label="Back"
-        >
-          ←
-        </button>
-        <h1
-          style={{
-            margin: 0,
-            fontSize: "20px",
-            fontWeight: 700,
-            color: "#202223",
-          }}
-        >
-          Terms and conditions
-        </h1>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <button
+            onClick={() => navigate("/terms_and_conditions")}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "18px",
+              color: "#202223",
+              padding: 0,
+              lineHeight: 1,
+            }}
+            aria-label="Back"
+          >
+            ←
+          </button>
+          <h1
+            style={{
+              margin: 0,
+              fontSize: "20px",
+              fontWeight: 700,
+              color: "#202223",
+            }}
+          >
+            Terms and conditions
+          </h1>
+        </div>
       </div>
       <p
         style={{ margin: "0 0 20px 28px", fontSize: "13px", color: "#6D7175" }}
@@ -538,8 +638,20 @@ export default function TermsAndConditionsSetup() {
                   </span>
                   <PremiumBadge />
                 </div>
-                <DisabledRadio label="Enabled" />
-                <DisabledRadio label="Disabled" />
+                <RadioInput
+                  label="Enabled"
+                  name="status"
+                  value={true}
+                  checked={settings.enabled === true}
+                  onChange={() => setSettings({ ...settings, enabled: true })}
+                />
+                <RadioInput
+                  label="Disabled"
+                  name="status"
+                  value={false}
+                  checked={settings.enabled === false}
+                  onChange={() => setSettings({ ...settings, enabled: false })}
+                />
               </div>
 
               {/* Display page(s) + Trigger condition */}
@@ -578,8 +690,16 @@ export default function TermsAndConditionsSetup() {
                     </span>
                     <PremiumBadge />
                   </div>
-                  <DisabledCheck label="Product page" />
-                  <DisabledCheck label="Cart page" />
+                  <CheckboxInput
+                    label="Product page"
+                    checked={settings.displayPages.includes("product")}
+                    onChange={() => togglePage("product")}
+                  />
+                  <CheckboxInput
+                    label="Cart page"
+                    checked={settings.displayPages.includes("cart")}
+                    onChange={() => togglePage("cart")}
+                  />
                 </div>
 
                 <hr
@@ -611,9 +731,33 @@ export default function TermsAndConditionsSetup() {
                     </span>
                     <PremiumBadge />
                   </div>
-                  <DisabledRadio label="Always show" />
-                  <DisabledRadio label="Logged customers" />
-                  <DisabledRadio label="Not logged customers" />
+                  <RadioInput
+                    label="Always show"
+                    name="trigger"
+                    value="always"
+                    checked={settings.triggerCondition === "always"}
+                    onChange={(val) =>
+                      setSettings({ ...settings, triggerCondition: val })
+                    }
+                  />
+                  <RadioInput
+                    label="Logged customers"
+                    name="trigger"
+                    value="logged"
+                    checked={settings.triggerCondition === "logged"}
+                    onChange={(val) =>
+                      setSettings({ ...settings, triggerCondition: val })
+                    }
+                  />
+                  <RadioInput
+                    label="Not logged customers"
+                    name="trigger"
+                    value="not_logged"
+                    checked={settings.triggerCondition === "not_logged"}
+                    onChange={(val) =>
+                      setSettings({ ...settings, triggerCondition: val })
+                    }
+                  />
                 </div>
               </div>
             </>
@@ -622,28 +766,40 @@ export default function TermsAndConditionsSetup() {
               <TextInput
                 label="Text"
                 required
-                value={checkboxText}
-                onChange={setCheckboxText}
+                value={settings.checkboxText}
+                onChange={(val) =>
+                  setSettings({ ...settings, checkboxText: val })
+                }
                 maxLength={255}
               />
               <TextInput
                 label="Keyword"
                 required
-                value={keyword}
-                onChange={setKeyword}
+                value={settings.keyword}
+                onChange={(val) => setSettings({ ...settings, keyword: val })}
               />
               <TextInput
                 label="Link to keyword (Optional)"
-                value={link}
-                onChange={setLink}
+                value={settings.link}
+                onChange={(val) => setSettings({ ...settings, link: val })}
                 subtitle="The URL will be hyperlinked if it matches the keyword."
               />
-              <NumberInput label="Size" value={size} onChange={setSize} />
-              <ColorInput label="Color" value={color} onChange={setColor} />
+              <NumberInput
+                label="Size"
+                value={settings.size}
+                onChange={(val) => setSettings({ ...settings, size: val })}
+              />
+              <ColorInput
+                label="Color"
+                value={settings.color}
+                onChange={(val) => setSettings({ ...settings, color: val })}
+              />
               <TextInput
                 label="Error message (Optional)"
-                value={errorMessage}
-                onChange={setErrorMessage}
+                value={settings.errorMessage}
+                onChange={(val) =>
+                  setSettings({ ...settings, errorMessage: val })
+                }
                 maxLength={255}
                 placeholder="Enter error message"
               />
@@ -669,11 +825,11 @@ export default function TermsAndConditionsSetup() {
 
         {/* ─── Right Preview Panel ─── */}
         <PreviewPanel
-          checkboxText={checkboxText}
-          keyword={keyword}
-          link={link}
-          size={size}
-          color={color}
+          checkboxText={settings.checkboxText}
+          keyword={settings.keyword}
+          link={settings.link}
+          size={settings.size}
+          color={settings.color}
         />
       </div>
 

@@ -1,17 +1,35 @@
 import { useState } from "react";
-import { useFetcher, useNavigate } from "react-router";
+import { useFetcher, useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }) => {
-  await authenticate.admin(request);
-  return null;
+  const { admin } = await authenticate.admin(request);
+  const response = await admin.graphql(
+    `#graphql
+    query getShopMetafield {
+      shop {
+        metafield(namespace: "avd", key: "terms_settings") {
+          value
+        }
+      }
+    }`,
+  );
+  const data = await response.json();
+  const settings = data.data.shop.metafield?.value
+    ? JSON.parse(data.data.shop.metafield.value)
+    : null;
+
+  return { settings };
 };
 
 export const action = async ({ request }) => {};
 
 export default function TermsAndConditions() {
   const navigate = useNavigate();
+  const { settings } = useLoaderData();
   const [bannerVisible, setBannerVisible] = useState(true);
+
+  const isEnabled = settings?.enabled || false;
 
   return (
     <s-page heading="Terms and conditions">
@@ -160,13 +178,14 @@ export default function TermsAndConditions() {
             type="checkbox"
             id="accept-terms"
             disabled
+            checked={isEnabled}
             style={{ width: "16px", height: "16px" }}
           />
           <label
             htmlFor="accept-terms"
             style={{ fontSize: "14px", color: "#333" }}
           >
-            I accept the terms and conditions.
+            {settings?.checkboxText || "I accept the terms and conditions."}
           </label>
         </div>
 
@@ -194,14 +213,14 @@ export default function TermsAndConditions() {
               <span
                 style={{
                   fontSize: "12px",
-                  color: "#555",
-                  backgroundColor: "#f1f1f1",
-                  border: "1px solid #ddd",
+                  color: isEnabled ? "#1f5132" : "#555",
+                  backgroundColor: isEnabled ? "#e3f1df" : "#f1f1f1",
+                  border: `1px solid ${isEnabled ? "#b1d1a1" : "#ddd"}`,
                   borderRadius: "4px",
                   padding: "1px 7px",
                 }}
               >
-                Disabled
+                {isEnabled ? "Enabled" : "Disabled"}
               </span>
             </div>
             <p
