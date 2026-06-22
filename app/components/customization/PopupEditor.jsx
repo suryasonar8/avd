@@ -26,7 +26,7 @@ const DEFAULT_CONFIG = {
   trigger: "Always show",
   background: {
     type: "Solid color background",
-    pageColor: "#FFFFFFD3",
+    pageColor: "##FFFFFFD9",
     bgColor: "#000000",
     logo: null,
     borderColor: "#FFFFFF",
@@ -34,13 +34,13 @@ const DEFAULT_CONFIG = {
     borderWidth: 0,
   },
   text: {
-    heading: "WELCOME TO SHOPs",
+    heading: "WELCOME TO SHOP",
     subheading: "You must be at least 18 to visit this site",
   },
   button: {
     submitText: "OK",
     cancelText: "CANCEL",
-    cancelAction: "redirect", // 'redirect' or 'errorMsg'
+    cancelAction: "redirect",
     redirectUrl: "https://www.google.com/",
     errorMsg: "Enter error message",
     cancelErrorMsg: "Enter error message",
@@ -93,7 +93,6 @@ export function PopupEditor({
   );
 
   const [config, setConfig] = useState(initialConfig);
-
 
   const isDirty = useMemo(() => {
     const isSubmitting = fetcher
