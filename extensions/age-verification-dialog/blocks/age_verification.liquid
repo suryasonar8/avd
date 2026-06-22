@@ -172,9 +172,11 @@
 
       <p id="age-verify-error-text" style="display: none; color: red; margin-top: 15px;"></p>
 
-      <div class="age-verification-footer">
-        Protected by <span class="brand-mark"><span class="brand-shield">🛡️</span> <span class="brand-name">Blockify™</span></span>
-      </div>
+      {% if active_popup.showBrandMark != false %}
+        <div class="age-verification-footer">
+          Protected by <span class="brand-mark"><span class="brand-shield">🛡️</span> <span class="brand-name">Blockify™</span></span>
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>

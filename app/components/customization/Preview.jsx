@@ -1,4 +1,4 @@
-export const Preview = ({ config, previewMode, setPreviewMode }) => {
+export const Preview = ({ config, setConfig, previewMode, setPreviewMode }) => {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {/* Preview Container */}
@@ -241,47 +241,54 @@ export const Preview = ({ config, previewMode, setPreviewMode }) => {
               </button>
             </div>
 
-            <div
-              style={{
-                marginTop: previewMode === "desktop" ? "50px" : "30px",
-                fontSize: "11px",
-                color: "#999",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-              }}
-            >
-              Protected by{" "}
-              <span
+            {config.showBrandMark !== false && (
+              <div
                 style={{
-                  color: "#FFF",
+                  marginTop: previewMode === "desktop" ? "50px" : "30px",
+                  fontSize: "11px",
+                  color: "#999",
                   display: "flex",
                   alignItems: "center",
-                  gap: "2px",
+                  gap: "4px",
                 }}
               >
-                <span style={{ color: "#FF5C00", fontSize: "14px" }}>🛡️</span>{" "}
-                <span style={{ color: "#005F99", textDecoration: "underline" }}>
-                  AVD
+                Protected by{" "}
+                <span
+                  style={{
+                    color: "#FFF",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "2px",
+                  }}
+                >
+                  <span style={{ color: "#FF5C00", fontSize: "14px" }}>🛡️</span>{" "}
+                  <span
+                    style={{ color: "#005F99", textDecoration: "underline" }}
+                  >
+                    AVD
+                  </span>
                 </span>
-              </span>
-            </div>
+              </div>
+            )}
           </div>
 
-          <button
-            style={{
-              marginTop: "20px",
-              background: "none",
-              border: "none",
-              color: "#005F99",
-              textDecoration: "underline",
-              fontSize: "13px",
-              fontWeight: "500",
-              cursor: "pointer",
-            }}
-          >
-            Click to remove brand mark
-          </button>
+          {config.showBrandMark !== false && (
+            <button
+              onClick={() => setConfig({ ...config, showBrandMark: false })}
+              style={{
+                marginTop: "20px",
+                background: "none",
+                border: "none",
+                color: "#005F99",
+                textDecoration: "underline",
+                fontSize: "13px",
+                fontWeight: "500",
+                cursor: "pointer",
+              }}
+            >
+              Click to remove brand mark
+            </button>
+          )}
         </div>
       </div>
 

@@ -19,6 +19,7 @@ const TAB_COMPONENTS = {
 const DEFAULT_CONFIG = {
   name: "My Pop-up",
   status: "Enabled",
+  showBrandMark: true,
   method: "No input",
   verifyAge: 18,
   dateOrder: "MM,DD,YY",
@@ -236,6 +237,7 @@ export function PopupEditor({
 
         <Preview
           config={config}
+          setConfig={setConfig}
           previewMode={previewMode}
           setPreviewMode={setPreviewMode}
         />

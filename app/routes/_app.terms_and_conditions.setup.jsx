@@ -27,11 +27,12 @@ export const loader = async ({ request }) => {
         displayPages: [],
         triggerCondition: "always",
         checkboxText: "I understand and agree to the terms and conditions.",
+        showBrandMark: true,
         keyword: "terms and conditions",
         link: "https://",
         size: 16,
         color: "#000000",
-        errorMessage: "",
+        showBrandMark: true,
       };
 
   return { settings };
@@ -229,7 +230,15 @@ function TextInput({
 }
 
 // ─── Preview Panel ────────────────────────────────────────────────────────────
-function PreviewPanel({ checkboxText, keyword, link, size, color }) {
+function PreviewPanel({
+  checkboxText,
+  keyword,
+  link,
+  size,
+  color,
+  showBrandMark,
+  setSettings,
+}) {
   const [device, setDevice] = useState("desktop");
 
   const renderText = () => {
@@ -406,49 +415,51 @@ function PreviewPanel({ checkboxText, keyword, link, size, color }) {
           </div>
 
           {/* Protected by */}
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ fontSize: "11px", color: "#6D7175" }}>
-              Protected by
-            </span>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "4px",
-                fontSize: "11px",
-                fontWeight: 600,
-              }}
-            >
+          {showBrandMark !== false && (
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{ fontSize: "11px", color: "#6D7175" }}>
+                Protected by
+              </span>
               <div
                 style={{
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "4px",
-                  background: "linear-gradient(135deg,#7C3AED,#EC4899)",
-                  display: "flex",
+                  display: "inline-flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="white">
-                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-                </svg>
-              </div>
-              <a
-                href="https://blockify.app"
-                onClick={(e) => e.preventDefault()}
-                style={{
-                  color: "#2C6ECB",
-                  textDecoration: "underline",
+                  gap: "4px",
                   fontSize: "11px",
                   fontWeight: 600,
                 }}
               >
-                Blockify™
-              </a>
+                <div
+                  style={{
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "4px",
+                    background: "linear-gradient(135deg,#7C3AED,#EC4899)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="white">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                  </svg>
+                </div>
+                <a
+                  href="https://blockify.app"
+                  onClick={(e) => e.preventDefault()}
+                  style={{
+                    color: "#2C6ECB",
+                    textDecoration: "underline",
+                    fontSize: "11px",
+                    fontWeight: 600,
+                  }}
+                >
+                  Blockify™
+                </a>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* More skeleton lines */}
           <div
@@ -479,14 +490,24 @@ function PreviewPanel({ checkboxText, keyword, link, size, color }) {
       </div>
 
       {/* Remove brandmark link */}
-      <div style={{ textAlign: "center" }}>
-        <a
-          href="#"
-          style={{ fontSize: "13px", color: "#2C6ECB", textDecoration: "none" }}
-        >
-          Click to remove brandmark
-        </a>
-      </div>
+      {showBrandMark !== false && (
+        <div style={{ textAlign: "center" }}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              setSettings((prev) => ({ ...prev, showBrandMark: false }));
+            }}
+            style={{
+              fontSize: "13px",
+              color: "#2C6ECB",
+              textDecoration: "none",
+            }}
+          >
+            Click to remove brandmark
+          </a>
+        </div>
+      )}
     </div>
   );
 }
@@ -830,6 +851,8 @@ export default function TermsAndConditionsSetup() {
           link={settings.link}
           size={settings.size}
           color={settings.color}
+          showBrandMark={settings.showBrandMark}
+          setSettings={setSettings}
         />
       </div>
 
