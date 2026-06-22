@@ -1,4 +1,12 @@
-import { useLoaderData, useNavigate } from "react-router";
+import {
+  useLoaderData,
+  useNavigate,
+  useSubmit,
+  useActionData,
+} from "react-router";
+import { useState, useMemo, useEffect } from "react";
+import { useAppBridge } from "@shopify/app-bridge-react";
+import { DefaultEditor } from "react-simple-wysiwyg";
 import { authenticate } from "../shopify.server";
 import { Card } from "../components/Card";
 
@@ -6,165 +14,389 @@ export const loader = async ({ request, params }) => {
   const { admin } = await authenticate.admin(request);
   const { locale } = params;
 
+  // 1. Discover the actual Metaobject type handles
+  const popupsDefResponse = await admin.graphql(
+    `#graphql
+    query getPopupsDef {
+      metaobjectDefinitionByType(type: "$app:popups") {
+        type
+      }
+    }`,
+  );
+  const popupsDefData = await popupsDefResponse.json();
+  const popupsTypeHandle =
+    popupsDefData.data.metaobjectDefinitionByType?.type || "app--popups";
+
+  // 2. Fetch popups
+  const popupsResponse = await admin.graphql(
+    `#graphql
+    query getPopups($type: String!) {
+      metaobjects(type: $type, first: 250) {
+        nodes {
+          id
+          handle
+          popup_id: field(key: "popup_id") { value }
+          config: field(key: "config") { value }
+        }
+      }
+    }`,
+    { variables: { type: popupsTypeHandle } },
+  );
+  const popupsData = await popupsResponse.json();
+  const popups = (popupsData.data?.metaobjects?.nodes || []).map((node) => ({
+    id: node.id,
+    handle: node.handle,
+    popup_id: node.popup_id?.value,
+    config: JSON.parse(node.config?.value || "{}"),
+  }));
+
+  // 3. Fetch shop locales
   const response = await admin.graphql(
     `#graphql
     query getLanguages {
+
+    
       shopLocales {
         locale
         name
+        published
       }
     }`,
   );
 
   const data = await response.json();
   const shopLocales = data.data?.shopLocales || [];
-  const currentLanguage =
-    shopLocales.find((lang) => lang.locale === locale)?.name || locale;
+  const language = shopLocales.find((lang) => lang.locale === locale);
+  const currentLanguage = language?.name || locale;
+  const isPublished = language?.published || false;
 
-  return { locale, currentLanguage };
+  return { locale, currentLanguage, isPublished, popups };
 };
 
+export const action = async ({ request, params }) => {
+  const { admin } = await authenticate.admin(request);
+  const { locale } = params;
+  const formData = await request.formData();
+  const popupId = formData.get("popupId");
+  const translations = JSON.parse(formData.get("translations") || "{}");
+
+  if (!popupId) return { success: false, error: "No popup selected" };
+
+  // Fetch current popup config
+  const popupResponse = await admin.graphql(
+    `#graphql
+    query getPopup($id: ID!) {
+      metaobject(id: $id) {
+        id
+        handle
+        config: field(key: "config") { value }
+      }
+    }`,
+    { variables: { id: popupId } },
+  );
+  const popupData = await popupResponse.json();
+  const popup = popupData.data?.metaobject;
+  if (!popup) return { success: false, error: "Popup not found" };
+
+  const currentConfig = JSON.parse(popup.config?.value || "{}");
+  const updatedConfig = {
+    ...currentConfig,
+    translations: {
+      ...(currentConfig.translations || {}),
+      [locale]: translations,
+    },
+  };
+
+  const updateResponse = await admin.graphql(
+    `#graphql
+    mutation updatePopup($id: ID!, $metaobject: MetaobjectUpdateInput!) {
+      metaobjectUpdate(id: $id, metaobject: $metaobject) {
+        metaobject {
+          id
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }`,
+    {
+      variables: {
+        id: popupId,
+        metaobject: {
+          fields: [
+            {
+              key: "config",
+              value: JSON.stringify(updatedConfig),
+            },
+          ],
+        },
+      },
+    },
+  );
+
+  const result = await updateResponse.json();
+  const errors = result.data?.metaobjectUpdate?.userErrors;
+
+  if (errors && errors.length > 0) {
+    return { success: false, errors };
+  }
+
+  return { success: true };
+};
+
+const SectionTitle = ({ title, description }) => (
+  <div style={{ marginBottom: "24px" }}>
+    <h2
+      style={{
+        fontSize: "16px",
+        fontWeight: "600",
+        marginBottom: "4px",
+        color: "#202223",
+      }}
+    >
+      {title}
+    </h2>
+    <p style={{ fontSize: "13px", color: "#6d7175", lineHeight: "1.5" }}>
+      {description}
+    </p>
+  </div>
+);
+
+const TranslationField = ({
+  label,
+  original,
+  value,
+  onChange,
+  type = "text",
+}) => (
+  <div style={{ marginBottom: "20px" }}>
+    <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
+      <div style={{ flex: 1 }}>
+        <label
+          style={{
+            display: "block",
+            fontSize: "13px",
+            fontWeight: "500",
+            color: "#202223",
+            marginBottom: "8px",
+          }}
+        >
+          {label}
+        </label>
+        <div
+          style={{
+            padding: "10px 14px",
+            background: "#f6f6f7",
+            borderRadius: "8px",
+            border: "1px solid #e1e3e5",
+            color: "#6d7175",
+            fontSize: "14px",
+            minHeight: "40px",
+          }}
+        >
+          {original || "—"}
+        </div>
+      </div>
+      <div
+        style={{ display: "flex", alignItems: "center", paddingTop: "32px" }}
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M7 5L12 10L7 15"
+            stroke="#babec3"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+      <div style={{ flex: 1 }}>
+        <label
+          style={{
+            display: "block",
+            fontSize: "13px",
+            fontWeight: "500",
+            color: "#202223",
+            marginBottom: "8px",
+          }}
+        >
+          {label}
+        </label>
+        {type === "richtext" ? (
+          <div className="custom-editor-container">
+            {typeof document !== "undefined" ? (
+              <DefaultEditor
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+              />
+            ) : (
+              <div style={{ height: "100px", background: "#fafafa" }} />
+            )}
+          </div>
+        ) : (
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px 14px",
+              border: "1px solid #e1e3e5",
+              borderRadius: "8px",
+              outline: "none",
+              fontSize: "14px",
+            }}
+          />
+        )}
+      </div>
+    </div>
+  </div>
+);
+
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 export default function TranslationSetupPage() {
-  const { locale, currentLanguage } = useLoaderData();
+  const { locale, currentLanguage, isPublished, popups } = useLoaderData();
+  const actionData = useActionData();
   const navigate = useNavigate();
+  const submit = useSubmit();
+  const shopify = useAppBridge();
+
+  const [selectedPopupId, setSelectedPopupId] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isPopupDialogOpen, setIsPopupDialogOpen] = useState(false);
+  const [activeMonth, setActiveMonth] = useState("January");
+
+  useEffect(() => {
+    if (actionData?.success) {
+      shopify.toast.show("Translations saved successfully");
+    } else if (actionData?.error || actionData?.errors) {
+      shopify.toast.show(actionData.error || "Error saving translations", {
+        isError: true,
+      });
+    }
+  }, [actionData, shopify]);
+
+  const [translations, setTranslations] = useState({
+    heading: "",
+    subheading: "",
+    submitLabel: "",
+    cancelLabel: "",
+    submitErrorMsg: "",
+    cancelErrorMsg: "",
+    months: MONTH_NAMES.reduce((acc, month) => {
+      acc[month] = month;
+      return acc;
+    }, {}),
+  });
+
+  const [visibleMonths, setVisibleMonths] = useState(["January"]);
+
+  const selectedPopup = useMemo(
+    () => popups.find((p) => p.id === selectedPopupId),
+    [popups, selectedPopupId],
+  );
+
+  const filteredPopups = useMemo(() => {
+    if (!searchTerm) return popups;
+    return popups.filter((p) =>
+      (p.config.name || p.handle || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()),
+    );
+  }, [popups, searchTerm]);
+
+  useEffect(() => {
+    if (selectedPopup) {
+      const existingTranslations =
+        selectedPopup.config.translations?.[locale] || {};
+      setTranslations({
+        heading: existingTranslations.heading || "",
+        subheading: existingTranslations.subheading || "",
+        submitLabel: existingTranslations.submitLabel || "",
+        cancelLabel: existingTranslations.cancelLabel || "",
+        submitErrorMsg: existingTranslations.submitErrorMsg || "",
+        cancelErrorMsg: existingTranslations.cancelErrorMsg || "",
+        months: {
+          ...translations.months,
+          ...(existingTranslations.months || {}),
+        },
+      });
+
+      // Update visible months based on what's translated
+      if (existingTranslations.months) {
+        const translated = MONTH_NAMES.filter(
+          (m) =>
+            existingTranslations.months[m] &&
+            existingTranslations.months[m] !== m,
+        );
+        if (translated.length > 0) {
+          // Show up to the last translated month
+          const lastIdx = MONTH_NAMES.indexOf(
+            translated[translated.length - 1],
+          );
+          setVisibleMonths(MONTH_NAMES.slice(0, lastIdx + 1));
+        } else {
+          setVisibleMonths(["January"]);
+        }
+      } else {
+        setVisibleMonths(["January"]);
+      }
+    }
+  }, [selectedPopup, locale]);
 
   const handleBack = () => {
     navigate("/translation");
   };
 
-  const SectionTitle = ({ title, description }) => (
-    <div style={{ marginBottom: "24px" }}>
-      <h2
-        style={{
-          fontSize: "16px",
-          fontWeight: "600",
-          marginBottom: "4px",
-          color: "#202223",
-        }}
-      >
-        {title}
-      </h2>
-      <p style={{ fontSize: "13px", color: "#6d7175", lineHeight: "1.5" }}>
-        {description}
-      </p>
-    </div>
-  );
+  const handleSave = () => {
+    if (!selectedPopupId) {
+      alert("Please select a pop-up first");
+      return;
+    }
+    submit(
+      {
+        popupId: selectedPopupId,
+        translations: JSON.stringify(translations),
+      },
+      { method: "POST" },
+    );
+  };
 
-  const TranslationField = ({ label, original, type = "text" }) => (
-    <div style={{ marginBottom: "20px" }}>
-      <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
-        <div style={{ flex: 1 }}>
-          <label
-            style={{
-              display: "block",
-              fontSize: "13px",
-              fontWeight: "500",
-              color: "#202223",
-              marginBottom: "8px",
-            }}
-          >
-            {label}
-          </label>
-          <div
-            style={{
-              padding: "10px 14px",
-              background: "#f6f6f7",
-              borderRadius: "8px",
-              border: "1px solid #e1e3e5",
-              color: "#6d7175",
-              fontSize: "14px",
-              minHeight: "40px",
-            }}
-          >
-            {original}
-          </div>
-        </div>
-        <div
-          style={{ display: "flex", alignItems: "center", paddingTop: "32px" }}
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7 5L12 10L7 15"
-              stroke="#babec3"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-        <div style={{ flex: 1 }}>
-          <label
-            style={{
-              display: "block",
-              fontSize: "13px",
-              fontWeight: "500",
-              color: "#202223",
-              marginBottom: "8px",
-            }}
-          >
-            {label}
-          </label>
-          {type === "richtext" ? (
-            <div
-              style={{
-                border: "1px solid #e1e3e5",
-                borderRadius: "8px",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  padding: "8px 12px",
-                  borderBottom: "1px solid #f1f1f1",
-                  display: "flex",
-                  gap: "12px",
-                  background: "#fafafa",
-                }}
-              >
-                <span style={{ fontWeight: "bold", cursor: "pointer" }}>B</span>
-                <span style={{ fontStyle: "italic", cursor: "pointer" }}>
-                  I
-                </span>
-                <span
-                  style={{ textDecoration: "underline", cursor: "pointer" }}
-                >
-                  U
-                </span>
-              </div>
-              <textarea
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  border: "none",
-                  outline: "none",
-                  fontSize: "14px",
-                  minHeight: "38px",
-                }}
-              />
-            </div>
-          ) : (
-            <input
-              type="text"
-              style={{
-                width: "100%",
-                padding: "10px 14px",
-                border: "1px solid #e1e3e5",
-                borderRadius: "8px",
-                outline: "none",
-                fontSize: "14px",
-              }}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   return (
     <div
@@ -175,51 +407,142 @@ export default function TranslationSetupPage() {
         fontFamily: "Inter, -apple-system, system-ui, sans-serif",
       }}
     >
+      <style>{`
+        /* Force Library Styles */
+        .rsw-editor {
+          border: 1px solid #e1e3e5 !important;
+          border-radius: 8px !important;
+          display: flex !important;
+          flex-direction: column !important;
+          background: white !important;
+          overflow: hidden !important;
+        }
+        .rsw-toolbar {
+          display: flex !important;
+          flex-direction: row !important;
+          flex-wrap: wrap !important;
+          align-items: center !important;
+          background: #f5f5f5 !important;
+          border-bottom: 1px solid #e1e3e5 !important;
+          padding: 4px !important;
+          gap: 2px !important;
+        }
+        .rsw-btn {
+          background: transparent !important;
+          border: none !important;
+          cursor: pointer !important;
+          width: 32px !important;
+          height: 32px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          font-size: 14px !important;
+          border-radius: 4px !important;
+        }
+        .rsw-btn:hover {
+          background: #e1e3e5 !important;
+        }
+        .rsw-btn[data-active=true] {
+          background: #d1d3d5 !important;
+        }
+        .rsw-separator {
+          width: 1px !important;
+          height: 20px !important;
+          background: #e1e3e5 !important;
+          margin: 0 4px !important;
+        }
+        .rsw-dd {
+          padding: 4px 8px !important;
+          border: 1px solid #e1e3e5 !important;
+          border-radius: 4px !important;
+          background: white !important;
+          font-size: 13px !important;
+        }
+        .rsw-ce {
+          min-height: 150px !important;
+          padding: 12px !important;
+          outline: none !important;
+          font-size: 14px !important;
+          line-height: 1.5 !important;
+        }
+        
+        .custom-editor-container {
+          margin-bottom: 20px;
+        }
+      `}</style>
       {/* Header */}
-      <div style={{ marginBottom: "32px" }}>
+      <div
+        style={{
+          marginBottom: "32px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+        }}
+      >
+        <div>
+          <button
+            onClick={handleBack}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              color: "#6d7175",
+              marginBottom: "16px",
+              fontSize: "14px",
+            }}
+          >
+            ← Back
+          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <h1
+              style={{
+                fontSize: "24px",
+                fontWeight: "700",
+                margin: 0,
+                color: "#202223",
+              }}
+            >
+              {currentLanguage}
+            </h1>
+            <span
+              style={{
+                background: isPublished ? "#e3fbe3" : "#f1f2f3",
+                color: isPublished ? "#007f5f" : "#4a4d4f",
+                padding: "4px 12px",
+                borderRadius: "20px",
+                fontSize: "12px",
+                fontWeight: "600",
+              }}
+            >
+              {isPublished ? "Published" : "Unpublished"}
+            </span>
+          </div>
+          <p
+            style={{ margin: "8px 0 0 0", color: "#6d7175", fontSize: "14px" }}
+          >
+            Translate your widgets to multiple languages
+          </p>
+        </div>
+
         <button
-          onClick={handleBack}
+          onClick={handleSave}
           style={{
-            background: "none",
+            padding: "10px 24px",
+            background: "#202223",
+            color: "white",
             border: "none",
+            borderRadius: "8px",
             cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            color: "#6d7175",
-            marginBottom: "16px",
+            fontWeight: "600",
             fontSize: "14px",
+            boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
           }}
         >
-          ← Back
+          Save
         </button>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <h1
-            style={{
-              fontSize: "24px",
-              fontWeight: "700",
-              margin: 0,
-              color: "#202223",
-            }}
-          >
-            {currentLanguage}
-          </h1>
-          <span
-            style={{
-              background: "#e1f5fe",
-              color: "#007ace",
-              padding: "4px 12px",
-              borderRadius: "20px",
-              fontSize: "12px",
-              fontWeight: "600",
-            }}
-          >
-            ★ Basic plan or higher
-          </span>
-        </div>
-        <p style={{ margin: "8px 0 0 0", color: "#6d7175", fontSize: "14px" }}>
-          Translate your widgets to multiple languages
-        </p>
       </div>
 
       <div style={{ maxWidth: "1000px" }}>
@@ -233,7 +556,7 @@ export default function TranslationSetupPage() {
           }}
         >
           <SectionTitle
-            title="Infor"
+            title="Info"
             description="Select the pop-up used to display the Translation for."
           />
           <Card>
@@ -262,8 +585,7 @@ export default function TranslationSetupPage() {
                   gap: "8px",
                 }}
               >
-                Upgrade now{" "}
-                <span style={{ color: "#007ace" }}>★ Basic plan or higher</span>
+                {isPublished ? "Published" : "Unpublished"}
               </div>
             </div>
             <div>
@@ -282,6 +604,13 @@ export default function TranslationSetupPage() {
                 <input
                   type="text"
                   placeholder="Select pop-up"
+                  readOnly
+                  value={
+                    selectedPopup
+                      ? selectedPopup.config.name || selectedPopup.handle
+                      : ""
+                  }
+                  onClick={() => setIsPopupDialogOpen(!isPopupDialogOpen)}
                   style={{
                     width: "100%",
                     padding: "10px 14px",
@@ -290,7 +619,8 @@ export default function TranslationSetupPage() {
                     borderRadius: "8px",
                     outline: "none",
                     fontSize: "14px",
-                    background: "#f6f6f7",
+                    background: "white",
+                    cursor: "pointer",
                   }}
                 />
                 <span
@@ -304,6 +634,84 @@ export default function TranslationSetupPage() {
                 >
                   🔍
                 </span>
+
+                {isPopupDialogOpen && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: 0,
+                      right: 0,
+                      background: "white",
+                      border: "1px solid #e1e3e5",
+                      borderRadius: "8px",
+                      marginTop: "4px",
+                      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                      zIndex: 10,
+                      padding: "8px",
+                    }}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Search pop-ups..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      autoFocus
+                      style={{
+                        width: "100%",
+                        padding: "8px 12px",
+                        border: "1px solid #e1e3e5",
+                        borderRadius: "4px",
+                        marginBottom: "8px",
+                        outline: "none",
+                        fontSize: "13px",
+                      }}
+                    />
+                    <div style={{ maxHeight: "200px", overflowY: "auto" }}>
+                      {filteredPopups.map((popup) => (
+                        <div
+                          key={popup.id}
+                          onClick={() => {
+                            setSelectedPopupId(popup.id);
+                            setIsPopupDialogOpen(false);
+                            setSearchTerm("");
+                          }}
+                          style={{
+                            padding: "8px 12px",
+                            cursor: "pointer",
+                            fontSize: "13px",
+                            borderRadius: "4px",
+                            background:
+                              selectedPopupId === popup.id
+                                ? "#f4f6f8"
+                                : "transparent",
+                          }}
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.background = "#f4f6f8")
+                          }
+                          onMouseLeave={(e) => {
+                            if (selectedPopupId !== popup.id) {
+                              e.currentTarget.style.background = "transparent";
+                            }
+                          }}
+                        >
+                          {popup.config.name || popup.handle}
+                        </div>
+                      ))}
+                      {filteredPopups.length === 0 && (
+                        <div
+                          style={{
+                            padding: "8px 12px",
+                            fontSize: "13px",
+                            color: "#6d7175",
+                          }}
+                        >
+                          No pop-ups found
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </Card>
@@ -341,12 +749,20 @@ export default function TranslationSetupPage() {
             </div>
             <TranslationField
               label="Heading text"
-              original=""
+              original={selectedPopup?.config.text?.heading}
+              value={translations.heading}
+              onChange={(val) =>
+                setTranslations({ ...translations, heading: val })
+              }
               type="richtext"
             />
             <TranslationField
               label="Sub-heading text"
-              original=""
+              original={selectedPopup?.config.text?.subheading}
+              value={translations.subheading}
+              onChange={(val) =>
+                setTranslations({ ...translations, subheading: val })
+              }
               type="richtext"
             />
           </Card>
@@ -368,16 +784,40 @@ export default function TranslationSetupPage() {
           <Card>
             <TranslationField
               label="Submit button label"
-              original=""
+              original={selectedPopup?.config.button?.submitText}
+              value={translations.submitLabel}
+              onChange={(val) =>
+                setTranslations({ ...translations, submitLabel: val })
+              }
+              type="richtext"
+            />
+            <TranslationField
+              label="Submit error message"
+              original={selectedPopup?.config.button?.errorMsg}
+              value={translations.submitErrorMsg}
+              onChange={(val) =>
+                setTranslations({ ...translations, submitErrorMsg: val })
+              }
               type="richtext"
             />
             <TranslationField
               label="Cancel button label"
-              original=""
+              original={selectedPopup?.config.button?.cancelText}
+              value={translations.cancelLabel}
+              onChange={(val) =>
+                setTranslations({ ...translations, cancelLabel: val })
+              }
               type="richtext"
             />
-            <TranslationField label="Submit button action" original="" />
-            <TranslationField label="Cancel button action" original="" />
+            <TranslationField
+              label="Cancel error message"
+              original={selectedPopup?.config.button?.cancelErrorMsg}
+              value={translations.cancelErrorMsg}
+              onChange={(val) =>
+                setTranslations({ ...translations, cancelErrorMsg: val })
+              }
+              type="richtext"
+            />
           </Card>
         </div>
 
@@ -395,21 +835,62 @@ export default function TranslationSetupPage() {
             description="Customize the labels used for months to match your preferences or language requirements."
           />
           <Card>
-            <TranslationField label="Month label" original="January" />
-            <button
+            <div
               style={{
-                padding: "8px 16px",
-                background: "white",
-                border: "1px solid #dcdfe3",
-                borderRadius: "8px",
-                cursor: "pointer",
-                fontSize: "13px",
-                fontWeight: "600",
-                color: "#202223",
+                display: "flex",
+                flexDirection: "column",
+                gap: "24px",
               }}
             >
-              + Add
-            </button>
+              {visibleMonths.map((month) => (
+                <TranslationField
+                  key={month}
+                  label="Month label"
+                  original={month}
+                  value={translations.months[month]}
+                  onChange={(val) =>
+                    setTranslations({
+                      ...translations,
+                      months: {
+                        ...translations.months,
+                        [month]: val,
+                      },
+                    })
+                  }
+                />
+              ))}
+
+              {visibleMonths.length < 12 && (
+                <div>
+                  <button
+                    onClick={() => {
+                      const nextMonth = MONTH_NAMES[visibleMonths.length];
+                      if (nextMonth) {
+                        setVisibleMonths([...visibleMonths, nextMonth]);
+                      }
+                    }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      padding: "8px 16px",
+                      background: "white",
+                      border: "1px solid #e1e3e5",
+                      borderRadius: "8px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#202223",
+                    }}
+                  >
+                    <span style={{ fontSize: "18px", fontWeight: "400" }}>
+                      +
+                    </span>{" "}
+                    Add
+                  </button>
+                </div>
+              )}
+            </div>
           </Card>
         </div>
 

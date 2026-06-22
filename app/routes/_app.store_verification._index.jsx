@@ -146,7 +146,7 @@ export const action = async ({ request }) => {
                 {
                   namespace: "avd",
                   key: "active_popup",
-                  type: "mixed_reference",
+                  type: "metaobject_reference",
                   ownerId: shopId,
                   value: "",
                 },

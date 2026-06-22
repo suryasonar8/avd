@@ -78,13 +78,15 @@ export const action = async ({ request, params }) => {
     `#graphql
     query getPopupsDef {
       metaobjectDefinitionByType(type: "$app:popups") {
+        id
         type
       }
     }`,
   );
   const popupsDefData = await popupsDefResponse.json();
-  const popupsTypeHandle =
-    popupsDefData.data.metaobjectDefinitionByType?.type || "app--popups";
+  const popupsDef = popupsDefData.data.metaobjectDefinitionByType;
+  const popupsTypeHandle = popupsDef?.type || "app--popups";
+  const popupsDefId = popupsDef?.id;
 
   // 1. Find the GID of the Metaobject
   const searchResponse = await admin.graphql(
@@ -94,7 +96,7 @@ export const action = async ({ request, params }) => {
         nodes { id }
       }
     }`,
-    { variables: { query: `field:popup_id:${id}`, type: popupsTypeHandle } },
+    { variables: { query: `handle:${id}`, type: popupsTypeHandle } },
   );
   const searchData = await searchResponse.json();
   const gid = searchData.data.metaobjects.nodes[0]?.id;
@@ -144,6 +146,66 @@ export const action = async ({ request, params }) => {
     const activeGid = shopData.shop.metafield?.value;
 
     if (config.status === "Enabled") {
+      // Step 1: Check if metafield definition exists
+      const defCheck = await admin.graphql(
+        `#graphql
+        query {
+          metafieldDefinitions(
+            first: 1,
+            ownerType: SHOP,
+            namespace: "avd",
+            key: "active_popup"
+          ) {
+            edges {
+              node {
+                id
+                type { name }
+              }
+            }
+          }
+        }`,
+      );
+      const defData = await defCheck.json();
+      const defExists = defData?.data?.metafieldDefinitions?.edges?.length > 0;
+
+      // Step 2: Create definition if missing
+      if (!defExists && popupsDefId) {
+        const defCreate = await admin.graphql(
+          `#graphql
+          mutation {
+            metafieldDefinitionCreate(definition: {
+              name: "Active Popup"
+              namespace: "avd"
+              key: "active_popup"
+              type: "metaobject_reference"
+              description: "Reference to the currently active popup metaobject"
+              ownerType: SHOP
+              validations: [
+                {
+                  name: "metaobject_definition_id"
+                  value: "${popupsDefId}"
+                }
+              ]
+            }) {
+              createdDefinition { id }
+              userErrors { field message }
+            }
+          }`,
+        );
+        const defCreateData = await defCreate.json();
+        if (defCreateData?.data?.metafieldDefinitionCreate?.userErrors?.length) {
+          console.error(
+            "Definition creation failed:",
+            JSON.stringify(
+              defCreateData.data.metafieldDefinitionCreate.userErrors,
+              null,
+              2,
+            ),
+          );
+        }
+      }
+
+      // Step 3: Set the metafield value
       await admin.graphql(
         `#graphql
         mutation updateActive($metafields: [MetafieldsSetInput!]!) {
@@ -158,7 +220,7 @@ export const action = async ({ request, params }) => {
               {
                 namespace: "avd",
                 key: "active_popup",
-                type: "mixed_reference",
+                type: "metaobject_reference",
                 ownerId: shopId,
                 value: gid,
               },
@@ -182,7 +244,7 @@ export const action = async ({ request, params }) => {
               {
                 namespace: "avd",
                 key: "active_popup",
-                type: "mixed_reference",
+                type: "metaobject_reference",
                 ownerId: shopId,
                 value: "",
               },

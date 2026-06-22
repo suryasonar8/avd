@@ -43,6 +43,30 @@
 
   {% assign remember_visitor = settings.rememberVisitor | default: 'Session only' %}
   {% assign remember_days = settings.rememberDays | default: 30 %}
+
+  {% assign current_locale = request.locale.iso_code %}
+  {% assign translations = active_popup.translations[current_locale] %}
+
+  {% if translations %}
+    {% if translations.heading != blank %}
+      {% assign text_heading = translations.heading %}
+    {% endif %}
+    {% if translations.subheading != blank %}
+      {% assign text_subheading = translations.subheading %}
+    {% endif %}
+    {% if translations.submitLabel != blank %}
+      {% assign btn_submit = translations.submitLabel %}
+    {% endif %}
+    {% if translations.cancelLabel != blank %}
+      {% assign btn_cancel = translations.cancelLabel %}
+    {% endif %}
+    {% if translations.submitErrorMsg != blank %}
+      {% assign submit_error_msg = translations.submitErrorMsg %}
+    {% endif %}
+    {% if translations.cancelErrorMsg != blank %}
+      {% assign cancel_error_msg = translations.cancelErrorMsg %}
+    {% endif %}
+  {% endif %}
 {% else %}
   {% assign background_page = 'rgba(0,0,0,0.7)' %}
   {% assign background_bg = '#FFFFFF' %}
@@ -101,18 +125,18 @@
             {% assign trimmed_part = part | strip %}
             {% if trimmed_part == 'MM' %}
               <select id="age-verify-month" class="age-verify-select">
-                <option value="1" selected>January</option>
-                <option value="2">February</option>
-                <option value="3">March</option>
-                <option value="4">April</option>
-                <option value="5">May</option>
-                <option value="6">June</option>
-                <option value="7">July</option>
-                <option value="8">August</option>
-                <option value="9">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
+                <option value="1" selected>{{ translations.months['January'] | default: 'January' }}</option>
+                <option value="2">{{ translations.months['February'] | default: 'February' }}</option>
+                <option value="3">{{ translations.months['March'] | default: 'March' }}</option>
+                <option value="4">{{ translations.months['April'] | default: 'April' }}</option>
+                <option value="5">{{ translations.months['May'] | default: 'May' }}</option>
+                <option value="6">{{ translations.months['June'] | default: 'June' }}</option>
+                <option value="7">{{ translations.months['July'] | default: 'July' }}</option>
+                <option value="8">{{ translations.months['August'] | default: 'August' }}</option>
+                <option value="9">{{ translations.months['September'] | default: 'September' }}</option>
+                <option value="10">{{ translations.months['October'] | default: 'October' }}</option>
+                <option value="11">{{ translations.months['November'] | default: 'November' }}</option>
+                <option value="12">{{ translations.months['December'] | default: 'December' }}</option>
               </select>
             {% elsif trimmed_part == 'DD' %}
               <select id="age-verify-day" class="age-verify-select">
