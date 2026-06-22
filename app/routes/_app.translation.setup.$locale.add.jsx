@@ -164,10 +164,19 @@ export const action = async ({ request, params }) => {
       metaobjects(type: $type, query: $query, first: 1) {
         nodes {
           id
-          popups: field(key: "popups") { value }
+          popups: field(key: "popups") {
+            references(first: 250) {
+              nodes {
+                ... on Metaobject {
+                  id
+                }
+              }
+            }
+          }
         }
       }
-    }`,
+    }
+`,
     {
       variables: {
         type: translationsTypeHandle,
@@ -179,7 +188,8 @@ export const action = async ({ request, params }) => {
   const summary = summaryData.data?.metaobjects?.nodes[0];
 
   if (summary) {
-    const currentPopups = JSON.parse(summary.popups?.value || "[]");
+    const currentPopups =
+      summary.popups?.references?.nodes?.map((n) => n.id) || [];
     if (!currentPopups.includes(popupId)) {
       const updatedPopups = [...currentPopups, popupId];
       const summaryUpdateResponse = await admin.graphql(

@@ -45,7 +45,49 @@ export const action = async ({ request }) => {
           { variables: { id } },
         );
       }
-      console.log(`Deleted ${metaobjectIds.length} metaobjects for ${shop}`);
+      console.log(`Deleted ${metaobjectIds.length} popups for ${shop}`);
+
+      // 1.1 Cleanup Translations ($app:translations)
+      const transDefResponse = await admin.graphql(
+        `#graphql
+        query getTransDef {
+          metaobjectDefinitionByType(type: "$app:translations") {
+            type
+          }
+        }`,
+      );
+      const transDefData = await transDefResponse.json();
+      const transTypeHandle =
+        transDefData.data?.metaobjectDefinitionByType?.type ||
+        "app--translations";
+
+      const transMetaResponse = await admin.graphql(
+        `#graphql
+        query getTransMetaobjects($type: String!) {
+          metaobjects(first: 250, type: $type) {
+            nodes { id }
+          }
+        }`,
+        { variables: { type: transTypeHandle } },
+      );
+      const transMetaData = await transMetaResponse.json();
+      const transMetaIds =
+        transMetaData.data?.metaobjects?.nodes?.map((n) => n.id) || [];
+
+      for (const id of transMetaIds) {
+        await admin.graphql(
+          `#graphql
+          mutation deleteMetaobject($id: ID!) {
+            metaobjectDelete(id: $id) {
+              deletedId
+            }
+          }`,
+          { variables: { id } },
+        );
+      }
+      console.log(
+        `Deleted ${transMetaIds.length} translation summaries for ${shop}`,
+      );
 
       // 2. Cleanup Metafield Definitions (this deletes definition and values)
       const defsToCleanup = [
