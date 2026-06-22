@@ -5,7 +5,7 @@ import {
   useActionData,
 } from "react-router";
 import { useState, useMemo, useEffect } from "react";
-import { useAppBridge } from "@shopify/app-bridge-react";
+import { useAppBridge, SaveBar } from "@shopify/app-bridge-react";
 import { DefaultEditor } from "react-simple-wysiwyg";
 import { authenticate } from "../shopify.server";
 import { Card } from "../components/Card";
@@ -325,6 +325,39 @@ export default function TranslationSetupPage() {
         .includes(searchTerm.toLowerCase()),
     );
   }, [popups, searchTerm]);
+  
+  const initialTranslations = useMemo(() => {
+    if (!selectedPopup) return {
+      heading: "",
+      subheading: "",
+      submitLabel: "",
+      cancelLabel: "",
+      submitErrorMsg: "",
+      cancelErrorMsg: "",
+      months: MONTH_NAMES.reduce((acc, month) => {
+        acc[month] = month;
+        return acc;
+      }, {}),
+    };
+
+    const existingTranslations = selectedPopup.config.translations?.[locale] || {};
+    return {
+      heading: existingTranslations.heading || "",
+      subheading: existingTranslations.subheading || "",
+      submitLabel: existingTranslations.submitLabel || "",
+      cancelLabel: existingTranslations.cancelLabel || "",
+      submitErrorMsg: existingTranslations.submitErrorMsg || "",
+      cancelErrorMsg: existingTranslations.cancelErrorMsg || "",
+      months: MONTH_NAMES.reduce((acc, month) => {
+        acc[month] = existingTranslations.months?.[month] || month;
+        return acc;
+      }, {}),
+    };
+  }, [selectedPopup, locale]);
+
+  const isDirty = useMemo(() => {
+    return JSON.stringify(translations) !== JSON.stringify(initialTranslations);
+  }, [translations, initialTranslations]);
 
   useEffect(() => {
     if (selectedPopup) {
@@ -366,7 +399,17 @@ export default function TranslationSetupPage() {
   }, [selectedPopup, locale]);
 
   const handleBack = () => {
-    navigate("/translation");
+    if (isDirty) {
+      shopify.toast.show("Please save or discard your changes before leaving", {
+        isError: true,
+      });
+    } else {
+      navigate("/translation");
+    }
+  };
+
+  const handleDiscard = () => {
+    setTranslations(initialTranslations);
   };
 
   const handleSave = () => {
@@ -527,22 +570,14 @@ export default function TranslationSetupPage() {
           </p>
         </div>
 
-        <button
-          onClick={handleSave}
-          style={{
-            padding: "10px 24px",
-            background: "#202223",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: "600",
-            fontSize: "14px",
-            boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
-          }}
-        >
-          Save
-        </button>
+        <SaveBar id="translation-save-bar" open={isDirty}>
+          <button variant="primary" onClick={handleSave}>
+            Save
+          </button>
+          <button type="button" onClick={handleDiscard}>
+            Discard
+          </button>
+        </SaveBar>
       </div>
 
       <div style={{ maxWidth: "1000px" }}>
