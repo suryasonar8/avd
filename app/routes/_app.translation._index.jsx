@@ -9,7 +9,8 @@ export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
   const shopDomain = session.shop.replace(".myshopify.com", "");
 
-  const response = await admin.graphql(
+  // Fetch shop locales
+  const languagesResponse = await admin.graphql(
     `#graphql
     query getLanguages {
       shopLocales {
@@ -20,21 +21,68 @@ export const loader = async ({ request }) => {
       }
     }`,
   );
-
-  const data = await response.json();
-  const shopLocales = data.data?.shopLocales || [];
+  const languagesData = await languagesResponse.json();
+  const shopLocales = languagesData.data?.shopLocales || [];
   const primaryLocale =
     shopLocales.find((lang) => lang.primary)?.locale || "en";
+
+  // Discover translation type handle
+  const defsResponse = await admin.graphql(
+    `#graphql
+    query getDefs {
+      translations: metaobjectDefinitionByType(type: "$app:translations") { type }
+    }`,
+  );
+  const defsData = await defsResponse.json();
+  const translationsTypeHandle =
+    defsData.data.translations?.type || "app--translations";
+
+  // Fetch translation summaries
+  const translationsResponse = await admin.graphql(
+    `#graphql
+    query getTranslations($type: String!) {
+      metaobjects(type: $type, first: 250) {
+        nodes {
+          locale: field(key: "locale") { value }
+          popups: field(key: "popups") {
+            references(first: 100) {
+              nodes {
+                ... on Metaobject {
+                  id
+                  handle
+                  name: field(key: "config") { value }
+                }
+              }
+            }
+          }
+        }
+      }
+    }`,
+    { variables: { type: translationsTypeHandle } },
+  );
+  const translationsData = await translationsResponse.json();
+  const translatedLanguages = (
+    translationsData.data?.metaobjects?.nodes || []
+  ).map((node) => ({
+    locale: node.locale?.value,
+    popups: (node.popups?.references?.nodes || []).map((p) => ({
+      id: p.id,
+      handle: p.handle,
+      name: JSON.parse(p.name?.value || "{}").name || p.handle,
+    })),
+  }));
 
   return {
     shop: shopDomain,
     shopLocales,
     primaryLocale,
+    translatedLanguages,
   };
 };
 
 export default function TranslationPage() {
-  const { shop, shopLocales, primaryLocale } = useLoaderData();
+  const { shop, shopLocales, primaryLocale, translatedLanguages } =
+    useLoaderData();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
@@ -251,62 +299,224 @@ export default function TranslationPage() {
 
       {/* Translation List Card */}
       <Card title="Translation list">
-        <div
-          style={{
-            textAlign: "center",
-            padding: "60px 0",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <img
-            src="/translation-empty-state.png"
-            alt="No translations"
+        {translatedLanguages.length > 0 ? (
+          <div style={{ padding: "0 16px" }}>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                textAlign: "left",
+              }}
+            >
+              <thead>
+                <tr style={{ borderBottom: "1px solid #E1E3E5" }}>
+                  <th
+                    style={{
+                      padding: "16px 8px",
+                      fontSize: "13px",
+                      fontWeight: "600",
+                      color: "#6d7175",
+                    }}
+                  >
+                    Language
+                  </th>
+                  <th
+                    style={{
+                      padding: "16px 8px",
+                      fontSize: "13px",
+                      fontWeight: "600",
+                      color: "#6d7175",
+                    }}
+                  >
+                    Pop-ups
+                  </th>
+                  <th
+                    style={{
+                      padding: "16px 8px",
+                      fontSize: "13px",
+                      fontWeight: "600",
+                      color: "#6d7175",
+                      textAlign: "right",
+                    }}
+                  >
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {translatedLanguages.map((item) => {
+                  const langName =
+                    shopLocales.find((l) => l.locale === item.locale)?.name ||
+                    item.locale;
+                  return (
+                    <tr
+                      key={item.locale}
+                      style={{ borderBottom: "1px solid #F1F2F3" }}
+                    >
+                      <td style={{ padding: "16px 8px", fontSize: "14px" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <span style={{ fontWeight: "500" }}>{langName}</span>
+                          <span
+                            style={{
+                              fontSize: "11px",
+                              color: "#6d7175",
+                              background: "#f1f2f3",
+                              padding: "2px 6px",
+                              borderRadius: "4px",
+                            }}
+                          >
+                            {item.locale.toUpperCase()}
+                          </span>
+                        </div>
+                      </td>
+                      <td style={{ padding: "16px 8px", fontSize: "14px" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "4px",
+                          }}
+                        >
+                          {item.popups.map((p) => (
+                            <span
+                              key={p.id}
+                              style={{
+                                background: "#EBF5FF",
+                                color: "#006FBB",
+                                padding: "2px 8px",
+                                borderRadius: "12px",
+                                fontSize: "12px",
+                                fontWeight: "500",
+                              }}
+                            >
+                              {p.name}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td
+                        style={{
+                          padding: "16px 8px",
+                          textAlign: "right",
+                        }}
+                      >
+                        <button
+                          onClick={() => {
+                            const popupId = item.popups[0]?.id;
+                            const url = `/translation/setup/${item.locale}/add${
+                              popupId
+                                ? `?popupId=${encodeURIComponent(popupId)}`
+                                : ""
+                            }`;
+                            navigate(url);
+                          }}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            color: "#006FBB",
+                            cursor: "pointer",
+                            fontSize: "14px",
+                            fontWeight: "500",
+                            padding: "4px 8px",
+                          }}
+                        >
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <div
+              style={{
+                padding: "24px 0",
+                textAlign: "center",
+                borderTop: "1px solid #E1E3E5",
+                marginTop: "16px",
+              }}
+            >
+              <button
+                onClick={() => setIsModalOpen(true)}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "#202223",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                  fontSize: "13px",
+                }}
+              >
+                Add language
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div
             style={{
-              width: "140px",
-              marginBottom: "24px",
-              opacity: 0.8,
-            }}
-          />
-          <h3
-            style={{
-              fontSize: "18px",
-              fontWeight: "700",
-              margin: "0 0 8px 0",
-              color: "#202223",
+              textAlign: "center",
+              padding: "60px 0",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
-            Manage translations for the age verification popup.
-          </h3>
-          <p
-            style={{
-              margin: "0 0 24px 0",
-              color: "#6d7175",
-              fontSize: "14px",
-              maxWidth: "400px",
-              lineHeight: "1.5",
-            }}
-          >
-            Translate the age verification version into multiple languages.
-          </p>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            style={{
-              padding: "10px 24px",
-              backgroundColor: "#202223",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontWeight: "600",
-              fontSize: "14px",
-              boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
-            }}
-          >
-            Add language
-          </button>
-        </div>
+            <img
+              src="/translation-empty-state.png"
+              alt="No translations"
+              style={{
+                width: "140px",
+                marginBottom: "24px",
+                opacity: 0.8,
+              }}
+            />
+            <h3
+              style={{
+                fontSize: "18px",
+                fontWeight: "700",
+                margin: "0 0 8px 0",
+                color: "#202223",
+              }}
+            >
+              Manage translations for the age verification popup.
+            </h3>
+            <p
+              style={{
+                margin: "0 0 24px 0",
+                color: "#6d7175",
+                fontSize: "14px",
+                maxWidth: "400px",
+                lineHeight: "1.5",
+              }}
+            >
+              Translate the age verification version into multiple languages.
+            </p>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              style={{
+                padding: "10px 24px",
+                backgroundColor: "#202223",
+                color: "white",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontWeight: "600",
+                fontSize: "14px",
+                boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
+              }}
+            >
+              Add language
+            </button>
+          </div>
+        )}
       </Card>
 
       {/* Add Language Modal */}

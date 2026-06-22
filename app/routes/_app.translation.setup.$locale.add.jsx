@@ -3,6 +3,7 @@ import {
   useNavigate,
   useSubmit,
   useActionData,
+  useSearchParams,
 } from "react-router";
 import { useState, useMemo, useEffect } from "react";
 import { useAppBridge, SaveBar } from "@shopify/app-bridge-react";
@@ -15,17 +16,17 @@ export const loader = async ({ request, params }) => {
   const { locale } = params;
 
   // 1. Discover the actual Metaobject type handles
-  const popupsDefResponse = await admin.graphql(
+  const defsResponse = await admin.graphql(
     `#graphql
-    query getPopupsDef {
-      metaobjectDefinitionByType(type: "$app:popups") {
-        type
-      }
+    query getDefs {
+      popups: metaobjectDefinitionByType(type: "$app:popups") { type }
+      translations: metaobjectDefinitionByType(type: "$app:translations") { type }
     }`,
   );
-  const popupsDefData = await popupsDefResponse.json();
-  const popupsTypeHandle =
-    popupsDefData.data.metaobjectDefinitionByType?.type || "app--popups";
+  const defsData = await defsResponse.json();
+  const popupsTypeHandle = defsData.data.popups?.type || "app--popups";
+  const translationsTypeHandle =
+    defsData.data.translations?.type || "app--translations";
 
   // 2. Fetch popups
   const popupsResponse = await admin.graphql(
@@ -140,6 +141,98 @@ export const action = async ({ request, params }) => {
 
   if (errors && errors.length > 0) {
     return { success: false, errors };
+  }
+
+  const translationsDefResponse = await admin.graphql(
+    `#graphql
+    query getTranslationsDef {
+      metaobjectDefinitionByType(type: "$app:translations") {
+        type
+      }
+    }`,
+  );
+  const translationsDefData = await translationsDefResponse.json();
+  const translationsTypeHandle =
+    translationsDefData.data.metaobjectDefinitionByType?.type ||
+    "app--translations";
+
+  // --- SYNC TRANSLATION SUMMARY ---
+  const summaryHandle = `translation-summary-${locale}`;
+  const getSummaryResponse = await admin.graphql(
+    `#graphql
+    query getSummary($type: String!, $query: String!) {
+      metaobjects(type: $type, query: $query, first: 1) {
+        nodes {
+          id
+          popups: field(key: "popups") { value }
+        }
+      }
+    }`,
+    {
+      variables: {
+        type: translationsTypeHandle,
+        query: `handle:${summaryHandle}`,
+      },
+    },
+  );
+  const summaryData = await getSummaryResponse.json();
+  const summary = summaryData.data?.metaobjects?.nodes[0];
+
+  if (summary) {
+    const currentPopups = JSON.parse(summary.popups?.value || "[]");
+    if (!currentPopups.includes(popupId)) {
+      const updatedPopups = [...currentPopups, popupId];
+      const summaryUpdateResponse = await admin.graphql(
+        `#graphql
+        mutation updateSummary($id: ID!, $metaobject: MetaobjectUpdateInput!) {
+          metaobjectUpdate(id: $id, metaobject: $metaobject) {
+            userErrors { field message }
+          }
+        }`,
+        {
+          variables: {
+            id: summary.id,
+            metaobject: {
+              fields: [{ key: "popups", value: JSON.stringify(updatedPopups) }],
+            },
+          },
+        },
+      );
+      const summaryUpdateData = await summaryUpdateResponse.json();
+      const updateErrors = summaryUpdateData.data?.metaobjectUpdate?.userErrors;
+      if (updateErrors && updateErrors.length > 0) {
+        console.log("Summary Update Errors:", updateErrors);
+        return { success: false, errors: updateErrors };
+      }
+    }
+  } else {
+    // Create new summary
+    const summaryCreateResponse = await admin.graphql(
+      `#graphql
+      mutation createSummary($metaobject: MetaobjectCreateInput!) {
+        metaobjectCreate(metaobject: $metaobject) {
+          userErrors { field message }
+        }
+      }`,
+      {
+        variables: {
+          metaobject: {
+            type: translationsTypeHandle,
+            handle: summaryHandle,
+            fields: [
+              { key: "locale", value: locale },
+              { key: "popups", value: JSON.stringify([popupId]) },
+            ],
+          },
+        },
+      },
+    );
+    const summaryCreateData = await summaryCreateResponse.json();
+    const createErrors = summaryCreateData.data?.metaobjectCreate?.userErrors;
+    if (createErrors && createErrors.length > 0) {
+      console.log("Summary Create Errors:", createErrors);
+      return { success: false, errors: createErrors };
+    }
   }
 
   return { success: true };
@@ -282,7 +375,9 @@ export default function TranslationSetupPage() {
   const submit = useSubmit();
   const shopify = useAppBridge();
 
-  const [selectedPopupId, setSelectedPopupId] = useState("");
+  const [searchParams] = useSearchParams();
+  const initialPopupId = searchParams.get("popupId") || "";
+  const [selectedPopupId, setSelectedPopupId] = useState(initialPopupId);
   const [searchTerm, setSearchTerm] = useState("");
   const [isPopupDialogOpen, setIsPopupDialogOpen] = useState(false);
   const [activeMonth, setActiveMonth] = useState("January");
@@ -325,22 +420,24 @@ export default function TranslationSetupPage() {
         .includes(searchTerm.toLowerCase()),
     );
   }, [popups, searchTerm]);
-  
-  const initialTranslations = useMemo(() => {
-    if (!selectedPopup) return {
-      heading: "",
-      subheading: "",
-      submitLabel: "",
-      cancelLabel: "",
-      submitErrorMsg: "",
-      cancelErrorMsg: "",
-      months: MONTH_NAMES.reduce((acc, month) => {
-        acc[month] = month;
-        return acc;
-      }, {}),
-    };
 
-    const existingTranslations = selectedPopup.config.translations?.[locale] || {};
+  const initialTranslations = useMemo(() => {
+    if (!selectedPopup)
+      return {
+        heading: "",
+        subheading: "",
+        submitLabel: "",
+        cancelLabel: "",
+        submitErrorMsg: "",
+        cancelErrorMsg: "",
+        months: MONTH_NAMES.reduce((acc, month) => {
+          acc[month] = month;
+          return acc;
+        }, {}),
+      };
+
+    const existingTranslations =
+      selectedPopup.config.translations?.[locale] || {};
     return {
       heading: existingTranslations.heading || "",
       subheading: existingTranslations.subheading || "",

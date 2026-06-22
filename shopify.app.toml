@@ -73,3 +73,19 @@ type = "single_line_text_field"
 [metaobjects.app.popups.fields.config]
 name = "Config"
 type = "json"
+
+[metaobjects.app.translations]
+name = "Translations"
+description = "Summary of translated languages and their associated popups."
+
+  [metaobjects.app.translations.access]
+  admin = "merchant_read_write"
+  storefront = "public_read"
+
+[metaobjects.app.translations.fields.locale]
+name = "Locale"
+type = "single_line_text_field"
+
+[metaobjects.app.translations.fields.popups]
+name = "Popups"
+type = "list.metaobject_reference<$app:popups>"
