@@ -101,7 +101,7 @@
                 window.location.href = cancelRedirectUrl;
             } else if (cancelAction === 'errorMsg') {
                 if (errorText) {
-                    errorText.textContent = cancelErrorMsg;
+                    errorText.innerHTML = cancelErrorMsg;
                     errorText.style.display = 'block';
                 }
             }

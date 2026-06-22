@@ -7,7 +7,7 @@ import {
 } from "react-router";
 import { useState, useMemo, useEffect } from "react";
 import { useAppBridge, SaveBar } from "@shopify/app-bridge-react";
-import { DefaultEditor } from "react-simple-wysiwyg";
+import { RichTextEditor } from "../components/RichTextEditor";
 import { authenticate } from "../shopify.server";
 import { Card } from "../components/Card";
 
@@ -298,7 +298,11 @@ const TranslationField = ({
             minHeight: "40px",
           }}
         >
-          {original || "—"}
+          {type === "richtext" ? (
+            <div dangerouslySetInnerHTML={{ __html: original || "—" }} />
+          ) : (
+            original || "—"
+          )}
         </div>
       </div>
       <div
@@ -335,10 +339,7 @@ const TranslationField = ({
         {type === "richtext" ? (
           <div className="custom-editor-container">
             {typeof document !== "undefined" ? (
-              <DefaultEditor
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-              />
+              <RichTextEditor value={value} onChange={(e) => onChange(e)} />
             ) : (
               <div style={{ height: "100px", background: "#fafafa" }} />
             )}
@@ -558,64 +559,6 @@ export default function TranslationSetupPage() {
       }}
     >
       <style>{`
-        /* Force Library Styles */
-        .rsw-editor {
-          border: 1px solid #e1e3e5 !important;
-          border-radius: 8px !important;
-          display: flex !important;
-          flex-direction: column !important;
-          background: white !important;
-          overflow: hidden !important;
-        }
-        .rsw-toolbar {
-          display: flex !important;
-          flex-direction: row !important;
-          flex-wrap: wrap !important;
-          align-items: center !important;
-          background: #f5f5f5 !important;
-          border-bottom: 1px solid #e1e3e5 !important;
-          padding: 4px !important;
-          gap: 2px !important;
-        }
-        .rsw-btn {
-          background: transparent !important;
-          border: none !important;
-          cursor: pointer !important;
-          width: 32px !important;
-          height: 32px !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          font-size: 14px !important;
-          border-radius: 4px !important;
-        }
-        .rsw-btn:hover {
-          background: #e1e3e5 !important;
-        }
-        .rsw-btn[data-active=true] {
-          background: #d1d3d5 !important;
-        }
-        .rsw-separator {
-          width: 1px !important;
-          height: 20px !important;
-          background: #e1e3e5 !important;
-          margin: 0 4px !important;
-        }
-        .rsw-dd {
-          padding: 4px 8px !important;
-          border: 1px solid #e1e3e5 !important;
-          border-radius: 4px !important;
-          background: white !important;
-          font-size: 13px !important;
-        }
-        .rsw-ce {
-          min-height: 150px !important;
-          padding: 12px !important;
-          outline: none !important;
-          font-size: 14px !important;
-          line-height: 1.5 !important;
-        }
-        
         .custom-editor-container {
           margin-bottom: 20px;
         }

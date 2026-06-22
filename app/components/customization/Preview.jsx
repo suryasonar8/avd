@@ -96,18 +96,16 @@ export const Preview = ({ config, previewMode, setPreviewMode }) => {
                 marginBottom: "20px",
                 letterSpacing: "0.5px",
               }}
-            >
-              {config.text.heading}
-            </h3>
+              dangerouslySetInnerHTML={{ __html: config.text.heading }}
+            />
             <p
               style={{
                 fontSize: previewMode === "desktop" ? "15px" : "13px",
                 marginBottom: "30px",
                 opacity: 0.9,
               }}
-            >
-              {config.text.subheading}
-            </p>
+              dangerouslySetInnerHTML={{ __html: config.text.subheading }}
+            />
 
             {config.method === "Birthdate entry" && (
               <div
@@ -220,7 +218,9 @@ export const Preview = ({ config, previewMode, setPreviewMode }) => {
                   cursor: "pointer",
                 }}
               >
-                {config.button.submitText}
+                <span
+                  dangerouslySetInnerHTML={{ __html: config.button.submitText }}
+                />
               </button>
               <button
                 style={{
@@ -235,7 +235,9 @@ export const Preview = ({ config, previewMode, setPreviewMode }) => {
                   cursor: "pointer",
                 }}
               >
-                {config.button.cancelText}
+                <span
+                  dangerouslySetInnerHTML={{ __html: config.button.cancelText }}
+                />
               </button>
             </div>
 

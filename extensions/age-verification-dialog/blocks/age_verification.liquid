@@ -113,8 +113,8 @@
      data-method="{{ method }}">
   <div class="age-verification-modal" style="background-color: {{ background_bg }}; border: {{ background_border_width }}px solid {{ background_border_color }}; border-radius: {{ background_border_radius }}px;">
     <div class="age-verification-content">
-      <h3>{{ text_heading }}</h3>
-      <p>{{ text_subheading }}</p>
+      <h3 class="age-verification-heading">{{ text_heading }}</h3>
+      <p class="age-verification-subheading">{{ text_subheading }}</p>
 
       <!-- Debug: Method is "{{ method }}", Method down is "{{ method_down }}" -->
       {% assign method_down = method | downcase %}
