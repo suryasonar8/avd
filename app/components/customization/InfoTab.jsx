@@ -2,6 +2,7 @@ import { Card } from "../Card";
 import { Badge } from "../Badge";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { useState } from "react";
+import { DISPLAY_PAGES } from "../../constants/display-pages";
 
 export function InfoTab({ config, setConfig }) {
   const shopify = useAppBridge();
@@ -239,14 +240,7 @@ export function InfoTab({ config, setConfig }) {
               gap: "10px",
             }}
           >
-            {[
-              "All pages",
-              "Home page",
-              "Specific collections",
-              "Specific products",
-              "Specific product tags",
-              "Custom",
-            ].map((page) => (
+            {DISPLAY_PAGES.map((page) => (
               <label
                 key={page}
                 style={{

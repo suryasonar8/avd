@@ -7,6 +7,7 @@ import { TextTab } from "./TextTab";
 import { ButtonTab } from "./ButtonTab";
 import { CSSTab } from "./CSSTab";
 import { Preview } from "./Preview";
+import { DISPLAY_PAGES } from "../../constants/display-pages";
 
 const TAB_COMPONENTS = {
   Info: InfoTab,
@@ -23,7 +24,7 @@ const DEFAULT_CONFIG = {
   method: "No input",
   verifyAge: 18,
   dateOrder: "MM,DD,YY",
-  pages: "All pages",
+  pages: DISPLAY_PAGES[0],
   selectedCollections: [],
   _collectionTitles: [],
   selectedCollectionHandles: [],

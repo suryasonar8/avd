@@ -1,10 +1,12 @@
+import { DISPLAY_PAGES } from "./display-pages";
+
 export const DEFAULT_STORE_CONFIG = {
     name: "My Pop-up",
     status: "Enabled",
     method: "No input",
     verifyAge: 18,
     dateOrder: "MM,DD,YY",
-    pages: "All pages",
+    pages: DISPLAY_PAGES[0],
     trigger: "Always show",
     background: {
         type: "Solid color background",
