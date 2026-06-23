@@ -18,7 +18,9 @@ export function InfoTab({ config, setConfig }) {
           </label>
           <select
             value={config.status}
-            onChange={(e) => setConfig({ ...config, status: e.target.value })}
+            onChange={(e) =>
+              setConfig((prev) => ({ ...prev, status: e.target.value }))
+            }
             style={{
               width: "100%",
               padding: "10px",
@@ -47,7 +49,9 @@ export function InfoTab({ config, setConfig }) {
             <input
               type="text"
               value={config.name}
-              onChange={(e) => setConfig({ ...config, name: e.target.value })}
+              onChange={(e) =>
+                setConfig((prev) => ({ ...prev, name: e.target.value }))
+              }
               placeholder="Enter your pop-up name"
               style={{
                 width: "100%",
@@ -109,7 +113,9 @@ export function InfoTab({ config, setConfig }) {
                 type="radio"
                 name="method"
                 checked={config.method === "No input"}
-                onChange={() => setConfig({ ...config, method: "No input" })}
+                onChange={() =>
+                  setConfig((prev) => ({ ...prev, method: "No input" }))
+                }
               />{" "}
               No input
             </label>
@@ -126,7 +132,7 @@ export function InfoTab({ config, setConfig }) {
                 name="method"
                 checked={config.method === "Birthdate entry"}
                 onChange={() =>
-                  setConfig({ ...config, method: "Birthdate entry" })
+                  setConfig((prev) => ({ ...prev, method: "Birthdate entry" }))
                 }
               />{" "}
               Birthdate entry
@@ -151,7 +157,10 @@ export function InfoTab({ config, setConfig }) {
                 type="number"
                 value={config.verifyAge || 18}
                 onChange={(e) =>
-                  setConfig({ ...config, verifyAge: parseInt(e.target.value) })
+                  setConfig((prev) => ({
+                    ...prev,
+                    verifyAge: parseInt(e.target.value),
+                  }))
                 }
                 style={{
                   width: "100%",
@@ -176,7 +185,7 @@ export function InfoTab({ config, setConfig }) {
               <select
                 value={config.dateOrder || "MM,DD,YY"}
                 onChange={(e) =>
-                  setConfig({ ...config, dateOrder: e.target.value })
+                  setConfig((prev) => ({ ...prev, dateOrder: e.target.value }))
                 }
                 style={{
                   width: "100%",

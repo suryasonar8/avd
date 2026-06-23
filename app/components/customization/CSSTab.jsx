@@ -24,7 +24,9 @@ export function CSSTab({ config, setConfig }) {
         </div>
         <textarea
           value={config.css}
-          onChange={(e) => setConfig({ ...config, css: e.target.value })}
+          onChange={(e) =>
+            setConfig((prev) => ({ ...prev, css: e.target.value }))
+          }
           placeholder="/* Add your custom CSS here */"
           style={{
             width: "100%",

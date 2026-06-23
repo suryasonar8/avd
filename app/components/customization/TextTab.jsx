@@ -8,10 +8,10 @@ export function TextTab({ config, setConfig }) {
         <RichTextEditor
           value={config.text.heading}
           onChange={(val) =>
-            setConfig({
-              ...config,
-              text: { ...config.text, heading: val },
-            })
+            setConfig((prev) => ({
+              ...prev,
+              text: { ...prev.text, heading: val },
+            }))
           }
         />
       </Card>
@@ -19,10 +19,10 @@ export function TextTab({ config, setConfig }) {
         <RichTextEditor
           value={config.text.subheading}
           onChange={(val) =>
-            setConfig({
-              ...config,
-              text: { ...config.text, subheading: val },
-            })
+            setConfig((prev) => ({
+              ...prev,
+              text: { ...prev.text, subheading: val },
+            }))
           }
         />
       </Card>

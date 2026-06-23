@@ -16,6 +16,9 @@
   {% assign background_border_color = active_popup.background.borderColor | default: '#FFFFFF' %}
   {% assign background_border_width = active_popup.background.borderWidth | default: 0 %}
   {% assign background_border_radius = active_popup.background.borderRadius | default: 0 %}
+  {% assign background_image = active_popup.background.backgroundImage %}
+  {% assign logo_url = active_popup.background.logo %}
+  {% assign background_type = active_popup.background.type | default: 'Solid color background' %}
   
   {% assign text_heading = active_popup.text.heading | default: 'Welcome!' %}
   {% assign text_subheading = active_popup.text.subheading | default: 'Please verify your age to enter this site.' %}
@@ -101,7 +104,7 @@
   {% assign remember_days = 30 %}
 {% endif %}
 
-<div id="age-verification-overlay" class="age-verification-overlay" style="display: none; background-color: {{ background_page }};" 
+<div id="age-verification-overlay" class="age-verification-overlay" style="display: none; background-color: {{ background_page }}; {% if background_type == 'Image background' and background_image != blank %}background-image: url('{{ background_image }}'); background-size: cover; background-position: center;{% endif %}" 
      data-min-age="{{ min_age }}" 
      data-redirect-url="{{ redirect_url }}"
      data-cancel-action="{{ cancel_action }}"
@@ -113,6 +116,11 @@
      data-method="{{ method }}">
   <div class="age-verification-modal" style="background-color: {{ background_bg }}; border: {{ background_border_width }}px solid {{ background_border_color }}; border-radius: {{ background_border_radius }}px;">
     <div class="age-verification-content">
+      {% if logo_url != blank %}
+        <div class="age-verification-logo" style="text-align: center; margin-bottom: 20px;">
+          <img src="{{ logo_url }}" alt="Logo" style="max-width: 150px; max-height: 80px; object-fit: contain;">
+        </div>
+      {% endif %}
       <h3 class="age-verification-heading">{{ text_heading }}</h3>
       <p class="age-verification-subheading">{{ text_subheading }}</p>
 

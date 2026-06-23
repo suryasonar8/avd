@@ -30,6 +30,7 @@ const DEFAULT_CONFIG = {
     pageColor: "##FFFFFFD9",
     bgColor: "#000000",
     logo: null,
+    backgroundImage: null,
     borderColor: "#FFFFFF",
     borderRadius: 0,
     borderWidth: 0,
@@ -94,6 +95,7 @@ export function PopupEditor({
   );
 
   const [config, setConfig] = useState(initialConfig);
+  const [isUploading, setIsUploading] = useState(false);
 
   const isDirty = useMemo(() => {
     const isSubmitting = fetcher
@@ -138,8 +140,9 @@ export function PopupEditor({
   }, [fetcher?.state, fetcher?.data, shopify, onSaveSuccess, fetcher]);
 
   const handleSave = useCallback(() => {
+    if (isUploading) return;
     onSave(config);
-  }, [config, onSave]);
+  }, [config, onSave, isUploading]);
 
   const handleDiscard = useCallback(() => {
     if (onDiscard) {
@@ -165,8 +168,8 @@ export function PopupEditor({
   return (
     <s-page heading={heading}>
       <SaveBar id={saveBarId} open={isDirty}>
-        <button variant="primary" onClick={handleSave}>
-          Save
+        <button variant="primary" onClick={handleSave} disabled={isUploading}>
+          {isUploading ? "Uploading..." : "Save"}
         </button>
         <button type="button" onClick={handleDiscard}>
           Discard
@@ -231,7 +234,11 @@ export function PopupEditor({
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
           {ActiveTabComponent && (
-            <ActiveTabComponent config={config} setConfig={setConfig} />
+            <ActiveTabComponent
+              config={config}
+              setConfig={setConfig}
+              setIsUploading={setIsUploading}
+            />
           )}
         </div>
 

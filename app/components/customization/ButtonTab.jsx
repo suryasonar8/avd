@@ -11,10 +11,10 @@ export function ButtonTab({ config, setConfig }) {
         <RichTextEditor
           value={config.button.submitText}
           onChange={(val) =>
-            setConfig({
-              ...config,
-              button: { ...config.button, submitText: val },
-            })
+            setConfig((prev) => ({
+              ...prev,
+              button: { ...prev.button, submitText: val },
+            }))
           }
         />
       </Card>
@@ -36,10 +36,10 @@ export function ButtonTab({ config, setConfig }) {
               type="text"
               value={config.button.errorMsg || ""}
               onChange={(e) =>
-                setConfig({
-                  ...config,
-                  button: { ...config.button, errorMsg: e.target.value },
-                })
+                setConfig((prev) => ({
+                  ...prev,
+                  button: { ...prev.button, errorMsg: e.target.value },
+                }))
               }
               style={{
                 width: "100%",
@@ -69,10 +69,10 @@ export function ButtonTab({ config, setConfig }) {
           badge={<Badge text="Basic plan or higher" type="basic" />}
           value={config.button.bgColor}
           onChange={(val) =>
-            setConfig({
-              ...config,
-              button: { ...config.button, bgColor: val },
-            })
+            setConfig((prev) => ({
+              ...prev,
+              button: { ...prev.button, bgColor: val },
+            }))
           }
         />
         <ColorInput
@@ -80,10 +80,10 @@ export function ButtonTab({ config, setConfig }) {
           badge={<Badge text="Premium plan" type="premium" />}
           value={config.button.borderColor}
           onChange={(val) =>
-            setConfig({
-              ...config,
-              button: { ...config.button, borderColor: val },
-            })
+            setConfig((prev) => ({
+              ...prev,
+              button: { ...prev.button, borderColor: val },
+            }))
           }
         />
         <NumberInput
@@ -91,10 +91,10 @@ export function ButtonTab({ config, setConfig }) {
           badge={<Badge text="Premium plan" type="premium" />}
           value={config.button.borderRadius}
           onChange={(val) =>
-            setConfig({
-              ...config,
-              button: { ...config.button, borderRadius: val },
-            })
+            setConfig((prev) => ({
+              ...prev,
+              button: { ...prev.button, borderRadius: val },
+            }))
           }
         />
         <NumberInput
@@ -102,10 +102,10 @@ export function ButtonTab({ config, setConfig }) {
           badge={<Badge text="Premium plan" type="premium" />}
           value={config.button.borderWidth}
           onChange={(val) =>
-            setConfig({
-              ...config,
-              button: { ...config.button, borderWidth: val },
-            })
+            setConfig((prev) => ({
+              ...prev,
+              button: { ...prev.button, borderWidth: val },
+            }))
           }
         />
       </Card>
@@ -114,10 +114,10 @@ export function ButtonTab({ config, setConfig }) {
         <RichTextEditor
           value={config.button.cancelText}
           onChange={(val) =>
-            setConfig({
-              ...config,
-              button: { ...config.button, cancelText: val },
-            })
+            setConfig((prev) => ({
+              ...prev,
+              button: { ...prev.button, cancelText: val },
+            }))
           }
         />
       </Card>
@@ -145,10 +145,10 @@ export function ButtonTab({ config, setConfig }) {
                 name="cancelAction"
                 checked={config.button.cancelAction === "redirect"}
                 onChange={() =>
-                  setConfig({
-                    ...config,
-                    button: { ...config.button, cancelAction: "redirect" },
-                  })
+                  setConfig((prev) => ({
+                    ...prev,
+                    button: { ...prev.button, cancelAction: "redirect" },
+                  }))
                 }
               />
               Redirect URL
@@ -159,10 +159,10 @@ export function ButtonTab({ config, setConfig }) {
                   type="text"
                   value={config.button.redirectUrl || ""}
                   onChange={(e) =>
-                    setConfig({
-                      ...config,
-                      button: { ...config.button, redirectUrl: e.target.value },
-                    })
+                    setConfig((prev) => ({
+                      ...prev,
+                      button: { ...prev.button, redirectUrl: e.target.value },
+                    }))
                   }
                   style={{
                     width: "100%",
@@ -188,10 +188,10 @@ export function ButtonTab({ config, setConfig }) {
                 name="cancelAction"
                 checked={config.button.cancelAction === "errorMsg"}
                 onChange={() =>
-                  setConfig({
-                    ...config,
-                    button: { ...config.button, cancelAction: "errorMsg" },
-                  })
+                  setConfig((prev) => ({
+                    ...prev,
+                    button: { ...prev.button, cancelAction: "errorMsg" },
+                  }))
                 }
               />
               Show error message
@@ -208,13 +208,13 @@ export function ButtonTab({ config, setConfig }) {
                   type="text"
                   value={config.button.cancelErrorMsg || ""}
                   onChange={(e) =>
-                    setConfig({
-                      ...config,
+                    setConfig((prev) => ({
+                      ...prev,
                       button: {
-                        ...config.button,
+                        ...prev.button,
                         cancelErrorMsg: e.target.value,
                       },
-                    })
+                    }))
                   }
                   style={{
                     width: "100%",
@@ -247,10 +247,10 @@ export function ButtonTab({ config, setConfig }) {
           badge={<Badge text="Basic plan or higher" type="basic" />}
           value={config.button.cancelBgColor}
           onChange={(val) =>
-            setConfig({
-              ...config,
-              button: { ...config.button, cancelBgColor: val },
-            })
+            setConfig((prev) => ({
+              ...prev,
+              button: { ...prev.button, cancelBgColor: val },
+            }))
           }
         />
         <ColorInput
@@ -258,10 +258,10 @@ export function ButtonTab({ config, setConfig }) {
           badge={<Badge text="Premium plan" type="premium" />}
           value={config.button.cancelBorderColor}
           onChange={(val) =>
-            setConfig({
-              ...config,
-              button: { ...config.button, cancelBorderColor: val },
-            })
+            setConfig((prev) => ({
+              ...prev,
+              button: { ...prev.button, cancelBorderColor: val },
+            }))
           }
         />
         <NumberInput
@@ -269,10 +269,10 @@ export function ButtonTab({ config, setConfig }) {
           badge={<Badge text="Premium plan" type="premium" />}
           value={config.button.cancelBorderRadius}
           onChange={(val) =>
-            setConfig({
-              ...config,
-              button: { ...config.button, cancelBorderRadius: val },
-            })
+            setConfig((prev) => ({
+              ...prev,
+              button: { ...prev.button, cancelBorderRadius: val },
+            }))
           }
         />
         <NumberInput
@@ -280,10 +280,10 @@ export function ButtonTab({ config, setConfig }) {
           badge={<Badge text="Premium plan" type="premium" />}
           value={config.button.cancelBorderWidth}
           onChange={(val) =>
-            setConfig({
-              ...config,
-              button: { ...config.button, cancelBorderWidth: val },
-            })
+            setConfig((prev) => ({
+              ...prev,
+              button: { ...prev.button, cancelBorderWidth: val },
+            }))
           }
         />
       </Card>

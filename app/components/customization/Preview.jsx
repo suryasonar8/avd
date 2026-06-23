@@ -64,7 +64,11 @@ export const Preview = ({ config, setConfig, previewMode, setPreviewMode }) => {
             alignItems: "center",
             justifyContent: "center",
             padding: "40px",
-            background: config.background.pageColor,
+            background:
+              config.background.type === "Image background" &&
+              config.background.backgroundImage
+                ? `url(${config.background.backgroundImage}) no-repeat center center / cover`
+                : config.background.pageColor,
           }}
         >
           <div
@@ -89,6 +93,18 @@ export const Preview = ({ config, setConfig, previewMode, setPreviewMode }) => {
               border: `${config.background.borderWidth}px solid ${config.background.borderColor}`,
             }}
           >
+            {config.background.logo && (
+              <img
+                src={config.background.logo}
+                alt="Logo"
+                style={{
+                  maxWidth: "120px",
+                  maxHeight: "60px",
+                  marginBottom: "20px",
+                  objectFit: "contain",
+                }}
+              />
+            )}
             <h3
               style={{
                 fontSize: previewMode === "desktop" ? "26px" : "18px",
