@@ -9,7 +9,54 @@
   {% assign active_popup = active_popup_node.config.value %}
 {% endif %}
 
+{% assign show_popup = false %}
 {% if active_popup %}
+  {% if active_popup.pages == 'All pages' or active_popup.pages == blank %}
+    {% assign show_popup = true %}
+  {% elsif active_popup.pages == 'Home page' %}
+    {% if request.page_type == 'index' %}
+      {% assign show_popup = true %}
+    {% endif %}
+  {% elsif active_popup.pages == 'Specific collections' or active_popup['pages'] == 'Specific collections' %}
+    <!-- Debug: pages is {{ active_popup.pages }}, collection handle is {{ collection.handle }} -->
+    {% if request.page_type == 'collection' or collection %}
+      {% assign handles = active_popup.selectedCollectionHandles | default: active_popup['selectedCollectionHandles'] %}
+      {% for handle in handles %}
+        {% assign h = handle | strip %}
+        {% if h == collection.handle %}
+          {% assign show_popup = true %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% elsif active_popup.pages == 'Specific product tags' or active_popup['pages'] == 'Specific product tags' %}
+    {% if request.page_type == 'product' or product %}
+      {% assign tags = active_popup.selectedProductTags | default: active_popup['selectedProductTags'] %}
+      {% for tag in product.tags %}
+        {% for selected_tag in tags %}
+          {% if tag == selected_tag %}
+            {% assign show_popup = true %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+        {% if show_popup %}{% break %}{% endif %}
+      {% endfor %}
+    {% endif %}
+  {% elsif active_popup.pages == 'Specific products' or active_popup['pages'] == 'Specific products' %}
+    {% if request.page_type == 'product' or product %}
+      {% assign handles = active_popup.selectedProductHandles | default: active_popup['selectedProductHandles'] %}
+      {% for handle in handles %}
+        {% assign h = handle | strip %}
+        {% if h == product.handle %}
+          {% assign show_popup = true %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+{% if show_popup %}
   <!-- Debug: active_popup ID is {{ active_popup.id }} -->
   {% assign background_page = active_popup.background.pageColor | default: 'rgba(0,0,0,0.7)' %}
   {% assign background_bg = active_popup.background.bgColor | default: '#FFFFFF' %}
@@ -37,7 +84,6 @@
   
   {% assign cancel_btn_bg = active_popup.button.cancelBgColor | default: '#A0A0A0' %}
   {% assign cancel_btn_border_color = active_popup.button.cancelBorderColor | default: '#FFFFFF' %}
-  {% assign cancel_btn_border_width = active_popup.button.cancelBorderWidth | default: 0 %}
   {% assign cancel_btn_border_width = active_popup.button.cancelBorderWidth | default: 0 %}
   {% assign cancel_btn_border_radius = active_popup.button.cancelBorderRadius | default: 0 %}
 
@@ -70,39 +116,6 @@
       {% assign cancel_error_msg = translations.cancelErrorMsg %}
     {% endif %}
   {% endif %}
-{% else %}
-  {% assign background_page = 'rgba(0,0,0,0.7)' %}
-  {% assign background_bg = '#FFFFFF' %}
-  {% assign background_border_color = '#FFFFFF' %}
-  {% assign background_border_width = 0 %}
-  {% assign background_border_radius = 0 %}
-  
-  {% assign text_heading = 'Welcome!' %}
-  {% assign text_subheading = 'Please verify that you are ' | append: min_age | append: ' years of age or older to enter this site.' %}
-  
-  {% assign btn_submit = 'Agree' %}
-  {% assign btn_cancel = 'Disagree' %}
-  {% assign btn_bg = '#000000' %}
-  {% assign btn_border_color = 'transparent' %}
-  {% assign btn_border_width = 0 %}
-  {% assign btn_border_radius = 4 %}
-  
-  {% assign method = 'No input' %}
-  {% assign date_order = 'MM,DD,YY' %}
-
-  {% assign cancel_action = 'redirect' %}
-  {% assign cancel_redirect_url = redirect_url %}
-  {% assign cancel_error_msg = '' %}
-  {% assign submit_error_msg = '' %}
-  
-  {% assign cancel_btn_bg = '#A0A0A0' %}
-  {% assign cancel_btn_border_color = 'transparent' %}
-  {% assign cancel_btn_border_width = 0 %}
-  {% assign cancel_btn_border_radius = 4 %}
-
-  {% assign remember_visitor = 'Session only' %}
-  {% assign remember_days = 30 %}
-{% endif %}
 
 <div id="age-verification-overlay" class="age-verification-overlay" style="display: none; background-color: {{ background_page }}; {% if background_type == 'Image background' and background_image != blank %}background-image: url('{{ background_image }}'); background-size: cover; background-position: center;{% endif %}" 
      data-min-age="{{ min_age }}" 
@@ -124,7 +137,6 @@
       <h3 class="age-verification-heading">{{ text_heading }}</h3>
       <p class="age-verification-subheading">{{ text_subheading }}</p>
 
-      <!-- Debug: Method is "{{ method }}", Method down is "{{ method_down }}" -->
       {% assign method_down = method | downcase %}
       {% if method_down contains 'birthdate' %}
         <div class="age-verification-birthdate">
@@ -188,6 +200,7 @@
     </div>
   </div>
 </div>
+{% endif %}
 
 {% schema %}
 {

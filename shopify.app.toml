@@ -1,6 +1,6 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "2a50d0cd373f79f212aee48b6d90502e"
+client_id = "e7dd5de9e855e9672261f8e950f6b2a9"
 name = "avd - age verification dialog"
 application_url = "https://example.com"
 embedded = true

@@ -1,7 +1,10 @@
 import { Card } from "../Card";
 import { Badge } from "../Badge";
+import { useAppBridge } from "@shopify/app-bridge-react";
+import { useState } from "react";
 
 export function InfoTab({ config, setConfig }) {
+  const shopify = useAppBridge();
   return (
     <>
       <Card title="Pop-up Info">
@@ -235,17 +238,8 @@ export function InfoTab({ config, setConfig }) {
               gap: "10px",
             }}
           >
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                fontSize: "13px",
-              }}
-            >
-              <input type="radio" name="pages" checked readOnly /> All pages
-            </label>
             {[
+              "All pages",
               "Home page",
               "Specific collections",
               "Specific products",
@@ -259,14 +253,224 @@ export function InfoTab({ config, setConfig }) {
                   alignItems: "center",
                   gap: "8px",
                   fontSize: "13px",
-                  color: "#6D7175",
+                  cursor: "pointer",
                 }}
               >
-                <input type="radio" name="pages" disabled /> {page}
+                <input
+                  type="radio"
+                  name="pages"
+                  checked={config.pages === page}
+                  onChange={() =>
+                    setConfig((prev) => ({ ...prev, pages: page }))
+                  }
+                />{" "}
+                {page}
               </label>
             ))}
           </div>
         </div>
+
+        {config.pages === "Specific collections" && (
+          <div style={{ marginBottom: "16px", paddingLeft: "24px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "8px",
+              }}
+            >
+              <label style={{ fontSize: "12px", fontWeight: "600" }}>
+                Selected Collections
+              </label>
+              <button
+                onClick={async () => {
+                  try {
+                    const selected = await shopify.resourcePicker({
+                      type: "collection",
+                      multiple: true,
+                      selectionIds: (config.selectedCollections || []).map(
+                        (id) => ({ id }),
+                      ),
+                    });
+                    if (selected) {
+                      setConfig((prev) => ({
+                        ...prev,
+                        selectedCollections: selected.map((c) => c.id),
+                        _collectionTitles: selected.map((c) => c.title),
+                        selectedCollectionHandles: selected.map(
+                          (c) => c.handle,
+                        ),
+                      }));
+                    }
+                  } catch (e) {
+                    console.error("Picker error:", e);
+                  }
+                }}
+                style={{
+                  padding: "4px 8px",
+                  fontSize: "12px",
+                  borderRadius: "4px",
+                  border: "1px solid #CBCFD2",
+                  background: "#FFF",
+                  cursor: "pointer",
+                }}
+              >
+                Select Collections
+              </button>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+              {(config.selectedCollections || []).map((id, i) => (
+                <div
+                  key={id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    padding: "4px 8px",
+                    background: "#F1F1F1",
+                    borderRadius: "4px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {(config._collectionTitles || [])[i] ||
+                    id.replace("gid://shopify/Collection/", "#")}
+                  <span
+                    onClick={() => {
+                      const newIds = config.selectedCollections.filter(
+                        (item) => item !== id,
+                      );
+                      const newTitles = config._collectionTitles.filter(
+                        (_, idx) => idx !== i,
+                      );
+                      const newHandles = (
+                        config.selectedCollectionHandles || []
+                      ).filter((_, idx) => idx !== i);
+                      setConfig((prev) => ({
+                        ...prev,
+                        selectedCollections: newIds,
+                        _collectionTitles: newTitles,
+                        selectedCollectionHandles: newHandles,
+                      }));
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      color: "#6D7175",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    ×
+                  </span>
+                </div>
+              ))}
+              {(config.selectedCollections || []).length === 0 && (
+                <p style={{ fontSize: "12px", color: "#6D7175" }}>
+                  No collections selected
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {config.pages === "Specific products" && (
+          <div style={{ marginBottom: "16px", paddingLeft: "24px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "8px",
+              }}
+            >
+              <label style={{ fontSize: "12px", fontWeight: "600" }}>
+                Selected Products
+              </label>
+              <button
+                onClick={async () => {
+                  try {
+                    const selected = await shopify.resourcePicker({
+                      type: "product",
+                      multiple: true,
+                      selectionIds: (config.selectedProducts || []).map(
+                        (id) => ({ id }),
+                      ),
+                    });
+                    if (selected) {
+                      setConfig((prev) => ({
+                        ...prev,
+                        selectedProducts: selected.map((p) => p.id),
+                        _productTitles: selected.map((p) => p.title),
+                        selectedProductHandles: selected.map((p) => p.handle),
+                      }));
+                    }
+                  } catch (e) {
+                    console.error("Picker error:", e);
+                  }
+                }}
+                style={{
+                  padding: "4px 8px",
+                  fontSize: "12px",
+                  borderRadius: "4px",
+                  border: "1px solid #CBCFD2",
+                  background: "#FFF",
+                  cursor: "pointer",
+                }}
+              >
+                Select Products
+              </button>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+              {(config.selectedProducts || []).map((id, i) => (
+                <div
+                  key={id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    padding: "4px 8px",
+                    background: "#F1F1F1",
+                    borderRadius: "4px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {(config._productTitles || [])[i] ||
+                    id.replace("gid://shopify/Product/", "#")}
+                  <span
+                    onClick={() => {
+                      const newIds = config.selectedProducts.filter(
+                        (item) => item !== id,
+                      );
+                      const newTitles = config._productTitles.filter(
+                        (_, idx) => idx !== i,
+                      );
+                      const newHandles = (
+                        config.selectedProductHandles || []
+                      ).filter((_, idx) => idx !== i);
+                      setConfig((prev) => ({
+                        ...prev,
+                        selectedProducts: newIds,
+                        _productTitles: newTitles,
+                        selectedProductHandles: newHandles,
+                      }));
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      color: "#6D7175",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    ×
+                  </span>
+                </div>
+              ))}
+              {(config.selectedProducts || []).length === 0 && (
+                <p style={{ fontSize: "12px", color: "#6D7175" }}>
+                  No products selected
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         <div>
           <label

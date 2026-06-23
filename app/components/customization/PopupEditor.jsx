@@ -24,6 +24,12 @@ const DEFAULT_CONFIG = {
   verifyAge: 18,
   dateOrder: "MM,DD,YY",
   pages: "All pages",
+  selectedCollections: [],
+  _collectionTitles: [],
+  selectedCollectionHandles: [],
+  selectedProducts: [],
+  _productTitles: [],
+  selectedProductHandles: [],
   trigger: "Always show",
   background: {
     type: "Solid color background",
