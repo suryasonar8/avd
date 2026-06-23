@@ -4,13 +4,79 @@ import { authenticate } from "../shopify.server";
 import { PopupEditor } from "../components/customization/PopupEditor";
 
 export const loader = async ({ request }) => {
-  await authenticate.admin(request);
-  // Return null settings so PopupEditor uses DEFAULT_CONFIG for new popups
-  return { settings: null };
+  const { admin } = await authenticate.admin(request);
+
+  // Fetch global settings for Brand Mark
+  const globalSettingsResponse = await admin.graphql(
+    `#graphql
+    query getGlobalSettings {
+      shop {
+        metafield(namespace: "avd", key: "settings") {
+          value
+        }
+      }
+    }`,
+  );
+  const globalSettingsData = await globalSettingsResponse.json();
+  const globalSettingsValue = globalSettingsData.data.shop.metafield?.value;
+  const globalSettings = globalSettingsValue
+    ? JSON.parse(globalSettingsValue)
+    : { showBrandMark: true };
+
+  return { settings: null, globalSettings };
 };
 export const action = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
   const formData = await request.formData();
+  const intent = formData.get("intent");
+
+  if (intent === "toggle_brand_mark") {
+    const showBrandMark = formData.get("showBrandMark") === "true";
+
+    const existingResponse = await admin.graphql(
+      `#graphql
+      query getGlobalSettings {
+        shop {
+          metafield(namespace: "avd", key: "settings") {
+            value
+          }
+        }
+      }`,
+    );
+    const existingValue = (await existingResponse.json()).data.shop.metafield
+      ?.value;
+    const existingSettings = existingValue ? JSON.parse(existingValue) : {};
+    const newSettings = { ...existingSettings, showBrandMark };
+
+    const shopResponse = await admin.graphql(`{ shop { id } }`);
+    const shopId = (await shopResponse.json()).data.shop.id;
+
+    await admin.graphql(
+      `#graphql
+      mutation updateSettings($metafields: [MetafieldsSetInput!]!) {
+        metafieldsSet(metafields: $metafields) {
+          metafields { id }
+          userErrors { field message }
+        }
+      }`,
+      {
+        variables: {
+          metafields: [
+            {
+              namespace: "avd",
+              key: "settings",
+              type: "json",
+              ownerId: shopId,
+              value: JSON.stringify(newSettings),
+            },
+          ],
+        },
+      },
+    );
+
+    return { success: true };
+  }
+
   const configStr = formData.get("config");
   const config = JSON.parse(configStr);
 
@@ -209,6 +275,7 @@ export default function StoreVerificationCustomization() {
     <PopupEditor
       key="new-popup"
       settings={loaderData?.settings}
+      globalSettings={loaderData?.globalSettings}
       onSave={handleSave}
       heading="Configuration"
       description="Customization the pop-up to match your brand."

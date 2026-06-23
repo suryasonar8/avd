@@ -20,7 +20,6 @@ const TAB_COMPONENTS = {
 const DEFAULT_CONFIG = {
   name: "My Pop-up",
   status: "Enabled",
-  showBrandMark: true,
   method: "No input",
   verifyAge: 18,
   dateOrder: "MM,DD,YY",
@@ -67,6 +66,7 @@ const DEFAULT_CONFIG = {
 
 export function PopupEditor({
   settings,
+  globalSettings,
   onSave,
   onSaveSuccess,
   onDiscard,
@@ -102,7 +102,14 @@ export function PopupEditor({
   );
 
   const [config, setConfig] = useState(initialConfig);
+  const [localGlobalSettings, setLocalGlobalSettings] = useState(
+    globalSettings || { showBrandMark: true },
+  );
   const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    setLocalGlobalSettings(globalSettings || { showBrandMark: true });
+  }, [globalSettings]);
 
   const isDirty = useMemo(() => {
     const isSubmitting = fetcher
@@ -254,6 +261,8 @@ export function PopupEditor({
           setConfig={setConfig}
           previewMode={previewMode}
           setPreviewMode={setPreviewMode}
+          globalSettings={localGlobalSettings}
+          setGlobalSettings={setLocalGlobalSettings}
         />
       </div>
     </s-page>

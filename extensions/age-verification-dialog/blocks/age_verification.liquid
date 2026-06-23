@@ -9,8 +9,13 @@
   {% assign active_popup = active_popup_node.config.value %}
 {% endif %}
 
+{% assign app_status = settings.appStatus %}
+{% if app_status == nil %}
+  {% assign app_status = true %}
+{% endif %}
+
 {% assign show_popup = false %}
-{% if active_popup %}
+{% if active_popup and app_status %}
   {% if active_popup.pages == 'All pages' or active_popup.pages == blank %}
     {% assign show_popup = true %}
   {% elsif active_popup.pages == 'Home page' %}
@@ -205,7 +210,7 @@
 
       <p id="age-verify-error-text" style="display: none; color: red; margin-top: 15px;"></p>
 
-      {% if active_popup.showBrandMark != false %}
+      {% if settings.showBrandMark != false %}
         <div class="age-verification-footer">
           Protected by <span class="brand-mark"><span class="brand-shield">🛡️</span> <span class="brand-name">Blockify™</span></span>
         </div>

@@ -1,4 +1,15 @@
-export const Preview = ({ config, setConfig, previewMode, setPreviewMode }) => {
+import { useFetcher } from "react-router";
+
+export const Preview = ({
+  config,
+  setConfig,
+  previewMode,
+  setPreviewMode,
+  globalSettings,
+  setGlobalSettings,
+}) => {
+  const fetcher = useFetcher();
+  const showBrandMark = globalSettings?.showBrandMark !== false;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {/* Preview Container */}
@@ -257,7 +268,7 @@ export const Preview = ({ config, setConfig, previewMode, setPreviewMode }) => {
               </button>
             </div>
 
-            {config.showBrandMark !== false && (
+            {showBrandMark && (
               <div
                 style={{
                   marginTop: previewMode === "desktop" ? "50px" : "30px",
@@ -288,9 +299,15 @@ export const Preview = ({ config, setConfig, previewMode, setPreviewMode }) => {
             )}
           </div>
 
-          {config.showBrandMark !== false && (
+          {showBrandMark !== false ? (
             <button
-              onClick={() => setConfig({ ...config, showBrandMark: false })}
+              onClick={() => {
+                setGlobalSettings({ ...globalSettings, showBrandMark: false });
+                fetcher.submit(
+                  { intent: "toggle_brand_mark", showBrandMark: "false" },
+                  { method: "POST" },
+                );
+              }}
               style={{
                 marginTop: "20px",
                 background: "none",
@@ -303,6 +320,28 @@ export const Preview = ({ config, setConfig, previewMode, setPreviewMode }) => {
               }}
             >
               Click to remove brand mark
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setGlobalSettings({ ...globalSettings, showBrandMark: true });
+                fetcher.submit(
+                  { intent: "toggle_brand_mark", showBrandMark: "true" },
+                  { method: "POST" },
+                );
+              }}
+              style={{
+                marginTop: "20px",
+                background: "none",
+                border: "none",
+                color: "#005F99",
+                textDecoration: "underline",
+                fontSize: "13px",
+                fontWeight: "500",
+                cursor: "pointer",
+              }}
+            >
+              Click to show brand mark
             </button>
           )}
         </div>

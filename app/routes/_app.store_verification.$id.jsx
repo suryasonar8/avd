@@ -63,13 +63,85 @@ export const loader = async ({ request, params }) => {
     status: isActive ? "Enabled" : "Disabled",
   };
 
-  return { settings: popup };
+  // Fetch global settings for Brand Mark
+  const globalSettingsResponse = await admin.graphql(
+    `#graphql
+    query getGlobalSettings {
+      shop {
+        metafield(namespace: "avd", key: "settings") {
+          value
+        }
+      }
+    }`,
+  );
+  const globalSettingsData = await globalSettingsResponse.json();
+  const globalSettingsValue = globalSettingsData.data.shop.metafield?.value;
+  const globalSettings = globalSettingsValue
+    ? JSON.parse(globalSettingsValue)
+    : { showBrandMark: true };
+
+  return { settings: popup, globalSettings };
 };
 
 export const action = async ({ request, params }) => {
   const { admin } = await authenticate.admin(request);
   const { id } = params;
   const formData = await request.formData();
+  const intent = formData.get("intent");
+
+  if (intent === "toggle_brand_mark") {
+    const showBrandMark = formData.get("showBrandMark") === "true";
+
+    // Fetch existing settings to merge them
+    const existingResponse = await admin.graphql(
+      `#graphql
+      query getGlobalSettings {
+        shop {
+          metafield(namespace: "avd", key: "settings") {
+            value
+          }
+        }
+      }`,
+    );
+    const existingData = await existingResponse.json();
+    const existingValue = existingData.data.shop.metafield?.value;
+    const existingSettings = existingValue ? JSON.parse(existingValue) : {};
+
+    const newSettings = { ...existingSettings, showBrandMark };
+
+    const shopResponse = await admin.graphql(`{ shop { id } }`);
+    const shopId = (await shopResponse.json()).data.shop.id;
+
+    const updateResponse = await admin.graphql(
+      `#graphql
+      mutation updateSettings($metafields: [MetafieldsSetInput!]!) {
+        metafieldsSet(metafields: $metafields) {
+          metafields { id }
+          userErrors { field message }
+        }
+      }`,
+      {
+        variables: {
+          metafields: [
+            {
+              namespace: "avd",
+              key: "settings",
+              type: "json",
+              ownerId: shopId,
+              value: JSON.stringify(newSettings),
+            },
+          ],
+        },
+      },
+    );
+
+    const updateData = await updateResponse.json();
+    return {
+      success: !updateData.data.metafieldsSet.userErrors?.length,
+      globalSettings: newSettings,
+    };
+  }
+
   const configStr = formData.get("config");
   const config = JSON.parse(configStr);
 
@@ -136,7 +208,7 @@ export const action = async ({ request, params }) => {
   const responseData = await response.json();
   const success = !responseData.data.metaobjectUpdate.userErrors?.length;
 
-  // 3. Update the Shop Metafield based on status
+  // 4. Update the Shop Metafield based on status
   if (success) {
     const shopResponse = await admin.graphql(
       `{ shop { id metafield(namespace: "avd", key: "active_popup") { value } } }`,
@@ -193,7 +265,9 @@ export const action = async ({ request, params }) => {
           }`,
         );
         const defCreateData = await defCreate.json();
-        if (defCreateData?.data?.metafieldDefinitionCreate?.userErrors?.length) {
+        if (
+          defCreateData?.data?.metafieldDefinitionCreate?.userErrors?.length
+        ) {
           console.error(
             "Definition creation failed:",
             JSON.stringify(
@@ -272,6 +346,7 @@ export default function StoreVerificationEdit() {
     <PopupEditor
       key={id}
       settings={loaderData?.settings}
+      globalSettings={loaderData?.globalSettings}
       onSave={handleSave}
       heading="Edit Pop-up"
       description="Edit your pop-up configuration."
