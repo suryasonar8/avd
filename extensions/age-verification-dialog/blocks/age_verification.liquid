@@ -54,6 +54,12 @@
       {% endfor %}
     {% endif %}
   {% endif %}
+  
+  {% if show_popup and active_popup.trigger == 'Logged customers' %}
+    {% if customer == nil %}
+      {% assign show_popup = false %}
+    {% endif %}
+  {% endif %}
 {% endif %}
 
 {% if show_popup %}

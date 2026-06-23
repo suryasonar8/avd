@@ -496,9 +496,18 @@ export function InfoTab({ config, setConfig }) {
                 alignItems: "center",
                 gap: "8px",
                 fontSize: "13px",
+                cursor: "pointer",
               }}
             >
-              <input type="radio" name="trigger" checked readOnly /> Always show
+              <input
+                type="radio"
+                name="trigger"
+                checked={config.trigger === "Always show"}
+                onChange={() =>
+                  setConfig((prev) => ({ ...prev, trigger: "Always show" }))
+                }
+              />{" "}
+              Always show
             </label>
             <label
               style={{
@@ -506,10 +515,21 @@ export function InfoTab({ config, setConfig }) {
                 alignItems: "center",
                 gap: "8px",
                 fontSize: "13px",
-                color: "#6D7175",
+                cursor: "pointer",
               }}
             >
-              <input type="radio" name="trigger" disabled /> Logged customers
+              <input
+                type="radio"
+                name="trigger"
+                checked={config.trigger === "Logged customers"}
+                onChange={() =>
+                  setConfig((prev) => ({
+                    ...prev,
+                    trigger: "Logged customers",
+                  }))
+                }
+              />{" "}
+              Logged customers
             </label>
           </div>
         </div>
