@@ -5,6 +5,7 @@ import { useState } from "react";
 
 export function InfoTab({ config, setConfig }) {
   const shopify = useAppBridge();
+  const [urlInput, setUrlInput] = useState("");
   return (
     <>
       <Card title="Pop-up Info">
@@ -469,6 +470,94 @@ export function InfoTab({ config, setConfig }) {
                 </p>
               )}
             </div>
+          </div>
+        )}
+
+        {config.pages === "Custom" && (
+          <div style={{ marginBottom: "16px", paddingLeft: "24px" }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: "12px",
+                fontWeight: "600",
+                marginBottom: "8px",
+              }}
+            >
+              Add custom URL
+            </label>
+            <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+              <input
+                type="text"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                placeholder="Enter URL (e.g. /pages/about)"
+                style={{
+                  flex: 1,
+                  padding: "8px",
+                  borderRadius: "8px",
+                  border: "1px solid #CBCFD2",
+                  fontSize: "13px",
+                }}
+              />
+              <button
+                onClick={() => {
+                  if (urlInput.trim()) {
+                    setConfig((prev) => ({
+                      ...prev,
+                      customUrl: urlInput.trim(),
+                    }));
+                    setUrlInput("");
+                  }
+                }}
+                style={{
+                  padding: "8px 16px",
+                  fontSize: "12px",
+                  borderRadius: "8px",
+                  border: "1px solid #CBCFD2",
+                  background: "#FFF",
+                  cursor: "pointer",
+                }}
+              >
+                Add URL
+              </button>
+            </div>
+            {config.customUrl && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "6px 12px",
+                  background: "#F1F1F1",
+                  borderRadius: "4px",
+                  fontSize: "12px",
+                }}
+              >
+                <span
+                  style={{
+                    flex: 1,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {config.customUrl}
+                </span>
+                <span
+                  onClick={() =>
+                    setConfig((prev) => ({ ...prev, customUrl: "" }))
+                  }
+                  style={{
+                    cursor: "pointer",
+                    color: "#6D7175",
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                  }}
+                >
+                  ×
+                </span>
+              </div>
+            )}
           </div>
         )}
 

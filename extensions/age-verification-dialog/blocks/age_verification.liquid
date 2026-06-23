@@ -53,6 +53,13 @@
         {% endif %}
       {% endfor %}
     {% endif %}
+  {% elsif active_popup.pages == 'Custom' %}
+    {% assign custom_url = active_popup.customUrl | strip %}
+    {% if custom_url != blank %}
+      {% if custom_url == request.path or custom_url == canonical_url %}
+        {% assign show_popup = true %}
+      {% endif %}
+    {% endif %}
   {% endif %}
   
   {% if show_popup and active_popup.trigger == 'Logged customers' %}
