@@ -17,7 +17,8 @@ export default function SettingsSection({ title, badge, children }) {
         <span style={{ fontSize: "15px", fontWeight: 700, color: "#202223" }}>
           {title}
         </span>
-        {badge && <BlueBadge text={badge} />}
+        {badge &&
+          (typeof badge === "string" ? <BlueBadge text={badge} /> : badge)}
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {children}

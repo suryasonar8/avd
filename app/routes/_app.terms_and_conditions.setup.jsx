@@ -5,6 +5,7 @@ import { authenticate } from "../shopify.server";
 import { Card } from "../components/Card";
 import { ColorInput } from "../components/ColorInput";
 import { NumberInput } from "../components/NumberInput";
+import { Badge } from "../components/Badge";
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
@@ -90,28 +91,6 @@ export const action = async ({ request }) => {
 
   return { success: true };
 };
-
-// ─── Premium Badge ────────────────────────────────────────────────────────────
-function PremiumBadge() {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "4px",
-        backgroundColor: "#EAF4FF",
-        color: "#005BD3",
-        fontSize: "11px",
-        fontWeight: 600,
-        padding: "2px 8px",
-        borderRadius: "20px",
-        border: "1px solid #B5D9FF",
-      }}
-    >
-      ⭐ Premium plan
-    </span>
-  );
-}
 
 // ─── Radio Input ──────────────────────────────────────────────────────────────
 function RadioInput({ label, name, value, checked, onChange, disabled }) {
@@ -671,7 +650,7 @@ export default function TermsAndConditionsSetup() {
                   <span style={{ fontSize: "13px", fontWeight: 700 }}>
                     Status
                   </span>
-                  <PremiumBadge />
+                  <Badge text="Premium plan" type="premium" />
                 </div>
                 <RadioInput
                   label="Enabled"
@@ -723,7 +702,7 @@ export default function TermsAndConditionsSetup() {
                     <span style={{ fontSize: "12px", color: "#6D7175" }}>
                       *
                     </span>
-                    <PremiumBadge />
+                    <Badge text="Premium plan" type="premium" />
                   </div>
                   <CheckboxInput
                     label="Product page"
@@ -764,7 +743,7 @@ export default function TermsAndConditionsSetup() {
                     <span style={{ fontSize: "13px", fontWeight: 700 }}>
                       Trigger condition
                     </span>
-                    <PremiumBadge />
+                    <Badge text="Premium plan" type="premium" />
                   </div>
                   <RadioInput
                     label="Always show"
@@ -797,7 +776,10 @@ export default function TermsAndConditionsSetup() {
               </div>
             </>
           ) : (
-            <Card title="Message" badge={<PremiumBadge />}>
+            <Card
+              title="Message"
+              badge={<Badge text="Premium plan" type="premium" />}
+            >
               <TextInput
                 label="Text"
                 required

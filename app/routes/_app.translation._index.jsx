@@ -26,18 +26,33 @@ export const loader = async ({ request }) => {
   const primaryLocale =
     shopLocales.find((lang) => lang.primary)?.locale || "en";
 
-  // Discover translation type handle
+  // 1. Discover the actual Metaobject type handles
   const defsResponse = await admin.graphql(
     `#graphql
     query getDefs {
+      popups: metaobjectDefinitionByType(type: "$app:popups") { type }
       translations: metaobjectDefinitionByType(type: "$app:translations") { type }
     }`,
   );
   const defsData = await defsResponse.json();
+  const popupsTypeHandle = defsData.data.popups?.type || "app--popups";
   const translationsTypeHandle =
     defsData.data.translations?.type || "app--translations";
 
-  // Fetch translation summaries
+  // 2. Fetch popups from Metaobjects to check if any exist
+  const popupsResponse = await admin.graphql(
+    `#graphql
+    query getPopups($type: String!) {
+      metaobjects(type: $type, first: 1) {
+        nodes { id }
+      }
+    }`,
+    { variables: { type: popupsTypeHandle } },
+  );
+  const popupsData = await popupsResponse.json();
+  const hasPopups = (popupsData.data?.metaobjects?.nodes || []).length > 0;
+
+  // 3. Fetch translation summaries
   const translationsResponse = await admin.graphql(
     `#graphql
     query getTranslations($type: String!) {
@@ -77,11 +92,12 @@ export const loader = async ({ request }) => {
     shopLocales,
     primaryLocale,
     translatedLanguages,
+    hasPopups,
   };
 };
 
 export default function TranslationPage() {
-  const { shop, shopLocales, primaryLocale, translatedLanguages } =
+  const { shop, shopLocales, primaryLocale, translatedLanguages, hasPopups } =
     useLoaderData();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -101,11 +117,19 @@ export default function TranslationPage() {
     shopLocales.find((lang) => lang.locale === primaryLocale)?.name ||
     "English";
 
+  const handleAddLanguage = () => {
+    if (hasPopups) {
+      setIsModalOpen(true);
+    } else {
+      navigate("/store_verification/customization");
+    }
+  };
+
   const handleRedirect = () => {
     // Redirect to Shopify Admin language settings
     window.open(
       `https://admin.shopify.com/store/${shop}/settings/languages`,
-      "_top",
+      "_blank",
     );
   };
 
@@ -443,7 +467,7 @@ export default function TranslationPage() {
               }}
             >
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={handleAddLanguage}
                 style={{
                   padding: "8px 16px",
                   backgroundColor: "#202223",
@@ -455,7 +479,7 @@ export default function TranslationPage() {
                   fontSize: "13px",
                 }}
               >
-                Add language
+                {hasPopups ? "Add language" : "Create pop-up"}
               </button>
             </div>
           </div>
@@ -500,7 +524,7 @@ export default function TranslationPage() {
               Translate the age verification version into multiple languages.
             </p>
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleAddLanguage}
               style={{
                 padding: "10px 24px",
                 backgroundColor: "#202223",
@@ -513,7 +537,7 @@ export default function TranslationPage() {
                 boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
               }}
             >
-              Add language
+              {hasPopups ? "Add language" : "Create pop-up"}
             </button>
           </div>
         )}

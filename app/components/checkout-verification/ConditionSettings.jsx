@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import SettingsSection from "./SettingsSection";
 import CustomRadio from "./CustomRadio";
+import { Badge } from "../Badge";
 
 export default function ConditionSettings({ config, onChange }) {
   const shopify = useAppBridge();
@@ -73,7 +74,10 @@ export default function ConditionSettings({ config, onChange }) {
 
   return (
     <>
-      <SettingsSection title="Banner status">
+      <SettingsSection
+        title="Banner status"
+        badge={<Badge text="Basic plan or higher" type="basic" />}
+      >
         <CustomRadio
           label="Enabled"
           checked={config.status === "enabled"}
@@ -86,7 +90,10 @@ export default function ConditionSettings({ config, onChange }) {
         />
       </SettingsSection>
 
-      <SettingsSection title="Target">
+      <SettingsSection
+        title="Target"
+        badge={<Badge text="Basic plan or higher" type="basic" />}
+      >
         <CustomRadio
           label="Always"
           description="Always show the banner without any conditions."
@@ -142,8 +149,9 @@ export default function ConditionSettings({ config, onChange }) {
                     }}
                   >
                     <span>
-                      {(config._collectionTitles || [])[i] ||
-                        id.replace("gid://shopify/Collection/", "#")}
+                      {config._collectionTitles && config._collectionTitles[i]
+                        ? config._collectionTitles[i]
+                        : id.replace("gid://shopify/Collection/", "#")}
                     </span>
                     <button
                       onClick={() => removeCollection(id)}
@@ -214,8 +222,9 @@ export default function ConditionSettings({ config, onChange }) {
                     }}
                   >
                     <span>
-                      {(config._productTitles || [])[i] ||
-                        id.replace("gid://shopify/Product/", "#")}
+                      {config._productTitles && config._productTitles[i]
+                        ? config._productTitles[i]
+                        : id.replace("gid://shopify/Product/", "#")}
                     </span>
                     <button
                       onClick={() => removeProduct(id)}

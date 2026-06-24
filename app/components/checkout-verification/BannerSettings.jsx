@@ -1,5 +1,6 @@
 import { BANNER_TEXT_MAX_LENGTH } from "../../constants/checkout-verification";
 import SettingsSection from "./SettingsSection";
+import { Badge } from "../Badge";
 
 export default function BannerSettings({ config, onChange }) {
   const heading = config.heading || "";
@@ -13,7 +14,10 @@ export default function BannerSettings({ config, onChange }) {
   };
 
   return (
-    <SettingsSection title="Text customization">
+    <SettingsSection
+      title="Text customization"
+      badge={<Badge text="Basic plan or higher" type="basic" />}
+    >
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
           <label style={{ fontSize: "14px", color: "#6D7175" }}>Heading</label>

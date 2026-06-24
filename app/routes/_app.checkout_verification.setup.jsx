@@ -13,6 +13,8 @@ const DEFAULT_CONFIG = {
   heading: "You must be at least 18 years old to purchase these products",
   selectedCollections: [],
   selectedProducts: [],
+  _collectionTitles: [],
+  _productTitles: [],
 };
 
 export const loader = async ({ request }) => {
@@ -30,7 +32,9 @@ export const loader = async ({ request }) => {
   );
   const data = await response.json();
   const metafieldValue = data.data.shop.metafield?.value;
-  const config = metafieldValue ? JSON.parse(metafieldValue) : DEFAULT_CONFIG;
+  const config = metafieldValue
+    ? { ...DEFAULT_CONFIG, ...JSON.parse(metafieldValue) }
+    : DEFAULT_CONFIG;
 
   return { config };
 };
