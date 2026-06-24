@@ -153,6 +153,15 @@ export function PopupEditor({
     }
   }, [fetcher?.state, fetcher?.data, shopify, onSaveSuccess, fetcher]);
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("saved") === "true") {
+      shopify.toast.show("Saved successfully");
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, [shopify]);
+
   const handleSave = useCallback(() => {
     if (isUploading) return;
     onSave(config);

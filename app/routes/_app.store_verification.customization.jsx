@@ -259,7 +259,7 @@ export const action = async ({ request }) => {
   }
 
   // Redirect to the newly created popup's edit page
-  return redirect(`/store_verification/${popupId}`);
+  return redirect(`/store_verification/${popupId}?saved=true`);
 };
 
 export default function StoreVerificationCustomization() {
