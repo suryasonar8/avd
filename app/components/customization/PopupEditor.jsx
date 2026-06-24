@@ -33,7 +33,7 @@ const DEFAULT_CONFIG = {
   trigger: "Always show",
   background: {
     type: "Solid color background",
-    pageColor: "##FFFFFFD9",
+    pageColor: "#FFFFFFD9",
     bgColor: "#000000",
     logo: null,
     backgroundImage: null,
