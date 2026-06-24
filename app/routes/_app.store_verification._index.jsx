@@ -134,9 +134,13 @@ export const action = async ({ request }) => {
       if (activeGid === gid) {
         await admin.graphql(
           `#graphql
-          mutation clearActive($metafields: [MetafieldsSetInput!]!) {
-            metafieldsSet(metafields: $metafields) {
-              metafields { id }
+          mutation deleteActive($metafields: [MetafieldIdentifierInput!]!) {
+            metafieldsDelete(metafields: $metafields) {
+              deletedMetafields {
+                key
+                namespace
+                ownerId
+              }
               userErrors { field message }
             }
           }`,
@@ -144,11 +148,9 @@ export const action = async ({ request }) => {
             variables: {
               metafields: [
                 {
+                  ownerId: shopId,
                   namespace: "avd",
                   key: "active_popup",
-                  type: "metaobject_reference",
-                  ownerId: shopId,
-                  value: "",
                 },
               ],
             },

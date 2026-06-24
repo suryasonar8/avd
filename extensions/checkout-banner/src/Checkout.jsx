@@ -42,18 +42,6 @@ function Extension() {
     }
   }, [bannerMetafield]);
 
-  const showSync = useMemo(() => {
-    if (!config || config.status !== "enabled") return false;
-    if (config.target === "always") return true;
-    if (config.target === "product") {
-      const selectedIds = config.selectedProducts || [];
-      return cartLines.some((line) =>
-        selectedIds.includes(line.merchandise?.product?.id),
-      );
-    }
-    return false;
-  }, [config, cartLines]);
-
   const [collectionMatch, setCollectionMatch] = useState(false);
 
   useEffect(() => {
@@ -108,10 +96,29 @@ function Extension() {
     }
   }
 
-  const visible =
-    showSync || (config?.target === "collection" && collectionMatch);
+  const visible = useMemo(() => {
+    if (!config || config.status !== "enabled") return false;
 
-  if (!visible || !config) {
+    if (config.target === "always") {
+      return true;
+    }
+
+    if (config.target === "product") {
+      const selectedProductIds = config.selectedProducts || [];
+      return cartLines.some((line) => {
+        const productId = line.merchandise?.product?.id;
+        return productId && selectedProductIds.includes(productId);
+      });
+    }
+
+    if (config.target === "collection") {
+      return collectionMatch;
+    }
+
+    return false;
+  }, [config, cartLines, collectionMatch]);
+
+  if (!visible) {
     return null;
   }
 
