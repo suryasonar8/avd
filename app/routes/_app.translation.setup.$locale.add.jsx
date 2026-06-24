@@ -706,6 +706,7 @@ export default function TranslationSetupPage() {
                     fontSize: "14px",
                     background: "white",
                     cursor: "pointer",
+                    boxSizing: "border-box",
                   }}
                 />
                 <span
@@ -750,6 +751,7 @@ export default function TranslationSetupPage() {
                         marginBottom: "8px",
                         outline: "none",
                         fontSize: "13px",
+                        boxSizing: "border-box",
                       }}
                     />
                     <div style={{ maxHeight: "200px", overflowY: "auto" }}>

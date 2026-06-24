@@ -63,7 +63,8 @@ export const action = async ({ request }) => {
             namespace: "avd",
             key: "settings",
             type: "json",
-            ownerId: (await (await admin.graphql(`{ shop { id } }`)).json()).data.shop.id,
+            ownerId: (await (await admin.graphql(`{ shop { id } }`)).json())
+              .data.shop.id,
             value: JSON.stringify(settings),
           },
         ],
@@ -207,6 +208,7 @@ export default function SettingsPage() {
                       borderRadius: "8px",
                       border: "1px solid #CBCFD2",
                       fontSize: "14px",
+                      boxSizing: "border-box",
                     }}
                   />
                   <span
