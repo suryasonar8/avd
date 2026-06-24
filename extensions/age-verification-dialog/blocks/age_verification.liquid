@@ -135,8 +135,39 @@
     {% endif %}
   {% endif %}
 
-<div id="age-verification-overlay" class="age-verification-overlay" style="display: none; background-color: {{ background_page }}; {% if background_type == 'Image background' and background_image != blank %}background-image: url('{{ background_image }}'); background-size: cover; background-position: center;{% endif %}" 
-     data-min-age="{{ min_age }}" 
+<style>
+  #age-verification-overlay {
+    background-color: {{ background_page }};
+    {% if background_type == 'Image background' and background_image != blank %}
+    background-image: url('{{ background_image }}');
+    background-size: cover;
+    background-position: center;
+    {% endif %}
+  }
+  .age-verification-modal {
+    background-color: {{ background_bg }};
+    border: {{ background_border_width }}px solid {{ background_border_color }};
+    border-radius: {{ background_border_radius }}px;
+  }
+  .age-verify-button.agree {
+    background-color: {{ btn_bg }};
+    color: #FFF;
+    border: {{ btn_border_width }}px solid {{ btn_border_color }};
+    border-radius: {{ btn_border_radius }}px;
+  }
+  .age-verify-button.disagree {
+    background-color: {{ cancel_btn_bg }};
+    color: #FFF;
+    border: {{ cancel_btn_border_width }}px solid {{ cancel_btn_border_color }};
+    border-radius: {{ cancel_btn_border_radius }}px;
+  }
+</style>
+{%- if active_popup.css != blank -%}
+  <style>{{ active_popup.css }}</style>
+{%- endif -%}
+
+<div id="age-verification-overlay" class="age-verification-overlay" style="display: none;"
+     data-min-age="{{ min_age }}"
      data-redirect-url="{{ redirect_url }}"
      data-cancel-action="{{ cancel_action }}"
      data-cancel-redirect-url="{{ cancel_redirect_url }}"
@@ -145,7 +176,7 @@
      data-remember-visitor="{{ remember_visitor }}"
      data-remember-days="{{ remember_days }}"
      data-method="{{ method }}">
-  <div class="age-verification-modal" style="background-color: {{ background_bg }}; border: {{ background_border_width }}px solid {{ background_border_color }}; border-radius: {{ background_border_radius }}px;">
+  <div class="age-verification-modal">
     <div class="age-verification-content">
       {% if logo_url != blank %}
         <div class="age-verification-logo" style="text-align: center; margin-bottom: 20px;">
@@ -196,8 +227,8 @@
       {% endif %}
 
       <div class="age-verification-buttons">
-        <button id="age-verify-agree" class="age-verify-button agree" style="background-color: {{ btn_bg }}; color: #FFF; border: {{ btn_border_width }}px solid {{ btn_border_color }}; border-radius: {{ btn_border_radius }}px;">{{ btn_submit }}</button>
-         <button id="age-verify-disagree" class="age-verify-button disagree" style="background-color: {{ cancel_btn_bg }}; color: #FFF; border: {{ cancel_btn_border_width }}px solid {{ cancel_btn_border_color }}; border-radius: {{ cancel_btn_border_radius }}px;">{{ btn_cancel }}</button>
+        <button id="age-verify-agree" class="age-verify-button agree">{{ btn_submit }}</button>
+         <button id="age-verify-disagree" class="age-verify-button disagree">{{ btn_cancel }}</button>
       </div>
 
       {% if remember_visitor == 'Allow visitor to choose' %}
@@ -217,6 +248,7 @@
       {% endif %}
     </div>
   </div>
+
 </div>
 {% endif %}
 
