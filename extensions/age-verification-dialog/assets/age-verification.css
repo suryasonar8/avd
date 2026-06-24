@@ -177,3 +177,10 @@
   backface-visibility: hidden;
   perspective: 1000px;
 }
+
+.avd-button-disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  filter: grayscale(0.5);
+  pointer-events: auto !important; /* Keep it clickable so we can show error */
+}
