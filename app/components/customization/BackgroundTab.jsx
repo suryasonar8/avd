@@ -298,7 +298,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
           }
         />
         <div style={{ marginBottom: "8px" }}>
-          <div
+          {/* <div
             style={{
               display: "flex",
               alignItems: "center",
@@ -310,15 +310,15 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
               Logo (Optional)
             </label>
             <Badge text="Basic plan or higher" type="basic" />
-          </div>
+          </div> */}
 
-          <input
+          {/* <input
             type="file"
             ref={logoInputRef}
             style={{ display: "none" }}
             accept="image/png, image/jpeg"
             onChange={(e) => handleImageUpload(e, "logo")}
-          />
+          /> */}
 
           {config.background.logo ? (
             <div

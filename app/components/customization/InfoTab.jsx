@@ -512,7 +512,7 @@ export function InfoTab({ config, setConfig }) {
                         type="text"
                         value={urlInput}
                         onChange={(e) => setUrlInput(e.target.value)}
-                        placeholder="Enter URL (e.g. /pages/about)"
+                        placeholder="Enter URL (e.g. https://xyz.myshopify.com/products/snowboard)"
                         style={{
                           boxSizing: "border-box",
                           flex: 1,
