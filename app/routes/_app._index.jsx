@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLoaderData, Link, useFetcher, useSubmit } from "react-router";
 import { authenticate } from "../shopify.server";
 import { Card } from "../components/Card";
-import { Badge } from "../components/Badge";
+import { getAppEmbedStatus } from "../utils/theme.server";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -26,17 +26,31 @@ export const loader = async ({ request }) => {
         nodes {
           id
           name
+          files(filenames: ["config/settings_data.json"]) {
+            nodes {
+              filename
+              body {
+                ... on OnlineStoreThemeFileBodyText {
+                  content
+                }
+              }
+            }
+          }
         }
       }
     }`,
   );
   const defData = await defResponse.json();
   const shop = defData.data.shop;
-  const themeId = defData.data.themes.nodes[0]?.id.split("/").pop();
+  const mainTheme = defData.data.themes.nodes[0];
+  const themeId = mainTheme?.id.split("/").pop();
   const popupsTypeHandle =
     defData.data.metaobjectDefinitionByType?.type || "avd_popup";
 
   console.log("popupsTypeHandle resolved to:", popupsTypeHandle);
+
+  // Check app embed status from theme settings_data.json
+  const appEmbedEnabled = await getAppEmbedStatus(mainTheme);
 
   // Step 2: Query metaobjects with the real type handle
   const metaobjectsResponse = await admin.graphql(
@@ -71,6 +85,7 @@ export const loader = async ({ request }) => {
     appStatus,
     tested,
     settings,
+    appEmbedEnabled,
   };
 };
 
@@ -136,6 +151,7 @@ export default function Dashboard() {
     appStatus,
     tested,
     settings,
+    appEmbedEnabled,
   } = useLoaderData();
   const fetcher = useFetcher();
   console.log("popupCount", popupCount);
@@ -189,7 +205,7 @@ export default function Dashboard() {
   ];
 
   const storeName = shopDomain?.replace(".myshopify.com", "") || "";
-  const appEmbedUrl = `https://admin.shopify.com/store/${storeName}/themes/${themeId}/editor?context=apps&appEmbed=e03e0948951b94a7b424d1a55634d891%2Fomg-app-age`;
+  const appEmbedUrl = `https://admin.shopify.com/store/${storeName}/themes/${themeId}/editor?context=apps&appEmbed=e03e0948951b94a7b424d1a55634d891%2Fage-verification-dialog`;
 
   return (
     <s-page>
@@ -236,19 +252,22 @@ export default function Dashboard() {
             </span>
             <span
               style={{
-                background: "#FFF4B2",
-                color: "#7C5C00",
+                background: appEmbedEnabled ? "#E3F1F8" : "#FFF4B2",
+                color: appEmbedEnabled ? "#005F99" : "#7C5C00",
                 fontSize: "12px",
                 fontWeight: "600",
                 padding: "2px 8px",
                 borderRadius: "99px",
               }}
             >
-              Off
+              {appEmbedEnabled ? "On" : "Off"}
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <s-button variant="secondary" href={appEmbedUrl}>
+            <s-button
+              variant="secondary"
+              onClick={() => window.open(appEmbedUrl, "_blank")}
+            >
               <span style={{ marginRight: "4px" }}>🔗</span> Active app embed
             </s-button>
             <a

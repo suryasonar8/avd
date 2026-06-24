@@ -1,5 +1,7 @@
 import { DISPLAY_PAGES } from "./display-pages";
 
+export const APP_EMBED_BLOCK_TYPE = "age-verification-dialog";
+
 export const DEFAULT_STORE_CONFIG = {
     name: "My Pop-up",
     status: "Enabled",
