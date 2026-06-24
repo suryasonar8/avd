@@ -189,7 +189,7 @@ export function PopupEditor({
   const ActiveTabComponent = TAB_COMPONENTS[activeTab];
 
   return (
-    <s-page heading={heading}>
+    <s-page>
       <SaveBar id={saveBarId} open={isDirty}>
         <button
           variant="primary"
@@ -206,28 +206,53 @@ export function PopupEditor({
       <div
         style={{
           display: "flex",
-          alignItems: "flex-start",
-          gap: "12px",
+          flexDirection: "column",
           marginBottom: "32px",
         }}
       >
-        <button
-          onClick={handleBack}
+        <div
           style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "20px",
-            padding: "4px",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            marginBottom: "4px",
           }}
         >
-          ←
-        </button>
-        <div>
-          <p style={{ fontSize: "13px", color: "#6D7175", margin: "4px 0 0" }}>
-            {description}
-          </p>
+          <button
+            onClick={handleBack}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "20px",
+              padding: "4px",
+              display: "flex",
+              alignItems: "center",
+              color: "#1A1C1D",
+            }}
+          >
+            ←
+          </button>
+          <h2
+            style={{
+              fontSize: "26px",
+              fontWeight: "700",
+              margin: 0,
+              color: "#1A1C1D",
+            }}
+          >
+            {heading}
+          </h2>
         </div>
+        <p
+          style={{
+            fontSize: "14px",
+            color: "#6D7175",
+            margin: "0 0 0 36px",
+          }}
+        >
+          {description}
+        </p>
       </div>
 
       {/* Tabs */}

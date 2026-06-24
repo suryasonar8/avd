@@ -348,8 +348,8 @@ export default function StoreVerificationEdit() {
       settings={loaderData?.settings}
       globalSettings={loaderData?.globalSettings}
       onSave={handleSave}
-      heading="Edit Pop-up"
-      description="Edit your pop-up configuration."
+      heading="Configuration"
+      description="Customization the pop-up to match your brand."
       saveBarId={`edit-save-bar-${id}`}
       fetcher={fetcher}
       shopify={shopify}
