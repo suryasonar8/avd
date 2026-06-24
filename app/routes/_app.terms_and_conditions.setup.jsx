@@ -439,7 +439,7 @@ function PreviewPanel({
                   </svg>
                 </div>
                 <a
-                  href="https://blockify.app"
+                  href="https://google.com"
                   onClick={(e) => e.preventDefault()}
                   style={{
                     color: "#2C6ECB",
@@ -448,7 +448,7 @@ function PreviewPanel({
                     fontWeight: 600,
                   }}
                 >
-                  Blockify™
+                  AVD™
                 </a>
               </div>
             </div>
