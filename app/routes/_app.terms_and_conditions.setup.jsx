@@ -21,7 +21,19 @@ export const loader = async ({ request }) => {
   const data = await response.json();
   const metafieldValue = data.data.shop.metafield?.value;
   const settings = metafieldValue
-    ? JSON.parse(metafieldValue)
+    ? {
+        enabled: false,
+        displayPages: [],
+        triggerCondition: "always",
+        checkboxText: "I understand and agree to the terms and conditions.",
+        showBrandMark: true,
+        keyword: "terms and conditions",
+        link: "https://",
+        size: 16,
+        color: "#000000",
+        errorMessage: "",
+        ...JSON.parse(metafieldValue),
+      }
     : {
         enabled: false,
         displayPages: [],
@@ -32,7 +44,7 @@ export const loader = async ({ request }) => {
         link: "https://",
         size: 16,
         color: "#000000",
-        showBrandMark: true,
+        errorMessage: "",
       };
 
   return { settings };
@@ -179,7 +191,7 @@ function TextInput({
       <div style={{ position: "relative" }}>
         <input
           type="text"
-          value={value}
+          value={value || ""}
           onChange={(e) =>
             onChange(
               maxLength ? e.target.value.slice(0, maxLength) : e.target.value,
@@ -209,7 +221,7 @@ function TextInput({
               color: "#6D7175",
             }}
           >
-            {value.length}/{maxLength}
+            {(value || "").length}/{maxLength}
           </span>
         )}
       </div>
@@ -242,11 +254,13 @@ function PreviewPanel({
   const [device, setDevice] = useState("desktop");
 
   const renderText = () => {
-    if (!keyword) return checkboxText;
-    const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const parts = checkboxText.split(new RegExp(`(${escapedKeyword})`, "gi"));
+    const text = checkboxText || "";
+    const key = keyword || "";
+    if (!key) return text;
+    const escapedKeyword = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const parts = text.split(new RegExp(`(${escapedKeyword})`, "gi"));
     return parts.map((part, i) =>
-      part.toLowerCase() === keyword.toLowerCase() ? (
+      part.toLowerCase() === key.toLowerCase() ? (
         <a
           key={i}
           href={link}

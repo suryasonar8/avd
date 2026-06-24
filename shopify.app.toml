@@ -34,14 +34,6 @@ description = "Tracks products created by the Shopify app template for developme
   [product.metafields.app.demo_info.access]
   admin = "merchant_read_write"
 
-[shop.metafields.avd.active_popup]
-type = "metaobject_reference<$app:popups>"
-name = "Active Age Verification Popup"
-
-  [shop.metafields.avd.active_popup.access]
-  admin = "merchant_read_write"
-  storefront = "public_read"
-
 [shop.metafields.avd.settings]
 type = "json"
 name = "App Settings"

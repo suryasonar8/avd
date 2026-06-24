@@ -10,82 +10,93 @@ export function InfoTab({ config, setConfig }) {
   return (
     <>
       <Card title="Pop-up Info">
-        <div style={{ marginBottom: "16px" }}>
-          <label
-            style={{
-              display: "block",
-              fontSize: "13px",
-              fontWeight: "600",
-              marginBottom: "8px",
-            }}
-          >
-            Status
-          </label>
-          <select
-            value={config.status}
-            onChange={(e) =>
-              setConfig((prev) => ({ ...prev, status: e.target.value }))
-            }
-            style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "8px",
-              border: "1px solid #CBCFD2",
-              background: "#FFF",
-            }}
-          >
-            <option>Enabled</option>
-            <option>Disabled</option>
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "16px" }}>
-          <label
-            style={{
-              display: "block",
-              fontSize: "13px",
-              fontWeight: "600",
-              marginBottom: "8px",
-            }}
-          >
-            Name <span style={{ color: "red" }}>*</span>
-          </label>
-          <div style={{ position: "relative" }}>
-            <input
-              type="text"
-              value={config.name}
-              onChange={(e) =>
-                setConfig((prev) => ({ ...prev, name: e.target.value }))
-              }
-              placeholder="Enter your pop-up name"
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+            marginBottom: "16px",
+          }}
+        >
+          <div>
+            <label
               style={{
+                display: "block",
+                fontSize: "13px",
+                fontWeight: "600",
+                marginBottom: "8px",
+              }}
+            >
+              Status
+            </label>
+            <select
+              value={config.status}
+              onChange={(e) =>
+                setConfig((prev) => ({ ...prev, status: e.target.value }))
+              }
+              style={{
+                boxSizing: "border-box",
                 width: "100%",
                 padding: "10px",
                 borderRadius: "8px",
                 border: "1px solid #CBCFD2",
-              }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "10px",
-                fontSize: "12px",
-                color: "#6D7175",
+                background: "#FFF",
               }}
             >
-              {config.name.length}/255
-            </span>
+              <option>Enabled</option>
+              <option>Disabled</option>
+            </select>
           </div>
-          <p
-            style={{
-              fontSize: "11px",
-              color: "#6D7175",
-              marginTop: "4px",
-            }}
-          >
-            For internal reference. Only you can see it.
-          </p>
+
+          <div>
+            <label
+              style={{
+                display: "block",
+                fontSize: "13px",
+                fontWeight: "600",
+                marginBottom: "8px",
+              }}
+            >
+              Name <span style={{ color: "red" }}>*</span>
+            </label>
+            <div style={{ position: "relative" }}>
+              <input
+                type="text"
+                value={config.name}
+                onChange={(e) =>
+                  setConfig((prev) => ({ ...prev, name: e.target.value }))
+                }
+                placeholder="Enter your pop-up name"
+                style={{
+                  boxSizing: "border-box",
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #CBCFD2",
+                }}
+              />
+              <span
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  top: "10px",
+                  fontSize: "12px",
+                  color: "#6D7175",
+                }}
+              >
+                {config.name.length}/255
+              </span>
+            </div>
+            <p
+              style={{
+                fontSize: "11px",
+                color: "#6D7175",
+                marginTop: "4px",
+              }}
+            >
+              For internal reference. Only you can see it.
+            </p>
+          </div>
         </div>
 
         <div>
@@ -168,6 +179,7 @@ export function InfoTab({ config, setConfig }) {
                   }))
                 }
                 style={{
+                  boxSizing: "border-box",
                   width: "100%",
                   padding: "10px",
                   borderRadius: "8px",
@@ -193,6 +205,7 @@ export function InfoTab({ config, setConfig }) {
                   setConfig((prev) => ({ ...prev, dateOrder: e.target.value }))
                 }
                 style={{
+                  boxSizing: "border-box",
                   width: "100%",
                   padding: "10px",
                   borderRadius: "8px",
@@ -486,6 +499,7 @@ export function InfoTab({ config, setConfig }) {
                 onChange={(e) => setUrlInput(e.target.value)}
                 placeholder="Enter URL (e.g. /pages/about)"
                 style={{
+                  boxSizing: "border-box",
                   flex: 1,
                   padding: "8px",
                   borderRadius: "8px",

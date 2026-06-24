@@ -42,6 +42,7 @@ export function ButtonTab({ config, setConfig }) {
                 }))
               }
               style={{
+                boxSizing: "border-box",
                 width: "100%",
                 padding: "10px",
                 borderRadius: "8px",
@@ -165,6 +166,7 @@ export function ButtonTab({ config, setConfig }) {
                     }))
                   }
                   style={{
+                    boxSizing: "border-box",
                     width: "100%",
                     padding: "8px 12px",
                     borderRadius: "6px",
@@ -217,6 +219,7 @@ export function ButtonTab({ config, setConfig }) {
                     }))
                   }
                   style={{
+                    boxSizing: "border-box",
                     width: "100%",
                     padding: "8px 12px",
                     borderRadius: "6px",

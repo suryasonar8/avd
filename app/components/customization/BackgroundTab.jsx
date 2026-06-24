@@ -412,26 +412,32 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
             })
           }
         />
-        <NumberInput
-          label="Border radius"
-          value={config.background.borderRadius}
-          onChange={(val) =>
-            setConfig({
-              ...config,
-              background: { ...config.background, borderRadius: val },
-            })
-          }
-        />
-        <NumberInput
-          label="Border width"
-          value={config.background.borderWidth}
-          onChange={(val) =>
-            setConfig({
-              ...config,
-              background: { ...config.background, borderWidth: val },
-            })
-          }
-        />
+        <div style={{ display: "flex", gap: "16px" }}>
+          <div style={{ flex: 1 }}>
+            <NumberInput
+              label="Border radius"
+              value={config.background.borderRadius}
+              onChange={(val) =>
+                setConfig({
+                  ...config,
+                  background: { ...config.background, borderRadius: val },
+                })
+              }
+            />
+          </div>
+          <div style={{ flex: 1 }}>
+            <NumberInput
+              label="Border width"
+              value={config.background.borderWidth}
+              onChange={(val) =>
+                setConfig({
+                  ...config,
+                  background: { ...config.background, borderWidth: val },
+                })
+              }
+            />
+          </div>
+        </div>
       </Card>
     </>
   );

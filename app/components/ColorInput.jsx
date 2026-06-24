@@ -29,6 +29,7 @@ export const ColorInput = ({ label, value, onChange, badge, required }) => (
         value={value}
         onChange={(e) => onChange(e.target.value)}
         style={{
+          boxSizing: "border-box",
           flex: 1,
           padding: "8px 12px",
           borderRadius: "8px",

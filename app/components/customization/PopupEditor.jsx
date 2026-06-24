@@ -18,7 +18,7 @@ const TAB_COMPONENTS = {
 };
 
 const DEFAULT_CONFIG = {
-  name: "My Pop-up",
+  name: "",
   status: "Enabled",
   method: "No input",
   verifyAge: 18,
@@ -182,7 +182,11 @@ export function PopupEditor({
   return (
     <s-page heading={heading}>
       <SaveBar id={saveBarId} open={isDirty}>
-        <button variant="primary" onClick={handleSave} disabled={isUploading}>
+        <button
+          variant="primary"
+          onClick={handleSave}
+          disabled={isUploading || !config.name?.trim()}
+        >
           {isUploading ? "Uploading..." : "Save"}
         </button>
         <button type="button" onClick={handleDiscard}>

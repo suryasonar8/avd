@@ -175,9 +175,7 @@ export default function AppPage() {
   };
 
   const handleDelete = (id) => {
-    if (confirm("Are you sure you want to delete this pop-up?")) {
-      fetcher.submit({ action: "delete", id }, { method: "POST" });
-    }
+    fetcher.submit({ action: "delete", id }, { method: "POST" });
   };
 
   return (
