@@ -3,17 +3,18 @@ import { useLoaderData, Link, useFetcher, useSubmit } from "react-router";
 import { authenticate } from "../shopify.server";
 import { Card } from "../components/Card";
 import { getAppEmbedStatus } from "../utils/theme.server";
+import { PopupService } from "../services/popup.service";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
 
-  // Step 1: Discover the real metaobject type handle + shop/theme data in one query
-  const defResponse = await admin.graphql(
+  // Use PopupService for popup data
+  const popupCount = await PopupService.getPopupCount(session.shop);
+
+  // Fetch shop and theme data
+  const shopDataResponse = await admin.graphql(
     `#graphql
     query getShopData {
-      metaobjectDefinitionByType(type: "$app:popups") {
-        type
-      }
       shop {
         name
         id
@@ -40,41 +41,19 @@ export const loader = async ({ request }) => {
       }
     }`,
   );
-  const defData = await defResponse.json();
-  const shop = defData.data.shop;
-  const mainTheme = defData.data.themes.nodes[0];
+  const shopData = await shopDataResponse.json();
+  const shop = shopData.data.shop;
+  const mainTheme = shopData.data.themes.nodes[0];
   const themeId = mainTheme?.id.split("/").pop();
-  const popupsTypeHandle =
-    defData.data.metaobjectDefinitionByType?.type || "avd_popup";
-
-  console.log("popupsTypeHandle resolved to:", popupsTypeHandle);
 
   // Check app embed status from theme settings_data.json
   const appEmbedEnabled = await getAppEmbedStatus(mainTheme);
-
-  // Step 2: Query metaobjects with the real type handle
-  const metaobjectsResponse = await admin.graphql(
-    `#graphql
-    query getPopups($type: String!) {
-      metaobjects(type: $type, first: 250) {
-        nodes {
-          handle
-          id
-        }
-      }
-    }`,
-    { variables: { type: popupsTypeHandle } },
-  );
-  const metaobjectsData = await metaobjectsResponse.json();
-  console.log("data.data.metaobjects", metaobjectsData.data.metaobjects);
 
   const metafieldValue = shop.metafield?.value;
   const settings = metafieldValue ? JSON.parse(metafieldValue) : {};
   const appStatus =
     settings.appStatus !== undefined ? settings.appStatus : true;
   const tested = settings.tested === true;
-
-  const popupCount = metaobjectsData.data.metaobjects.nodes.length;
 
   return {
     shopName: shop.name,

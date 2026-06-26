@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
-import { useLoaderData } from "react-router";
+import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 import { usePlan } from "../context/PlanContext";
 import { Card } from "../components/Card";
 import { Modal } from "../components/Modal";
 import { PlanService } from "../services/plan.service";
+import { PopupService } from "../services/popup.service";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -28,66 +28,11 @@ export const loader = async ({ request }) => {
   const primaryLocale =
     shopLocales.find((lang) => lang.primary)?.locale || "en";
 
-  // 1. Discover the actual Metaobject type handles
-  const defsResponse = await admin.graphql(
-    `#graphql
-    query getDefs {
-      popups: metaobjectDefinitionByType(type: "$app:popups") { type }
-      translations: metaobjectDefinitionByType(type: "$app:translations") { type }
-    }`,
+  // Use PopupService to check for popups and fetch translated languages
+  const hasPopups = (await PopupService.getPopupCount(session.shop)) > 0;
+  const translatedLanguages = await PopupService.getTranslatedLocales(
+    session.shop,
   );
-  const defsData = await defsResponse.json();
-  const popupsTypeHandle = defsData.data.popups?.type || "app--popups";
-  const translationsTypeHandle =
-    defsData.data.translations?.type || "app--translations";
-
-  // 2. Fetch popups from Metaobjects to check if any exist
-  const popupsResponse = await admin.graphql(
-    `#graphql
-    query getPopups($type: String!) {
-      metaobjects(type: $type, first: 1) {
-        nodes { id }
-      }
-    }`,
-    { variables: { type: popupsTypeHandle } },
-  );
-  const popupsData = await popupsResponse.json();
-  const hasPopups = (popupsData.data?.metaobjects?.nodes || []).length > 0;
-
-  // 3. Fetch translation summaries
-  const translationsResponse = await admin.graphql(
-    `#graphql
-    query getTranslations($type: String!) {
-      metaobjects(type: $type, first: 250) {
-        nodes {
-          locale: field(key: "locale") { value }
-          popups: field(key: "popups") {
-            references(first: 100) {
-              nodes {
-                ... on Metaobject {
-                  id
-                  handle
-                  name: field(key: "config") { value }
-                }
-              }
-            }
-          }
-        }
-      }
-    }`,
-    { variables: { type: translationsTypeHandle } },
-  );
-  const translationsData = await translationsResponse.json();
-  const translatedLanguages = (
-    translationsData.data?.metaobjects?.nodes || []
-  ).map((node) => ({
-    locale: node.locale?.value,
-    popups: (node.popups?.references?.nodes || []).map((p) => ({
-      id: p.id,
-      handle: p.handle,
-      name: JSON.parse(p.name?.value || "{}").name || p.handle,
-    })),
-  }));
 
   const plan = await PlanService.getShopPlan(admin, session.shop);
   const limit = PlanService.getTranslationLimit(plan);
@@ -256,21 +201,21 @@ export default function TranslationPage() {
               >
                 Free Plan Limit
               </h2>
-          <button
-            style={{
-              position: "absolute",
-              top: "20px",
-              right: "20px",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "20px",
-              color: "#002339",
-              opacity: 0.6,
-            }}
-          >
-            ×
-          </button>
+              <button
+                style={{
+                  position: "absolute",
+                  top: "20px",
+                  right: "20px",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "20px",
+                  color: "#002339",
+                  opacity: 0.6,
+                }}
+              >
+                ×
+              </button>
             </div>
             <p
               style={{

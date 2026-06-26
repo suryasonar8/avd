@@ -2,6 +2,7 @@ import { useSubmit, useLoaderData, redirect } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { PlanService } from "../services/plan.service";
+import { PopupService } from "../services/popup.service";
 import { PopupEditor } from "../components/customization/PopupEditor";
 
 export const loader = async ({ request }) => {
@@ -33,33 +34,12 @@ export const loader = async ({ request }) => {
     return redirect("/pricing");
   }
 
-  // Enforce popup creation limits in loader to prevent bypass
+  // Enforce popup creation limits in loader
   const plan = await PlanService.getShopPlan(admin, session.shop);
   const limit = PlanService.getPopupLimit(plan);
 
   if (limit !== Infinity) {
-    const popupsDefResponse = await admin.graphql(
-      `#graphql
-      query getPopupsDef {
-        metaobjectDefinitionByType(type: "$app:popups") { type }
-      }`,
-    );
-    const popupsDefData = await popupsDefResponse.json();
-    const popupsTypeHandle =
-      popupsDefData.data.metaobjectDefinitionByType?.type || "app--popups";
-
-    const popupsResponse = await admin.graphql(
-      `#graphql
-      query getPopups($type: String!) {
-        metaobjects(type: $type, first: 250) {
-          nodes { id }
-        }
-      }`,
-      { variables: { type: popupsTypeHandle } },
-    );
-    const popupsData = await popupsResponse.json();
-    const existingCount = (popupsData.data?.metaobjects?.nodes || []).length;
-
+    const existingCount = await PopupService.getPopupCount(session.shop);
     if (existingCount >= limit) {
       return redirect("/pricing");
     }
@@ -67,6 +47,7 @@ export const loader = async ({ request }) => {
 
   return { settings: null, globalSettings };
 };
+
 export const action = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
   const shop = session.shop;
@@ -90,29 +71,7 @@ export const action = async ({ request }) => {
   const limit = PlanService.getPopupLimit(plan);
 
   if (limit !== Infinity) {
-    // 1. Discover the actual Metaobject type handles
-    const defsResponse = await admin.graphql(
-      `#graphql
-      query getDefs {
-        popups: metaobjectDefinitionByType(type: "$app:popups") { type }
-      }`,
-    );
-    const defsData = await defsResponse.json();
-    const popupsTypeHandle = defsData.data.popups?.type || "app--popups";
-
-    // 2. Fetch existing popups to check count
-    const popupsResponse = await admin.graphql(
-      `#graphql
-      query getPopups($type: String!) {
-        metaobjects(type: $type, first: 250) {
-          nodes { id }
-        }
-      }`,
-      { variables: { type: popupsTypeHandle } },
-    );
-    const popupsData = await popupsResponse.json();
-    const existingCount = (popupsData.data?.metaobjects?.nodes || []).length;
-
+    const existingCount = await PopupService.getPopupCount(shop);
     if (existingCount >= limit) {
       return {
         success: false,
@@ -184,186 +143,18 @@ export const action = async ({ request }) => {
     };
   }
 
-  const popupId = Date.now().toString();
+  const finalConfig = validation.sanitized || config;
 
-  // Discover the actual Metaobject type handles
-  const popupsDefResponse = await admin.graphql(
-    `#graphql
-    query getPopupsDef {
-      metaobjectDefinitionByType(type: "$app:popups") {
-        id
-        type
-      }
-    }`,
-  );
-  const popupsDefData = await popupsDefResponse.json();
-  const popupsDef = popupsDefData.data.metaobjectDefinitionByType;
-  const popupsTypeHandle = popupsDef?.type || "app--popups";
-  const popupsDefId = popupsDef?.id;
+  // Create the popup in the database
+  const popup = await PopupService.createPopup(shop, finalConfig);
 
-  // Create the Metaobject
-  const response = await admin.graphql(
-    `#graphql
-    mutation createPopup($metaobject: MetaobjectCreateInput!) {
-      metaobjectCreate(metaobject: $metaobject) {
-        metaobject {
-          id
-          handle
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }`,
-    {
-      variables: {
-        metaobject: {
-          type: popupsTypeHandle,
-          handle: popupId,
-          fields: [
-            { key: "popup_id", value: popupId },
-            {
-              key: "config",
-              value: JSON.stringify(
-                Object.fromEntries(
-                  Object.entries(config).filter(([k]) => k !== "status"),
-                ),
-              ),
-            },
-          ],
-        },
-      },
-    },
-  );
-
-  const responseData = await response.json();
-  const errors = responseData.data?.metaobjectCreate?.userErrors;
-  if (errors && errors.length > 0) {
-    console.error(
-      "Metaobject creation failed:",
-      JSON.stringify(errors, null, 2),
-    );
-    return { success: false, errors };
-  }
-
-  const gid = responseData.data.metaobjectCreate.metaobject.id;
-
-  // If enabled, set as the shop's active popup in Shop Metafield
-  if (config.status === "Enabled") {
-    const shopResponse = await admin.graphql(`{ shop { id } }`);
-    const shopId = (await shopResponse.json()).data.shop.id;
-
-    // Step 1: Check if metafield definition exists
-    const defCheck = await admin.graphql(
-      `#graphql
-      query {
-        metafieldDefinitions(
-          first: 1,
-          ownerType: SHOP,
-          namespace: "avd",
-          key: "active_popup"
-        ) {
-          edges {
-            node {
-              id
-              name
-              type { name }
-            }
-          }
-        }
-      }`,
-    );
-    const defData = await defCheck.json();
-    const defExists = defData?.data?.metafieldDefinitions?.edges?.length > 0;
-
-    // Step 2: Create definition if missing
-    if (!defExists && popupsDefId) {
-      const defCreate = await admin.graphql(
-        `#graphql
-        mutation {
-          metafieldDefinitionCreate(definition: {
-            name: "Active Popup"
-            namespace: "avd"
-            key: "active_popup"
-            type: "metaobject_reference"
-            description: "Reference to the currently active popup metaobject"
-            ownerType: SHOP
-            validations: [
-              {
-                name: "metaobject_definition_id"
-                value: "${popupsDefId}"
-              }
-            ]
-          }) {
-            createdDefinition {
-              id
-              name
-              type { name }
-            }
-            userErrors { field message }
-          }
-        }`,
-      );
-      const defCreateData = await defCreate.json();
-      if (defCreateData?.data?.metafieldDefinitionCreate?.userErrors?.length) {
-        console.error(
-          "Definition creation failed:",
-          JSON.stringify(
-            defCreateData.data.metafieldDefinitionCreate.userErrors,
-            null,
-            2,
-          ),
-        );
-        return {
-          success: false,
-          errors: defCreateData.data.metafieldDefinitionCreate.userErrors,
-        };
-      }
-    }
-
-    // Step 3: Set the metafield value
-    const result = await admin.graphql(
-      `#graphql
-      mutation updateActive($metafields: [MetafieldsSetInput!]!) {
-        metafieldsSet(metafields: $metafields) {
-          metafields { id }
-          userErrors { field message }
-        }
-      }`,
-      {
-        variables: {
-          metafields: [
-            {
-              namespace: "avd",
-              key: "active_popup",
-              type: "metaobject_reference",
-              ownerId: shopId,
-              value: gid,
-            },
-          ],
-        },
-      },
-    );
-
-    const data = await result.json();
-    const setErrors = data?.data?.metafieldsSet?.userErrors;
-
-    if (setErrors && setErrors.length > 0) {
-      console.error(
-        "MetafieldsSet failed:",
-        JSON.stringify(setErrors, null, 2),
-      );
-    } else {
-      console.log(
-        "Metafield updated successfully:",
-        data?.data?.metafieldsSet?.metafields,
-      );
-    }
+  // If enabled, set as active and sync to Shopify
+  if (finalConfig.status === "Enabled") {
+    await PopupService.toggleActive(admin, shop, popup.id, true);
   }
 
   // Redirect to the newly created popup's edit page
-  return redirect(`/store_verification/${popupId}?saved=true`);
+  return redirect(`/store_verification/${popup.id}?saved=true`);
 };
 
 export default function StoreVerificationCustomization() {
@@ -372,7 +163,6 @@ export default function StoreVerificationCustomization() {
   const shopify = useAppBridge();
 
   const handleSave = (config) => {
-    // Use useSubmit instead of useFetcher to ensure full page transition and URL update
     submit({ config: JSON.stringify(config) }, { method: "POST" });
   };
   return (

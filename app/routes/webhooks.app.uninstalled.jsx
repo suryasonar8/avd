@@ -8,88 +8,14 @@ export const action = async ({ request }) => {
 
   if (admin) {
     try {
-      // 1. Cleanup Metaobjects ($app:popups)
-      const popupsDefResponse = await admin.graphql(
-        `#graphql
-        query getPopupsDef {
-          metaobjectDefinitionByType(type: "$app:popups") {
-            type
-          }
-        }`,
-      );
-      const popupsDefData = await popupsDefResponse.json();
-      const popupsTypeHandle =
-        popupsDefData.data?.metaobjectDefinitionByType?.type || "app--popups";
-
-      const metaobjectsResponse = await admin.graphql(
-        `#graphql
-        query getMetaobjects($type: String!) {
-          metaobjects(first: 250, type: $type) {
-            nodes { id }
-          }
-        }`,
-        { variables: { type: popupsTypeHandle } },
-      );
-      const metaobjectsData = await metaobjectsResponse.json();
-      const metaobjectIds =
-        metaobjectsData.data?.metaobjects?.nodes?.map((n) => n.id) || [];
-
-      for (const id of metaobjectIds) {
-        await admin.graphql(
-          `#graphql
-          mutation deleteMetaobject($id: ID!) {
-            metaobjectDelete(id: $id) {
-              deletedId
-            }
-          }`,
-          { variables: { id } },
-        );
-      }
-      console.log(`Deleted ${metaobjectIds.length} popups for ${shop}`);
-
-      // 1.1 Cleanup Translations ($app:translations)
-      const transDefResponse = await admin.graphql(
-        `#graphql
-        query getTransDef {
-          metaobjectDefinitionByType(type: "$app:translations") {
-            type
-          }
-        }`,
-      );
-      const transDefData = await transDefResponse.json();
-      const transTypeHandle =
-        transDefData.data?.metaobjectDefinitionByType?.type ||
-        "app--translations";
-
-      const transMetaResponse = await admin.graphql(
-        `#graphql
-        query getTransMetaobjects($type: String!) {
-          metaobjects(first: 250, type: $type) {
-            nodes { id }
-          }
-        }`,
-        { variables: { type: transTypeHandle } },
-      );
-      const transMetaData = await transMetaResponse.json();
-      const transMetaIds =
-        transMetaData.data?.metaobjects?.nodes?.map((n) => n.id) || [];
-
-      for (const id of transMetaIds) {
-        await admin.graphql(
-          `#graphql
-          mutation deleteMetaobject($id: ID!) {
-            metaobjectDelete(id: $id) {
-              deletedId
-            }
-          }`,
-          { variables: { id } },
-        );
-      }
-      console.log(
-        `Deleted ${transMetaIds.length} translation summaries for ${shop}`,
-      );
+      // 1. Cleanup Prisma Database
+      const deletedPopups = await db.popup.deleteMany({ where: { shop } });
+      await db.shopPlan.deleteMany({ where: { shop } });
+      console.log(`Deleted ${deletedPopups.count} popups from DB for ${shop}`);
 
       // 2. Cleanup Metafield Definitions (this deletes definition and values)
+      // Note: metafieldDefinitionDelete requires write_metafield_definitions or equivalent.
+      // Since we kept standard metafield access, this should still work for standard metafields.
       const defsToCleanup = [
         { namespace: "avd", key: "settings" },
         { namespace: "avd", key: "active_popup" },
@@ -105,12 +31,13 @@ export const action = async ({ request }) => {
                 node { id }
               }
             }
-          }`,
+          }
+          `,
           { variables: def },
         );
         const defCheckData = await defCheckResponse.json();
         const defId =
-          defCheckData.data?.metafieldDefinitions?.edges[0]?.node?.id;
+          defCheckData.data?.metafieldDefinitions?.edges?.[0]?.node?.id;
 
         if (defId) {
           await admin.graphql(

@@ -2,12 +2,7 @@
 {% assign min_age = settings.minAge | default: 18 %}
 {% assign redirect_url = settings.redirectUrl | default: "https://www.google.com" %}
 
-{% assign active_popup_node = shop.metafields.avd.active_popup.value %}
-{% assign active_popup = null %}
-
-{% if active_popup_node %}
-  {% assign active_popup = active_popup_node.config.value %}
-{% endif %}
+{% assign active_popup = shop.metafields.avd.active_popup.value %}
 
 {% assign app_status = settings.appStatus %}
 {% if app_status == nil %}

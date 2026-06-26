@@ -47,3 +47,35 @@ model ShopPlan {
   plan      String   @default("free")
   updatedAt DateTime @updatedAt
 }
+
+model Popup {
+  id        Int      @id @default(autoincrement())
+  shop      String
+  name      String   @default("Untitled Popup")
+  config    String   // Full JSON config blob
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  translations Translation[]
+
+  @@index([shop])
+}
+
+model Translation {
+  id             Int    @id @default(autoincrement())
+  popupId        Int
+  locale         String
+
+  heading        String?
+  subheading     String?
+  submitLabel    String?
+  cancelLabel    String?
+  submitErrorMsg String?
+  cancelErrorMsg String?
+  months         String? // JSON string for month names
+
+  popup Popup @relation(fields: [popupId], references: [id], onDelete: Cascade)
+
+  @@unique([popupId, locale])
+}

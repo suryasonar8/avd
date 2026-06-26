@@ -50,9 +50,9 @@ export const action = async ({ request }) => {
     session.shop,
     config,
   );
-  if (!validation.isValid) {
-    return { success: false, errors: validation.errors };
-  }
+
+  // Use sanitized config even if isValid is true (currently validateCheckoutConfig always returns true but with sanitized fields)
+  const finalConfig = validation.sanitized || config;
 
   const response = await admin.graphql(
     `#graphql
@@ -79,7 +79,7 @@ export const action = async ({ request }) => {
             type: "json",
             ownerId: (await (await admin.graphql(`{ shop { id } }`)).json())
               .data.shop.id,
-            value: JSON.stringify(config),
+            value: JSON.stringify(finalConfig),
           },
         ],
       },
@@ -105,7 +105,7 @@ export default function CheckoutVerificationSetup() {
   const [activeTab, setActiveTab] = useState("condition");
   const fetcher = useFetcher();
   const shopify = useAppBridge();
-  
+
   const isDirty = JSON.stringify(config) !== JSON.stringify(initialConfig);
 
   useEffect(() => {

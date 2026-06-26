@@ -65,9 +65,9 @@ export const action = async ({ request }) => {
     session.shop,
     settings,
   );
-  if (!validation.isValid) {
-    return { success: false, errors: validation.errors };
-  }
+
+  // Use sanitized settings even if isValid is true
+  const finalSettings = validation.sanitized || settings;
 
   const response = await admin.graphql(
     `#graphql
@@ -92,7 +92,7 @@ export const action = async ({ request }) => {
             namespace: "avd",
             key: "terms_settings",
             type: "json",
-            value: settings,
+            value: JSON.stringify(finalSettings),
             ownerId: (
               await admin.graphql(`{ shop { id } }`).then((r) => r.json())
             ).data.shop.id,

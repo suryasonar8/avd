@@ -1,5 +1,7 @@
 import db from "../db.server";
 import { PLANS, FEATURES, LIMITS } from "../constants/features";
+import { DEFAULT_STORE_CONFIG } from "../constants/store-verification";
+import { DEFAULT_CHECKOUT_CONFIG } from "../constants/checkout-verification";
 
 /**
  * Get the current plan for a shop.
@@ -78,50 +80,56 @@ export const PlanService = {
 
     /**
      * Validate a popup configuration against the shop's plan.
-     * Returns { isValid: boolean, errors: string[] }
+     * Enforces limits by reverting restricted fields to defaults.
+     * Returns { isValid: true, sanitized: object }
      */
     async validatePopupConfig(shop, config) {
         const plan = await getShopPlan(null, shop);
-        const errors = [];
+        const sanitized = { ...config };
 
-        const check = (featureKey, condition, message) => {
+        const enforce = (featureKey, condition, resetFn) => {
             if (condition && !hasAccess(plan, featureKey)) {
-                errors.push(message || `Feature '${featureKey}' requires a higher plan.`);
+                resetFn();
             }
         };
 
         // 1. Info Tab checks
-        check("sv.info.pages.home", config.pages === "Home page", "Home page restriction requires a Basic plan.");
-        check("sv.info.pages.collections", config.pages === "Specific collections", "Collection restriction requires a Basic plan.");
-        check("sv.info.pages.products", config.pages === "Specific products", "Product restriction requires a Basic plan.");
-        check("sv.info.pages.custom", config.pages === "Custom", "Custom URL restriction requires a Basic plan.");
-        check("sv.info.trigger.logged", config.trigger === "Logged customers", "Logged-in customer trigger requires a Basic plan.");
+        enforce("sv.info.pages.home", sanitized.pages === "Home page", () => sanitized.pages = DEFAULT_STORE_CONFIG.pages);
+        enforce("sv.info.pages.collections", sanitized.pages === "Specific collections", () => sanitized.pages = DEFAULT_STORE_CONFIG.pages);
+        enforce("sv.info.pages.products", sanitized.pages === "Specific products", () => sanitized.pages = DEFAULT_STORE_CONFIG.pages);
+        enforce("sv.info.pages.custom", sanitized.pages === "Custom", () => sanitized.pages = DEFAULT_STORE_CONFIG.pages);
+        enforce("sv.info.trigger.logged", sanitized.trigger === "Logged customers", () => sanitized.trigger = DEFAULT_STORE_CONFIG.trigger);
 
         // 2. Background Tab checks
-        if (config.background) {
-            check("sv.bg.color", config.background.bgColor && config.background.bgColor !== "#FFFFFF", "Custom background color requires a Basic plan.");
-            check("sv.bg.border-color", !!config.background.borderColor, "Custom border color requires a Premium plan.");
-            check("sv.bg.border-radius", config.background.borderRadius > 0, "Custom border radius requires a Premium plan.");
-            check("sv.bg.border-width", config.background.borderWidth > 0, "Custom border width requires a Premium plan.");
+        if (sanitized.background) {
+            sanitized.background = { ...sanitized.background };
+            enforce("sv.bg.color", sanitized.background.bgColor && sanitized.background.bgColor !== DEFAULT_STORE_CONFIG.background.bgColor, () => sanitized.background.bgColor = DEFAULT_STORE_CONFIG.background.bgColor);
+            enforce("sv.bg.logo", !!sanitized.background.logo, () => sanitized.background.logo = DEFAULT_STORE_CONFIG.background.logo);
+            enforce("sv.bg.border-color", !!sanitized.background.borderColor && sanitized.background.borderColor !== DEFAULT_STORE_CONFIG.background.borderColor, () => sanitized.background.borderColor = DEFAULT_STORE_CONFIG.background.borderColor);
+            enforce("sv.bg.border-radius", sanitized.background.borderRadius > 0, () => sanitized.background.borderRadius = DEFAULT_STORE_CONFIG.background.borderRadius);
+            enforce("sv.bg.border-width", sanitized.background.borderWidth > 0, () => sanitized.background.borderWidth = DEFAULT_STORE_CONFIG.background.borderWidth);
         }
 
-        if (config.button) {
-            check("sv.btn.bg", config.button.bgColor && config.button.bgColor !== "#000000", "Custom button background requires a Basic plan.");
-            check("sv.cbtn.bg", config.button.cancelBgColor && config.button.cancelBgColor !== "#FFFFFF", "Custom cancel button background requires a Basic plan.");
-            check("sv.btn.border-color", !!config.button.borderColor, "Custom button border color requires a Premium plan.");
-            check("sv.cbtn.border-color", !!config.button.cancelBorderColor, "Custom cancel button border color requires a Premium plan.");
-            check("sv.btn.border-radius", config.button.borderRadius > 0, "Custom button border radius requires a Premium plan.");
-            check("sv.cbtn.border-radius", config.button.cancelBorderRadius > 0, "Custom cancel button border radius requires a Premium plan.");
-            check("sv.btn.border-width", config.button.borderWidth > 0, "Custom button border width requires a Premium plan.");
-            check("sv.cbtn.border-width", config.button.cancelBorderWidth > 0, "Custom cancel button border width requires a Premium plan.");
+        // 3. Button Tab checks
+        if (sanitized.button) {
+            sanitized.button = { ...sanitized.button };
+            enforce("sv.btn.bg", sanitized.button.bgColor && sanitized.button.bgColor !== DEFAULT_STORE_CONFIG.button.bgColor, () => sanitized.button.bgColor = DEFAULT_STORE_CONFIG.button.bgColor);
+            enforce("sv.cbtn.bg", sanitized.button.cancelBgColor && sanitized.button.cancelBgColor !== DEFAULT_STORE_CONFIG.button.cancelBgColor, () => sanitized.button.cancelBgColor = DEFAULT_STORE_CONFIG.button.cancelBgColor);
+            enforce("sv.btn.border-color", !!sanitized.button.borderColor && sanitized.button.borderColor !== DEFAULT_STORE_CONFIG.button.borderColor, () => sanitized.button.borderColor = DEFAULT_STORE_CONFIG.button.borderColor);
+            enforce("sv.cbtn.border-color", !!sanitized.button.cancelBorderColor && sanitized.button.cancelBorderColor !== DEFAULT_STORE_CONFIG.button.cancelBorderColor, () => sanitized.button.cancelBorderColor = DEFAULT_STORE_CONFIG.button.cancelBorderColor);
+            enforce("sv.btn.border-radius", sanitized.button.borderRadius > 0, () => sanitized.button.borderRadius = DEFAULT_STORE_CONFIG.button.borderRadius);
+            enforce("sv.cbtn.border-radius", sanitized.button.cancelBorderRadius > 0, () => sanitized.button.cancelBorderRadius = DEFAULT_STORE_CONFIG.button.cancelBorderRadius);
+            enforce("sv.btn.border-width", sanitized.button.borderWidth > 0, () => sanitized.button.borderWidth = DEFAULT_STORE_CONFIG.button.borderWidth);
+            enforce("sv.cbtn.border-width", sanitized.button.cancelBorderWidth > 0, () => sanitized.button.cancelBorderWidth = DEFAULT_STORE_CONFIG.button.cancelBorderWidth);
         }
 
         // 4. CSS Tab checks
-        check("sv.css.input", !!config.css, "Custom CSS requires a Premium plan.");
+        enforce("sv.css.input", !!sanitized.css, () => sanitized.css = DEFAULT_STORE_CONFIG.css);
 
         return {
-            isValid: errors.length === 0,
-            errors
+            isValid: true,
+            errors: [],
+            sanitized
         };
     },
 
@@ -130,18 +138,19 @@ export const PlanService = {
      */
     async validateCheckoutConfig(shop, config) {
         const plan = await getShopPlan(null, shop);
-        const errors = [];
-        const check = (featureKey, condition, message) => {
+        const sanitized = { ...config };
+
+        const enforce = (featureKey, condition, resetFn) => {
             if (condition && !hasAccess(plan, featureKey)) {
-                errors.push(message);
+                resetFn();
             }
         };
 
-        check("checkout.condition.status", config.status === "enabled", "Enabling checkout banner requires a Basic plan.");
-        check("checkout.condition.target", config.target && config.target !== "always", "Conditional target requires a Basic plan.");
-        check("checkout.banner.heading", !!config.heading, "Banner heading customization requires a Basic plan.");
+        enforce("checkout.condition.status", sanitized.status === "enabled", () => sanitized.status = DEFAULT_CHECKOUT_CONFIG.status);
+        enforce("checkout.condition.target", sanitized.target && sanitized.target !== DEFAULT_CHECKOUT_CONFIG.target, () => sanitized.target = DEFAULT_CHECKOUT_CONFIG.target);
+        enforce("checkout.banner.heading", !!sanitized.heading && sanitized.heading !== DEFAULT_CHECKOUT_CONFIG.heading, () => sanitized.heading = DEFAULT_CHECKOUT_CONFIG.heading);
 
-        return { isValid: errors.length === 0, errors };
+        return { isValid: true, errors: [], sanitized };
     },
 
     /**
@@ -149,23 +158,24 @@ export const PlanService = {
      */
     async validateTermsConfig(shop, config) {
         const plan = await getShopPlan(null, shop);
-        const errors = [];
-        const check = (featureKey, condition, message) => {
+        const sanitized = { ...config };
+
+        const enforce = (featureKey, condition, resetFn) => {
             if (condition && !hasAccess(plan, featureKey)) {
-                errors.push(message);
+                resetFn();
             }
         };
 
-        check("terms.condition.status", config.enabled === true, "Enabling terms requires a Premium plan.");
-        check("terms.condition.pages", config.displayPages?.length > 0, "Selecting display pages requires a Premium plan.");
-        check("terms.condition.trigger", !!config.triggerCondition, "Trigger condition requires a Premium plan.");
-        check("terms.checkbox.text", !!config.checkboxText, "Checkbox text customization requires a Premium plan.");
-        check("terms.checkbox.keyword", !!config.keyword, "Keyword customization requires a Premium plan.");
-        check("terms.checkbox.link", !!config.link, "Keyword link requires a Premium plan.");
-        check("terms.checkbox.size", !!config.size, "Text size customization requires a Premium plan.");
-        check("terms.checkbox.color", !!config.color, "Text color customization requires a Premium plan.");
-        check("terms.checkbox.error", !!config.errorMessage, "Error message customization requires a Premium plan.");
+        enforce("terms.condition.status", sanitized.enabled === true, () => sanitized.enabled = false);
+        enforce("terms.condition.pages", sanitized.displayPages?.length > 0, () => sanitized.displayPages = []);
+        enforce("terms.condition.trigger", !!sanitized.triggerCondition, () => sanitized.triggerCondition = "");
+        enforce("terms.checkbox.text", !!sanitized.checkboxText, () => sanitized.checkboxText = "");
+        enforce("terms.checkbox.keyword", !!sanitized.keyword, () => sanitized.keyword = "");
+        enforce("terms.checkbox.link", !!sanitized.link, () => sanitized.link = "");
+        enforce("terms.checkbox.size", !!sanitized.size, () => sanitized.size = "");
+        enforce("terms.checkbox.color", !!sanitized.color, () => sanitized.color = "");
+        enforce("terms.checkbox.error", !!sanitized.errorMessage, () => sanitized.errorMessage = "");
 
-        return { isValid: errors.length === 0, errors };
+        return { isValid: true, errors: [], sanitized };
     }
 };
