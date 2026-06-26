@@ -21,7 +21,9 @@ export default function BannerSettings({ config, onChange }) {
   return (
     <SettingsSection
       title="Text customization"
-      badge={<Badge text="Basic plan or higher" type="basic" />}
+      badge={
+        disabled ? <Badge text="Basic plan or higher" type="basic" /> : null
+      }
       disabled={disabled}
     >
       <div

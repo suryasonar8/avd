@@ -8,6 +8,7 @@ import { PlanService } from "../services/plan.service";
 import PreviewPanel from "../components/checkout-verification/PreviewPanel";
 import ConditionSettings from "../components/checkout-verification/ConditionSettings";
 import BannerSettings from "../components/checkout-verification/BannerSettings";
+import { CheckoutBannerService } from "../services/checkout-banner.service";
 
 const DEFAULT_CONFIG = {
   status: "disabled",
@@ -19,22 +20,10 @@ const DEFAULT_CONFIG = {
   _productTitles: [],
 };
 export const loader = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
-  const response = await admin.graphql(
-    `#graphql
-    query getCheckoutBanner {
-      shop {
-        metafield(namespace: "avd", key: "checkout_banner") {
-          value
-        }
-      }
-    }`,
-  );
-  const data = await response.json();
-  const metafieldValue = data.data.shop.metafield?.value;
-  const config = metafieldValue
-    ? { ...DEFAULT_CONFIG, ...JSON.parse(metafieldValue) }
-    : DEFAULT_CONFIG;
+  const { session } = await authenticate.admin(request);
+  const dbBanner = await CheckoutBannerService.getBanner(session.shop);
+
+  const config = dbBanner ? { ...DEFAULT_CONFIG, ...dbBanner } : DEFAULT_CONFIG;
 
   return { config };
 };
@@ -51,45 +40,16 @@ export const action = async ({ request }) => {
     config,
   );
 
-  // Use sanitized config even if isValid is true (currently validateCheckoutConfig always returns true but with sanitized fields)
+  // Use sanitized config
   const finalConfig = validation.sanitized || config;
 
-  const response = await admin.graphql(
-    `#graphql
-    mutation metafieldUpsert($metafields: [MetafieldsSetInput!]!) {
-      metafieldsSet(metafields: $metafields) {
-        metafields {
-          id
-          namespace
-          key
-          value
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }`,
-    {
-      variables: {
-        metafields: [
-          {
-            namespace: "avd",
-            key: "checkout_banner",
-            type: "json",
-            ownerId: (await (await admin.graphql(`{ shop { id } }`)).json())
-              .data.shop.id,
-            value: JSON.stringify(finalConfig),
-          },
-        ],
-      },
-    },
-  );
-
-  const responseData = await response.json();
-  const errors = responseData.data?.metafieldsSet?.userErrors;
-
-  return { success: !errors?.length };
+  try {
+    await CheckoutBannerService.saveBanner(admin, session.shop, finalConfig);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to save checkout banner:", error);
+    return { success: false, errors: [error.message] };
+  }
 };
 
 export default function CheckoutVerificationSetup() {

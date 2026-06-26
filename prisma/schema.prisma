@@ -81,3 +81,13 @@ model Translation {
 
   @@unique([popupId, locale])
 }
+
+model CheckoutBanner {
+  id        Int      @id @default(autoincrement())
+  shop      String   @unique
+  config    String   // Full JSON config blob
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shop])
+}

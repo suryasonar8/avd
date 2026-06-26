@@ -80,7 +80,11 @@ export default function ConditionSettings({ config, onChange }) {
     <>
       <SettingsSection
         title="Banner status"
-        badge={<Badge text="Basic plan or higher" type="basic" />}
+        badge={
+          !canAccess("checkout.condition.status") ? (
+            <Badge text="Basic plan or higher" type="basic" />
+          ) : null
+        }
       >
         <CustomRadio
           label="Enabled"
@@ -98,7 +102,11 @@ export default function ConditionSettings({ config, onChange }) {
 
       <SettingsSection
         title="Target"
-        badge={<Badge text="Basic plan or higher" type="basic" />}
+        badge={
+          !canAccess("checkout.condition.target") ? (
+            <Badge text="Basic plan or higher" type="basic" />
+          ) : null
+        }
       >
         <CustomRadio
           label="Always"

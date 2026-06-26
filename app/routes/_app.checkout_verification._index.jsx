@@ -2,23 +2,13 @@ import { useState } from "react";
 import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 
-export const loader = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+import { CheckoutBannerService } from "../services/checkout-banner.service";
 
-  const response = await admin.graphql(
-    `#graphql
-    query getCheckoutBanner {
-      shop {
-        metafield(namespace: "avd", key: "checkout_banner") {
-          value
-        }
-      }
-    }`,
-  );
-  const data = await response.json();
-  const config = data.data.shop.metafield
-    ? JSON.parse(data.data.shop.metafield.value)
-    : { status: "disabled" };
+export const loader = async ({ request }) => {
+  const { session } = await authenticate.admin(request);
+  const config = (await CheckoutBannerService.getBanner(session.shop)) || {
+    status: "disabled",
+  };
 
   return { config };
 };
