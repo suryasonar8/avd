@@ -7,52 +7,15 @@ import { Card } from "../components/Card";
 import { ColorInput } from "../components/ColorInput";
 import { NumberInput } from "../components/NumberInput";
 import { Badge } from "../components/Badge";
+import { TermsService } from "../services/terms.service";
+import { PlanService } from "../services/plan.service";
 
 export const loader = async ({ request }) => {
-  const { admin, session } = await authenticate.admin(request);
-  const response = await admin.graphql(
-    `#graphql
-    query getShopMetafield {
-      shop {
-        metafield(namespace: "avd", key: "terms_settings") {
-          value
-        }
-      }
-    }`,
-  );
-  const data = await response.json();
-  const metafieldValue = data.data.shop.metafield?.value;
-  const settings = metafieldValue
-    ? {
-        enabled: false,
-        displayPages: [],
-        triggerCondition: "always",
-        checkboxText: "I understand and agree to the terms and conditions.",
-        showBrandMark: true,
-        keyword: "terms and conditions",
-        link: "https://",
-        size: 16,
-        color: "#000000",
-        errorMessage: "",
-        ...JSON.parse(metafieldValue),
-      }
-    : {
-        enabled: false,
-        displayPages: [],
-        triggerCondition: "always",
-        checkboxText: "I understand and agree to the terms and conditions.",
-        showBrandMark: true,
-        keyword: "terms and conditions",
-        link: "https://",
-        size: 16,
-        color: "#000000",
-        errorMessage: "",
-      };
+  const { session } = await authenticate.admin(request);
+  const settings = await TermsService.getSettings(session.shop);
 
   return { settings };
 };
-
-import { PlanService } from "../services/plan.service";
 
 export const action = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -69,38 +32,7 @@ export const action = async ({ request }) => {
   // Use sanitized settings even if isValid is true
   const finalSettings = validation.sanitized || settings;
 
-  const response = await admin.graphql(
-    `#graphql
-    mutation CreateMetafield($metafields: [MetafieldsSetInput!]!) {
-      metafieldsSet(metafields: $metafields) {
-        metafields {
-          id
-          namespace
-          key
-          value
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }`,
-    {
-      variables: {
-        metafields: [
-          {
-            namespace: "avd",
-            key: "terms_settings",
-            type: "json",
-            value: JSON.stringify(finalSettings),
-            ownerId: (
-              await admin.graphql(`{ shop { id } }`).then((r) => r.json())
-            ).data.shop.id,
-          },
-        ],
-      },
-    },
-  );
+  await TermsService.saveSettings(admin, session.shop, finalSettings);
 
   return { success: true };
 };

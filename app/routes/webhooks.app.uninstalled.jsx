@@ -43,7 +43,7 @@ export const action = async ({ request }) => {
           await admin.graphql(
             `#graphql
             mutation deleteDef($id: ID!) {
-              metafieldDefinitionDelete(id: $id, deleteAllMetafields: true) {
+              metafieldDefinitionDelete(id: $id, deleteAllAssociatedMetafields: true) {
                 deletedDefinitionId
                 userErrors { field message }
               }

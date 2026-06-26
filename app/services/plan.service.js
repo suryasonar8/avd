@@ -2,6 +2,7 @@ import db from "../db.server";
 import { PLANS, FEATURES, LIMITS, PLAN_TYPES } from "../constants/features";
 import { DEFAULT_STORE_CONFIG } from "../constants/store-verification";
 import { DEFAULT_CHECKOUT_CONFIG } from "../constants/checkout-verification";
+import { DEFAULT_TERMS_CONFIG } from "../constants/terms-and-conditions";
 
 /**
  * Get the current plan for a shop.
@@ -119,7 +120,7 @@ export const PlanService = {
             enforce("sv.btn.bg", sanitized.button.bgColor && sanitized.button.bgColor !== DEFAULT_STORE_CONFIG.button.bgColor, () => sanitized.button.bgColor = DEFAULT_STORE_CONFIG.button.bgColor);
             enforce("sv.cbtn.bg", sanitized.button.cancelBgColor && sanitized.button.cancelBgColor !== DEFAULT_STORE_CONFIG.button.cancelBgColor, () => sanitized.button.cancelBgColor = DEFAULT_STORE_CONFIG.button.cancelBgColor);
             enforce("sv.btn.border-color", !!sanitized.button.borderColor && sanitized.button.borderColor !== DEFAULT_STORE_CONFIG.button.borderColor, () => sanitized.button.borderColor = DEFAULT_STORE_CONFIG.button.borderColor);
-            enforce("sv.cbtn.border-color", !!sanitized.button.cancelBorderColor && sanitized.button.cancelBorderColor !== DEFAULT_STORE_CONFIG.button.cancelBorderColor, () => sanitized.button.cancelBorderColor = DEFAULT_STORE_CONFIG.button.cancelBorderColor);
+            enforce("sv.cbtn.border-color", !!sanitized.button.cancelBorderColor && sanitized.button.cancelBorderColor !== DEFAULT_CHECKOUT_CONFIG.button?.cancelBorderColor, () => sanitized.button.cancelBorderColor = DEFAULT_STORE_CONFIG.button.cancelBorderColor);
             enforce("sv.btn.border-radius", sanitized.button.borderRadius > 0, () => sanitized.button.borderRadius = DEFAULT_STORE_CONFIG.button.borderRadius);
             enforce("sv.cbtn.border-radius", sanitized.button.cancelBorderRadius > 0, () => sanitized.button.cancelBorderRadius = DEFAULT_STORE_CONFIG.button.cancelBorderRadius);
             enforce("sv.btn.border-width", sanitized.button.borderWidth > 0, () => sanitized.button.borderWidth = DEFAULT_STORE_CONFIG.button.borderWidth);
@@ -169,15 +170,15 @@ export const PlanService = {
             }
         };
 
-        enforce("terms.condition.status", sanitized.enabled === true, () => sanitized.enabled = false);
-        enforce("terms.condition.pages", sanitized.displayPages?.length > 0, () => sanitized.displayPages = []);
-        enforce("terms.condition.trigger", !!sanitized.triggerCondition, () => sanitized.triggerCondition = "");
-        enforce("terms.checkbox.text", !!sanitized.checkboxText, () => sanitized.checkboxText = "");
-        enforce("terms.checkbox.keyword", !!sanitized.keyword, () => sanitized.keyword = "");
-        enforce("terms.checkbox.link", !!sanitized.link, () => sanitized.link = "");
-        enforce("terms.checkbox.size", !!sanitized.size, () => sanitized.size = "");
-        enforce("terms.checkbox.color", !!sanitized.color, () => sanitized.color = "");
-        enforce("terms.checkbox.error", !!sanitized.errorMessage, () => sanitized.errorMessage = "");
+        enforce("terms.condition.status", sanitized.enabled === true, () => sanitized.enabled = DEFAULT_TERMS_CONFIG.enabled);
+        enforce("terms.condition.pages", sanitized.displayPages?.length > 0, () => sanitized.displayPages = DEFAULT_TERMS_CONFIG.displayPages);
+        enforce("terms.condition.trigger", !!sanitized.triggerCondition && sanitized.triggerCondition !== DEFAULT_TERMS_CONFIG.triggerCondition, () => sanitized.triggerCondition = DEFAULT_TERMS_CONFIG.triggerCondition);
+        enforce("terms.checkbox.text", !!sanitized.checkboxText && sanitized.checkboxText !== DEFAULT_TERMS_CONFIG.checkboxText, () => sanitized.checkboxText = DEFAULT_TERMS_CONFIG.checkboxText);
+        enforce("terms.checkbox.keyword", !!sanitized.keyword && sanitized.keyword !== DEFAULT_TERMS_CONFIG.keyword, () => sanitized.keyword = DEFAULT_TERMS_CONFIG.keyword);
+        enforce("terms.checkbox.link", !!sanitized.link && sanitized.link !== DEFAULT_TERMS_CONFIG.link, () => sanitized.link = DEFAULT_TERMS_CONFIG.link);
+        enforce("terms.checkbox.size", !!sanitized.size && sanitized.size !== DEFAULT_TERMS_CONFIG.size, () => sanitized.size = DEFAULT_TERMS_CONFIG.size);
+        enforce("terms.checkbox.color", !!sanitized.color && sanitized.color !== DEFAULT_TERMS_CONFIG.color, () => sanitized.color = DEFAULT_TERMS_CONFIG.color);
+        enforce("terms.checkbox.error", !!sanitized.errorMessage && sanitized.errorMessage !== DEFAULT_TERMS_CONFIG.errorMessage, () => sanitized.errorMessage = DEFAULT_TERMS_CONFIG.errorMessage);
 
         return { isValid: true, errors: [], sanitized };
     }

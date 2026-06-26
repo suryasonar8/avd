@@ -91,3 +91,13 @@ model CheckoutBanner {
 
   @@index([shop])
 }
+
+model TermsSettings {
+  id        Int      @id @default(autoincrement())
+  shop      String   @unique
+  config    String   // Full JSON config blob
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shop])
+}

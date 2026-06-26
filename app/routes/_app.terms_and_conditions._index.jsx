@@ -1,23 +1,11 @@
 import { useState } from "react";
-import { useFetcher, useNavigate, useLoaderData } from "react-router";
+import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
+import { TermsService } from "../services/terms.service";
 
 export const loader = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
-  const response = await admin.graphql(
-    `#graphql
-    query getShopMetafield {
-      shop {
-        metafield(namespace: "avd", key: "terms_settings") {
-          value
-        }
-      }
-    }`,
-  );
-  const data = await response.json();
-  const settings = data.data.shop.metafield?.value
-    ? JSON.parse(data.data.shop.metafield.value)
-    : null;
+  const { session } = await authenticate.admin(request);
+  const settings = await TermsService.getSettings(session.shop);
 
   return { settings };
 };
