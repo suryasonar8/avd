@@ -3,8 +3,10 @@ import { Badge } from "../Badge";
 import { ColorInput } from "../ColorInput";
 import { NumberInput } from "../NumberInput";
 import { RichTextEditor } from "../RichTextEditor";
+import { usePlan } from "../../context/PlanContext";
 
 export function ButtonTab({ config, setConfig }) {
+  const { canAccess } = usePlan();
   return (
     <>
       <Card title="Submit button">
@@ -67,6 +69,7 @@ export function ButtonTab({ config, setConfig }) {
       <Card title="Button style">
         <ColorInput
           label="Background"
+          disabled={!canAccess("sv.btn.bg")}
           badge={<Badge text="Basic plan or higher" type="basic" />}
           value={config.button.bgColor}
           onChange={(val) =>
@@ -78,6 +81,7 @@ export function ButtonTab({ config, setConfig }) {
         />
         <ColorInput
           label="Border color"
+          disabled={!canAccess("sv.btn.border-color")}
           badge={<Badge text="Premium plan" type="premium" />}
           value={config.button.borderColor}
           onChange={(val) =>
@@ -89,6 +93,7 @@ export function ButtonTab({ config, setConfig }) {
         />
         <NumberInput
           label="Border radius"
+          disabled={!canAccess("sv.btn.border-radius")}
           badge={<Badge text="Premium plan" type="premium" />}
           value={config.button.borderRadius}
           onChange={(val) =>
@@ -100,6 +105,7 @@ export function ButtonTab({ config, setConfig }) {
         />
         <NumberInput
           label="Border width"
+          disabled={!canAccess("sv.btn.border-width")}
           badge={<Badge text="Premium plan" type="premium" />}
           value={config.button.borderWidth}
           onChange={(val) =>
@@ -247,6 +253,7 @@ export function ButtonTab({ config, setConfig }) {
       <Card title="Cancel button style">
         <ColorInput
           label="Background"
+          disabled={!canAccess("sv.cbtn.bg")}
           badge={<Badge text="Basic plan or higher" type="basic" />}
           value={config.button.cancelBgColor}
           onChange={(val) =>
@@ -258,6 +265,7 @@ export function ButtonTab({ config, setConfig }) {
         />
         <ColorInput
           label="Border color"
+          disabled={!canAccess("sv.cbtn.border-color")}
           badge={<Badge text="Premium plan" type="premium" />}
           value={config.button.cancelBorderColor}
           onChange={(val) =>
@@ -269,6 +277,7 @@ export function ButtonTab({ config, setConfig }) {
         />
         <NumberInput
           label="Border radius"
+          disabled={!canAccess("sv.cbtn.border-radius")}
           badge={<Badge text="Premium plan" type="premium" />}
           value={config.button.cancelBorderRadius}
           onChange={(val) =>
@@ -280,6 +289,7 @@ export function ButtonTab({ config, setConfig }) {
         />
         <NumberInput
           label="Border width"
+          disabled={!canAccess("sv.cbtn.border-width")}
           badge={<Badge text="Premium plan" type="premium" />}
           value={config.button.cancelBorderWidth}
           onChange={(val) =>

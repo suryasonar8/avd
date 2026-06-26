@@ -4,15 +4,17 @@ import {
   useSubmit,
   useActionData,
   useSearchParams,
+  redirect,
 } from "react-router";
 import { useState, useMemo, useEffect } from "react";
 import { useAppBridge, SaveBar } from "@shopify/app-bridge-react";
 import { RichTextEditor } from "../components/RichTextEditor";
 import { authenticate } from "../shopify.server";
+import { PlanService } from "../services/plan.service";
 import { Card } from "../components/Card";
 
 export const loader = async ({ request, params }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   const { locale } = params;
 
   // 1. Discover the actual Metaobject type handles
@@ -71,15 +73,111 @@ export const loader = async ({ request, params }) => {
   const currentLanguage = language?.name || locale;
   const isPublished = language?.published || false;
 
-  return { locale, currentLanguage, isPublished, popups };
+  const plan = await PlanService.getShopPlan(admin, session.shop);
+  const limit = PlanService.getTranslationLimit(plan);
+
+  const hasPremiumAccess = await PlanService.hasAccess(
+    session.shop,
+    "translation.unlimited",
+  );
+
+  let isLimitReached = false;
+  if (limit !== Infinity) {
+    // Check if translation already exists for this locale
+    const summaryHandle = `translation-summary-${locale}`;
+    const translationsResponse = await admin.graphql(
+      `#graphql
+      query getSummary($type: String!, $query: String!) {
+        metaobjects(type: $type, query: $query, first: 1) {
+          nodes { id }
+        }
+        allTranslations: metaobjects(type: $type, first: 250) {
+          nodes { id }
+        }
+      }`,
+      {
+        variables: {
+          type: translationsTypeHandle,
+          query: `handle:${summaryHandle}`,
+        },
+      },
+    );
+    const translationsData = await translationsResponse.json();
+    const exists = (translationsData.data.metaobjects?.nodes || []).length > 0;
+    const count = translationsData.data.allTranslations?.nodes?.length || 0;
+
+    if (!exists && count >= limit) {
+      isLimitReached = true;
+    }
+  }
+
+  const isReadOnly = !hasPremiumAccess || isLimitReached;
+
+  return {
+    locale,
+    currentLanguage,
+    isPublished,
+    popups,
+    isReadOnly,
+    hasPremiumAccess,
+    isLimitReached,
+  };
 };
 
 export const action = async ({ request, params }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
+  const shop = session.shop;
   const { locale } = params;
   const formData = await request.formData();
   const popupId = formData.get("popupId");
   const translations = JSON.parse(formData.get("translations") || "{}");
+
+  // Server-side gating
+  const hasAccess = await PlanService.hasAccess(shop, "translation.unlimited");
+  if (!hasAccess) {
+    return { success: false, error: "Premium plan required for translations" };
+  }
+
+  // Enforce translation limits
+  const plan = await PlanService.getShopPlan(admin, shop);
+  const limit = PlanService.getTranslationLimit(plan);
+
+  if (limit !== Infinity) {
+    // 1. Get translations type handle
+    const defsResponse = await admin.graphql(
+      `#graphql
+      query getDefs {
+        translations: metaobjectDefinitionByType(type: "$app:translations") { type }
+      }`,
+    );
+    const defsData = await defsResponse.json();
+    const translationsTypeHandle =
+      defsData.data.translations?.type || "app--translations";
+
+    // 2. Fetch existing translation summaries to check count and if current locale exists
+    const summariesResponse = await admin.graphql(
+      `#graphql
+      query getSummaries($type: String!) {
+        metaobjects(type: $type, first: 250) {
+          nodes {
+            handle
+          }
+        }
+      }`,
+      { variables: { type: translationsTypeHandle } },
+    );
+    const summariesData = await summariesResponse.json();
+    const summaries = summariesData.data?.metaobjects?.nodes || [];
+    const summaryHandle = `translation-summary-${locale}`;
+    const exists = summaries.some((s) => s.handle === summaryHandle);
+
+    if (!exists && summaries.length >= limit) {
+      return {
+        success: false,
+        error: `Language limit reached (${limit}). Please upgrade your plan to add more languages.`,
+      };
+    }
+  }
 
   if (!popupId) return { success: false, error: "No popup selected" };
 
@@ -272,6 +370,7 @@ const TranslationField = ({
   value,
   onChange,
   type = "text",
+  disabled = false,
 }) => (
   <div style={{ marginBottom: "20px" }}>
     <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
@@ -337,7 +436,13 @@ const TranslationField = ({
           {label}
         </label>
         {type === "richtext" ? (
-          <div className="custom-editor-container">
+          <div
+            className="custom-editor-container"
+            style={{
+              pointerEvents: disabled ? "none" : "auto",
+              opacity: disabled ? 0.7 : 1,
+            }}
+          >
             {typeof document !== "undefined" ? (
               <RichTextEditor value={value} onChange={(e) => onChange(e)} />
             ) : (
@@ -349,6 +454,7 @@ const TranslationField = ({
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
+            disabled={disabled}
             style={{
               width: "100%",
               padding: "10px 14px",
@@ -356,6 +462,8 @@ const TranslationField = ({
               borderRadius: "8px",
               outline: "none",
               fontSize: "14px",
+              background: disabled ? "#f9fafb" : "white",
+              cursor: disabled ? "not-allowed" : "text",
             }}
           />
         )}
@@ -380,7 +488,15 @@ const MONTH_NAMES = [
 ];
 
 export default function TranslationSetupPage() {
-  const { locale, currentLanguage, isPublished, popups } = useLoaderData();
+  const {
+    locale,
+    currentLanguage,
+    isPublished,
+    popups,
+    isReadOnly,
+    hasPremiumAccess,
+    isLimitReached,
+  } = useLoaderData();
   const actionData = useActionData();
   const navigate = useNavigate();
   const submit = useSubmit();
@@ -620,8 +736,8 @@ export default function TranslationSetupPage() {
           </p>
         </div>
 
-        <SaveBar id="translation-save-bar" open={isDirty}>
-          <button variant="primary" onClick={handleSave}>
+        <SaveBar id="translation-save-bar" open={isDirty && !isReadOnly}>
+          <button variant="primary" onClick={handleSave} disabled={isReadOnly}>
             Save
           </button>
           <button type="button" onClick={handleDiscard}>
@@ -695,7 +811,9 @@ export default function TranslationSetupPage() {
                       ? selectedPopup.config.name || selectedPopup.handle
                       : ""
                   }
-                  onClick={() => setIsPopupDialogOpen(!isPopupDialogOpen)}
+                  onClick={() =>
+                    !isReadOnly && setIsPopupDialogOpen(!isPopupDialogOpen)
+                  }
                   style={{
                     width: "100%",
                     padding: "10px 14px",
@@ -704,8 +822,8 @@ export default function TranslationSetupPage() {
                     borderRadius: "8px",
                     outline: "none",
                     fontSize: "14px",
-                    background: "white",
-                    cursor: "pointer",
+                    background: isReadOnly ? "#f6f6f7" : "white",
+                    cursor: isReadOnly ? "not-allowed" : "pointer",
                     boxSizing: "border-box",
                   }}
                 />
@@ -820,11 +938,12 @@ export default function TranslationSetupPage() {
           <Card>
             <div style={{ textAlign: "right", marginBottom: "16px" }}>
               <button
+                disabled={isReadOnly}
                 style={{
                   background: "none",
                   border: "none",
-                  color: "#6d7175",
-                  cursor: "pointer",
+                  color: isReadOnly ? "#babec3" : "#6d7175",
+                  cursor: isReadOnly ? "not-allowed" : "pointer",
                   fontSize: "13px",
                   display: "flex",
                   alignItems: "center",
@@ -835,6 +954,7 @@ export default function TranslationSetupPage() {
               </button>
             </div>
             <TranslationField
+              disabled={isReadOnly}
               label="Heading text"
               original={selectedPopup?.config.text?.heading}
               value={translations.heading}
@@ -844,6 +964,7 @@ export default function TranslationSetupPage() {
               type="richtext"
             />
             <TranslationField
+              disabled={isReadOnly}
               label="Sub-heading text"
               original={selectedPopup?.config.text?.subheading}
               value={translations.subheading}
@@ -870,6 +991,7 @@ export default function TranslationSetupPage() {
           />
           <Card>
             <TranslationField
+              disabled={isReadOnly}
               label="Submit button label"
               original={selectedPopup?.config.button?.submitText}
               value={translations.submitLabel}
@@ -879,6 +1001,7 @@ export default function TranslationSetupPage() {
               type="richtext"
             />
             <TranslationField
+              disabled={isReadOnly}
               label="Submit error message"
               original={selectedPopup?.config.button?.errorMsg}
               value={translations.submitErrorMsg}
@@ -888,6 +1011,7 @@ export default function TranslationSetupPage() {
               type="richtext"
             />
             <TranslationField
+              disabled={isReadOnly}
               label="Cancel button label"
               original={selectedPopup?.config.button?.cancelText}
               value={translations.cancelLabel}
@@ -897,6 +1021,7 @@ export default function TranslationSetupPage() {
               type="richtext"
             />
             <TranslationField
+              disabled={isReadOnly}
               label="Cancel error message"
               original={selectedPopup?.config.button?.cancelErrorMsg}
               value={translations.cancelErrorMsg}
@@ -951,23 +1076,25 @@ export default function TranslationSetupPage() {
                 <div>
                   <button
                     onClick={() => {
+                      if (isReadOnly) return;
                       const nextMonth = MONTH_NAMES[visibleMonths.length];
                       if (nextMonth) {
                         setVisibleMonths([...visibleMonths, nextMonth]);
                       }
                     }}
+                    disabled={isReadOnly}
                     style={{
                       display: "flex",
                       alignItems: "center",
                       gap: "8px",
                       padding: "8px 16px",
-                      background: "white",
+                      background: isReadOnly ? "#f6f6f7" : "white",
                       border: "1px solid #e1e3e5",
                       borderRadius: "8px",
-                      cursor: "pointer",
+                      cursor: isReadOnly ? "not-allowed" : "pointer",
                       fontSize: "14px",
                       fontWeight: "500",
-                      color: "#202223",
+                      color: isReadOnly ? "#babec3" : "#202223",
                     }}
                   >
                     <span style={{ fontSize: "18px", fontWeight: "400" }}>

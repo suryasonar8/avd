@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
+import { usePlan } from "../context/PlanContext";
 import { Card } from "../components/Card";
 import { Modal } from "../components/Modal";
+import { PlanService } from "../services/plan.service";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -87,21 +89,33 @@ export const loader = async ({ request }) => {
     })),
   }));
 
+  const plan = await PlanService.getShopPlan(admin, session.shop);
+  const limit = PlanService.getTranslationLimit(plan);
+
   return {
     shop: shopDomain,
     shopLocales,
     primaryLocale,
     translatedLanguages,
     hasPopups,
+    limit,
   };
 };
 
 export default function TranslationPage() {
-  const { shop, shopLocales, primaryLocale, translatedLanguages, hasPopups } =
-    useLoaderData();
+  const {
+    shop,
+    shopLocales,
+    primaryLocale,
+    translatedLanguages,
+    hasPopups,
+    limit,
+  } = useLoaderData();
   const navigate = useNavigate();
+  const { plan } = usePlan();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
+  const canAddLanguage = translatedLanguages.length < limit;
 
   const languages = [
     { label: "Select", value: "" },
@@ -118,6 +132,14 @@ export default function TranslationPage() {
     "English";
 
   const handleAddLanguage = () => {
+    if (!canAddLanguage) {
+      if (typeof shopify !== "undefined") {
+        shopify.toast.show("Language limit reached. Please upgrade.");
+      }
+      navigate("/pricing");
+      return;
+    }
+
     if (hasPopups) {
       setIsModalOpen(true);
     } else {
@@ -183,51 +205,57 @@ export default function TranslationPage() {
         </button>
       </div>
 
-      {/* Free Plan Banner */}
-      <div
-        style={{
-          background: "#BAE0FF",
-          borderRadius: "12px",
-          padding: "24px",
-          marginBottom: "24px",
-          position: "relative",
-          border: "1px solid #91D5FF",
-        }}
-      >
+      {/* Free Plan Limit Banner */}
+      {plan === "free" && (
         <div
           style={{
+            background: "#BAE0FF",
+            borderRadius: "12px",
+            padding: "24px",
+            marginBottom: "24px",
+            position: "relative",
+            border: "1px solid #91D5FF",
             display: "flex",
-            gap: "12px",
             alignItems: "center",
-            marginBottom: "16px",
+            justifyContent: "space-between",
+            gap: "12px",
           }}
         >
-          <div
-            style={{
-              backgroundColor: "#006FBB",
-              color: "white",
-              borderRadius: "50%",
-              width: "20px",
-              height: "20px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "12px",
-              fontWeight: "bold",
-            }}
-          >
-            i
-          </div>
-          <h2
-            style={{
-              fontSize: "16px",
-              fontWeight: "700",
-              margin: 0,
-              color: "#002339",
-            }}
-          >
-            Free Plan Limit
-          </h2>
+          <div style={{ flex: 1 }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                alignItems: "center",
+                marginBottom: "16px",
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: "#006FBB",
+                  color: "white",
+                  borderRadius: "50%",
+                  width: "20px",
+                  height: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                }}
+              >
+                i
+              </div>
+              <h2
+                style={{
+                  fontSize: "16px",
+                  fontWeight: "700",
+                  margin: 0,
+                  color: "#002339",
+                }}
+              >
+                Free Plan Limit
+              </h2>
           <button
             style={{
               position: "absolute",
@@ -243,34 +271,39 @@ export default function TranslationPage() {
           >
             ×
           </button>
+            </div>
+            <p
+              style={{
+                margin: "0",
+                fontSize: "14px",
+                color: "#002339",
+                lineHeight: "1.5",
+              }}
+            >
+              Your current plan includes 1 translated language (
+              {translatedLanguages.length}/1 used). Upgrade to unlock support
+              for multiple languages and advanced translation features.
+            </p>
+          </div>
+          <button
+            onClick={() => navigate("/pricing")}
+            style={{
+              padding: "8px 20px",
+              backgroundColor: "#fff",
+              border: "1px solid #006FBB",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: "13px",
+              color: "#006FBB",
+              boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
+              flexShrink: 0,
+            }}
+          >
+            Increase limit
+          </button>
         </div>
-        <p
-          style={{
-            margin: "0 0 20px 0",
-            fontSize: "14px",
-            color: "#002339",
-            lineHeight: "1.5",
-          }}
-        >
-          Upgrade to unlock more translation options and support for multiple
-          languages.
-        </p>
-        <button
-          style={{
-            padding: "8px 20px",
-            backgroundColor: "#fff",
-            border: "1px solid #dcdfe3",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: "600",
-            fontSize: "13px",
-            color: "#202223",
-            boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
-          }}
-        >
-          Increase limit
-        </button>
-      </div>
+      )}
 
       {/* Default Language Card */}
       <div
@@ -527,17 +560,23 @@ export default function TranslationPage() {
               onClick={handleAddLanguage}
               style={{
                 padding: "10px 24px",
-                backgroundColor: "#202223",
-                color: "white",
+                backgroundColor:
+                  canAddLanguage || !hasPopups ? "#202223" : "#F1F1F1",
+                color: canAddLanguage || !hasPopups ? "white" : "#919EAB",
                 border: "none",
                 borderRadius: "8px",
-                cursor: "pointer",
+                cursor:
+                  canAddLanguage || !hasPopups ? "pointer" : "not-allowed",
                 fontWeight: "600",
                 fontSize: "14px",
                 boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
               }}
             >
-              {hasPopups ? "Add language" : "Create pop-up"}
+              {hasPopups
+                ? canAddLanguage
+                  ? "Add language"
+                  : "Limit reached"
+                : "Create pop-up"}
             </button>
           </div>
         )}

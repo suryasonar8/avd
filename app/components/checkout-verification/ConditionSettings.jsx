@@ -4,8 +4,12 @@ import SettingsSection from "./SettingsSection";
 import CustomRadio from "./CustomRadio";
 import { Badge } from "../Badge";
 
+import { usePlan } from "../../context/PlanContext";
+
 export default function ConditionSettings({ config, onChange }) {
+  const { canAccess } = usePlan();
   const shopify = useAppBridge();
+  const disabled = !canAccess("checkout.condition.target");
 
   const handleStatusChange = (status) => {
     onChange({ status });
@@ -82,11 +86,13 @@ export default function ConditionSettings({ config, onChange }) {
           label="Enabled"
           checked={config.status === "enabled"}
           onChange={() => handleStatusChange("enabled")}
+          disabled={!canAccess("checkout.condition.status")}
         />
         <CustomRadio
           label="Disabled"
           checked={config.status === "disabled"}
           onChange={() => handleStatusChange("disabled")}
+          disabled={!canAccess("checkout.condition.status")}
         />
       </SettingsSection>
 
@@ -99,27 +105,30 @@ export default function ConditionSettings({ config, onChange }) {
           description="Always show the banner without any conditions."
           checked={config.target === "always"}
           onChange={() => handleTargetChange("always")}
+          disabled={!canAccess("checkout.condition.target")}
         />
         <CustomRadio
           label="Specific collection"
           description="Show the banner to selected collection."
           checked={config.target === "collection"}
           onChange={() => handleTargetChange("collection")}
+          disabled={!canAccess("checkout.condition.target")}
         />
 
         {config.target === "collection" && (
           <div style={{ marginLeft: "28px", marginTop: "8px" }}>
             <button
-              onClick={handleSelectCollections}
+              onClick={() => !disabled && handleSelectCollections()}
+              disabled={disabled}
               style={{
                 padding: "8px 16px",
                 fontSize: "13px",
                 fontWeight: 500,
                 border: "1px solid #C9CCCF",
                 borderRadius: "8px",
-                background: "#fff",
-                cursor: "pointer",
-                color: "#202223",
+                background: disabled ? "#F1F1F1" : "#fff",
+                cursor: disabled ? "not-allowed" : "pointer",
+                color: disabled ? "#919EAB" : "#202223",
               }}
             >
               {(config.selectedCollections || []).length > 0
@@ -178,21 +187,23 @@ export default function ConditionSettings({ config, onChange }) {
           description="Show the banner to selected product."
           checked={config.target === "product"}
           onChange={() => handleTargetChange("product")}
+          disabled={!canAccess("checkout.condition.target")}
         />
 
         {config.target === "product" && (
           <div style={{ marginLeft: "28px", marginTop: "8px" }}>
             <button
-              onClick={handleSelectProducts}
+              onClick={() => !disabled && handleSelectProducts()}
+              disabled={disabled}
               style={{
                 padding: "8px 16px",
                 fontSize: "13px",
                 fontWeight: 500,
                 border: "1px solid #C9CCCF",
                 borderRadius: "8px",
-                background: "#fff",
-                cursor: "pointer",
-                color: "#202223",
+                background: disabled ? "#F1F1F1" : "#fff",
+                cursor: disabled ? "not-allowed" : "pointer",
+                color: disabled ? "#919EAB" : "#202223",
               }}
             >
               {(config.selectedProducts || []).length > 0
@@ -227,11 +238,12 @@ export default function ConditionSettings({ config, onChange }) {
                         : id.replace("gid://shopify/Product/", "#")}
                     </span>
                     <button
-                      onClick={() => removeProduct(id)}
+                      onClick={() => !disabled && removeProduct(id)}
+                      disabled={disabled}
                       style={{
                         background: "none",
                         border: "none",
-                        cursor: "pointer",
+                        cursor: disabled ? "not-allowed" : "pointer",
                         fontSize: "14px",
                         color: "#6D7175",
                         padding: "0 4px",

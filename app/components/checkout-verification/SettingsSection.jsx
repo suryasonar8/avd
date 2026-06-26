@@ -1,6 +1,6 @@
 import BlueBadge from "./BlueBadge";
 
-export default function SettingsSection({ title, badge, children }) {
+export default function SettingsSection({ title, badge, children, disabled }) {
   return (
     <div
       style={{
@@ -11,6 +11,7 @@ export default function SettingsSection({ title, badge, children }) {
         display: "flex",
         flexDirection: "column",
         gap: "16px",
+        opacity: disabled ? 0.6 : 1,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>

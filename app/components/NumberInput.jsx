@@ -4,8 +4,9 @@ export const NumberInput = ({
   onChange,
   badge,
   suffix = "px",
+  disabled,
 }) => (
-  <div style={{ marginBottom: "16px" }}>
+  <div style={{ marginBottom: "16px", opacity: disabled ? 0.6 : 1 }}>
     <div
       style={{
         display: "flex",
@@ -29,6 +30,7 @@ export const NumberInput = ({
       <input
         type="number"
         value={value}
+        disabled={disabled}
         onChange={(e) => onChange(parseInt(e.target.value) || 0)}
         style={{
           boxSizing: "border-box",
@@ -38,6 +40,7 @@ export const NumberInput = ({
           borderRadius: "8px",
           border: "1px solid #CBCFD2",
           fontSize: "13px",
+          background: disabled ? "#F6F6F7" : "#FFF",
         }}
       />
       <span

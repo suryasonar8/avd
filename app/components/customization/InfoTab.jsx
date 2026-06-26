@@ -2,11 +2,13 @@ import { Card } from "../Card";
 import { Badge } from "../Badge";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { useState } from "react";
+import { usePlan } from "../../context/PlanContext";
 import { DISPLAY_PAGES } from "../../constants/display-pages";
 
 export function InfoTab({ config, setConfig }) {
   const shopify = useAppBridge();
   const [urlInput, setUrlInput] = useState("");
+  const { canAccess } = usePlan();
   return (
     <>
       <Card title="Pop-up Info">
@@ -141,6 +143,8 @@ export function InfoTab({ config, setConfig }) {
                 alignItems: "center",
                 gap: "8px",
                 fontSize: "13px",
+                opacity: 1,
+                cursor: "pointer",
               }}
             >
               <input
@@ -261,7 +265,32 @@ export function InfoTab({ config, setConfig }) {
                     alignItems: "center",
                     gap: "8px",
                     fontSize: "13px",
-                    cursor: "pointer",
+                    cursor:
+                      page === "All pages" ||
+                      canAccess(
+                        page === "Home page"
+                          ? "sv.info.pages.home"
+                          : page === "Specific collections"
+                            ? "sv.info.pages.collections"
+                            : page === "Specific products"
+                              ? "sv.info.pages.products"
+                              : "sv.info.pages.custom",
+                      )
+                        ? "pointer"
+                        : "default",
+                    opacity:
+                      page === "All pages" ||
+                      canAccess(
+                        page === "Home page"
+                          ? "sv.info.pages.home"
+                          : page === "Specific collections"
+                            ? "sv.info.pages.collections"
+                            : page === "Specific products"
+                              ? "sv.info.pages.products"
+                              : "sv.info.pages.custom",
+                      )
+                        ? 1
+                        : 0.6,
                     marginBottom:
                       config.pages === page &&
                       page !== "All pages" &&
@@ -273,6 +302,18 @@ export function InfoTab({ config, setConfig }) {
                   <input
                     type="radio"
                     name="pages"
+                    disabled={
+                      !(page === "All pages") &&
+                      !canAccess(
+                        page === "Home page"
+                          ? "sv.info.pages.home"
+                          : page === "Specific collections"
+                            ? "sv.info.pages.collections"
+                            : page === "Specific products"
+                              ? "sv.info.pages.products"
+                              : "sv.info.pages.custom",
+                      )
+                    }
                     checked={config.pages === page}
                     onChange={() =>
                       setConfig((prev) => ({ ...prev, pages: page }))
@@ -631,12 +672,16 @@ export function InfoTab({ config, setConfig }) {
                 alignItems: "center",
                 gap: "8px",
                 fontSize: "13px",
-                cursor: "pointer",
+                cursor: canAccess("sv.info.trigger.logged")
+                  ? "pointer"
+                  : "default",
+                opacity: canAccess("sv.info.trigger.logged") ? 1 : 0.6,
               }}
             >
               <input
                 type="radio"
                 name="trigger"
+                disabled={!canAccess("sv.info.trigger.logged")}
                 checked={config.trigger === "Logged customers"}
                 onChange={() =>
                   setConfig((prev) => ({

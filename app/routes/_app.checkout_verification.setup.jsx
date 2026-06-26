@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLoaderData, useFetcher } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { SaveBar } from "@shopify/app-bridge-react";
+import { usePlan } from "../context/PlanContext";
 import { authenticate } from "../shopify.server";
+import { PlanService } from "../services/plan.service";
 import PreviewPanel from "../components/checkout-verification/PreviewPanel";
 import ConditionSettings from "../components/checkout-verification/ConditionSettings";
 import BannerSettings from "../components/checkout-verification/BannerSettings";
@@ -16,10 +18,8 @@ const DEFAULT_CONFIG = {
   _collectionTitles: [],
   _productTitles: [],
 };
-
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
-
   const response = await admin.graphql(
     `#graphql
     query getCheckoutBanner {
@@ -40,10 +40,19 @@ export const loader = async ({ request }) => {
 };
 
 export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   const formData = await request.formData();
   const configStr = formData.get("config");
   const config = JSON.parse(configStr);
+
+  // Server-side granular gate
+  const validation = await PlanService.validateCheckoutConfig(
+    session.shop,
+    config,
+  );
+  if (!validation.isValid) {
+    return { success: false, errors: validation.errors };
+  }
 
   const response = await admin.graphql(
     `#graphql
@@ -83,11 +92,11 @@ export const action = async ({ request }) => {
   return { success: !errors?.length };
 };
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 export default function CheckoutVerificationSetup() {
   const navigate = useNavigate();
   const { config: initialConfig } = useLoaderData();
   const [config, setConfig] = useState(initialConfig);
+
   // Reset config when initialConfig changes (e.g. after save or navigation)
   useEffect(() => {
     setConfig(initialConfig);
@@ -96,7 +105,7 @@ export default function CheckoutVerificationSetup() {
   const [activeTab, setActiveTab] = useState("condition");
   const fetcher = useFetcher();
   const shopify = useAppBridge();
-
+  
   const isDirty = JSON.stringify(config) !== JSON.stringify(initialConfig);
 
   useEffect(() => {
@@ -139,7 +148,11 @@ export default function CheckoutVerificationSetup() {
       }}
     >
       <SaveBar id="checkout-banner-save-bar" open={isDirty}>
-        <button variant="primary" onClick={handleSave}>
+        <button
+          variant="primary"
+          onClick={handleSave}
+          disabled={fetcher.state === "submitting"}
+        >
           Save
         </button>
         <button onClick={handleDiscard}>Discard</button>
@@ -207,9 +220,34 @@ export default function CheckoutVerificationSetup() {
           Banner
         </button>
       </div>
+      {fetcher.data?.errors && (
+        <div
+          style={{
+            background: "#fff4f4",
+            border: "1px solid #d72c0d",
+            borderRadius: "8px",
+            padding: "12px",
+            marginBottom: "24px",
+            color: "#d72c0d",
+            fontSize: "13px",
+          }}
+        >
+          {fetcher.data.errors.map((err, i) => (
+            <p key={i} style={{ margin: "2px 0" }}>
+              • {err}
+            </p>
+          ))}
+        </div>
+      )}
 
       {/* Main Grid */}
-      <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "24px",
+          alignItems: "flex-start",
+        }}
+      >
         <div
           style={{
             width: "320px",

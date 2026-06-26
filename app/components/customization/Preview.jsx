@@ -321,27 +321,30 @@ export const Preview = ({
           </div>
 
           {showBrandMark !== false ? (
-            <button
-              onClick={() => {
-                setGlobalSettings({ ...globalSettings, showBrandMark: false });
-                fetcher.submit(
-                  { intent: "toggle_brand_mark", showBrandMark: "false" },
-                  { method: "POST" },
-                );
-              }}
-              style={{
-                marginTop: "20px",
-                background: "none",
-                border: "none",
-                color: "#005F99",
-                textDecoration: "underline",
-                fontSize: "13px",
-                fontWeight: "500",
-                cursor: "pointer",
-              }}
-            >
-              Click to remove brand mark
-            </button>
+              <button
+                onClick={() => {
+                  setGlobalSettings({
+                    ...globalSettings,
+                    showBrandMark: false,
+                  });
+                  fetcher.submit(
+                    { intent: "toggle_brand_mark", showBrandMark: "false" },
+                    { method: "POST" },
+                  );
+                }}
+                style={{
+                  marginTop: "20px",
+                  background: "none",
+                  border: "none",
+                  color: "#005F99",
+                  textDecoration: "underline",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  cursor: "pointer",
+                }}
+              >
+                Click to remove brand mark
+              </button>
           ) : (
             <button
               onClick={() => {

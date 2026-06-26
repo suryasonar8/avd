@@ -1,10 +1,11 @@
 import { useSubmit, useLoaderData, redirect } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
+import { PlanService } from "../services/plan.service";
 import { PopupEditor } from "../components/customization/PopupEditor";
 
 export const loader = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
 
   // Fetch global settings for Brand Mark
   const globalSettingsResponse = await admin.graphql(
@@ -23,12 +24,106 @@ export const loader = async ({ request }) => {
     ? JSON.parse(globalSettingsValue)
     : { showBrandMark: true };
 
+  // Server-side gating
+  const hasAccess = await PlanService.hasAccess(
+    session.shop,
+    "store-verification.customization",
+  );
+  if (!hasAccess) {
+    return redirect("/pricing");
+  }
+
+  // Enforce popup creation limits in loader to prevent bypass
+  const plan = await PlanService.getShopPlan(admin, session.shop);
+  const limit = PlanService.getPopupLimit(plan);
+
+  if (limit !== Infinity) {
+    const popupsDefResponse = await admin.graphql(
+      `#graphql
+      query getPopupsDef {
+        metaobjectDefinitionByType(type: "$app:popups") { type }
+      }`,
+    );
+    const popupsDefData = await popupsDefResponse.json();
+    const popupsTypeHandle =
+      popupsDefData.data.metaobjectDefinitionByType?.type || "app--popups";
+
+    const popupsResponse = await admin.graphql(
+      `#graphql
+      query getPopups($type: String!) {
+        metaobjects(type: $type, first: 250) {
+          nodes { id }
+        }
+      }`,
+      { variables: { type: popupsTypeHandle } },
+    );
+    const popupsData = await popupsResponse.json();
+    const existingCount = (popupsData.data?.metaobjects?.nodes || []).length;
+
+    if (existingCount >= limit) {
+      return redirect("/pricing");
+    }
+  }
+
   return { settings: null, globalSettings };
 };
 export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
+  const shop = session.shop;
   const formData = await request.formData();
   const intent = formData.get("intent");
+
+  // Server-side gating
+  const hasAccess = await PlanService.hasAccess(
+    shop,
+    "store-verification.customization",
+  );
+  if (!hasAccess) {
+    return {
+      success: false,
+      errors: [{ message: "Basic plan required for customization" }],
+    };
+  }
+
+  // Enforce popup creation limits
+  const plan = await PlanService.getShopPlan(admin, shop);
+  const limit = PlanService.getPopupLimit(plan);
+
+  if (limit !== Infinity) {
+    // 1. Discover the actual Metaobject type handles
+    const defsResponse = await admin.graphql(
+      `#graphql
+      query getDefs {
+        popups: metaobjectDefinitionByType(type: "$app:popups") { type }
+      }`,
+    );
+    const defsData = await defsResponse.json();
+    const popupsTypeHandle = defsData.data.popups?.type || "app--popups";
+
+    // 2. Fetch existing popups to check count
+    const popupsResponse = await admin.graphql(
+      `#graphql
+      query getPopups($type: String!) {
+        metaobjects(type: $type, first: 250) {
+          nodes { id }
+        }
+      }`,
+      { variables: { type: popupsTypeHandle } },
+    );
+    const popupsData = await popupsResponse.json();
+    const existingCount = (popupsData.data?.metaobjects?.nodes || []).length;
+
+    if (existingCount >= limit) {
+      return {
+        success: false,
+        errors: [
+          {
+            message: `Popup limit reached (${limit}). Please upgrade your plan to create more popups.`,
+          },
+        ],
+      };
+    }
+  }
 
   if (intent === "toggle_brand_mark") {
     const showBrandMark = formData.get("showBrandMark") === "true";
@@ -79,6 +174,15 @@ export const action = async ({ request }) => {
 
   const configStr = formData.get("config");
   const config = JSON.parse(configStr);
+
+  // Granular feature validation
+  const validation = await PlanService.validatePopupConfig(shop, config);
+  if (!validation.isValid) {
+    return {
+      success: false,
+      errors: validation.errors.map((msg) => ({ message: msg })),
+    };
+  }
 
   const popupId = Date.now().toString();
 

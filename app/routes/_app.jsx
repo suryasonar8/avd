@@ -1,14 +1,18 @@
 import { Outlet, useLoaderData, useRouteError } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate } from "../shopify.server";
+import { PlanProvider } from "../context/PlanContext";
+import { getShopPlan, buildAccessMap } from "../services/plan.service";
 
 export const loader = async ({ request }) => {
-  await authenticate.admin(request);
-
-  return null;
+  const { admin, session } = await authenticate.admin(request);
+  const plan = await getShopPlan(admin, session.shop);
+  const access = buildAccessMap(plan);
+  return { plan, access };
 };
 
 export default function App() {
+  const { plan, access } = useLoaderData();
   return (
     <>
       <s-app-nav>
@@ -19,7 +23,9 @@ export default function App() {
         <s-link href="/settings">settings</s-link>
         <s-link href="/pricing">Pricing</s-link>
       </s-app-nav>
-      <Outlet />
+      <PlanProvider plan={plan} access={access}>
+        <Outlet />
+      </PlanProvider>
     </>
   );
 }

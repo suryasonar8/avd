@@ -1,5 +1,6 @@
 import { useLoaderData, useFetcher, useNavigate } from "react-router";
 import { authenticate } from "../shopify.server";
+import { usePlan } from "../context/PlanContext";
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
@@ -167,8 +168,16 @@ export default function AppPage() {
   const { popups } = useLoaderData();
   const navigate = useNavigate();
   const fetcher = useFetcher();
+  const { canAccess, plan } = usePlan();
+
+  const popupLimit = plan === "free" ? 1 : 50;
+  const canCreate = popups.length < popupLimit;
 
   const handleCreatePopUp = () => {
+    if (!canCreate) {
+      navigate("/pricing");
+      return;
+    }
     navigate("/store_verification/customization");
   };
 
@@ -182,40 +191,65 @@ export default function AppPage() {
 
   return (
     <s-page heading="Store verification">
-      {/* Free Plan Limit Banner */}
-      <div
-        style={{
-          background: "#BDE6FF",
-          borderRadius: "10px",
-          padding: "16px 20px",
-          marginBottom: "24px",
-          position: "relative",
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-          border: "1px solid #A2D9FF",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ fontSize: "18px", color: "#005F99" }}>ⓘ</span>
-          <span
-            style={{ fontWeight: "700", color: "#1A1C1D", fontSize: "13px" }}
-          >
-            Free Plan Limit
-          </span>
-        </div>
+      {plan === "free" && (
         <div
           style={{
-            fontSize: "13px",
-            color: "#4A4D4F",
-            lineHeight: "1.5",
-            maxWidth: "800px",
+            background: "#BDE6FF",
+            borderRadius: "10px",
+            padding: "16px 20px",
+            marginBottom: "24px",
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "12px",
+            border: "1px solid #A2D9FF",
           }}
         >
-          Your current plan includes 1 pop-up ({popups.length}/1 used). Upgrade
-          to unlock more pop-ups, advanced customization and more.
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{ fontSize: "18px", color: "#005F99" }}>ⓘ</span>
+              <span
+                style={{
+                  fontWeight: "700",
+                  color: "#1A1C1D",
+                  fontSize: "13px",
+                }}
+              >
+                Free Plan Limit
+              </span>
+            </div>
+            <div
+              style={{
+                fontSize: "13px",
+                color: "#4A4D4F",
+                lineHeight: "1.5",
+                maxWidth: "600px",
+              }}
+            >
+              Your current plan includes 1 pop-up ({popups.length}/{popupLimit}{" "}
+              used). Upgrade to unlock more pop-ups, advanced customization and
+              more.
+            </div>
+          </div>
+          <button
+            onClick={() => navigate("/pricing")}
+            style={{
+              padding: "8px 16px",
+              background: "#FFF",
+              border: "1px solid #005F99",
+              borderRadius: "6px",
+              color: "#005F99",
+              fontSize: "13px",
+              fontWeight: "600",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            Upgrade plan
+          </button>
         </div>
-      </div>
+      )}
 
       {/* Age Verification Pop-up Creation Card */}
       <div
@@ -266,17 +300,17 @@ export default function AppPage() {
             <button
               onClick={handleCreatePopUp}
               style={{
-                background: "#202223",
-                color: "#FFFFFF",
-                border: "none",
+                background: canCreate ? "#202223" : "#F1F1F1",
+                color: canCreate ? "#FFFFFF" : "#919EAB",
+                border: canCreate ? "none" : "1px solid #CBCFD2",
                 borderRadius: "6px",
                 padding: "8px 16px",
                 fontSize: "13px",
                 fontWeight: "600",
-                cursor: "pointer",
+                cursor: canCreate ? "pointer" : "not-allowed",
               }}
             >
-              Create pop-up
+              {canCreate ? "Create pop-up" : "Limit reached"}
             </button>
           </div>
         </div>

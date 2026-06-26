@@ -4,11 +4,13 @@ import { ColorInput } from "../ColorInput";
 import { NumberInput } from "../NumberInput";
 import { useState, useRef } from "react";
 import { useFetcher } from "react-router";
+import { usePlan } from "../../context/PlanContext";
 
 export function BackgroundTab({ config, setConfig, setIsUploading }) {
   const fetcher = useFetcher();
   const fileInputRef = useRef(null);
   const logoInputRef = useRef(null);
+  const { canAccess } = usePlan();
   const [localUploading, setLocalUploading] = useState(null); // 'background' or 'logo'
 
   const handleImageUpload = async (event, type) => {
@@ -157,6 +159,8 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                 alignItems: "center",
                 gap: "8px",
                 fontSize: "13px",
+                opacity: 1,
+                cursor: "pointer",
               }}
             >
               <input
@@ -288,6 +292,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
         />
         <ColorInput
           label="Background color"
+          disabled={!canAccess("sv.bg.color")}
           badge={<Badge text="Basic plan or higher" type="basic" />}
           value={config.background.bgColor}
           onChange={(val) =>
@@ -297,8 +302,11 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
             })
           }
         />
-        <div style={{ marginBottom: "8px" }}>
-          {/* <div
+        <div
+          style={{ marginBottom: "8px" }}
+          disabled={!canAccess("sv.bg.logo")}
+        >
+          <div
             style={{
               display: "flex",
               alignItems: "center",
@@ -306,19 +314,28 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
               marginBottom: "8px",
             }}
           >
-            <label style={{ fontSize: "13px", fontWeight: "600" }}>
+            <label
+              style={{
+                fontSize: "13px",
+                fontWeight: "600",
+                opacity: canAccess("sv.bg.logo") ? 1 : 0.5,
+              }}
+            >
               Logo (Optional)
             </label>
-            <Badge text="Basic plan or higher" type="basic" />
-          </div> */}
+            {!canAccess("sv.bg.logo") && (
+              <Badge text="Basic plan or higher" type="basic" />
+            )}
+          </div>
 
-          {/* <input
+          <input
             type="file"
             ref={logoInputRef}
             style={{ display: "none" }}
             accept="image/png, image/jpeg"
             onChange={(e) => handleImageUpload(e, "logo")}
-          /> */}
+            disabled={!canAccess("sv.bg.logo")}
+          />
 
           {config.background.logo ? (
             <div
@@ -359,7 +376,9 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                   cursor: "pointer",
                   fontSize: "13px",
                   fontWeight: "500",
+                  opacity: canAccess("sv.bg.logo") ? 1 : 0.5,
                 }}
+                disabled={!canAccess("sv.bg.logo")}
               >
                 Remove
               </button>
@@ -375,17 +394,19 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
               }}
             >
               <button
-                disabled={localUploading === "logo"}
+                disabled={!canAccess("sv.bg.logo") || localUploading === "logo"}
                 onClick={() => logoInputRef.current.click()}
                 style={{
                   padding: "8px 16px",
                   borderRadius: "8px",
                   border: "1px solid #CBCFD2",
                   background: "#FFF",
+                  color: "#1A1C1D",
                   fontSize: "13px",
                   fontWeight: "600",
                   cursor: "pointer",
                   marginBottom: "8px",
+                  opacity: canAccess("sv.bg.logo") ? 1 : 0.5,
                 }}
               >
                 {localUploading === "logo" ? "Uploading..." : "Add image"}
@@ -404,6 +425,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
       >
         <ColorInput
           label="Border color"
+          disabled={!canAccess("sv.bg.border-color")}
           value={config.background.borderColor}
           onChange={(val) =>
             setConfig({
@@ -416,6 +438,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
           <div style={{ flex: 1 }}>
             <NumberInput
               label="Border radius"
+              disabled={!canAccess("sv.bg.border-radius")}
               value={config.background.borderRadius}
               onChange={(val) =>
                 setConfig({
@@ -428,6 +451,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
           <div style={{ flex: 1 }}>
             <NumberInput
               label="Border width"
+              disabled={!canAccess("sv.bg.border-width")}
               value={config.background.borderWidth}
               onChange={(val) =>
                 setConfig({

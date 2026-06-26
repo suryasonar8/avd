@@ -1,10 +1,11 @@
-import { useFetcher, useLoaderData, useParams } from "react-router";
+import { useFetcher, useLoaderData, useParams, redirect } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
+import { PlanService } from "../services/plan.service";
 import { PopupEditor } from "../components/customization/PopupEditor";
 
 export const loader = async ({ request, params }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   const { id } = params; // This is the popup_id
 
   // Discover the actual Metaobject type handles
@@ -80,18 +81,39 @@ export const loader = async ({ request, params }) => {
     ? JSON.parse(globalSettingsValue)
     : { showBrandMark: true };
 
+  // Server-side gating
+  const hasAccess = await PlanService.hasAccess(
+    session.shop,
+    "store-verification.customization",
+  );
+  if (!hasAccess) {
+    return redirect("/pricing");
+  }
+
   return { settings: popup, globalSettings };
 };
 
 export const action = async ({ request, params }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
+  const shop = session.shop;
   const { id } = params;
   const formData = await request.formData();
   const intent = formData.get("intent");
 
+  // Server-side gating
+  const hasAccess = await PlanService.hasAccess(
+    shop,
+    "store-verification.customization",
+  );
+  if (!hasAccess) {
+    return {
+      success: false,
+      errors: [{ message: "Basic plan required for customization" }],
+    };
+  }
+
   if (intent === "toggle_brand_mark") {
     const showBrandMark = formData.get("showBrandMark") === "true";
-
     // Fetch existing settings to merge them
     const existingResponse = await admin.graphql(
       `#graphql
@@ -144,6 +166,15 @@ export const action = async ({ request, params }) => {
 
   const configStr = formData.get("config");
   const config = JSON.parse(configStr);
+
+  // Granular feature validation
+  const validation = await PlanService.validatePopupConfig(shop, config);
+  if (!validation.isValid) {
+    return {
+      success: false,
+      errors: validation.errors.map((msg) => ({ message: msg })),
+    };
+  }
 
   // Discover the actual Metaobject type handles
   const popupsDefResponse = await admin.graphql(

@@ -1,7 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { HexAlphaColorPicker } from "react-colorful";
 
-export const ColorInput = ({ label, value, onChange, badge, required }) => {
+export const ColorInput = ({
+  label,
+  value,
+  onChange,
+  badge,
+  required,
+  disabled,
+}) => {
   const [showPicker, setShowPicker] = useState(false);
   const pickerRef = useRef(null);
 
@@ -12,16 +19,22 @@ export const ColorInput = ({ label, value, onChange, badge, required }) => {
       }
     };
 
-    if (showPicker) {
+    if (showPicker && !disabled) {
       document.addEventListener("mousedown", handleClickOutside);
     }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showPicker]);
+  }, [showPicker, disabled]);
 
   return (
-    <div style={{ marginBottom: "16px", position: "relative" }}>
+    <div
+      style={{
+        marginBottom: "16px",
+        position: "relative",
+        opacity: disabled ? 0.6 : 1,
+      }}
+    >
       <div
         style={{
           display: "flex",
@@ -39,7 +52,7 @@ export const ColorInput = ({ label, value, onChange, badge, required }) => {
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
         <div
-          onClick={() => setShowPicker(!showPicker)}
+          onClick={() => !disabled && setShowPicker(!showPicker)}
           style={{
             width: "48px",
             height: "48px",
@@ -47,7 +60,7 @@ export const ColorInput = ({ label, value, onChange, badge, required }) => {
             background: value || "#FFFFFF",
             border: "1px dashed #CBCFD2",
             flexShrink: 0,
-            cursor: "pointer",
+            cursor: disabled ? "default" : "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -56,6 +69,7 @@ export const ColorInput = ({ label, value, onChange, badge, required }) => {
         <input
           type="text"
           value={value}
+          disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
           style={{
             boxSizing: "border-box",
@@ -64,7 +78,7 @@ export const ColorInput = ({ label, value, onChange, badge, required }) => {
             borderRadius: "10px",
             border: "1px solid #CBCFD2",
             fontSize: "16px",
-            background: "#FFF",
+            background: disabled ? "#F6F6F7" : "#FFF",
             color: "#303030",
           }}
         />

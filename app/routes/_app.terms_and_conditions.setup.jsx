@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLoaderData, useFetcher } from "react-router";
+import { useNavigate, useLoaderData, useFetcher, redirect } from "react-router";
 import { useAppBridge, SaveBar } from "@shopify/app-bridge-react";
+import { usePlan } from "../context/PlanContext";
 import { authenticate } from "../shopify.server";
 import { Card } from "../components/Card";
 import { ColorInput } from "../components/ColorInput";
@@ -8,7 +9,7 @@ import { NumberInput } from "../components/NumberInput";
 import { Badge } from "../components/Badge";
 
 export const loader = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   const response = await admin.graphql(
     `#graphql
     query getShopMetafield {
@@ -51,10 +52,22 @@ export const loader = async ({ request }) => {
   return { settings };
 };
 
+import { PlanService } from "../services/plan.service";
+
 export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   const formData = await request.formData();
-  const settings = formData.get("settings");
+  const settingsStr = formData.get("settings");
+  const settings = JSON.parse(settingsStr);
+
+  // Server-side granular gate
+  const validation = await PlanService.validateTermsConfig(
+    session.shop,
+    settings,
+  );
+  if (!validation.isValid) {
+    return { success: false, errors: validation.errors };
+  }
 
   const response = await admin.graphql(
     `#graphql
@@ -153,9 +166,10 @@ function TextInput({
   required,
   subtitle,
   maxLength,
+  disabled,
 }) {
   return (
-    <div style={{ marginBottom: "12px" }}>
+    <div style={{ marginBottom: "12px", opacity: disabled ? 0.6 : 1 }}>
       <div
         style={{
           display: "flex",
@@ -177,6 +191,7 @@ function TextInput({
             )
           }
           placeholder={placeholder}
+          disabled={disabled}
           style={{
             width: "100%",
             padding: "8px 12px",
@@ -184,9 +199,10 @@ function TextInput({
             borderRadius: "8px",
             border: "1px solid #E1E3E5",
             fontSize: "13px",
-            backgroundColor: "#F6F6F7",
-            color: "#202223",
+            backgroundColor: disabled ? "#F1F1F1" : "#F6F6F7",
+            color: disabled ? "#919EAB" : "#202223",
             boxSizing: "border-box",
+            cursor: disabled ? "not-allowed" : "text",
           }}
         />
         {maxLength && (
@@ -513,6 +529,7 @@ export default function TermsAndConditionsSetup() {
   const fetcher = useFetcher();
   const shopify = useAppBridge();
   const [activeTab, setActiveTab] = useState("condition");
+  const { canAccess } = usePlan();
 
   const isDirty = JSON.stringify(settings) !== JSON.stringify(initialSettings);
 
@@ -553,7 +570,11 @@ export default function TermsAndConditionsSetup() {
   return (
     <div style={{ padding: "24px", fontFamily: "Inter, sans-serif" }}>
       <SaveBar id="terms-save-bar" open={isDirty}>
-        <button variant="primary" onClick={handleSave}>
+        <button
+          variant="primary"
+          onClick={handleSave}
+          disabled={fetcher.state === "submitting"}
+        >
           Save
         </button>
         <button onClick={handleDiscard}>Discard</button>
@@ -602,6 +623,26 @@ export default function TermsAndConditionsSetup() {
         Set up terms and conditions for your store.
       </p>
 
+      {fetcher.data?.errors && (
+        <div
+          style={{
+            background: "#fff4f4",
+            border: "1px solid #d72c0d",
+            borderRadius: "8px",
+            padding: "12px",
+            marginBottom: "24px",
+            color: "#d72c0d",
+            fontSize: "13px",
+          }}
+        >
+          {fetcher.data.errors.map((err, i) => (
+            <p key={i} style={{ margin: "2px 0" }}>
+              • {err}
+            </p>
+          ))}
+        </div>
+      )}
+
       {/* Tabs */}
       <div style={{ display: "flex", gap: "4px", marginBottom: "20px" }}>
         <button
@@ -619,7 +660,13 @@ export default function TermsAndConditionsSetup() {
       </div>
 
       {/* Body */}
-      <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "20px",
+          alignItems: "flex-start",
+        }}
+      >
         {/* ─── Left Settings Panel ─── */}
         <div
           style={{
@@ -658,6 +705,7 @@ export default function TermsAndConditionsSetup() {
                   value={true}
                   checked={settings.enabled === true}
                   onChange={() => setSettings({ ...settings, enabled: true })}
+                  disabled={!canAccess("terms.condition.status")}
                 />
                 <RadioInput
                   label="Disabled"
@@ -665,6 +713,7 @@ export default function TermsAndConditionsSetup() {
                   value={false}
                   checked={settings.enabled === false}
                   onChange={() => setSettings({ ...settings, enabled: false })}
+                  disabled={!canAccess("terms.condition.status")}
                 />
               </div>
 
@@ -708,11 +757,13 @@ export default function TermsAndConditionsSetup() {
                     label="Product page"
                     checked={settings.displayPages.includes("product")}
                     onChange={() => togglePage("product")}
+                    disabled={!canAccess("terms.condition.pages")}
                   />
                   <CheckboxInput
                     label="Cart page"
                     checked={settings.displayPages.includes("cart")}
                     onChange={() => togglePage("cart")}
+                    disabled={!canAccess("terms.condition.pages")}
                   />
                 </div>
 
@@ -753,6 +804,7 @@ export default function TermsAndConditionsSetup() {
                     onChange={(val) =>
                       setSettings({ ...settings, triggerCondition: val })
                     }
+                    disabled={!canAccess("terms.condition.trigger")}
                   />
                   <RadioInput
                     label="Logged customers"
@@ -762,6 +814,7 @@ export default function TermsAndConditionsSetup() {
                     onChange={(val) =>
                       setSettings({ ...settings, triggerCondition: val })
                     }
+                    disabled={!canAccess("terms.condition.trigger")}
                   />
                   <RadioInput
                     label="Not logged customers"
@@ -771,6 +824,7 @@ export default function TermsAndConditionsSetup() {
                     onChange={(val) =>
                       setSettings({ ...settings, triggerCondition: val })
                     }
+                    disabled={!canAccess("terms.condition.trigger")}
                   />
                 </div>
               </div>
@@ -788,28 +842,33 @@ export default function TermsAndConditionsSetup() {
                   setSettings({ ...settings, checkboxText: val })
                 }
                 maxLength={255}
+                disabled={!canAccess("terms.checkbox.text")}
               />
               <TextInput
                 label="Keyword"
                 required
                 value={settings.keyword}
                 onChange={(val) => setSettings({ ...settings, keyword: val })}
+                disabled={!canAccess("terms.checkbox.keyword")}
               />
               <TextInput
                 label="Link to keyword (Optional)"
                 value={settings.link}
                 onChange={(val) => setSettings({ ...settings, link: val })}
                 subtitle="The URL will be hyperlinked if it matches the keyword."
+                disabled={!canAccess("terms.checkbox.link")}
               />
               <NumberInput
                 label="Size"
                 value={settings.size}
                 onChange={(val) => setSettings({ ...settings, size: val })}
+                disabled={!canAccess("terms.checkbox.size")}
               />
               <ColorInput
                 label="Color"
                 value={settings.color}
                 onChange={(val) => setSettings({ ...settings, color: val })}
+                disabled={!canAccess("terms.checkbox.color")}
               />
               <TextInput
                 label="Error message (Optional)"
@@ -819,6 +878,7 @@ export default function TermsAndConditionsSetup() {
                 }
                 maxLength={255}
                 placeholder="Enter error message"
+                disabled={!canAccess("terms.checkbox.error")}
               />
 
               <p
