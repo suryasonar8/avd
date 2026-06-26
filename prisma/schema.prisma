@@ -73,6 +73,8 @@ model Translation {
   cancelLabel    String?
   submitErrorMsg String?
   cancelErrorMsg String?
+  submitAction   String?
+  cancelAction   String?
   months         String? // JSON string for month names
 
   popup Popup @relation(fields: [popupId], references: [id], onDelete: Cascade)

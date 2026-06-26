@@ -4,25 +4,31 @@ import {
   useSubmit,
   useActionData,
   useSearchParams,
-  redirect,
 } from "react-router";
 import { useState, useMemo, useEffect } from "react";
 import { useAppBridge, SaveBar } from "@shopify/app-bridge-react";
-import { RichTextEditor } from "../components/RichTextEditor";
+import {
+  SectionTitle,
+  TranslationField,
+  PopupSelector,
+} from "../components/TranslationComponents";
 import { authenticate } from "../shopify.server";
 import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
 import db from "../db.server";
 import { Card } from "../components/Card";
+import { Badge } from "../components/Badge";
+import { MONTH_NAMES } from "../constants/translation";
+import { usePlan } from "../context/PlanContext";
 
 export const loader = async ({ request, params }) => {
   const { admin, session } = await authenticate.admin(request);
   const { locale } = params;
 
-  // Fetch popups from database
+  // 1. Fetch popups from database
   const popups = await PopupService.getPopupsForTranslation(session.shop);
 
-  // Fetch shop locales
+  // 2. Fetch shop locales
   const response = await admin.graphql(
     `#graphql
     query getLanguages {
@@ -69,7 +75,6 @@ export const loader = async ({ request, params }) => {
     isPublished,
     popups,
     isReadOnly,
-    hasPremiumAccess,
     isLimitReached,
   };
 };
@@ -133,94 +138,6 @@ export const action = async ({ request, params }) => {
   return { success: true };
 };
 
-function SectionTitle({ title, description }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "4px",
-        marginBottom: "20px",
-      }}
-    >
-      <h2 style={{ fontSize: "16px", fontWeight: "700", color: "#1A1C1D" }}>
-        {title}
-      </h2>
-      <p style={{ fontSize: "13px", color: "#6D7175" }}>{description}</p>
-    </div>
-  );
-}
-
-function TranslationField({
-  label,
-  original,
-  value,
-  onChange,
-  type = "text",
-  disabled = false,
-}) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-      <label style={{ fontSize: "13px", fontWeight: "600", color: "#1A1C1D" }}>
-        {label}
-      </label>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px",
-          padding: "12px",
-          background: "#F6F6F7",
-          borderRadius: "8px",
-          border: "1px solid #E1E3E5",
-        }}
-      >
-        <div style={{ fontSize: "12px", color: "#6D7175" }}>
-          Original: {original || "(empty)"}
-        </div>
-        {type === "richtext" ? (
-          <RichTextEditor
-            value={value || ""}
-            onChange={onChange}
-            disabled={disabled}
-          />
-        ) : (
-          <input
-            type="text"
-            value={value || ""}
-            onChange={(e) => onChange(e.target.value)}
-            disabled={disabled}
-            style={{
-              padding: "8px 12px",
-              borderRadius: "6px",
-              border: "1px solid #CBCFD2",
-              fontSize: "13px",
-              width: "100%",
-              boxSizing: "border-box",
-              opacity: disabled ? 0.6 : 1,
-            }}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
-
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
 export default function TranslationSetupPage() {
   const {
     locale,
@@ -228,54 +145,83 @@ export default function TranslationSetupPage() {
     isPublished,
     popups,
     isReadOnly,
-    hasPremiumAccess,
     isLimitReached,
   } = useLoaderData();
+  const { canAccess } = usePlan();
+  const actionData = useActionData();
   const navigate = useNavigate();
   const submit = useSubmit();
-  const actionData = useActionData();
-  const [searchParams] = useSearchParams();
   const shopify = useAppBridge();
 
-  const [selectedPopupId, setSelectedPopupId] = useState(
-    searchParams.get("popupId") || popups[0]?.id || "",
-  );
+  const [searchParams] = useSearchParams();
+  const initialPopupId = searchParams.get("popupId") || "";
+  const [selectedPopupId, setSelectedPopupId] = useState(initialPopupId);
 
-  const selectedPopup = useMemo(
-    () => popups.find((p) => p.id.toString() === selectedPopupId.toString()),
-    [popups, selectedPopupId],
-  );
+  useEffect(() => {
+    if (actionData?.success) {
+      shopify.toast.show("Translations saved successfully");
+    } else if (actionData?.error || actionData?.errors) {
+      shopify.toast.show(actionData.error || "Error saving translations", {
+        isError: true,
+      });
+    }
+  }, [actionData, shopify]);
 
   const [translations, setTranslations] = useState({
     heading: "",
     subheading: "",
     submitLabel: "",
     cancelLabel: "",
+    submitAction: "",
+    cancelAction: "",
     submitErrorMsg: "",
     cancelErrorMsg: "",
-    months: MONTH_NAMES.reduce((acc, month) => ({ ...acc, [month]: "" }), {}),
+    months: MONTH_NAMES.reduce((acc, month) => {
+      acc[month] = "";
+      return acc;
+    }, {}),
   });
 
-  const [initialTranslations, setInitialTranslations] = useState(translations);
+  const [visibleMonths, setVisibleMonths] = useState(["January"]);
 
-  useEffect(() => {
-    if (selectedPopup) {
-      const existing = selectedPopup.config.translations?.[locale] || {};
-      const newTranslations = {
-        heading: existing.heading || "",
-        subheading: existing.subheading || "",
-        submitLabel: existing.submitLabel || "",
-        cancelLabel: existing.cancelLabel || "",
-        submitErrorMsg: existing.submitErrorMsg || "",
-        cancelErrorMsg: existing.cancelErrorMsg || "",
-        months: {
-          ...MONTH_NAMES.reduce((acc, month) => ({ ...acc, [month]: "" }), {}),
-          ...(existing.months || {}),
-        },
+  const selectedPopup = useMemo(
+    () => popups.find((p) => p.id.toString() === selectedPopupId.toString()),
+    [popups, selectedPopupId],
+  );
+
+  const initialTranslations = useMemo(() => {
+    if (!selectedPopup)
+      return {
+        heading: "",
+        subheading: "",
+        submitLabel: "",
+        cancelLabel: "",
+        submitAction: "",
+        cancelAction: "",
+        submitErrorMsg: "",
+        cancelErrorMsg: "",
+        months: MONTH_NAMES.reduce((acc, month) => {
+          acc[month] = "";
+          return acc;
+        }, {}),
       };
-      setTranslations(newTranslations);
-      setInitialTranslations(newTranslations);
-    }
+
+    const existingTranslations =
+      selectedPopup.config.translations?.[locale] || {};
+    return {
+      heading: existingTranslations.heading || "",
+      subheading: existingTranslations.subheading || "",
+      submitLabel: existingTranslations.submitLabel || "",
+      cancelLabel: existingTranslations.cancelLabel || "",
+      submitAction: existingTranslations.submitAction || "",
+      cancelAction: existingTranslations.cancelAction || "",
+      submitErrorMsg: existingTranslations.submitErrorMsg || "",
+      cancelErrorMsg: existingTranslations.cancelErrorMsg || "",
+      months: MONTH_NAMES.reduce((acc, month) => {
+        acc[month] = existingTranslations.months?.[month] || "";
+        return acc;
+      }, {}),
+    };
   }, [selectedPopup, locale]);
 
   const isDirty = useMemo(() => {
@@ -283,22 +229,70 @@ export default function TranslationSetupPage() {
   }, [translations, initialTranslations]);
 
   useEffect(() => {
-    if (actionData?.success) {
-      shopify.toast.show("Translations saved");
-      setInitialTranslations(translations);
-    } else if (actionData?.error) {
-      shopify.toast.show(actionData.error, { isError: true });
+    if (selectedPopup) {
+      const existingTranslations =
+        selectedPopup.config.translations?.[locale] || {};
+      setTranslations({
+        heading: existingTranslations.heading || "",
+        subheading: existingTranslations.subheading || "",
+        submitLabel: existingTranslations.submitLabel || "",
+        cancelLabel: existingTranslations.cancelLabel || "",
+        submitAction: existingTranslations.submitAction || "",
+        cancelAction: existingTranslations.cancelAction || "",
+        submitErrorMsg: existingTranslations.submitErrorMsg || "",
+        cancelErrorMsg: existingTranslations.cancelErrorMsg || "",
+        months: {
+          ...MONTH_NAMES.reduce((acc, month) => ({ ...acc, [month]: "" }), {}),
+          ...(existingTranslations.months || {}),
+        },
+      });
+
+      // Update visible months based on what's translated
+      if (existingTranslations.months) {
+        const translated = MONTH_NAMES.filter(
+          (m) =>
+            existingTranslations.months[m] &&
+            existingTranslations.months[m] !== m,
+        );
+        if (translated.length > 0) {
+          // Show up to the last translated month
+          const lastIdx = MONTH_NAMES.indexOf(
+            translated[translated.length - 1],
+          );
+          setVisibleMonths(MONTH_NAMES.slice(0, lastIdx + 1));
+        } else {
+          setVisibleMonths(["January"]);
+        }
+      } else {
+        setVisibleMonths(["January"]);
+      }
+    } else {
+      setTranslations({
+        heading: "",
+        subheading: "",
+        submitLabel: "",
+        cancelLabel: "",
+        submitAction: "",
+        cancelAction: "",
+        submitErrorMsg: "",
+        cancelErrorMsg: "",
+        months: MONTH_NAMES.reduce((acc, month) => {
+          acc[month] = "";
+          return acc;
+        }, {}),
+      });
+      setVisibleMonths(["January"]);
     }
-  }, [actionData, shopify, translations]);
+  }, [selectedPopup, locale]);
 
   const handleBack = () => {
     if (isDirty) {
-      shopify.toast.show("Please save or discard your changes", {
+      shopify.toast.show("Please save or discard your changes before leaving", {
         isError: true,
       });
-      return;
+    } else {
+      navigate("/translation");
     }
-    navigate("/translation");
   };
 
   const handleDiscard = () => {
@@ -306,7 +300,10 @@ export default function TranslationSetupPage() {
   };
 
   const handleSave = () => {
-    if (isReadOnly) return;
+    if (!selectedPopupId) {
+      shopify.toast.show("Please select a pop-up first", { isError: true });
+      return;
+    }
     submit(
       {
         popupId: selectedPopupId,
@@ -317,344 +314,345 @@ export default function TranslationSetupPage() {
   };
 
   return (
-    <s-page>
-      <SaveBar id="translation-save-bar" open={isDirty}>
-        <button variant="primary" onClick={handleSave} disabled={isReadOnly}>
-          Save
-        </button>
-        <button type="button" onClick={handleDiscard}>
-          Discard
-        </button>
-      </SaveBar>
-
+    <div
+      style={{
+        padding: "40px",
+        background: "#f6f6f7",
+        minHeight: "100vh",
+        fontFamily: "Inter, -apple-system, system-ui, sans-serif",
+      }}
+    >
+      <style>{`
+        .custom-editor-container {
+          margin-bottom: 20px;
+        }
+        .rsw-ce {
+           background: black !important;
+           color: white !important;
+        }
+      `}</style>
+      {/* Header */}
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
           marginBottom: "32px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "4px",
-          }}
-        >
+        <div>
           <button
             onClick={handleBack}
             style={{
               background: "none",
               border: "none",
               cursor: "pointer",
-              fontSize: "20px",
-              padding: "4px",
               display: "flex",
               alignItems: "center",
-              color: "#1A1C1D",
+              gap: "8px",
+              color: "#6d7175",
+              marginBottom: "16px",
+              fontSize: "14px",
             }}
           >
             ←
           </button>
-          <h2
-            style={{
-              fontSize: "26px",
-              fontWeight: "700",
-              margin: 0,
-              color: "#1A1C1D",
-            }}
-          >
-            Add Translation ({currentLanguage})
-          </h2>
-        </div>
-      </div>
-
-      {!hasPremiumAccess && (
-        <div
-          style={{
-            background: "#BDE6FF",
-            borderRadius: "10px",
-            padding: "16px 20px",
-            marginBottom: "24px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "12px",
-            border: "1px solid #A2D9FF",
-          }}
-        >
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <span style={{ fontSize: "18px", color: "#005F99" }}>ⓘ</span>
-              <span
-                style={{
-                  fontWeight: "700",
-                  color: "#1A1C1D",
-                  fontSize: "13px",
-                }}
-              >
-                Premium Feature
-              </span>
-            </div>
-            <p style={{ fontSize: "13px", color: "#4A4D4F", margin: 0 }}>
-              Multi-language support is a premium feature. Upgrade to unlock
-              unlimited translations for your pop-ups.
-            </p>
-          </div>
-          <button
-            onClick={() => navigate("/pricing")}
-            style={{
-              padding: "8px 16px",
-              background: "#FFF",
-              border: "1px solid #005F99",
-              borderRadius: "6px",
-              color: "#005F99",
-              fontSize: "13px",
-              fontWeight: "600",
-              cursor: "pointer",
-            }}
-          >
-            Upgrade plan
-          </button>
-        </div>
-      )}
-
-      {isLimitReached && hasPremiumAccess && (
-        <div
-          style={{
-            background: "#FEEBEB",
-            borderRadius: "10px",
-            padding: "16px 20px",
-            marginBottom: "24px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "12px",
-            border: "1px solid #FED3D3",
-          }}
-        >
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <span style={{ fontSize: "18px", color: "#D72C0D" }}>⚠</span>
-              <span
-                style={{
-                  fontWeight: "700",
-                  color: "#1A1C1D",
-                  fontSize: "13px",
-                }}
-              >
-                Translation Limit Reached
-              </span>
-            </div>
-            <p style={{ fontSize: "13px", color: "#4A4D4F", margin: 0 }}>
-              You have reached the translation limit for your plan. Please
-              upgrade to add more languages.
-            </p>
-          </div>
-          <button
-            onClick={() => navigate("/pricing")}
-            style={{
-              padding: "8px 16px",
-              background: "#FFF",
-              border: "1px solid #D72C0D",
-              borderRadius: "6px",
-              color: "#D72C0D",
-              fontSize: "13px",
-              fontWeight: "600",
-              cursor: "pointer",
-            }}
-          >
-            Upgrade plan
-          </button>
-        </div>
-      )}
-
-      <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-        <Card>
-          <SectionTitle
-            title="Select Pop-up"
-            description="Choose which pop-up you want to translate."
-          />
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            <label
-              style={{ fontSize: "13px", fontWeight: "600", color: "#1A1C1D" }}
-            >
-              Pop-up
-            </label>
-            <select
-              value={selectedPopupId}
-              onChange={(e) => setSelectedPopupId(e.target.value)}
-              disabled={isReadOnly}
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <h1
               style={{
-                padding: "8px 12px",
-                borderRadius: "6px",
-                border: "1px solid #CBCFD2",
-                fontSize: "13px",
-                width: "100%",
-                maxWidth: "400px",
-                opacity: isReadOnly ? 0.6 : 1,
+                fontSize: "24px",
+                fontWeight: "700",
+                margin: 0,
+                color: "#202223",
               }}
             >
-              {popups.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.config.name || "Untitled Popup"}
-                </option>
-              ))}
-            </select>
-          </div>
-        </Card>
-
-        {selectedPopup && (
-          <>
-            <Card>
-              <SectionTitle
-                title="Pop-up Content"
-                description="Translate headings and static text."
-              />
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "20px",
-                }}
-              >
-                <TranslationField
-                  label="Heading"
-                  original={selectedPopup.config.text?.heading}
-                  value={translations.heading}
-                  onChange={(v) =>
-                    setTranslations((prev) => ({ ...prev, heading: v }))
-                  }
-                  disabled={isReadOnly}
-                />
-                <TranslationField
-                  label="Subheading"
-                  original={selectedPopup.config.text?.subheading}
-                  value={translations.subheading}
-                  onChange={(v) =>
-                    setTranslations((prev) => ({ ...prev, subheading: v }))
-                  }
-                  type="richtext"
-                  disabled={isReadOnly}
-                />
-              </div>
-            </Card>
-
-            <Card>
-              <SectionTitle
-                title="Buttons & Errors"
-                description="Translate button labels and validation messages."
-              />
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "20px",
-                }}
-              >
-                <TranslationField
-                  label="Submit Button"
-                  original={selectedPopup.config.button?.submitText}
-                  value={translations.submitLabel}
-                  onChange={(v) =>
-                    setTranslations((prev) => ({ ...prev, submitLabel: v }))
-                  }
-                  disabled={isReadOnly}
-                />
-                <TranslationField
-                  label="Cancel Button"
-                  original={selectedPopup.config.button?.cancelText}
-                  value={translations.cancelLabel}
-                  onChange={(v) =>
-                    setTranslations((prev) => ({ ...prev, cancelLabel: v }))
-                  }
-                  disabled={isReadOnly}
-                />
-                <TranslationField
-                  label="Submit Error Message"
-                  original={selectedPopup.config.button?.errorMsg}
-                  value={translations.submitErrorMsg}
-                  onChange={(v) =>
-                    setTranslations((prev) => ({ ...prev, submitErrorMsg: v }))
-                  }
-                  disabled={isReadOnly}
-                />
-                <TranslationField
-                  label="Cancel Error Message"
-                  original={selectedPopup.config.button?.cancelErrorMsg}
-                  value={translations.cancelErrorMsg}
-                  onChange={(v) =>
-                    setTranslations((prev) => ({ ...prev, cancelErrorMsg: v }))
-                  }
-                  disabled={isReadOnly}
-                />
-              </div>
-            </Card>
-
-            {selectedPopup.config.method === "Birthdate verification" && (
-              <Card>
-                <SectionTitle
-                  title="Months"
-                  description="Translate month names for birthdate verification."
-                />
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(3, 1fr)",
-                    gap: "20px",
-                  }}
-                >
-                  {MONTH_NAMES.map((month) => (
-                    <div
-                      key={month}
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "8px",
-                      }}
-                    >
-                      <label
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: "500",
-                          color: "#1A1C1D",
-                        }}
-                      >
-                        {month}
-                      </label>
-                      <input
-                        type="text"
-                        value={translations.months[month]}
-                        onChange={(e) =>
-                          setTranslations((prev) => ({
-                            ...prev,
-                            months: {
-                              ...prev.months,
-                              [month]: e.target.value,
-                            },
-                          }))
-                        }
-                        disabled={isReadOnly}
-                        placeholder={month}
-                        style={{
-                          padding: "8px 12px",
-                          borderRadius: "6px",
-                          border: "1px solid #CBCFD2",
-                          fontSize: "13px",
-                          width: "100%",
-                          boxSizing: "border-box",
-                          opacity: isReadOnly ? 0.6 : 1,
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </Card>
+              {currentLanguage}
+            </h1>
+            {!canAccess("translation.unlimited") && (
+              <Badge text="Basic plan or higher" type="basic" />
             )}
-          </>
-        )}
+          </div>
+          <p
+            style={{ margin: "8px 0 0 0", color: "#6d7175", fontSize: "14px" }}
+          >
+            Translate your widgets to multiple languages
+          </p>
+        </div>
+
+        <SaveBar id="translation-save-bar" open={isDirty && !isReadOnly}>
+          <button variant="primary" onClick={handleSave} disabled={isReadOnly}>
+            Save
+          </button>
+          <button type="button" onClick={handleDiscard}>
+            Discard
+          </button>
+        </SaveBar>
       </div>
-    </s-page>
+
+      <div style={{ maxWidth: "1000px" }}>
+        {/* Info Section */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "300px 1fr",
+            gap: "40px",
+            marginBottom: "40px",
+          }}
+        >
+          <SectionTitle
+            title="Info"
+            description="Select the pop-up used to display the translation for."
+          />
+          <Card>
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  color: "#202223",
+                  marginBottom: "8px",
+                }}
+              >
+                Status
+              </label>
+              <div
+                style={{
+                  padding: "10px 14px",
+                  border: "1px solid #e1e3e5",
+                  borderRadius: "8px",
+                  background: "white",
+                  color: "#6d7175",
+                  fontSize: "14px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                {!canAccess("translation.unlimited") ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      width: "100%",
+                    }}
+                  >
+                    <span style={{ color: "#202223" }}>Upgrade now</span>
+                    <Badge text="Basic plan or higher" type="basic" />
+                  </div>
+                ) : (
+                  <span>{isPublished ? "Published" : "Unpublished"}</span>
+                )}
+              </div>
+            </div>
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  color: "#202223",
+                  marginBottom: "8px",
+                }}
+              >
+                Pop-up <span style={{ color: "#d72c0d" }}>*</span>
+              </label>
+              <PopupSelector
+                popups={popups}
+                selectedPopupId={selectedPopupId}
+                onSelect={setSelectedPopupId}
+                isReadOnly={isReadOnly}
+              />
+            </div>
+          </Card>
+        </div>
+
+        {/* Text Section */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "300px 1fr",
+            gap: "40px",
+            marginBottom: "40px",
+          }}
+        >
+          <SectionTitle
+            title="Text"
+            description="Customize the input field text in the Translation form."
+          />
+          <Card>
+            <TranslationField
+              disabled={isReadOnly || !selectedPopupId}
+              label="Heading text"
+              original={selectedPopup?.config.text?.heading}
+              value={translations.heading}
+              onChange={(val) =>
+                setTranslations({ ...translations, heading: val })
+              }
+              type="text"
+            />
+            <TranslationField
+              disabled={isReadOnly || !selectedPopupId}
+              label="Sub-heading text"
+              original={selectedPopup?.config.text?.subheading}
+              value={translations.subheading}
+              onChange={(val) =>
+                setTranslations({ ...translations, subheading: val })
+              }
+              type="richtext"
+            />
+          </Card>
+        </div>
+
+        {/* Button Section */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "300px 1fr",
+            gap: "40px",
+            marginBottom: "40px",
+          }}
+        >
+          <SectionTitle
+            title="Button"
+            description="Customize labels for input fields and buttons."
+          />
+          <Card>
+            <TranslationField
+              disabled={isReadOnly || !selectedPopupId}
+              label="Submit button label"
+              original={selectedPopup?.config.button?.submitText}
+              value={translations.submitLabel}
+              onChange={(val) =>
+                setTranslations({ ...translations, submitLabel: val })
+              }
+              type="richtext"
+            />
+            <TranslationField
+              disabled={isReadOnly || !selectedPopupId}
+              label="Cancel button label"
+              original={selectedPopup?.config.button?.cancelText}
+              value={translations.cancelLabel}
+              onChange={(val) =>
+                setTranslations({ ...translations, cancelLabel: val })
+              }
+              type="richtext"
+            />
+            <TranslationField
+              disabled={isReadOnly || !selectedPopupId}
+              label="Submit button action"
+              original={selectedPopup?.config.button?.submitAction}
+              value={translations.submitAction}
+              onChange={(val) =>
+                setTranslations({ ...translations, submitAction: val })
+              }
+              type="text"
+            />
+            <TranslationField
+              disabled={isReadOnly || !selectedPopupId}
+              label="Cancel button action"
+              original={selectedPopup?.config.button?.cancelAction}
+              value={translations.cancelAction}
+              onChange={(val) =>
+                setTranslations({ ...translations, cancelAction: val })
+              }
+              type="text"
+            />
+          </Card>
+        </div>
+
+        {/* Label Section */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "300px 1fr",
+            gap: "40px",
+            marginBottom: "40px",
+          }}
+        >
+          <SectionTitle
+            title="Label"
+            description="Customize the labels used for months to match your preferences or language requirements."
+          />
+          <Card>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "24px",
+              }}
+            >
+              {visibleMonths.map((month) => (
+                <TranslationField
+                  key={month}
+                  label="Month label"
+                  original={selectedPopupId ? month : "Month"}
+                  value={translations.months[month]}
+                  disabled={isReadOnly || !selectedPopupId}
+                  onChange={(val) =>
+                    setTranslations({
+                      ...translations,
+                      months: {
+                        ...translations.months,
+                        [month]: val,
+                      },
+                    })
+                  }
+                />
+              ))}
+
+              {visibleMonths.length < 12 && (
+                <div>
+                  <button
+                    onClick={() => {
+                      if (isReadOnly) return;
+                      const nextMonth = MONTH_NAMES[visibleMonths.length];
+                      if (nextMonth) {
+                        setVisibleMonths([...visibleMonths, nextMonth]);
+                      }
+                    }}
+                    disabled={isReadOnly || !selectedPopupId}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      padding: "8px 16px",
+                      background: "white",
+                      border: "1px solid #e1e3e5",
+                      borderRadius: "8px",
+                      cursor: isReadOnly ? "not-allowed" : "pointer",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#202223",
+                    }}
+                  >
+                    <span style={{ fontSize: "18px", fontWeight: "400" }}>
+                      +
+                    </span>{" "}
+                    Add
+                  </button>
+                </div>
+              )}
+            </div>
+          </Card>
+        </div>
+
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "40px",
+            paddingBottom: "40px",
+          }}
+        >
+          <p style={{ fontSize: "13px", color: "#6d7175" }}>
+            Need help? Please view{" "}
+            <a href="#" style={{ color: "#005BD3", textDecoration: "none" }}>
+              our document guideline
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }

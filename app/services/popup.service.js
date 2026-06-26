@@ -156,6 +156,8 @@ export const PopupService = {
                 if (t.cancelLabel) entry.cancelLabel = t.cancelLabel;
                 if (t.submitErrorMsg) entry.submitErrorMsg = t.submitErrorMsg;
                 if (t.cancelErrorMsg) entry.cancelErrorMsg = t.cancelErrorMsg;
+                if (t.submitAction) entry.submitAction = t.submitAction;
+                if (t.cancelAction) entry.cancelAction = t.cancelAction;
                 if (t.months) {
                     try {
                         entry.months = JSON.parse(t.months);
@@ -337,6 +339,8 @@ export const PopupService = {
                 cancelLabel: data.cancelLabel || null,
                 submitErrorMsg: data.submitErrorMsg || null,
                 cancelErrorMsg: data.cancelErrorMsg || null,
+                submitAction: data.submitAction || null,
+                cancelAction: data.cancelAction || null,
                 months: data.months ? JSON.stringify(data.months) : null,
             },
             create: {
@@ -348,6 +352,8 @@ export const PopupService = {
                 cancelLabel: data.cancelLabel || null,
                 submitErrorMsg: data.submitErrorMsg || null,
                 cancelErrorMsg: data.cancelErrorMsg || null,
+                submitAction: data.submitAction || null,
+                cancelAction: data.cancelAction || null,
                 months: data.months ? JSON.stringify(data.months) : null,
             },
         });
@@ -436,13 +442,34 @@ export const PopupService = {
     async getPopupsForTranslation(shop) {
         const popups = await db.popup.findMany({
             where: { shop },
+            include: { translations: true },
             orderBy: { createdAt: "desc" },
         });
-        return popups.map((p) => ({
-            id: p.id,
-            handle: p.id,
-            popup_id: p.id,
-            config: JSON.parse(p.config),
-        }));
+        return popups.map((p) => {
+            const config = JSON.parse(p.config);
+            // Reconstruct the translations object expected by the frontend
+            const translationsMap = {};
+            for (const t of p.translations) {
+                translationsMap[t.locale] = {
+                    heading: t.heading,
+                    subheading: t.subheading,
+                    submitLabel: t.submitLabel,
+                    cancelLabel: t.cancelLabel,
+                    submitErrorMsg: t.submitErrorMsg,
+                    cancelErrorMsg: t.cancelErrorMsg,
+                    submitAction: t.submitAction,
+                    cancelAction: t.cancelAction,
+                    months: t.months ? JSON.parse(t.months) : {},
+                };
+            }
+            config.translations = translationsMap;
+
+            return {
+                id: p.id,
+                handle: p.id,
+                popup_id: p.id,
+                config,
+            };
+        });
     },
 };

@@ -61,6 +61,9 @@ export const FEATURES = {
     "terms.checkbox.size": PLAN_TYPES.PREMIUM,
     "terms.checkbox.color": PLAN_TYPES.PREMIUM,
     "terms.checkbox.error": PLAN_TYPES.PREMIUM,
+
+    // --- Translation ---
+    "translation.unlimited": PLAN_TYPES.BASIC,
 };
 
 export const LIMITS = {
