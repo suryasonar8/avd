@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
+import { PLAN_TYPES } from "../constants/features";
 
-const PlanContext = createContext({ plan: "free", access: {} });
+const PlanContext = createContext({ plan: PLAN_TYPES.FREE, access: {} });
 
 /**
  * Wrap your app's <Outlet /> with this provider.

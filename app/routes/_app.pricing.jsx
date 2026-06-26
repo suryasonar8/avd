@@ -12,6 +12,7 @@ import {
   COMPARE_FEATURES,
   PRICING_FAQS,
 } from "../constants/pricing";
+import { PLAN_TYPES } from "../constants/features";
 
 export default function PlansPage() {
   const [billing, setBilling] = useState("yearly");
@@ -522,7 +523,11 @@ export default function PlansPage() {
                     <td style={{ padding: "10px 16px", color: "#202223" }}>
                       {row.feature}
                     </td>
-                    {["free", "basic", "premium"].map((plan) => (
+                    {[
+                      PLAN_TYPES.FREE,
+                      PLAN_TYPES.BASIC,
+                      PLAN_TYPES.PREMIUM,
+                    ].map((plan) => (
                       <td
                         key={plan}
                         style={{ padding: "10px 16px", textAlign: "center" }}

@@ -15,12 +15,16 @@ export const BASIC_ANNUAL = "Basic Annual";
 export const PREMIUM_MONTHLY = "Premium Monthly";
 export const PREMIUM_ANNUAL = "Premium Annual";
 
+import { PLAN_TYPES } from "../constants/features";
+
 /**
  * Map a Shopify subscription name to our internal plan tier.
  */
 export function subscriptionToPlan(subscriptionName) {
     if ([PREMIUM_MONTHLY, PREMIUM_ANNUAL].includes(subscriptionName))
-        return "premium";
-    if ([BASIC_MONTHLY, BASIC_ANNUAL].includes(subscriptionName)) return "basic";
-    return "free";
+        return PLAN_TYPES.PREMIUM;
+    if ([BASIC_MONTHLY, BASIC_ANNUAL].includes(subscriptionName))
+        return PLAN_TYPES.BASIC;
+    return PLAN_TYPES.FREE;
 }
+

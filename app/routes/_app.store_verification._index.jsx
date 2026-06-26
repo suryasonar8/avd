@@ -2,6 +2,7 @@ import { useLoaderData, useFetcher, useNavigate } from "react-router";
 import { authenticate } from "../shopify.server";
 import { usePlan } from "../context/PlanContext";
 import { PopupService } from "../services/popup.service";
+import { PLAN_TYPES } from "../constants/features";
 
 export const loader = async ({ request }) => {
   const { session } = await authenticate.admin(request);
@@ -28,7 +29,7 @@ export default function AppPage() {
   const fetcher = useFetcher();
   const { canAccess, plan } = usePlan();
 
-  const popupLimit = plan === "free" ? 1 : 50;
+  const popupLimit = plan === PLAN_TYPES.FREE ? 1 : 50;
   const canCreate = popups.length < popupLimit;
 
   const handleCreatePopUp = () => {
@@ -49,7 +50,7 @@ export default function AppPage() {
 
   return (
     <s-page heading="Store verification">
-      {plan === "free" && (
+      {plan === PLAN_TYPES.FREE && (
         <div
           style={{
             background: "#BDE6FF",

@@ -6,6 +6,7 @@ import { Card } from "../components/Card";
 import { Modal } from "../components/Modal";
 import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
+import { PLAN_TYPES } from "../constants/features";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -151,7 +152,7 @@ export default function TranslationPage() {
       </div>
 
       {/* Free Plan Limit Banner */}
-      {plan === "free" && (
+      {plan === PLAN_TYPES.FREE && (
         <div
           style={{
             background: "#BAE0FF",

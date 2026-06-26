@@ -1,5 +1,5 @@
 import db from "../db.server";
-import { PLANS, FEATURES, LIMITS } from "../constants/features";
+import { PLANS, FEATURES, LIMITS, PLAN_TYPES } from "../constants/features";
 import { DEFAULT_STORE_CONFIG } from "../constants/store-verification";
 import { DEFAULT_CHECKOUT_CONFIG } from "../constants/checkout-verification";
 
@@ -12,12 +12,12 @@ import { DEFAULT_CHECKOUT_CONFIG } from "../constants/checkout-verification";
  */
 export async function getShopPlan(admin, shop) {
     // 1. Try DB cache first (fast, no API call)
-    const cached = await db.shopPlan.findUnique({ where: { shop } });
-    if (cached) return cached.plan;
+    // const cached = await db.shopPlan.findUnique({ where: { shop } });
+    // if (cached) return cached.plan;
 
-    // 2. No cache — default to "free"
+    // 2. No cache — default to DEFAULT_PLAN
     //    (Will be replaced with Shopify billing API query later)
-    const plan = "free";
+    const plan = PLAN_TYPES.PREMIUM;
 
     // 3. Cache in DB for next time
     await db.shopPlan.upsert({
@@ -25,6 +25,9 @@ export async function getShopPlan(admin, shop) {
         update: { plan },
         create: { shop, plan },
     });
+    const cached = await db.shopPlan.findUnique({ where: { shop } });
+    if (cached) return cached.plan;
+
 
     return plan;
 }
