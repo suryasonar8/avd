@@ -4,7 +4,7 @@ import { authenticate } from "../shopify.server";
 import { usePlan } from "../context/PlanContext";
 import { PopupService } from "../services/popup.service";
 import { PLAN_TYPES } from "../constants/features";
-import FreePlanBanner from "../components/store-verification/FreePlanBanner";
+import PricingBanner from "../components/PricingBanner";
 import CreatePopupCard from "../components/store-verification/CreatePopupCard";
 import PopupToolbar from "../components/store-verification/PopupToolbar";
 import PopupTable from "../components/store-verification/PopupTable";
@@ -100,7 +100,8 @@ export default function AppPage() {
   };
 
   const handleDeleteSubmit = () => {
-    const idsToDelete = deleteMode === "selected" ? selectedIds : popups.map((p) => p.id);
+    const idsToDelete =
+      deleteMode === "selected" ? selectedIds : popups.map((p) => p.id);
     if (idsToDelete.length === 0) return;
     fetcher.submit(
       { action: "delete_bulk", ids: JSON.stringify(idsToDelete) },
@@ -181,9 +182,8 @@ export default function AppPage() {
   return (
     <s-page heading="Store verification">
       {plan === PLAN_TYPES.FREE && (
-        <FreePlanBanner
-          popupsCount={popups.length}
-          popupLimit={popupLimit}
+        <PricingBanner
+          text={`Your current plan includes 1 pop-up (${popups.length}/${popupLimit} used). Upgrade to unlock more pop-ups, advanced customization and more.`}
         />
       )}
 

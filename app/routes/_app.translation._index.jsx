@@ -6,7 +6,7 @@ import { Card } from "../components/Card";
 import { Modal } from "../components/Modal";
 import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
-import { PLAN_TYPES } from "../constants/features";
+import PricingBanner from "../components/PricingBanner";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -152,104 +152,7 @@ export default function TranslationPage() {
       </div>
 
       {/* Free Plan Limit Banner */}
-      {plan === PLAN_TYPES.FREE && (
-        <div
-          style={{
-            background: "#BAE0FF",
-            borderRadius: "12px",
-            padding: "24px",
-            marginBottom: "24px",
-            position: "relative",
-            border: "1px solid #91D5FF",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "12px",
-          }}
-        >
-          <div style={{ flex: 1 }}>
-            <div
-              style={{
-                display: "flex",
-                gap: "12px",
-                alignItems: "center",
-                marginBottom: "16px",
-              }}
-            >
-              <div
-                style={{
-                  backgroundColor: "#006FBB",
-                  color: "white",
-                  borderRadius: "50%",
-                  width: "20px",
-                  height: "20px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                }}
-              >
-                i
-              </div>
-              <h2
-                style={{
-                  fontSize: "16px",
-                  fontWeight: "700",
-                  margin: 0,
-                  color: "#002339",
-                }}
-              >
-                Free Plan Limit
-              </h2>
-              <button
-                style={{
-                  position: "absolute",
-                  top: "20px",
-                  right: "20px",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  fontSize: "20px",
-                  color: "#002339",
-                  opacity: 0.6,
-                }}
-              >
-                ×
-              </button>
-            </div>
-            <p
-              style={{
-                margin: "0",
-                fontSize: "14px",
-                color: "#002339",
-                lineHeight: "1.5",
-              }}
-            >
-              Your current plan includes 1 translated language (
-              {translatedLanguages.length}/1 used). Upgrade to unlock support
-              for multiple languages and advanced translation features.
-            </p>
-          </div>
-          <button
-            onClick={() => navigate("/pricing")}
-            style={{
-              padding: "8px 20px",
-              backgroundColor: "#fff",
-              border: "1px solid #006FBB",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontWeight: "600",
-              fontSize: "13px",
-              color: "#006FBB",
-              boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
-              flexShrink: 0,
-            }}
-          >
-            Increase limit
-          </button>
-        </div>
-      )}
+      <PricingBanner text="Upgrade to unlock more translation options and support for multiple languages." />
 
       {/* Default Language Card */}
       <div
@@ -449,8 +352,8 @@ export default function TranslationPage() {
                 onClick={handleAddLanguage}
                 style={{
                   padding: "8px 16px",
-                  backgroundColor: "#202223",
-                  color: "white",
+                  backgroundColor: canAddLanguage ? "#202223" : "#F1F1F1",
+                  color: canAddLanguage ? "white" : "#919EAB",
                   border: "none",
                   borderRadius: "8px",
                   cursor: "pointer",
@@ -518,11 +421,7 @@ export default function TranslationPage() {
                 boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
               }}
             >
-              {hasPopups
-                ? canAddLanguage
-                  ? "Add language"
-                  : "Limit reached"
-                : "Create pop-up"}
+              {hasPopups ? "Add language" : "Create pop-up"}
             </button>
           </div>
         )}

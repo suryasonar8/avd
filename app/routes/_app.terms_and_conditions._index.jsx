@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 import { TermsService } from "../services/terms.service";
+import PricingBanner from "../components/PricingBanner";
 
 export const loader = async ({ request }) => {
   const { session } = await authenticate.admin(request);
@@ -15,68 +16,13 @@ export const action = async ({ request }) => {};
 export default function TermsAndConditions() {
   const navigate = useNavigate();
   const { settings } = useLoaderData();
-  const [bannerVisible, setBannerVisible] = useState(true);
 
   const isEnabled = settings?.enabled || false;
 
   return (
     <s-page heading="Terms and conditions">
       {/* Free Plan Limit Banner */}
-      {bannerVisible && (
-        <s-section>
-          <div
-            style={{
-              backgroundColor: "#d1ecf1",
-              border: "1px solid #bee5eb",
-              borderRadius: "8px",
-              padding: "14px 16px",
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              gap: "12px",
-            }}
-          >
-            <div
-              style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}
-            >
-              <span style={{ fontSize: "16px", marginTop: "1px" }}>ℹ️</span>
-              <div>
-                <strong style={{ fontSize: "14px", color: "#0c5460" }}>
-                  Free Plan Limit
-                </strong>
-                <p
-                  style={{
-                    margin: "4px 0 8px",
-                    fontSize: "13px",
-                    color: "#0c5460",
-                  }}
-                >
-                  Access Terms and Conditions and other advanced features with
-                  our Premium plan!
-                </p>
-                <s-button variant="secondary" size="slim">
-                  Increase limit
-                </s-button>
-              </div>
-            </div>
-            <button
-              onClick={() => setBannerVisible(false)}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontSize: "18px",
-                color: "#0c5460",
-                lineHeight: 1,
-                padding: "0",
-              }}
-              aria-label="Dismiss"
-            >
-              ✕
-            </button>
-          </div>
-        </s-section>
-      )}
+      <PricingBanner text="Access Terms and Conditions and other advanced features with our Premium plan!" />
 
       {/* Preview Card */}
       <s-section>

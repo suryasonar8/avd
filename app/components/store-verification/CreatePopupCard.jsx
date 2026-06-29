@@ -59,6 +59,7 @@ export default function CreatePopupCard({ canCreate }) {
         <div style={{ marginTop: "8px" }}>
           <button
             onClick={handleCreatePopUp}
+            disabled={!canCreate}
             style={{
               background: canCreate ? "#202223" : "#F1F1F1",
               color: canCreate ? "#FFFFFF" : "#919EAB",
@@ -70,7 +71,7 @@ export default function CreatePopupCard({ canCreate }) {
               cursor: canCreate ? "pointer" : "not-allowed",
             }}
           >
-            {canCreate ? "Create pop-up" : "Limit reached"}
+            Create pop-up
           </button>
         </div>
       </div>

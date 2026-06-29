@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
+import PricingBanner from "../components/PricingBanner";
 
 import { CheckoutBannerService } from "../services/checkout-banner.service";
 
@@ -22,83 +23,11 @@ export const action = async ({ request }) => {
 export default function CheckoutVerification() {
   const navigate = useNavigate();
   const { config } = useLoaderData();
-  const [bannerVisible, setBannerVisible] = useState(true);
   const isEnabled = config.status === "enabled";
 
   return (
     <s-page heading="Checkout verification">
-      {/* Free Plan Limit Banner */}
-      {bannerVisible && (
-        <s-section>
-          <div
-            style={{
-              backgroundColor: "#d1ecf1",
-              border: "1px solid #bee5eb",
-              borderRadius: "8px",
-              padding: "14px 16px",
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              gap: "12px",
-              marginBottom: "16px",
-            }}
-          >
-            <div
-              style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}
-            >
-              <div
-                style={{
-                  backgroundColor: "#0c5460",
-                  color: "white",
-                  borderRadius: "50%",
-                  width: "20px",
-                  height: "20px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "12px",
-                  marginTop: "2px",
-                  flexShrink: 0,
-                }}
-              >
-                i
-              </div>
-              <div>
-                <strong style={{ fontSize: "14px", color: "#0c5460" }}>
-                  Free Plan Limit
-                </strong>
-                <p
-                  style={{
-                    margin: "4px 0 8px",
-                    fontSize: "13px",
-                    color: "#0c5460",
-                  }}
-                >
-                  Enable age restriction at checkout - Upgrade your plan today!
-                </p>
-                <s-button variant="secondary" size="slim">
-                  Increase limit
-                </s-button>
-              </div>
-            </div>
-            <button
-              onClick={() => setBannerVisible(false)}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontSize: "18px",
-                color: "#0c5460",
-                lineHeight: 1,
-                padding: "0",
-              }}
-              aria-label="Dismiss"
-            >
-              ✕
-            </button>
-          </div>
-        </s-section>
-      )}
+      <PricingBanner text="Enable age restriction at checkout - Upgrade your plan today!" />
 
       <s-section>
         <s-stack gap="base">
