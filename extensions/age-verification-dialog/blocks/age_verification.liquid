@@ -10,7 +10,7 @@
 {% endif %}
 
 {% assign show_popup = false %}
-{% if active_popup and app_status %}
+{% if active_popup and active_popup.id != blank and app_status %}
   {% if active_popup.pages == 'All pages' or active_popup.pages == blank %}
     {% assign show_popup = true %}
   {% elsif active_popup.pages == 'Home page' %}

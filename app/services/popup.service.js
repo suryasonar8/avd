@@ -144,6 +144,7 @@ export const PopupService = {
         await this.ensureDefinitionsExist(admin);
 
         const config = JSON.parse(popup.config);
+        config.id = popup.id;
 
         // Merge translations into the config
         if (popup.translations && popup.translations.length > 0) {
