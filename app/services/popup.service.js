@@ -14,12 +14,18 @@ export const PopupService = {
             where: { shop },
             orderBy: { createdAt: "desc" },
         });
-        return popups.map((p) => ({
-            id: p.id,
-            name: p.name,
-            status: p.isActive ? "Enabled" : "Disabled",
-            method: JSON.parse(p.config).method || "No input",
-        }));
+        return popups.map((p) => {
+            const config = JSON.parse(p.config);
+            return {
+                id: p.id,
+                name: p.name,
+                status: p.isActive ? "Enabled" : "Disabled",
+                method: config.method || "No input",
+                target: config.pages || "All pages",
+                trigger: config.trigger || "Always show",
+                updatedAt: p.updatedAt,
+            };
+        });
     },
 
     /**
@@ -91,6 +97,50 @@ export const PopupService = {
             await this._clearActiveMetafield(admin);
         }
         return { success: true };
+    },
+
+    /**
+     * Delete multiple popups by IDs in a single DB call.
+     * Clears the Shopify metafield if any of them were active.
+     */
+    async deletePopups(admin, shop, ids) {
+        const intIds = ids.map((id) => parseInt(id));
+
+        // Check if any of the targeted popups were active
+        const activeCount = await db.popup.count({
+            where: { id: { in: intIds }, shop, isActive: true },
+        });
+
+        // Delete all in one query
+        await db.popup.deleteMany({
+            where: { id: { in: intIds }, shop },
+        });
+
+        if (activeCount > 0) {
+            await this._clearActiveMetafield(admin);
+        }
+
+        return { success: true };
+    },
+
+    /**
+     * Delete ALL popups for a shop in a single DB call.
+     * Clears the Shopify metafield if any popup was active.
+     */
+    async deleteAllPopups(admin, shop) {
+        // Check if any popup was active before deleting
+        const activeCount = await db.popup.count({
+            where: { shop, isActive: true },
+        });
+
+        // Delete every popup for this shop in one query
+        const { count } = await db.popup.deleteMany({ where: { shop } });
+
+        if (activeCount > 0) {
+            await this._clearActiveMetafield(admin);
+        }
+
+        return { success: true, deleted: count };
     },
 
     // ─── ACTIVE STATE ───────────────────────────────────────
