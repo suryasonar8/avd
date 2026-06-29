@@ -1,15 +1,21 @@
-import { useState } from "react";
-import { useLoaderData, Link, useFetcher, useSubmit } from "react-router";
+import { useState, useEffect } from "react";
+import { useLoaderData, useFetcher } from "react-router";
 import { authenticate } from "../shopify.server";
 import { Card } from "../components/Card";
 import { getAppEmbedStatus } from "../utils/theme.server";
 import { PopupService } from "../services/popup.service";
+import { AnalyticsService } from "../services/analytics.service";
+import DateRangePicker from "../components/DateRangePicker";
+import dayjs from "dayjs";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
 
   // Use PopupService for popup data
   const popupCount = await PopupService.getPopupCount(session.shop);
+
+  // Fetch analytics data (last 7 days default)
+  const analytics = await AnalyticsService.getStats(session.shop, null, null);
 
   // Fetch shop and theme data
   const shopDataResponse = await admin.graphql(
@@ -65,6 +71,7 @@ export const loader = async ({ request }) => {
     tested,
     settings,
     appEmbedEnabled,
+    analytics,
   };
 };
 
@@ -131,9 +138,65 @@ export default function Dashboard() {
     tested,
     settings,
     appEmbedEnabled,
+    analytics,
+    shopDomain: shop,
   } = useLoaderData();
   const fetcher = useFetcher();
-  console.log("popupCount", popupCount);
+  const analyticsFetcher = useFetcher();
+
+  // Default date range: last 7 days
+  const defaultStartDate = dayjs().subtract(7, "day").format("YYYY-MM-DD");
+  const defaultEndDate = dayjs().subtract(1, "day").format("YYYY-MM-DD");
+
+  const [dateRange, setDateRange] = useState({
+    startDate: defaultStartDate,
+    endDate: defaultEndDate,
+  });
+
+  const getActiveLabel = () => {
+    const todayStr = dayjs().format("YYYY-MM-DD");
+    const yesterdayStr = dayjs().subtract(1, "day").format("YYYY-MM-DD");
+    const sevenDaysAgoStr = dayjs().subtract(7, "day").format("YYYY-MM-DD");
+    const thirtyDaysAgoStr = dayjs().subtract(30, "day").format("YYYY-MM-DD");
+
+    if (dateRange.startDate === todayStr && dateRange.endDate === todayStr) {
+      return "today";
+    }
+    if (
+      dateRange.startDate === yesterdayStr &&
+      dateRange.endDate === yesterdayStr
+    ) {
+      return "yesterday";
+    }
+    if (
+      dateRange.startDate === sevenDaysAgoStr &&
+      dateRange.endDate === yesterdayStr
+    ) {
+      return "7 days";
+    }
+    if (
+      dateRange.startDate === thirtyDaysAgoStr &&
+      dateRange.endDate === yesterdayStr
+    ) {
+      return "30 days";
+    }
+    return null;
+  };
+
+  const activeLabel = getActiveLabel();
+
+  // Re-fetch analytics whenever the date range changes
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (shopDomain) params.set("shop", shopDomain);
+    if (dateRange.startDate) params.set("startDate", dateRange.startDate);
+    if (dateRange.endDate) params.set("endDate", dateRange.endDate);
+    analyticsFetcher.load(`/api/analytics?${params.toString()}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dateRange]);
+
+  // Use fetcher data when available, fall back to loader's initial data
+  const stats = analyticsFetcher.data ?? analytics;
 
   // Optimistic: treat as tested once the markTested action is in-flight
   const isMarkingTested =
@@ -604,11 +667,23 @@ export default function Dashboard() {
         }}
       >
         <h2 style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>
-          Overview
+          Overview{" "}
+          {activeLabel && (
+            <span
+              style={{
+                fontWeight: "normal",
+                color: "#6D7175",
+                fontSize: "14px",
+                marginLeft: "8px",
+              }}
+            >
+              ({activeLabel})
+            </span>
+          )}
         </h2>
-        <s-button variant="secondary">
-          <span style={{ marginRight: "4px" }}>📅</span> Last 7 days
-        </s-button>
+        <div style={{ width: "240px" }}>
+          <DateRangePicker value={dateRange} onChange={setDateRange} />
+        </div>
       </div>
 
       <div
@@ -640,7 +715,7 @@ export default function Dashboard() {
           <span
             style={{ fontSize: "48px", fontWeight: "700", color: "#202223" }}
           >
-            0
+            {analyticsFetcher.state !== "idle" ? "…" : (stats?.total ?? 0)}
           </span>
         </div>
         <div
@@ -664,7 +739,7 @@ export default function Dashboard() {
           <span
             style={{ fontSize: "48px", fontWeight: "700", color: "#202223" }}
           >
-            0
+            {analyticsFetcher.state !== "idle" ? "…" : (stats?.verified ?? 0)}
           </span>
         </div>
         <div
@@ -688,7 +763,7 @@ export default function Dashboard() {
           <span
             style={{ fontSize: "48px", fontWeight: "700", color: "#202223" }}
           >
-            0
+            {analyticsFetcher.state !== "idle" ? "…" : (stats?.unverified ?? 0)}
           </span>
         </div>
       </div>

@@ -13,6 +13,19 @@
         const rememberVisitor = overlay.getAttribute('data-remember-visitor') || 'Session only';
         const rememberDays = parseInt(overlay.getAttribute('data-remember-days')) || 30;
         const errorText = document.getElementById('age-verify-error-text');
+        const shop = overlay.getAttribute('data-shop');
+
+        function sendAnalytics(type) {
+            if (!shop) return;
+            const formData = new FormData();
+            formData.append('type', type);
+            // Using App Proxy URL
+            fetch(`/apps/avd-stats?shop=${shop}`, {
+                method: 'POST',
+                body: formData,
+                keepalive: true
+            }).catch(err => console.error('Analytics error:', err));
+        }
 
         function setCookie(name, value, days) {
             let expires = "";
@@ -91,12 +104,14 @@
                 }
             }
 
+            sendAnalytics('verified');
             setCookie('avd-age-verified', 'true', expiryDays);
             overlay.style.display = 'none';
             document.body.style.overflow = '';
         });
 
         disagreeBtn.addEventListener('click', function () {
+            sendAnalytics('unverified');
             if (cancelAction === 'redirect') {
                 window.location.href = cancelRedirectUrl;
             } else if (cancelAction === 'errorMsg') {

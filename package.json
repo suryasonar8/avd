@@ -32,6 +32,7 @@
     "@shopify/app-bridge-react": "^4.2.4",
     "@shopify/shopify-app-react-router": "^1.1.0",
     "@shopify/shopify-app-session-storage-prisma": "^9.0.0",
+    "dayjs": "^1.11.21",
     "isbot": "^5.1.31",
     "prisma": "^6.16.3",
     "react": "^18.3.1",
@@ -39,6 +40,7 @@
     "react-dom": "^18.3.1",
     "react-router": "^7.12.0",
     "react-simple-wysiwyg": "^3.4.1",
+    "rsuite": "^6.2.1",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {

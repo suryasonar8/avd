@@ -8,6 +8,13 @@ import {
 } from "react-router";
 import { AppProvider } from "@shopify/shopify-app-react-router/react";
 
+export const links = () => [
+  {
+    rel: "stylesheet",
+    href: "https://unpkg.com/rsuite/dist/rsuite.min.css",
+  },
+];
+
 export const loader = async () => {
   return { apiKey: process.env.SHOPIFY_API_KEY || "" };
 };

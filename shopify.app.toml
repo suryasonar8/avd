@@ -50,3 +50,7 @@ name = "Checkout Banner"
   admin = "merchant_read_write"
   storefront = "public_read"
 
+[app_proxy]
+url = "/api/analytics"
+subpath = "avd-stats"
+prefix = "apps"
