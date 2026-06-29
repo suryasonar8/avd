@@ -629,7 +629,7 @@ export default function TermsAndConditionsSetup() {
                   <span style={{ fontSize: "13px", fontWeight: 700 }}>
                     Status
                   </span>
-                  <Badge text="Premium plan" type="premium" />
+                  {!canAccess("terms.condition.status") && <Badge text="Premium plan" type="premium" />}
                 </div>
                 <RadioInput
                   label="Enabled"
@@ -683,7 +683,7 @@ export default function TermsAndConditionsSetup() {
                     <span style={{ fontSize: "12px", color: "#6D7175" }}>
                       *
                     </span>
-                    <Badge text="Premium plan" type="premium" />
+                    {!canAccess("terms.condition.pages") && <Badge text="Premium plan" type="premium" />}
                   </div>
                   <CheckboxInput
                     label="Product page"
@@ -726,7 +726,7 @@ export default function TermsAndConditionsSetup() {
                     <span style={{ fontSize: "13px", fontWeight: 700 }}>
                       Trigger condition
                     </span>
-                    <Badge text="Premium plan" type="premium" />
+                    {!canAccess("terms.condition.trigger") && <Badge text="Premium plan" type="premium" />}
                   </div>
                   <RadioInput
                     label="Always show"
@@ -764,7 +764,7 @@ export default function TermsAndConditionsSetup() {
           ) : (
             <Card
               title="Message"
-              badge={<Badge text="Premium plan" type="premium" />}
+              badge={!canAccess("terms.checkbox.text") ? <Badge text="Premium plan" type="premium" /> : null}
             >
               <TextInput
                 label="Text"

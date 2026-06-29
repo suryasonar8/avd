@@ -7,7 +7,7 @@ export function CSSTab({ config, setConfig }) {
   const hasAccess = canAccess("sv.css.input");
 
   return (
-    <Card title="CSS" badge={<Badge text="Premium plan" type="premium" />}>
+    <Card title="CSS" badge={!hasAccess ? <Badge text="Premium plan" type="premium" /> : null}>
       <div
         style={{
           borderRadius: "8px",

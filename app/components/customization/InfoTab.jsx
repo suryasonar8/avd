@@ -237,7 +237,7 @@ export function InfoTab({ config, setConfig }) {
 
       <Card
         title="Condition"
-        badge={<Badge text="Basic plan or higher" type="basic" />}
+        badge={!canAccess("sv.info.pages.home") ? <Badge text="Basic plan or higher" type="basic" /> : null}
       >
         <div style={{ marginBottom: "16px" }}>
           <label

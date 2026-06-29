@@ -6,12 +6,12 @@ import { usePlan } from "../../context/PlanContext";
 
 export default function BannerSettings({ config, onChange }) {
   const { canAccess } = usePlan();
-  const disabled = !canAccess("checkout.banner.heading");
+  const hasBasicPlan = canAccess("checkout.banner.heading");
   const heading = config.heading || "";
   const maxLength = BANNER_TEXT_MAX_LENGTH;
 
   const handleHeadingChange = (e) => {
-    if (disabled) return;
+    if (!hasBasicPlan) return;
     const value = e.target.value;
     if (value.length <= maxLength) {
       onChange({ heading: value });
@@ -22,16 +22,16 @@ export default function BannerSettings({ config, onChange }) {
     <SettingsSection
       title="Text customization"
       badge={
-        disabled ? <Badge text="Basic plan or higher" type="basic" /> : null
+        !hasBasicPlan ? <Badge text="Basic plan or higher" type="basic" /> : null
       }
-      disabled={disabled}
+      disabled={!hasBasicPlan}
     >
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           gap: "8px",
-          opacity: disabled ? 0.6 : 1,
+          opacity: !hasBasicPlan ? 0.6 : 1,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
@@ -43,7 +43,7 @@ export default function BannerSettings({ config, onChange }) {
             type="text"
             value={heading}
             onChange={handleHeadingChange}
-            disabled={disabled}
+            disabled={!hasBasicPlan}
             placeholder="Enter banner heading text"
             style={{
               width: "100%",
@@ -51,10 +51,10 @@ export default function BannerSettings({ config, onChange }) {
               border: "1px solid #E1E3E5",
               borderRadius: "8px",
               fontSize: "14px",
-              color: disabled ? "#919EAB" : "#202223",
-              backgroundColor: disabled ? "#F1F1F1" : "#fff",
+              color: !hasBasicPlan ? "#919EAB" : "#202223",
+              backgroundColor: !hasBasicPlan ? "#F1F1F1" : "#fff",
               boxSizing: "border-box",
-              cursor: disabled ? "not-allowed" : "text",
+              cursor: !hasBasicPlan ? "not-allowed" : "text",
             }}
           />
           <span

@@ -293,7 +293,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
         <ColorInput
           label="Background color"
           disabled={!canAccess("sv.bg.color")}
-          badge={<Badge text="Basic plan or higher" type="basic" />}
+          badge={!canAccess("sv.bg.color") ? <Badge text="Basic plan or higher" type="basic" /> : null}
           value={config.background.bgColor}
           onChange={(val) =>
             setConfig({
@@ -421,7 +421,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
 
       <Card
         title="Border setting"
-        badge={<Badge text="Premium plan" type="premium" />}
+        badge={!canAccess("sv.bg.border-color") ? <Badge text="Premium plan" type="premium" /> : null}
       >
         <ColorInput
           label="Border color"
