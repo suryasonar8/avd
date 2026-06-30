@@ -20,7 +20,13 @@ export default function PlansPage() {
   const [billing, setBilling] = useState("yearly");
   const [openFaq, setOpenFaq] = useState(null);
   const [showCompare, setShowCompare] = useState(false);
+  const [hoveredBasic, setHoveredBasic] = useState(false);
+  const [hoveredPremium, setHoveredPremium] = useState(false);
+  const [hoveredBasicBtn, setHoveredBasicBtn] = useState(false);
+  const [hoveredPremiumBtn, setHoveredPremiumBtn] = useState(false);
   const { t } = useTranslation();
+  const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
+  const [discountCode, setDiscountCode] = useState("");
 
   if (!isMounted) {
     return null;
@@ -28,22 +34,38 @@ export default function PlansPage() {
 
   const basicMonthly = billing === "yearly" ? 2.99 : 3.99;
   const premiumMonthly = billing === "yearly" ? 6.75 : 8.99;
-  const basicAnnual = (basicMonthly * 12).toFixed(2);
-  const premiumAnnual = (premiumMonthly * 12).toFixed(2);
 
   return (
-    <s-page heading={t("pricing.pageTitle")}>
-      {/* Support button */}
-      <s-button
-        slot="primary-action"
-        variant="plain"
-        href="mailto:support@example.com"
+    <s-page>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          marginBottom: "32px",
+        }}
       >
-        {t("common.support")}
-      </s-button>
-
-      {/* Billing toggle */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            marginBottom: "4px",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "26px",
+              fontWeight: "700",
+              margin: 0,
+              color: "#1A1C1D",
+            }}
+          >
+            Pricing
+          </h2>
+        </div>
+      </div>
       <s-section>
+        {/* Discount code trigger link */}
         <div
           style={{
             display: "flex",
@@ -51,364 +73,472 @@ export default function PlansPage() {
             marginBottom: "24px",
           }}
         >
-          <div
+          <button
+            onClick={() => setIsDiscountModalOpen(true)}
             style={{
-              display: "inline-flex",
-              border: "1px solid #c9cccf",
-              borderRadius: "8px",
-              overflow: "hidden",
-              background: "#f6f6f7",
+              background: "none",
+              border: "none",
+              color: "#2c6ecb",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: "500",
+              padding: "4px 8px",
+              fontFamily: "Inter, -apple-system, system-ui, sans-serif",
+              transition: "color 0.15s ease",
             }}
+            onMouseEnter={(e) => (e.target.style.color = "#004b87")}
+            onMouseLeave={(e) => (e.target.style.color = "#2c6ecb")}
           >
-            <button
-              onClick={() => setBilling("monthly")}
-              style={{
-                padding: "8px 20px",
-                border: "none",
-                background: billing === "monthly" ? "#ffffff" : "transparent",
-                fontWeight: billing === "monthly" ? "600" : "400",
-                color: billing === "monthly" ? "#202223" : "#6d7175",
-                cursor: "pointer",
-                fontSize: "14px",
-                borderRadius: billing === "monthly" ? "7px" : "0",
-                boxShadow:
-                  billing === "monthly" ? "0 1px 4px rgba(0,0,0,0.12)" : "none",
-                transition: "all 0.2s",
-              }}
-            >
-              {t("pricing.billedMonthly")}
-            </button>
-            <button
-              onClick={() => setBilling("yearly")}
-              style={{
-                padding: "8px 20px",
-                border: "none",
-                background: billing === "yearly" ? "#ffffff" : "transparent",
-                fontWeight: billing === "yearly" ? "600" : "400",
-                color: billing === "yearly" ? "#202223" : "#6d7175",
-                cursor: "pointer",
-                fontSize: "14px",
-                borderRadius: billing === "yearly" ? "7px" : "0",
-                boxShadow:
-                  billing === "yearly" ? "0 1px 4px rgba(0,0,0,0.12)" : "none",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                transition: "all 0.2s",
-              }}
-            >
-              {t("pricing.billedYearly")}{" "}
-              <span
-                style={{
-                  background: "#e3f1e3",
-                  color: "#1c6b1c",
-                  fontSize: "11px",
-                  fontWeight: "600",
-                  padding: "2px 6px",
-                  borderRadius: "99px",
-                }}
-              >
-                {t("pricing.save25")}
-              </span>
-            </button>
-          </div>
+            Apply your discount code
+          </button>
         </div>
 
         {/* Pricing cards grid */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "16px",
-            marginBottom: "16px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "24px",
+            marginBottom: "24px",
+            width: "100%",
           }}
         >
           {/* Basic Plan */}
           <div
             style={{
-              border: "1px solid #c9cccf",
-              borderRadius: "12px",
-              padding: "24px",
               background: "#ffffff",
+              border: "1px solid #e4e4e7",
+              borderRadius: "16px",
+              padding: "32px",
+              boxShadow: hoveredBasic
+                ? "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+                : "0 1px 3px 0 rgba(0, 0, 0, 0.05)",
+              transform: hoveredBasic ? "translateY(-2px)" : "translateY(0)",
+              display: "flex",
+              flexDirection: "column",
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
             }}
+            onMouseEnter={() => setHoveredBasic(true)}
+            onMouseLeave={() => setHoveredBasic(false)}
           >
-            <p
-              style={{
-                fontSize: "12px",
-                fontWeight: "600",
-                color: "#6d7175",
-                letterSpacing: "0.5px",
-                textTransform: "uppercase",
-                marginBottom: "8px",
-              }}
-            >
-              {t("pricing.planTypes.basic")}
-            </p>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: "6px",
-                marginBottom: "4px",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "36px",
-                  fontWeight: "700",
-                  color: "#202223",
-                }}
-              >
-                ${basicMonthly}
-              </span>
-              <span style={{ fontSize: "14px", color: "#6d7175" }}>
-                {t("pricing.perMonth")}
-              </span>
-              <span
-                style={{
-                  background: "#e3f1e3",
-                  color: "#1c6b1c",
-                  fontSize: "11px",
-                  fontWeight: "600",
-                  padding: "2px 6px",
-                  borderRadius: "99px",
-                  marginLeft: "4px",
-                }}
-              >
-                {t("pricing.percentOff")}
-              </span>
-            </div>
-            {billing === "yearly" && (
-              <p
+            <div>
+              <h3
                 style={{
                   fontSize: "13px",
-                  color: "#6d7175",
+                  fontWeight: "700",
+                  color: "#09090b",
+                  letterSpacing: "0.05em",
+                  margin: 0,
+                  textTransform: "uppercase",
+                }}
+              >
+                {t("pricing.planTypes.basic")}
+              </h3>
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "#71717a",
+                  lineHeight: "1.5",
+                  margin: "8px 0 20px 0",
+                  minHeight: "42px",
+                }}
+              >
+                {t("pricing.basicDescription")}
+              </p>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  color: "#09090b",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "36px",
+                    fontWeight: "700",
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  ${basicMonthly}
+                </span>
+                <span
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "700",
+                  }}
+                >
+                  {t("pricing.perMonth")}
+                </span>
+              </div>
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "#71717a",
+                  margin: "4px 0 24px 0",
+                }}
+              >
+                {billing === "yearly"
+                  ? t("pricing.billedYearly")
+                  : t("pricing.billedMonthly")}
+              </p>
+              <button
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "12px 24px",
+                  background: hoveredBasicBtn
+                    ? "linear-gradient(180deg, #3a3a3e 0%, #252529 100%)"
+                    : "linear-gradient(180deg, #2d2d30 0%, #1b1b1f 100%)",
+                  color: "#ffffff",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  border: "1px solid #0f0f11",
+                  borderRadius: "8px",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  boxShadow: hoveredBasicBtn
+                    ? "0 2px 4px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15)"
+                    : "0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+                  transition: "all 0.2s ease",
+                  margin: "16px 0",
+                  textDecoration: "none",
+                }}
+                onMouseEnter={() => setHoveredBasicBtn(true)}
+                onMouseLeave={() => setHoveredBasicBtn(false)}
+              >
+                {t("pricing.startFreeTrial")}
+              </button>
+            </div>
+            <div
+              style={{
+                height: "1px",
+                backgroundColor: "#f4f4f5",
+                margin: "24px 0",
+              }}
+            />
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  color: "#09090b",
                   marginBottom: "16px",
                 }}
               >
-                {t("pricing.billedOnceAYear", { amount: `$${basicAnnual}` })}
-              </p>
-            )}
-            <div style={{ margin: "16px 0" }}>
-              <s-button variant="primary" fullWidth>
-                {t("pricing.startFreeTrial")}
-              </s-button>
-            </div>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {BASIC_FEATURE_KEYS.map((fKey, i) => (
-                <li
-                  key={i}
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: "8px",
-                    padding: "5px 0",
-                    fontSize: "13px",
-                    color: "#202223",
-                  }}
-                >
-                  <span
+                <span>✨</span> {t("pricing.basicFeaturesHeader")}
+              </div>
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                }}
+              >
+                {BASIC_FEATURE_KEYS.map((fKey, i) => (
+                  <li
+                    key={i}
                     style={{
-                      color: "#1c6b1c",
-                      fontWeight: "700",
-                      marginTop: "1px",
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: "10px",
+                      fontSize: "14px",
+                      color: "#3f3f46",
+                      lineHeight: 1.4,
                     }}
                   >
-                    ✓
-                  </span>
-                  {t(fKey)}
-                </li>
-              ))}
-            </ul>
+                    <span
+                      style={{
+                        color: "#22c55e",
+                        fontWeight: 700,
+                        fontSize: "16px",
+                        lineHeight: 1,
+                        flexShrink: 0,
+                        marginTop: "2px",
+                      }}
+                    >
+                      ✓
+                    </span>
+                    {t(fKey)}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Premium Plan */}
           <div
             style={{
-              border: "2px solid #202223",
-              borderRadius: "12px",
-              padding: "24px",
               background: "#ffffff",
-              position: "relative",
+              border: "1px solid #e4e4e7",
+              borderRadius: "16px",
+              padding: "32px",
+              boxShadow: hoveredPremium
+                ? "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+                : "0 1px 3px 0 rgba(0, 0, 0, 0.05)",
+              transform: hoveredPremium ? "translateY(-2px)" : "translateY(0)",
+              display: "flex",
+              flexDirection: "column",
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
             }}
+            onMouseEnter={() => setHoveredPremium(true)}
+            onMouseLeave={() => setHoveredPremium(false)}
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                marginBottom: "8px",
-              }}
-            >
-              <p
+            <div>
+              <div
                 style={{
-                  fontSize: "12px",
-                  fontWeight: "600",
-                  color: "#6d7175",
-                  letterSpacing: "0.5px",
-                  textTransform: "uppercase",
-                  margin: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  marginBottom: "8px",
                 }}
               >
-                {t("pricing.planTypes.premium")}
+                <h3
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: "700",
+                    color: "#09090b",
+                    letterSpacing: "0.05em",
+                    margin: 0,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {t("pricing.planTypes.premium")}
+                </h3>
+                <span
+                  style={{
+                    backgroundColor: "#e0f2fe",
+                    color: "#0369a1",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    padding: "2px 8px",
+                    borderRadius: "9999px",
+                  }}
+                >
+                  {t("pricing.mostPopular")}
+                </span>
+              </div>
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "#71717a",
+                  lineHeight: "1.5",
+                  margin: "8px 0 20px 0",
+                  minHeight: "42px",
+                }}
+              >
+                {t("pricing.premiumDescription")}
               </p>
-              <span
+              <div
                 style={{
-                  background: "#ffd79d",
-                  color: "#7c5c00",
-                  fontSize: "11px",
-                  fontWeight: "700",
-                  padding: "2px 8px",
-                  borderRadius: "99px",
+                  display: "flex",
+                  alignItems: "baseline",
+                  color: "#09090b",
                 }}
               >
-                {t("pricing.mostPopular")}
-              </span>
+                <span
+                  style={{
+                    fontSize: "36px",
+                    fontWeight: "700",
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  ${premiumMonthly}
+                </span>
+                <span
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "700",
+                  }}
+                >
+                  {t("pricing.perMonth")}
+                </span>
+              </div>
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "#71717a",
+                  margin: "4px 0 24px 0",
+                }}
+              >
+                {billing === "yearly"
+                  ? t("pricing.billedYearly")
+                  : t("pricing.billedMonthly")}
+              </p>
+              <button
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "12px 24px",
+                  background: hoveredPremiumBtn
+                    ? "linear-gradient(180deg, #3a3a3e 0%, #252529 100%)"
+                    : "linear-gradient(180deg, #2d2d30 0%, #1b1b1f 100%)",
+                  color: "#ffffff",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  border: "1px solid #0f0f11",
+                  borderRadius: "8px",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  boxShadow: hoveredPremiumBtn
+                    ? "0 2px 4px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15)"
+                    : "0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+                  transition: "all 0.2s ease",
+                  margin: "16px 0",
+                  textDecoration: "none",
+                }}
+                onMouseEnter={() => setHoveredPremiumBtn(true)}
+                onMouseLeave={() => setHoveredPremiumBtn(false)}
+              >
+                {t("pricing.startFreeTrial")}
+              </button>
             </div>
             <div
               style={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: "6px",
-                marginBottom: "4px",
+                height: "1px",
+                backgroundColor: "#f4f4f5",
+                margin: "24px 0",
               }}
-            >
-              <span
+            />
+            <div>
+              <div
                 style={{
-                  fontSize: "36px",
-                  fontWeight: "700",
-                  color: "#202223",
-                }}
-              >
-                ${premiumMonthly}
-              </span>
-              <span style={{ fontSize: "14px", color: "#6d7175" }}>
-                {t("pricing.perMonth")}
-              </span>
-              <span
-                style={{
-                  background: "#e3f1e3",
-                  color: "#1c6b1c",
-                  fontSize: "11px",
-                  fontWeight: "600",
-                  padding: "2px 6px",
-                  borderRadius: "99px",
-                  marginLeft: "4px",
-                }}
-              >
-                {t("pricing.percentOff")}
-              </span>
-            </div>
-            {billing === "yearly" && (
-              <p
-                style={{
-                  fontSize: "13px",
-                  color: "#6d7175",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  color: "#09090b",
                   marginBottom: "16px",
                 }}
               >
-                {t("pricing.billedOnceAYear", { amount: `$${premiumAnnual}` })}
-              </p>
-            )}
-            <div style={{ margin: "16px 0" }}>
-              <s-button variant="primary" fullWidth>
-                {t("pricing.startFreeTrial")}
-              </s-button>
-            </div>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {PREMIUM_FEATURE_KEYS.map((fKey, i) => (
-                <li
-                  key={i}
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: "8px",
-                    padding: "5px 0",
-                    fontSize: "13px",
-                    color: "#202223",
-                    fontWeight: i === 0 ? "600" : "400",
-                  }}
-                >
-                  {i === 0 ? (
-                    <span style={{ fontSize: "15px" }}>⭐</span>
-                  ) : (
+                <span>✨</span> {t("pricing.premiumFeaturesHeader")}
+              </div>
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                }}
+              >
+                {PREMIUM_FEATURE_KEYS.map((fKey, i) => (
+                  <li
+                    key={i}
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: "10px",
+                      fontSize: "14px",
+                      color: "#3f3f46",
+                      lineHeight: 1.4,
+                    }}
+                  >
                     <span
                       style={{
-                        color: "#1c6b1c",
-                        fontWeight: "700",
-                        marginTop: "1px",
+                        color: "#22c55e",
+                        fontWeight: 700,
+                        fontSize: "16px",
+                        lineHeight: 1,
+                        flexShrink: 0,
+                        marginTop: "2px",
                       }}
                     >
                       ✓
                     </span>
-                  )}
-                  {t(fKey)}
-                </li>
-              ))}
-            </ul>
+                    {t(fKey)}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
         {/* Free Plan */}
         <div
           style={{
-            border: "1px solid #c9cccf",
-            borderRadius: "12px",
-            padding: "24px",
             background: "#ffffff",
+            border: "1px solid #e4e4e7",
+            borderRadius: "16px",
+            padding: "32px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             marginBottom: "16px",
+            boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)",
           }}
         >
           <div>
-            <p
+            <h3
               style={{
-                fontSize: "12px",
-                fontWeight: "600",
-                color: "#6d7175",
-                letterSpacing: "0.5px",
+                fontSize: "13px",
+                fontWeight: "700",
+                color: "#71717a",
+                letterSpacing: "0.05em",
+                margin: 0,
                 textTransform: "uppercase",
                 marginBottom: "8px",
               }}
             >
               {t("pricing.planTypes.free")}
-            </p>
+            </h3>
             <div
               style={{
                 display: "flex",
                 alignItems: "baseline",
-                gap: "4px",
-                marginBottom: "4px",
+                color: "#09090b",
+                marginBottom: "8px",
               }}
             >
               <span
                 style={{
-                  fontSize: "36px",
-                  fontWeight: "700",
-                  color: "#202223",
+                  fontSize: "32px",
+                  fontWeight: "800",
+                  letterSpacing: "-0.02em",
                 }}
               >
                 $0
               </span>
-              <span style={{ fontSize: "14px", color: "#6d7175" }}>
+              <span
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  color: "#71717a",
+                }}
+              >
                 {t("pricing.perMonth")}
               </span>
             </div>
-            <p style={{ fontSize: "13px", color: "#6d7175", margin: 0 }}>
+            <p
+              style={{
+                fontSize: "14px",
+                color: "#71717a",
+                margin: 0,
+                lineHeight: "1.5",
+              }}
+            >
               {t("pricing.bestSuitedForTesting")}
             </p>
           </div>
           <div>
             <span
               style={{
-                border: "1px solid #c9cccf",
-                borderRadius: "6px",
-                padding: "8px 16px",
-                fontSize: "13px",
-                color: "#6d7175",
-                background: "#f6f6f7",
+                display: "inline-block",
+                background: "#f4f4f5",
+                color: "#71717a",
+                borderRadius: "8px",
+                padding: "10px 20px",
+                fontSize: "14px",
+                fontWeight: "600",
+                textAlign: "center",
+                border: "none",
               }}
             >
               {t("pricing.yourCurrentPlan")}
@@ -419,29 +549,35 @@ export default function PlansPage() {
         {/* Compare plan features bar */}
         <div
           style={{
-            border: "1px solid #e1e3e5",
-            borderRadius: "8px",
-            padding: "14px 20px",
             background: "#ffffff",
+            border: "1px solid #e4e4e7",
+            borderRadius: "16px",
+            padding: "24px 32px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             marginBottom: "16px",
+            boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)",
           }}
         >
           <div>
-            <p
+            <h3
               style={{
-                fontSize: "14px",
-                fontWeight: "600",
-                color: "#202223",
+                fontSize: "16px",
+                fontWeight: "700",
+                color: "#09090b",
                 margin: 0,
               }}
             >
               {t("pricing.comparePlanFeatures")}
-            </p>
+            </h3>
             <p
-              style={{ fontSize: "12px", color: "#6d7175", margin: "2px 0 0" }}
+              style={{
+                fontSize: "14px",
+                color: "#71717a",
+                margin: "6px 0 0 0",
+                lineHeight: "1.5",
+              }}
             >
               {t("pricing.compareDescription")}
             </p>
@@ -449,19 +585,27 @@ export default function PlansPage() {
           <button
             onClick={() => setShowCompare(!showCompare)}
             style={{
-              border: "1px solid #c9cccf",
-              borderRadius: "6px",
-              background: "#f6f6f7",
-              color: "#202223",
+              background: "#ffffff",
+              color: "#09090b",
+              border: "1px solid #e4e4e7",
+              borderRadius: "8px",
+              padding: "10px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
               cursor: "pointer",
-              fontSize: "13px",
-              fontWeight: "500",
-              padding: "8px 14px",
-              flexShrink: 0,
-              marginLeft: "16px",
+              transition: "all 0.2s ease",
+              boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#f4f4f5";
+              e.currentTarget.style.borderColor = "#d4d4d8";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "#ffffff";
+              e.currentTarget.style.borderColor = "#e4e4e7";
             }}
           >
-            {showCompare ? t("common.hide") : t("common.showMore")}
+            {showCompare ? t("common.showLess") : t("common.showMore")}
           </button>
         </div>
 
@@ -469,61 +613,65 @@ export default function PlansPage() {
         {showCompare && (
           <div
             style={{
-              border: "1px solid #c9cccf",
+              border: "1px solid #e4e4e7",
               borderRadius: "12px",
               overflow: "hidden",
               background: "#ffffff",
+              boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)",
+              marginBottom: "24px",
             }}
           >
             <table
               style={{
                 width: "100%",
                 borderCollapse: "collapse",
-                fontSize: "13px",
+                fontSize: "14px",
               }}
             >
               <thead>
-                <tr style={{ background: "#f6f6f7" }}>
+                <tr style={{ background: "#ffffff" }}>
                   <th
                     style={{
-                      padding: "12px 16px",
+                      padding: "18px 24px",
                       textAlign: "left",
-                      fontWeight: "600",
-                      color: "#202223",
-                      borderBottom: "1px solid #e1e3e5",
+                      borderBottom: "1px solid #e4e4e7",
+                      borderRight: "1px solid #e4e4e7",
                     }}
-                  >
-                    {t("common.feature")}
-                  </th>
+                  />
                   <th
                     style={{
-                      padding: "12px 16px",
+                      padding: "18px 24px",
                       textAlign: "center",
-                      fontWeight: "600",
-                      color: "#202223",
-                      borderBottom: "1px solid #e1e3e5",
+                      fontWeight: "700",
+                      color: "#09090b",
+                      textTransform: "uppercase",
+                      borderBottom: "1px solid #e4e4e7",
+                      borderRight: "1px solid #e4e4e7",
                     }}
                   >
                     {t("pricing.planTypes.free")}
                   </th>
                   <th
                     style={{
-                      padding: "12px 16px",
+                      padding: "18px 24px",
                       textAlign: "center",
-                      fontWeight: "600",
-                      color: "#202223",
-                      borderBottom: "1px solid #e1e3e5",
+                      fontWeight: "700",
+                      color: "#09090b",
+                      textTransform: "uppercase",
+                      borderBottom: "1px solid #e4e4e7",
+                      borderRight: "1px solid #e4e4e7",
                     }}
                   >
                     {t("pricing.planTypes.basic")}
                   </th>
                   <th
                     style={{
-                      padding: "12px 16px",
+                      padding: "18px 24px",
                       textAlign: "center",
-                      fontWeight: "600",
-                      color: "#202223",
-                      borderBottom: "1px solid #e1e3e5",
+                      fontWeight: "700",
+                      color: "#09090b",
+                      textTransform: "uppercase",
+                      borderBottom: "1px solid #e4e4e7",
                     }}
                   >
                     {t("pricing.planTypes.premium")}
@@ -532,38 +680,83 @@ export default function PlansPage() {
               </thead>
               <tbody>
                 {COMPARE_FEATURES.map((row, i) => (
-                  <tr key={i} style={{ borderBottom: "1px solid #e1e3e5" }}>
-                    <td style={{ padding: "10px 16px", color: "#202223" }}>
+                  <tr
+                    key={i}
+                    style={{
+                      borderBottom:
+                        i === COMPARE_FEATURES.length - 1
+                          ? "none"
+                          : "1px solid #e4e4e7",
+                    }}
+                  >
+                    <td
+                      style={{
+                        padding: "18px 24px",
+                        color: "#09090b",
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        borderRight: "1px solid #e4e4e7",
+                        textAlign: "left",
+                      }}
+                    >
                       {t(row.featureKey)}
                     </td>
                     {[
                       PLAN_TYPES.FREE,
                       PLAN_TYPES.BASIC,
                       PLAN_TYPES.PREMIUM,
-                    ].map((plan) => (
-                      <td
-                        key={plan}
-                        style={{ padding: "10px 16px", textAlign: "center" }}
-                      >
-                        {typeof row[plan] === "boolean" ? (
-                          row[plan] ? (
-                            <span
-                              style={{ color: "#1c6b1c", fontWeight: "700" }}
-                            >
-                              ✓
-                            </span>
-                          ) : (
-                            <span style={{ color: "#c9cccf" }}>—</span>
-                          )
-                        ) : (
-                          <span style={{ color: "#202223" }}>
-                            {typeof row[plan] === "string"
-                              ? t(row[plan])
-                              : row[plan]}
+                    ].map((plan, idx) => {
+                      const val = row[plan];
+                      let cellContent;
+                      if (typeof val === "boolean") {
+                        cellContent = val ? (
+                          <span
+                            style={{
+                              color: "#16a34a",
+                              fontWeight: "700",
+                              fontSize: "16px",
+                            }}
+                          >
+                            ✓
                           </span>
-                        )}
-                      </td>
-                    ))}
+                        ) : (
+                          <span
+                            style={{
+                              color: "#ef4444",
+                              fontWeight: "700",
+                              fontSize: "16px",
+                            }}
+                          >
+                            ✕
+                          </span>
+                        );
+                      } else if (typeof val === "string") {
+                        cellContent =
+                          val.startsWith("pricing.") ||
+                          val.startsWith("common.")
+                            ? t(val)
+                            : val;
+                      } else {
+                        cellContent = val;
+                      }
+
+                      return (
+                        <td
+                          key={plan}
+                          style={{
+                            padding: "18px 24px",
+                            textAlign: "center",
+                            fontSize: "14px",
+                            color: "#27272a",
+                            fontWeight: "500",
+                            borderRight:
+                              idx === 2 ? "none" : "1px solid #e4e4e7",
+                          }}
+                        >
+                          {cellContent}
+                        </td>
+                      );
+                    })}
                   </tr>
                 ))}
               </tbody>
@@ -643,21 +836,162 @@ export default function PlansPage() {
             </div>
           ))}
         </div>
+      </s-section>
 
-        {/* Footer */}
+      {isDiscountModalOpen && (
         <div
           style={{
-            textAlign: "center",
-            marginTop: "32px",
-            paddingTop: "16px",
-            borderTop: "1px solid #e1e3e5",
-            fontSize: "13px",
-            color: "#6d7175",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            fontFamily: "Inter, -apple-system, system-ui, sans-serif",
+          }}
+          onClick={() => {
+            setIsDiscountModalOpen(false);
+            setDiscountCode("");
           }}
         >
-          {t("pricing.footerText")}
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "20px",
+              width: "90%",
+              maxWidth: "540px",
+              padding: "24px",
+              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+              position: "relative",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "20px",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  color: "#1a1c1d",
+                  margin: 0,
+                }}
+              >
+                Apply your discount code
+              </h3>
+              <button
+                onClick={() => {
+                  setIsDiscountModalOpen(false);
+                  setDiscountCode("");
+                }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#8c8c8c",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "4px",
+                  transition: "color 0.15s ease",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#1a1c1d")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#8c8c8c")}
+              >
+                <svg
+                  viewBox="0 0 20 20"
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    fill: "currentColor",
+                  }}
+                >
+                  <path d="M11.414 10l6.293-6.293a1 1 0 10-1.414-1.414L10 8.586 3.707 2.293a1 1 0 00-1.414 1.414L8.586 10l-6.293 6.293a1 1 0 101.414 1.414L10 11.414l6.293 6.293a1 1 0 001.414-1.414L11.414 10z" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Body */}
+            <div style={{ marginBottom: "24px" }}>
+              <label
+                htmlFor="discount-code-input"
+                style={{
+                  display: "block",
+                  fontSize: "14px",
+                  color: "#6d7175",
+                  marginBottom: "8px",
+                }}
+              >
+                Discount code
+              </label>
+              <input
+                id="discount-code-input"
+                type="text"
+                value={discountCode}
+                onChange={(e) => setDiscountCode(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "12px 16px",
+                  border: "1px solid #dcdfe3",
+                  borderRadius: "12px",
+                  fontSize: "15px",
+                  outline: "none",
+                  transition: "border-color 0.2s, box-shadow 0.2s",
+                  fontFamily: "inherit",
+                  boxSizing: "border-box",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#0066cc";
+                  e.target.style.boxShadow = "0 0 0 2px rgba(0, 102, 204, 0.1)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#dcdfe3";
+                  e.target.style.boxShadow = "none";
+                }}
+              />
+            </div>
+
+            {/* Footer */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                disabled={!discountCode.trim()}
+                onClick={() => {
+                  setIsDiscountModalOpen(false);
+                  setDiscountCode("");
+                }}
+                style={{
+                  padding: "10px 24px",
+                  backgroundColor: discountCode.trim() ? "#202223" : "#d4d4d8",
+                  color: "#ffffff",
+                  border: "none",
+                  borderRadius: "12px",
+                  cursor: discountCode.trim() ? "pointer" : "default",
+                  fontWeight: "600",
+                  fontSize: "14px",
+                  transition: "background-color 0.2s",
+                }}
+              >
+                Apply
+              </button>
+            </div>
+          </div>
         </div>
-      </s-section>
+      )}
     </s-page>
   );
 }
