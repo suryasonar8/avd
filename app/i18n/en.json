@@ -139,7 +139,8 @@
     },
     "triggerOptions": {
       "alwaysShow": "Always show",
-      "loggedCustomers": "Logged customers"
+      "loggedCustomers": "Logged customers",
+      "notLoggedCustomers": "Not logged customers"
     },
     "targetOptions": {
       "allPages": "All pages",
@@ -484,7 +485,11 @@
     "generalDescription": "Choose the admin language and set visitor verification duration.",
     "adminLanguage": "Admin language",
     "adminLanguageEnglish": "English",
-    "adminLanguageOther": "Other",
+    "adminLanguageDeutsch": "Deutsch",
+    "adminLanguageFrench": "Français",
+    "adminLanguageItalian": "Italiano",
+    "adminLanguageSpanish": "Español",
+    "adminLanguageHindi": "हिन्दी (Hindi)",
     "adminLanguageHelpText": "Selected languages will be translated immediately.",
     "rememberVisitor": "Remember visitor",
     "rememberVisitorOptions": {

@@ -148,7 +148,11 @@ export default function SettingsPage() {
               }}
             >
               <option value="English">{t("settings.adminLanguageEnglish")}</option>
-              <option value="Other">{t("settings.adminLanguageOther")}</option>
+              <option value="Deutsch">{t("settings.adminLanguageDeutsch")}</option>
+              <option value="Français">{t("settings.adminLanguageFrench")}</option>
+              <option value="Italiano">{t("settings.adminLanguageItalian")}</option>
+              <option value="Español">{t("settings.adminLanguageSpanish")}</option>
+              <option value="Hindi">{t("settings.adminLanguageHindi")}</option>
             </select>
             <p
               style={{

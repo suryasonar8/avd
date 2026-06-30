@@ -752,7 +752,7 @@ export default function TermsAndConditionsSetup() {
                     disabled={!canAccess("terms.condition.trigger")}
                   />
                   <RadioInput
-                    label={t("settings.adminLanguageOther")}
+                    label={t("storeVerification.triggerOptions.notLoggedCustomers")}
                     name="trigger"
                     value="not_logged"
                     checked={settings.triggerCondition === "not_logged"}
