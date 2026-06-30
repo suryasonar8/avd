@@ -8,6 +8,7 @@ import {
   PRICING_FAQ_KEYS,
 } from "../constants/pricing";
 import { PLAN_TYPES } from "../constants/features";
+import { useIsMounted } from "../hooks/useIsMounted";
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
@@ -15,10 +16,15 @@ export const loader = async ({ request }) => {
 };
 
 export default function PlansPage() {
+  const isMounted = useIsMounted();
   const [billing, setBilling] = useState("yearly");
   const [openFaq, setOpenFaq] = useState(null);
   const [showCompare, setShowCompare] = useState(false);
   const { t } = useTranslation();
+
+  if (!isMounted) {
+    return null;
+  }
 
   const basicMonthly = billing === "yearly" ? 2.99 : 3.99;
   const premiumMonthly = billing === "yearly" ? 6.75 : 8.99;
@@ -155,7 +161,9 @@ export default function PlansPage() {
               >
                 ${basicMonthly}
               </span>
-              <span style={{ fontSize: "14px", color: "#6d7175" }}>{t("pricing.perMonth")}</span>
+              <span style={{ fontSize: "14px", color: "#6d7175" }}>
+                {t("pricing.perMonth")}
+              </span>
               <span
                 style={{
                   background: "#e3f1e3",
@@ -274,7 +282,9 @@ export default function PlansPage() {
               >
                 ${premiumMonthly}
               </span>
-              <span style={{ fontSize: "14px", color: "#6d7175" }}>{t("pricing.perMonth")}</span>
+              <span style={{ fontSize: "14px", color: "#6d7175" }}>
+                {t("pricing.perMonth")}
+              </span>
               <span
                 style={{
                   background: "#e3f1e3",
@@ -382,7 +392,9 @@ export default function PlansPage() {
               >
                 $0
               </span>
-              <span style={{ fontSize: "14px", color: "#6d7175" }}>{t("pricing.perMonth")}</span>
+              <span style={{ fontSize: "14px", color: "#6d7175" }}>
+                {t("pricing.perMonth")}
+              </span>
             </div>
             <p style={{ fontSize: "13px", color: "#6d7175", margin: 0 }}>
               {t("pricing.bestSuitedForTesting")}
@@ -545,7 +557,9 @@ export default function PlansPage() {
                           )
                         ) : (
                           <span style={{ color: "#202223" }}>
-                            {typeof row[plan] === "string" ? t(row[plan]) : row[plan]}
+                            {typeof row[plan] === "string"
+                              ? t(row[plan])
+                              : row[plan]}
                           </span>
                         )}
                       </td>
@@ -647,4 +661,3 @@ export default function PlansPage() {
     </s-page>
   );
 }
-
