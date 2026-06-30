@@ -1,4 +1,4 @@
-import { createContext, useContext, useCallback, useState } from "react";
+import { createContext, useContext, useCallback, useState, useEffect } from "react";
 import { t as translate, tArray as translateArray, loadTranslations } from "../i18n/i18n";
 
 const TranslationContext = createContext({
@@ -10,6 +10,14 @@ const TranslationContext = createContext({
 export function TranslationProvider({ translations: initialTranslations, locale: initialLocale = "en", children }) {
   const [translations, setTranslations] = useState(initialTranslations);
   const [locale, setLocale] = useState(initialLocale);
+
+  useEffect(() => {
+    setTranslations(initialTranslations);
+  }, [initialTranslations]);
+
+  useEffect(() => {
+    setLocale(initialLocale);
+  }, [initialLocale]);
 
   const changeLocale = useCallback(async (newLocale) => {
     try {

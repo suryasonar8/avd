@@ -1,4 +1,5 @@
 import db from "../db.server";
+import dayjs from "dayjs";
 
 export const AnalyticsService = {
     /**
@@ -17,15 +18,10 @@ export const AnalyticsService = {
      * Defaults to the last 7 days if no dates provided.
      */
     async getStats(shop, startDate, endDate) {
-        const end = endDate ? new Date(endDate) : new Date();
-        // When endDate is a plain date string (YYYY-MM-DD), push to end of that day
-        if (endDate && !endDate.includes("T")) {
-            end.setHours(23, 59, 59, 999);
-        }
-
+        const end = endDate ? dayjs(endDate).endOf("day").toDate() : new Date();
         const start = startDate
-            ? new Date(startDate)
-            : new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000);
+            ? dayjs(startDate).startOf("day").toDate()
+            : dayjs(end).subtract(7, "day").startOf("day").toDate();
 
         // Use raw SQL to avoid any Prisma client cache issues with groupBy
         const rows = await db.$queryRaw`

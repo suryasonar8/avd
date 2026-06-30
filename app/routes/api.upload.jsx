@@ -79,12 +79,13 @@ export const action = async ({ request }) => {
     );
 
     const responseData = await response.json();
-    const userErrors = responseData.data.fileCreate.userErrors;
+    const userErrors = responseData.data?.fileCreate?.userErrors;
+
     if (userErrors && userErrors.length > 0) {
       return { success: false, errors: userErrors };
     }
 
-    const fileId = responseData.data.fileCreate.files?.[0]?.id;
+    const fileId = responseData.data?.fileCreate?.files?.[0]?.id;
 
     if (!fileId) {
       return { success: false, errors: [{ message: "Failed to create file" }] };

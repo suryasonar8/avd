@@ -89,6 +89,11 @@
 
                 if (age < minAge) {
                     triggerShake();
+                    const submitErrorMsg = overlay.getAttribute('data-submit-error-msg') || 'You do not meet the minimum age requirement.';
+                    if (errorText) {
+                        errorText.innerHTML = submitErrorMsg;
+                        errorText.style.display = 'block';
+                    }
                     return;
                 }
 

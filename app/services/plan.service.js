@@ -120,7 +120,7 @@ export const PlanService = {
             enforce("sv.btn.bg", sanitized.button.bgColor && sanitized.button.bgColor !== DEFAULT_STORE_CONFIG.button.bgColor, () => sanitized.button.bgColor = DEFAULT_STORE_CONFIG.button.bgColor);
             enforce("sv.cbtn.bg", sanitized.button.cancelBgColor && sanitized.button.cancelBgColor !== DEFAULT_STORE_CONFIG.button.cancelBgColor, () => sanitized.button.cancelBgColor = DEFAULT_STORE_CONFIG.button.cancelBgColor);
             enforce("sv.btn.border-color", !!sanitized.button.borderColor && sanitized.button.borderColor !== DEFAULT_STORE_CONFIG.button.borderColor, () => sanitized.button.borderColor = DEFAULT_STORE_CONFIG.button.borderColor);
-            enforce("sv.cbtn.border-color", !!sanitized.button.cancelBorderColor && sanitized.button.cancelBorderColor !== DEFAULT_CHECKOUT_CONFIG.button?.cancelBorderColor, () => sanitized.button.cancelBorderColor = DEFAULT_STORE_CONFIG.button.cancelBorderColor);
+            enforce("sv.cbtn.border-color", !!sanitized.button.cancelBorderColor && sanitized.button.cancelBorderColor !== DEFAULT_STORE_CONFIG.button.cancelBorderColor, () => sanitized.button.cancelBorderColor = DEFAULT_STORE_CONFIG.button.cancelBorderColor);
             enforce("sv.btn.border-radius", sanitized.button.borderRadius > 0, () => sanitized.button.borderRadius = DEFAULT_STORE_CONFIG.button.borderRadius);
             enforce("sv.cbtn.border-radius", sanitized.button.cancelBorderRadius > 0, () => sanitized.button.cancelBorderRadius = DEFAULT_STORE_CONFIG.button.cancelBorderRadius);
             enforce("sv.btn.border-width", sanitized.button.borderWidth > 0, () => sanitized.button.borderWidth = DEFAULT_STORE_CONFIG.button.borderWidth);
