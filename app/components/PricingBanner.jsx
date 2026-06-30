@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { usePlan } from "../context/PlanContext";
 import { PLAN_TYPES } from "../constants/features";
@@ -9,14 +9,27 @@ export default function PricingBanner({ text }) {
   const [isVisible, setIsVisible] = useState(true);
   const { plan } = usePlan();
   const { t } = useTranslation();
+  const bannerRef = useRef(null);
+
+  useEffect(() => {
+    const banner = bannerRef.current;
+    if (!banner) return;
+
+    const handleDismiss = () => setIsVisible(false);
+
+    banner.addEventListener("dismiss", handleDismiss);
+    return () => {
+      banner.removeEventListener("dismiss", handleDismiss);
+    };
+  }, [isVisible]);
 
   if (!isVisible || plan !== PLAN_TYPES.FREE) return null;
 
   return (
     <s-banner
+      ref={bannerRef}
       tone="info"
       title={t("pricingBanner.freePlanLimit")}
-      onDismiss={() => setIsVisible(false)}
     >
       <s-stack gap="base">
         <s-text>{text}</s-text>
@@ -27,3 +40,4 @@ export default function PricingBanner({ text }) {
     </s-banner>
   );
 }
+
