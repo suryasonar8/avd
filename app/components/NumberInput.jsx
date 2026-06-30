@@ -15,45 +15,19 @@ export const NumberInput = ({
         marginBottom: "8px",
       }}
     >
-      <label
-        style={{
-          fontSize: "13px",
-          fontWeight: "600",
-          color: "#1A1C1D",
-        }}
-      >
+      <s-text variant="bodyMd" as="label" style={{ fontWeight: "600" }}>
         {label}
-      </label>
+      </s-text>
       {badge}
     </div>
-    <div style={{ position: "relative", maxWidth: "240px" }}>
-      <input
+    <div style={{ maxWidth: "240px" }}>
+      <s-text-field
         type="number"
-        value={value}
+        value={value.toString()}
         disabled={disabled}
-        onChange={(e) => onChange(parseInt(e.target.value) || 0)}
-        style={{
-          boxSizing: "border-box",
-          width: "100%",
-          padding: "10px",
-          paddingRight: "30px",
-          borderRadius: "8px",
-          border: "1px solid #CBCFD2",
-          fontSize: "13px",
-          background: disabled ? "#F6F6F7" : "#FFF",
-        }}
+        suffix={suffix}
+        onChange={(e) => onChange(parseInt(e.currentTarget.value) || 0)}
       />
-      <span
-        style={{
-          position: "absolute",
-          right: "10px",
-          top: "10px",
-          fontSize: "12px",
-          color: "#6D7175",
-        }}
-      >
-        {suffix}
-      </span>
     </div>
   </div>
 );

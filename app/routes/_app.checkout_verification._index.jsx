@@ -35,87 +35,21 @@ export default function CheckoutVerification() {
       <s-section>
         <s-stack gap="base">
           {/* Verify your age banner */}
-          <div
-            style={{
-              backgroundColor: "#fff4e5",
-              border: "1px solid #ffe2b9",
-              borderRadius: "8px",
-              padding: "12px 16px",
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-            }}
-          >
-            <span style={{ fontSize: "18px" }}>⚠️</span>
-            <strong style={{ fontSize: "14px", color: "#663c00" }}>
-              {t("checkoutVerification.verifyYourAge")}
-            </strong>
-          </div>
+          <s-banner tone="warning">
+            <s-text>{t("checkoutVerification.verifyYourAge")}</s-text>
+          </s-banner>
 
           {/* You're over 18+ banner */}
-          <div
-            style={{
-              backgroundColor: "#edf7ed",
-              border: "1px solid #c3e6cb",
-              borderRadius: "8px",
-              padding: "12px 16px",
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              marginLeft: "120px",
-            }}
-          >
-            <div
-              style={{
-                color: "#1e4620",
-                border: "1px solid #1e4620",
-                borderRadius: "50%",
-                width: "18px",
-                height: "18px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "12px",
-              }}
-            >
-              ✓
-            </div>
-            <strong style={{ fontSize: "14px", color: "#1e4620" }}>
-              {t("checkoutVerification.youAreOver18")}
-            </strong>
+          <div style={{ marginLeft: "120px" }}>
+            <s-banner tone="success">
+              <s-text>{t("checkoutVerification.youAreOver18")}</s-text>
+            </s-banner>
           </div>
 
           {/* You must be at least 18+ banner */}
-          <div
-            style={{
-              backgroundColor: "#fdecea",
-              border: "1px solid #f5c6cb",
-              borderRadius: "8px",
-              padding: "12px 16px",
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-            }}
-          >
-            <div
-              style={{
-                color: "#5f2120",
-                border: "1px solid #5f2120",
-                borderRadius: "50%",
-                width: "18px",
-                height: "18px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "12px",
-              }}
-            >
-              !
-            </div>
-            <strong style={{ fontSize: "14px", color: "#5f2120" }}>
-              {t("checkoutVerification.youMustBe18")}
-            </strong>
-          </div>
+          <s-banner tone="critical">
+            <s-text>{t("checkoutVerification.youMustBe18")}</s-text>
+          </s-banner>
 
           <hr
             style={{
@@ -138,18 +72,9 @@ export default function CheckoutVerification() {
                 style={{ display: "flex", alignItems: "center", gap: "8px" }}
               >
                 <strong style={{ fontSize: "14px" }}>{t("checkoutVerification.infoBanner")}</strong>
-                <span
-                  style={{
-                    fontSize: "12px",
-                    color: isEnabled ? "#1e4620" : "#555",
-                    backgroundColor: isEnabled ? "#edf7ed" : "#f1f1f1",
-                    border: `1px solid ${isEnabled ? "#c3e6cb" : "#ddd"}`,
-                    borderRadius: "4px",
-                    padding: "1px 7px",
-                  }}
-                >
+                <s-badge tone={isEnabled ? "success" : "neutral"}>
                   {isEnabled ? t("common.enabled") : t("common.disabled")}
-                </span>
+                </s-badge>
               </div>
               <p
                 style={{

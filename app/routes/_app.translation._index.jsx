@@ -153,10 +153,8 @@ export default function TranslationPage() {
           {t("translation.refreshData")}
         </button>
       </div>
-
       {/* Free Plan Limit Banner */}
       <PricingBanner text={t("translation.upgradePromo")} />
-
       {/* Default Language Card */}
       <div
         style={{
@@ -205,7 +203,6 @@ export default function TranslationPage() {
           </button>
         </div>
       </div>
-
       {/* Translation List Card */}
       <Card title={t("translation.translationList")}>
         {translatedLanguages.length > 0 ? (
@@ -364,7 +361,9 @@ export default function TranslationPage() {
                   fontSize: "13px",
                 }}
               >
-                {hasPopups ? t("translation.addLanguage") : t("translation.createPopup")}
+                {hasPopups
+                  ? t("translation.addLanguage")
+                  : t("translation.createPopup")}
               </button>
             </div>
           </div>
@@ -424,13 +423,15 @@ export default function TranslationPage() {
                 boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
               }}
             >
-              {hasPopups ? t("translation.addLanguage") : t("translation.createPopup")}
+              {hasPopups
+                ? t("translation.addLanguage")
+                : t("translation.createPopup")}
             </button>
           </div>
         )}
       </Card>
-
       {/* Add Language Modal */}
+      {console.log("selectedLanguage", selectedLanguage)}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

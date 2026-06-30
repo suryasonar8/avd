@@ -43,11 +43,9 @@ export const ColorInput = ({
           marginBottom: "8px",
         }}
       >
-        <label
-          style={{ fontSize: "14px", fontWeight: "400", color: "#303030" }}
-        >
+        <s-text variant="bodyMd" as="label">
           {label} {required && <span style={{ color: "red" }}>*</span>}
-        </label>
+        </s-text>
         {badge}
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -66,22 +64,13 @@ export const ColorInput = ({
             justifyContent: "center",
           }}
         />
-        <input
-          type="text"
-          value={value}
-          disabled={disabled}
-          onChange={(e) => onChange(e.target.value)}
-          style={{
-            boxSizing: "border-box",
-            width: "100%",
-            padding: "10px 16px",
-            borderRadius: "10px",
-            border: "1px solid #CBCFD2",
-            fontSize: "16px",
-            background: disabled ? "#F6F6F7" : "#FFF",
-            color: "#303030",
-          }}
-        />
+        <div style={{ flexGrow: 1 }}>
+          <s-text-field
+            value={value}
+            disabled={disabled}
+            onChange={(e) => onChange(e.currentTarget.value)}
+          />
+        </div>
       </div>
 
       {showPicker && (

@@ -87,18 +87,15 @@ export default function ConditionSettings({ config, onChange }) {
           ) : null
         }
       >
-        <CustomRadio
-          label={t("common.enabled")}
-          checked={config.status === "enabled"}
-          onChange={() => handleStatusChange("enabled")}
+        <s-choice-list
+          name="status"
+          value={config.status}
+          onChange={(e) => handleStatusChange(e.currentTarget.value)}
           disabled={!canAccess("checkout.condition.status")}
-        />
-        <CustomRadio
-          label={t("common.disabled")}
-          checked={config.status === "disabled"}
-          onChange={() => handleStatusChange("disabled")}
-          disabled={!canAccess("checkout.condition.status")}
-        />
+        >
+          <s-choice value="enabled">{t("common.enabled")}</s-choice>
+          <s-choice value="disabled">{t("common.disabled")}</s-choice>
+        </s-choice-list>
       </SettingsSection>
 
       <SettingsSection
@@ -109,163 +106,128 @@ export default function ConditionSettings({ config, onChange }) {
           ) : null
         }
       >
-        <CustomRadio
-          label={t("checkoutVerification.conditionAlways")}
-          description={t("checkoutVerification.conditionAlwaysDescription")}
-          checked={config.target === "always"}
-          onChange={() => handleTargetChange("always")}
+        <s-choice-list
+          name="target"
+          value={config.target}
+          onChange={(e) => handleTargetChange(e.currentTarget.value)}
           disabled={!canAccess("checkout.condition.target")}
-        />
-        <CustomRadio
-          label={t("checkoutVerification.specificCollection")}
-          description={t("checkoutVerification.specificCollectionDescription")}
-          checked={config.target === "collection"}
-          onChange={() => handleTargetChange("collection")}
-          disabled={!canAccess("checkout.condition.target")}
-        />
+        >
+          <s-choice value="always">
+            {t("checkoutVerification.conditionAlways")}
+            <s-text slot="details">{t("checkoutVerification.conditionAlwaysDescription")}</s-text>
+          </s-choice>
 
-        {config.target === "collection" && (
-          <div style={{ marginLeft: "28px", marginTop: "8px" }}>
-            <button
-              onClick={() => !disabled && handleSelectCollections()}
-              disabled={disabled}
-              style={{
-                padding: "8px 16px",
-                fontSize: "13px",
-                fontWeight: 500,
-                border: "1px solid #C9CCCF",
-                borderRadius: "8px",
-                background: disabled ? "#F1F1F1" : "#fff",
-                cursor: disabled ? "not-allowed" : "pointer",
-                color: disabled ? "#919EAB" : "#202223",
-              }}
-            >
-              {(config.selectedCollections || []).length > 0
-                ? t("checkoutVerification.changeCollections")
-                : t("checkoutVerification.selectCollections")}
-            </button>
-            {(config.selectedCollections || []).length > 0 && (
-              <div
-                style={{
-                  marginTop: "8px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "4px",
-                }}
+          <s-choice value="collection">
+            {t("checkoutVerification.specificCollection")}
+            <s-text slot="details">{t("checkoutVerification.specificCollectionDescription")}</s-text>
+          </s-choice>
+
+          {config.target === "collection" && (
+            <div style={{ marginLeft: "28px", marginTop: "8px", marginBottom: "12px" }}>
+              <s-button
+                onClick={() => !disabled && handleSelectCollections()}
+                disabled={disabled}
               >
-                {(config.selectedCollections || []).map((id, i) => (
-                  <div
-                    key={id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "6px 10px",
-                      background: "#F1F2F4",
-                      borderRadius: "6px",
-                      fontSize: "13px",
-                    }}
-                  >
-                    <span>
-                      {config._collectionTitles && config._collectionTitles[i]
-                        ? config._collectionTitles[i]
-                        : id.replace("gid://shopify/Collection/", "#")}
-                    </span>
-                    <button
-                      onClick={() => removeCollection(id)}
+                {(config.selectedCollections || []).length > 0
+                  ? t("checkoutVerification.changeCollections")
+                  : t("checkoutVerification.selectCollections")}
+              </s-button>
+              {(config.selectedCollections || []).length > 0 && (
+                <div
+                  style={{
+                    marginTop: "8px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                  }}
+                >
+                  {(config.selectedCollections || []).map((id, i) => (
+                    <div
+                      key={id}
                       style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "14px",
-                        color: "#6D7175",
-                        padding: "0 4px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "6px 10px",
+                        background: "#F1F2F4",
+                        borderRadius: "6px",
+                        fontSize: "13px",
                       }}
                     >
-                      ✕
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+                      <span>
+                        {config._collectionTitles && config._collectionTitles[i]
+                          ? config._collectionTitles[i]
+                          : id.replace("gid://shopify/Collection/", "#")}
+                      </span>
+                      <s-button
+                        variant="plain"
+                        onClick={() => removeCollection(id)}
+                      >
+                        ✕
+                      </s-button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
-        <CustomRadio
-          label={t("checkoutVerification.specificProduct")}
-          description={t("checkoutVerification.specificProductDescription")}
-          checked={config.target === "product"}
-          onChange={() => handleTargetChange("product")}
-          disabled={!canAccess("checkout.condition.target")}
-        />
+          <s-choice value="product">
+            {t("checkoutVerification.specificProduct")}
+            <s-text slot="details">{t("checkoutVerification.specificProductDescription")}</s-text>
+          </s-choice>
 
-        {config.target === "product" && (
-          <div style={{ marginLeft: "28px", marginTop: "8px" }}>
-            <button
-              onClick={() => !disabled && handleSelectProducts()}
-              disabled={disabled}
-              style={{
-                padding: "8px 16px",
-                fontSize: "13px",
-                fontWeight: 500,
-                border: "1px solid #C9CCCF",
-                borderRadius: "8px",
-                background: disabled ? "#F1F1F1" : "#fff",
-                cursor: disabled ? "not-allowed" : "pointer",
-                color: disabled ? "#919EAB" : "#202223",
-              }}
-            >
-              {(config.selectedProducts || []).length > 0
-                ? t("checkoutVerification.changeProducts")
-                : t("checkoutVerification.selectProducts")}
-            </button>
-            {(config.selectedProducts || []).length > 0 && (
-              <div
-                style={{
-                  marginTop: "8px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "4px",
-                }}
+          {config.target === "product" && (
+            <div style={{ marginLeft: "28px", marginTop: "8px" }}>
+              <s-button
+                onClick={() => !disabled && handleSelectProducts()}
+                disabled={disabled}
               >
-                {(config.selectedProducts || []).map((id, i) => (
-                  <div
-                    key={id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "6px 10px",
-                      background: "#F1F2F4",
-                      borderRadius: "6px",
-                      fontSize: "13px",
-                    }}
-                  >
-                    <span>
-                      {config._productTitles && config._productTitles[i]
-                        ? config._productTitles[i]
-                        : id.replace("gid://shopify/Product/", "#")}
-                    </span>
-                    <button
-                      onClick={() => !disabled && removeProduct(id)}
-                      disabled={disabled}
+                {(config.selectedProducts || []).length > 0
+                  ? t("checkoutVerification.changeProducts")
+                  : t("checkoutVerification.selectProducts")}
+              </s-button>
+              {(config.selectedProducts || []).length > 0 && (
+                <div
+                  style={{
+                    marginTop: "8px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                  }}
+                >
+                  {(config.selectedProducts || []).map((id, i) => (
+                    <div
+                      key={id}
                       style={{
-                        background: "none",
-                        border: "none",
-                        cursor: disabled ? "not-allowed" : "pointer",
-                        fontSize: "14px",
-                        color: "#6D7175",
-                        padding: "0 4px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "6px 10px",
+                        background: "#F1F2F4",
+                        borderRadius: "6px",
+                        fontSize: "13px",
                       }}
                     >
-                      ✕
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+                      <span>
+                        {config._productTitles && config._productTitles[i]
+                          ? config._productTitles[i]
+                          : id.replace("gid://shopify/Product/", "#")}
+                      </span>
+                      <s-button
+                        variant="plain"
+                        onClick={() => !disabled && removeProduct(id)}
+                        disabled={disabled}
+                      >
+                        ✕
+                      </s-button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </s-choice-list>
       </SettingsSection>
     </>
   );

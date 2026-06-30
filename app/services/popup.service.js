@@ -16,12 +16,16 @@ export const PopupService = {
         });
         return popups.map((p) => {
             const config = JSON.parse(p.config);
+            let target = config.pages || "All pages";
+            if (target && typeof target === "object") {
+                target = target.value || "All pages";
+            }
             return {
                 id: p.id,
                 name: p.name,
                 status: p.isActive ? "Enabled" : "Disabled",
                 method: config.method || "No input",
-                target: config.pages || "All pages",
+                target: target,
                 trigger: config.trigger || "Always show",
                 updatedAt: p.updatedAt,
             };
@@ -36,6 +40,9 @@ export const PopupService = {
         if (!p || p.shop !== shop) return null;
 
         const config = JSON.parse(p.config);
+        if (config && config.pages && typeof config.pages === "object") {
+            config.pages = config.pages.value || "All pages";
+        }
         return {
             ...config,
             id: p.id,
@@ -48,6 +55,10 @@ export const PopupService = {
      */
     async createPopup(shop, config) {
         const { status, ...configWithoutStatus } = config;
+
+        if (configWithoutStatus.pages && typeof configWithoutStatus.pages === "object") {
+            configWithoutStatus.pages = configWithoutStatus.pages.value || "All pages";
+        }
 
         const popup = await db.popup.create({
             data: {
@@ -70,6 +81,10 @@ export const PopupService = {
         }
 
         const { status, ...configWithoutStatus } = config;
+
+        if (configWithoutStatus.pages && typeof configWithoutStatus.pages === "object") {
+            configWithoutStatus.pages = configWithoutStatus.pages.value || "All pages";
+        }
 
         await db.popup.update({
             where: { id: parseInt(id) },

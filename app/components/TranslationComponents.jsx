@@ -4,19 +4,12 @@ import { useTranslation } from "../context/TranslationContext";
 
 export const SectionTitle = ({ title, description }) => (
   <div style={{ marginBottom: "24px" }}>
-    <h2
-      style={{
-        fontSize: "16px",
-        fontWeight: "600",
-        marginBottom: "4px",
-        color: "#202223",
-      }}
-    >
+    <s-text variant="headingMd" as="h2" style={{ marginBottom: "4px" }}>
       {title}
-    </h2>
-    <p style={{ fontSize: "13px", color: "#6d7175", lineHeight: "1.5" }}>
+    </s-text>
+    <s-text variant="bodyMd" as="p" tone="subdued">
       {description}
-    </p>
+    </s-text>
   </div>
 );
 
@@ -106,22 +99,10 @@ export const TranslationField = ({
             )}
           </div>
         ) : (
-          <input
-            type="text"
+          <s-text-field
             value={value}
-            onChange={(e) => onChange(e.target.value)}
             disabled={disabled}
-            style={{
-              width: "100%",
-              padding: "10px 14px",
-              border: "1px solid #e1e3e5",
-              borderRadius: "8px",
-              outline: "none",
-              fontSize: "14px",
-              background: disabled ? "#f9fafb" : "white",
-              cursor: disabled ? "not-allowed" : "text",
-              boxSizing: "border-box",
-            }}
+            onChange={(e) => onChange(e.currentTarget.value)}
           />
         )}
       </div>
@@ -167,8 +148,7 @@ export const PopupSelector = ({
 
   return (
     <div style={{ position: "relative" }} ref={dropdownRef}>
-      <input
-        type="text"
+      <s-text-field
         placeholder={t("translation.selectPopup")}
         readOnly
         value={
@@ -177,31 +157,8 @@ export const PopupSelector = ({
             : ""
         }
         onClick={() => !isReadOnly && setIsOpen(!isOpen)}
-        style={{
-          width: "100%",
-          padding: "10px 14px",
-          paddingLeft: "36px",
-          border: "1px solid #e1e3e5",
-          borderRadius: "8px",
-          outline: "none",
-          fontSize: "14px",
-          background: "#f0f0f0",
-          cursor: isReadOnly ? "not-allowed" : "pointer",
-          boxSizing: "border-box",
-          color: "#6d7175",
-        }}
+        disabled={isReadOnly}
       />
-      <span
-        style={{
-          position: "absolute",
-          left: "12px",
-          top: "50%",
-          transform: "translateY(-50%)",
-          color: "#6d7175",
-        }}
-      >
-        🔍
-      </span>
 
       {isOpen && (
         <div
@@ -219,25 +176,14 @@ export const PopupSelector = ({
             padding: "8px",
           }}
         >
-          <input
-            type="text"
-            placeholder={t("translation.searchPopups")}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            autoFocus
-            style={{
-              width: "100%",
-              height: "36px",
-              paddingLeft: "10px",
-              border: "none",
-              borderRadius: "12px",
-              background: "#f0f0f0",
-              fontSize: "14px",
-              boxSizing: "border-box",
-              color: "#6d7175",
-              marginBottom: "8px",
-            }}
-          />
+          <div style={{ marginBottom: "8px" }}>
+            <s-text-field
+              placeholder={t("translation.searchPopups")}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.currentTarget.value)}
+              autoFocus
+            />
+          </div>
           <div
             style={{
               maxHeight: "200px",

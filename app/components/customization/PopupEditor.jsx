@@ -24,7 +24,7 @@ const DEFAULT_CONFIG = {
   method: "No input",
   verifyAge: 18,
   dateOrder: "MM,DD,YY",
-  pages: DISPLAY_PAGES[0],
+  pages: DISPLAY_PAGES[0].value,
   selectedCollections: [],
   _collectionTitles: [],
   selectedCollectionHandles: [],

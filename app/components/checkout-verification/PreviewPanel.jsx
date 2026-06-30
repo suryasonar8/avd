@@ -31,15 +31,9 @@ export default function PreviewPanel({ config }) {
           borderBottom: "1px solid #F1F1F1",
         }}
       >
-        <button
+        <s-button
           onClick={() => setDevice("desktop")}
-          style={{
-            background: device === "desktop" ? "#F1F1F1" : "transparent",
-            border: "1px solid #E1E3E5",
-            borderRadius: "6px",
-            padding: "8px 12px",
-            cursor: "pointer",
-          }}
+          variant={device === "desktop" ? "primary" : "secondary"}
           title={t("termsAndConditions.desktop")}
         >
           <svg
@@ -54,16 +48,10 @@ export default function PreviewPanel({ config }) {
             <line x1="8" y1="21" x2="16" y2="21" />
             <line x1="12" y1="17" x2="12" y2="21" />
           </svg>
-        </button>
-        <button
+        </s-button>
+        <s-button
           onClick={() => setDevice("mobile")}
-          style={{
-            background: device === "mobile" ? "#F1F1F1" : "transparent",
-            border: "1px solid #E1E3E5",
-            borderRadius: "6px",
-            padding: "8px 12px",
-            cursor: "pointer",
-          }}
+          variant={device === "mobile" ? "primary" : "secondary"}
           title={t("termsAndConditions.mobile")}
         >
           <svg
@@ -77,7 +65,7 @@ export default function PreviewPanel({ config }) {
             <rect x="5" y="2" width="14" height="20" rx="2" />
             <line x1="12" y1="18" x2="12.01" y2="18" />
           </svg>
-        </button>
+        </s-button>
       </div>
 
       {/* Checkout Mockup Content */}
@@ -139,29 +127,10 @@ export default function PreviewPanel({ config }) {
 
             {/* Age Restriction Banner Preview */}
             {showBanner && (
-              <div
-                style={{
-                  backgroundColor: "#FFF4E5",
-                  border: "1px solid #FFCC80",
-                  borderRadius: "8px",
-                  padding: "12px 16px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  marginBottom: "20px",
-                }}
-              >
-                <span style={{ fontSize: "16px" }}>⚠️</span>
-                <span
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    color: "#663C00",
-                    lineHeight: "1.4",
-                  }}
-                >
-                  {bannerHeading}
-                </span>
+              <div style={{ marginBottom: "20px" }}>
+                <s-banner tone="warning">
+                  <s-text>{bannerHeading}</s-text>
+                </s-banner>
               </div>
             )}
 

@@ -60,9 +60,7 @@ export default function AppPage() {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm(t("storeVerification.deleteConfirmSingle"))) {
-      fetcher.submit({ action: "delete", id }, { method: "POST" });
-    }
+    fetcher.submit({ action: "delete", id }, { method: "POST" });
   };
 
   const handleAddFilter = (type, value) => {
@@ -98,7 +96,7 @@ export default function AppPage() {
 
   const handleBulkDelete = () => {
     setDeleteMode("all");
-    deleteModalRef.current?.open();
+    deleteModalRef.current?.open("all");
   };
 
   const handleDeleteSubmit = () => {
@@ -240,7 +238,7 @@ export default function AppPage() {
             onDelete={handleDelete}
             onOpenDeleteModal={() => {
               setDeleteMode("selected");
-              deleteModalRef.current?.open();
+              deleteModalRef.current?.open("selected");
             }}
             getRelativeTime={getRelativeTime}
           />

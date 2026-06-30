@@ -89,6 +89,16 @@ export default function CheckoutVerificationSetup() {
     setConfig((prev) => ({ ...prev, ...updates }));
   };
 
+  const handleBack = () => {
+    if (isDirty) {
+      shopify.toast.show(t("common.saveOrDiscardWarning"), {
+        isError: true,
+      });
+    } else {
+      navigate("/checkout_verification");
+    }
+  };
+
   const tabStyle = (tab) => ({
     padding: "8px 24px",
     fontSize: "14px",
@@ -102,14 +112,7 @@ export default function CheckoutVerificationSetup() {
   });
 
   return (
-    <div
-      style={{
-        padding: "32px",
-        background: "#f6f6f7",
-        minHeight: "100vh",
-        fontFamily: "Inter, -apple-system, system-ui, sans-serif",
-      }}
-    >
+    <s-page>
       <SaveBar id="checkout-banner-save-bar" open={isDirty}>
         <button
           variant="primary"
@@ -121,41 +124,47 @@ export default function CheckoutVerificationSetup() {
         <button onClick={handleDiscard}>{t("common.discard")}</button>
       </SaveBar>
 
-      {/* Header */}
       <div
         style={{
           display: "flex",
-          alignItems: "center",
-          gap: "12px",
-          marginBottom: "24px",
+          flexDirection: "column",
+          marginBottom: "32px",
         }}
       >
-        <button
-          onClick={() => navigate("/checkout_verification")}
+        <div
           style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "20px",
-            color: "#202223",
-            padding: 0,
             display: "flex",
             alignItems: "center",
-          }}
-          aria-label={t("common.close")}
-        >
-          ←
-        </button>
-        <h1
-          style={{
-            margin: 0,
-            fontSize: "24px",
-            fontWeight: 700,
-            color: "#202223",
+            gap: "12px",
+            marginBottom: "4px",
           }}
         >
-          {t("checkoutVerification.configuration")}
-        </h1>
+          <button
+            onClick={handleBack}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "20px",
+              padding: "4px",
+              display: "flex",
+              alignItems: "center",
+              color: "#1A1C1D",
+            }}
+          >
+            ←
+          </button>
+          <h2
+            style={{
+              fontSize: "26px",
+              fontWeight: "700",
+              margin: 0,
+              color: "#1A1C1D",
+            }}
+          >
+            {t("checkoutVerification.configuration")}
+          </h2>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -170,36 +179,28 @@ export default function CheckoutVerificationSetup() {
           gap: "8px",
         }}
       >
-        <button
-          style={tabStyle("condition")}
+        <s-button
+          variant={activeTab === "condition" ? "primary" : "secondary"}
           onClick={() => setActiveTab("condition")}
         >
           {t("checkoutVerification.tabCondition")}
-        </button>
-        <button
-          style={tabStyle("banner")}
+        </s-button>
+        <s-button
+          variant={activeTab === "banner" ? "primary" : "secondary"}
           onClick={() => setActiveTab("banner")}
         >
           {t("checkoutVerification.tabBanner")}
-        </button>
+        </s-button>
       </div>
       {fetcher.data?.errors && (
-        <div
-          style={{
-            background: "#fff4f4",
-            border: "1px solid #d72c0d",
-            borderRadius: "8px",
-            padding: "12px",
-            marginBottom: "24px",
-            color: "#d72c0d",
-            fontSize: "13px",
-          }}
-        >
-          {fetcher.data.errors.map((err, i) => (
-            <p key={i} style={{ margin: "2px 0" }}>
-              • {err}
-            </p>
-          ))}
+        <div style={{ marginBottom: "24px" }}>
+          <s-banner tone="critical">
+            <s-stack gap="extra-tight">
+              {fetcher.data.errors.map((err, i) => (
+                <s-text key={i}>• {err}</s-text>
+              ))}
+            </s-stack>
+          </s-banner>
         </div>
       )}
 
@@ -230,6 +231,6 @@ export default function CheckoutVerificationSetup() {
         {/* Right Panel */}
         <PreviewPanel config={config} />
       </div>
-    </div>
+    </s-page>
   );
 }
