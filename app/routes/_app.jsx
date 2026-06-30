@@ -7,6 +7,22 @@ import { getShopPlan, buildAccessMap } from "../services/plan.service";
 import { loadTranslations } from "../i18n/i18n";
 import { useTranslation } from "../context/TranslationContext";
 
+const LANGUAGE_MAP = {
+  English: "en",
+  Deutsch: "de",
+  Français: "fr",
+  Italiano: "it",
+  Español: "es",
+  "हिन्दी (Hindi)": "hi",
+  Hindi: "hi",
+  en: "en",
+  de: "de",
+  fr: "fr",
+  it: "it",
+  es: "es",
+  hi: "hi",
+};
+
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
   const plan = await getShopPlan(admin, session.shop);
@@ -29,10 +45,12 @@ export const loader = async ({ request }) => {
     const metafieldValue = settingsData.data.shop.metafield?.value;
     if (metafieldValue) {
       const settings = JSON.parse(metafieldValue);
-      if (settings.adminLanguage && settings.adminLanguage !== "English") {
-        locale = settings.adminLanguage.toLowerCase();
+      console.log("[i18n] Loaded settings from metafield:", settings);
+      if (settings.adminLanguage) {
+        locale = LANGUAGE_MAP[settings.adminLanguage] || "en";
       }
     }
+    console.log("[i18n] Loader resolved locale:", locale);
   } catch (e) {
     // Fall back to English if settings can't be loaded
     console.warn("[i18n] Could not load admin language setting:", e.message);

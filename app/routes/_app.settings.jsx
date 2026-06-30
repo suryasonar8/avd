@@ -1,7 +1,7 @@
 import { useFetcher, useLoaderData } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card } from "../components/Card";
 import { SaveBar } from "@shopify/app-bridge-react";
 
@@ -80,27 +80,56 @@ export const action = async ({ request }) => {
 
 import { useTranslation } from "../context/TranslationContext";
 
+const LANGUAGE_MAP = {
+  English: "en",
+  Deutsch: "de",
+  Français: "fr",
+  Italiano: "it",
+  Español: "es",
+  "हिन्दी (Hindi)": "hi",
+  Hindi: "hi",
+};
+
 export default function SettingsPage() {
-  const { settings: initialSettings } = useLoaderData();
-  const [settings, setSettings] = useState(initialSettings);
+  const { settings: initialSettings = {} } = useLoaderData();
+  const { adminLanguage: initialAdminLanguage, ...initialOtherSettings } =
+    initialSettings;
+
+  const [settings, setSettings] = useState(initialOtherSettings);
+  const [adminLanguage, setAdminLanguage] = useState(() => {
+    const lang = initialAdminLanguage || "en";
+    return LANGUAGE_MAP[lang] || lang;
+  });
   const fetcher = useFetcher();
   const shopify = useAppBridge();
-  const { t } = useTranslation();
+  const { t, changeLocale } = useTranslation();
+  const lastProcessedFetcherData = useRef(null);
 
-  const isDirty = JSON.stringify(settings) !== JSON.stringify(initialSettings);
+  const isDirty =
+    JSON.stringify(settings) !== JSON.stringify(initialOtherSettings);
 
   useEffect(() => {
-    if (fetcher.data?.success) {
+    if (
+      fetcher.data?.success &&
+      fetcher.data !== lastProcessedFetcherData.current
+    ) {
+      lastProcessedFetcherData.current = fetcher.data;
       shopify.toast.show(t("settings.settingsSaved"));
+      setSettings(initialOtherSettings);
     }
-  }, [fetcher.data, shopify, t]);
+  }, [fetcher.data, initialOtherSettings, shopify, t]);
 
   const handleSave = () => {
-    fetcher.submit({ settings: JSON.stringify(settings) }, { method: "POST" });
+    fetcher.submit(
+      { settings: JSON.stringify({ ...settings, adminLanguage }) },
+      { method: "POST" },
+    );
   };
 
   const handleDiscard = () => {
-    setSettings(initialSettings);
+    setSettings(initialOtherSettings);
+    const lang = initialAdminLanguage || "en";
+    setAdminLanguage(LANGUAGE_MAP[lang] || lang);
   };
 
   return (
@@ -134,10 +163,23 @@ export default function SettingsPage() {
         <div style={{ maxWidth: "600px" }}>
           <Card title={t("settings.adminLanguage")}>
             <select
-              value={settings.adminLanguage || "English"}
-              onChange={(e) =>
-                setSettings({ ...settings, adminLanguage: e.target.value })
-              }
+              value={adminLanguage}
+              onChange={(e) => {
+                const newLang = e.target.value;
+                setAdminLanguage(newLang);
+                // Immediately update translations across the app
+                changeLocale(newLang);
+                // Persist the setting to the server
+                fetcher.submit(
+                  {
+                    settings: JSON.stringify({
+                      ...settings,
+                      adminLanguage: newLang,
+                    }),
+                  },
+                  { method: "POST" },
+                );
+              }}
               style={{
                 width: "100%",
                 padding: "8px 12px",
@@ -147,12 +189,12 @@ export default function SettingsPage() {
                 fontSize: "14px",
               }}
             >
-              <option value="English">{t("settings.adminLanguageEnglish")}</option>
-              <option value="Deutsch">{t("settings.adminLanguageDeutsch")}</option>
-              <option value="Français">{t("settings.adminLanguageFrench")}</option>
-              <option value="Italiano">{t("settings.adminLanguageItalian")}</option>
-              <option value="Español">{t("settings.adminLanguageSpanish")}</option>
-              <option value="Hindi">{t("settings.adminLanguageHindi")}</option>
+              <option value="en">{t("settings.adminLanguageEnglish")}</option>
+              <option value="de">{t("settings.adminLanguageDeutsch")}</option>
+              <option value="fr">{t("settings.adminLanguageFrench")}</option>
+              <option value="it">{t("settings.adminLanguageItalian")}</option>
+              <option value="es">{t("settings.adminLanguageSpanish")}</option>
+              <option value="hi">{t("settings.adminLanguageHindi")}</option>
             </select>
             <p
               style={{
@@ -181,9 +223,15 @@ export default function SettingsPage() {
                   fontSize: "14px",
                 }}
               >
-                <option value="Session only">{t("settings.rememberVisitorOptions.sessionOnly")}</option>
-                <option value="Days">{t("settings.rememberVisitorOptions.days")}</option>
-                <option value="Allow visitor to choose">{t("settings.rememberVisitorOptions.allowVisitorToChoose")}</option>
+                <option value="Session only">
+                  {t("settings.rememberVisitorOptions.sessionOnly")}
+                </option>
+                <option value="Days">
+                  {t("settings.rememberVisitorOptions.days")}
+                </option>
+                <option value="Allow visitor to choose">
+                  {t("settings.rememberVisitorOptions.allowVisitorToChoose")}
+                </option>
               </select>
             </div>
 

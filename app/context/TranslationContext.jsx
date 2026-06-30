@@ -1,30 +1,35 @@
-import { createContext, useContext, useCallback } from "react";
-import { t as translate, tArray as translateArray } from "../i18n/i18n";
+import { createContext, useContext, useCallback, useState } from "react";
+import { t as translate, tArray as translateArray, loadTranslations } from "../i18n/i18n";
 
-const TranslationContext = createContext({ translations: {}, locale: "en" });
+const TranslationContext = createContext({
+  translations: {},
+  locale: "en",
+  changeLocale: () => {},
+});
 
-/**
- * Wrap the app with this provider to make translations available everywhere.
- *
- * @param {{ translations: object, locale: string, children: React.ReactNode }} props
- */
-export function TranslationProvider({ translations, locale = "en", children }) {
+export function TranslationProvider({ translations: initialTranslations, locale: initialLocale = "en", children }) {
+  const [translations, setTranslations] = useState(initialTranslations);
+  const [locale, setLocale] = useState(initialLocale);
+
+  const changeLocale = useCallback(async (newLocale) => {
+    try {
+      const newTranslations = await loadTranslations(newLocale);
+      setTranslations(newTranslations);
+      setLocale(newLocale);
+    } catch (e) {
+      console.warn("[i18n] Failed to load locale:", newLocale, e);
+    }
+  }, []);
+
   return (
-    <TranslationContext.Provider value={{ translations, locale }}>
+    <TranslationContext.Provider value={{ translations, locale, changeLocale }}>
       {children}
     </TranslationContext.Provider>
   );
 }
 
-/**
- * Hook that returns a `t` helper for translating keys.
- *
- * Usage:
- *   const { t, tArray, locale } = useTranslation();
- *   <p>{t("dashboard.greeting", { shopName: "Acme" })}</p>
- */
 export function useTranslation() {
-  const { translations, locale } = useContext(TranslationContext);
+  const { translations, locale, changeLocale } = useContext(TranslationContext);
 
   const t = useCallback(
     (key, params) => translate(translations, key, params),
@@ -36,5 +41,5 @@ export function useTranslation() {
     [translations],
   );
 
-  return { t, tArray: tArr, translations, locale };
+  return { t, tArray: tArr, translations, locale, changeLocale };
 }
