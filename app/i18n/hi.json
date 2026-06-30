@@ -1,0 +1,552 @@
+{
+  "common": {
+    "save": "सहेजें",
+    "discard": "रद्द करें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "close": "बंद करें",
+    "clear": "साफ़ करें",
+    "clearAll": "सभी साफ़ करें",
+    "remove": "हटाएं",
+    "enabled": "सक्रिय",
+    "disabled": "निष्क्रिय",
+    "on": "चालू",
+    "off": "बंद",
+    "edit": "संपादित करें",
+    "search": "खोजें",
+    "uploading": "अपलोड हो रहा है...",
+    "addImage": "छवि जोड़ें",
+    "acceptsFormats": ".png, .jpg स्वीकार करता है",
+    "clickToViewPlans": "प्लान देखने के लिए क्लिक करें",
+    "basicPlanOrHigher": "बेसिक प्लान या उच्चतर",
+    "premiumPlan": "प्रीमियम प्लान",
+    "unlimited": "असीमित",
+    "needHelp": "सहायता चाहिए? कृपया देखें",
+    "ourDocumentGuideline": "हमारा दस्तावेज़ मार्गदर्शिका",
+    "savedSuccessfully": "सफलतापूर्वक सहेजा गया",
+    "errorSaving": "सहेजने में त्रुटि: विवरण के लिए टर्मिनल जांचें",
+    "saveOrDiscardWarning": "कृपया पेज छोड़ने से पहले अपने बदलाव सहेजें या रद्द करें",
+    "failedToUpload": "छवि अपलोड करने में विफल। कृपया पुनः प्रयास करें।",
+    "uploadFailed": "अपलोड विफल",
+    "protectedBy": "द्वारा संरक्षित",
+    "avd": "AVD",
+    "guideline": "मार्गदर्शिका",
+    "selected": "चयनित",
+    "completed": "पूर्ण",
+    "showMore": "और दिखाएं",
+    "hide": "छिपाएं",
+    "feature": "सुविधा",
+    "support": "सहायता",
+    "status": "स्थिति"
+  },
+
+  "navigation": {
+    "dashboard": "डैशबोर्ड",
+    "storeVerification": "स्टोर सत्यापन",
+    "checkoutVerification": "चेकआउट सत्यापन",
+    "termsAndConditions": "नियम एवं शर्तें",
+    "translation": "अनुवाद",
+    "pricing": "मूल्य निर्धारण",
+    "settings": "सेटिंग्स"
+  },
+
+  "dashboard": {
+    "greeting": "नमस्ते {{shopName}},",
+    "welcome": "Age Verification Pop-up में आपका स्वागत है 🎉",
+    "enableAppEmbed": "थीम पर ऐप एम्बेड सक्रिय करें",
+    "activeAppEmbed": "ऐप एम्बेड सक्रिय करें",
+    "appStatus": "आयु सत्यापन ऐप की स्थिति",
+    "inactiveAgeVerification": "निष्क्रिय आयु सत्यापन",
+    "activeAgeVerification": "सक्रिय आयु सत्यापन",
+    "setupGuide": "सेटअप गाइड",
+    "customizePopup": "आयु सत्यापन पॉपअप कस्टमाइज़ करें",
+    "customizePopupDescription": "एक कस्टम पॉपअप बनाएं जो आपके स्टोर की ब्रांडिंग और कानूनी आवश्यकताओं से मेल खाता हो।",
+    "customizeNow": "अभी कस्टमाइज़ करें",
+    "testPopup": "पॉपअप का परीक्षण करें",
+    "testPopupDescription": "सत्यापित करें कि आपका आयु सत्यापन पॉपअप सही ढंग से काम कर रहा है।",
+    "testNow": "अभी परीक्षण करें",
+    "overview": "अवलोकन",
+    "totalVerification": "कुल सत्यापन",
+    "verified": "सत्यापित",
+    "unverified": "असत्यापित",
+    "contactSupport": "सहायता से संपर्क करें",
+    "contactSupportDescription": "हम 24/7 सहायता प्रदान करते हैं, ऐप में कोई समस्या होने पर बेझिझक हमसे संपर्क करें।",
+    "chatWithUs": "हमसे चैट करें",
+    "readUserGuideline": "उपयोगकर्ता गाइड पढ़ें",
+    "readUserGuidelineDescription": "सबसे आसान तरीके से नियम सेट करने में आपकी मदद के लिए चरण-दर-चरण निर्देश लेख।",
+    "discoverUseCases": "उपयोग के मामले खोजें",
+    "discoverUseCasesDescription": "आपके स्टोर में आयु सत्यापन में सहायता के लिए विभिन्न नियम उपयोग मामलों पर हमारे सहायक लेख देखें।",
+    "viewUseCases": "उपयोग के मामले देखें",
+    "faq": "अक्सर पूछे जाने वाले प्रश्न",
+    "faq1Question": "क्या इस ऐप का मासिक शुल्क है?",
+    "faq1Answer": "हां, हमारा ऐप आपके चयनित प्लान के आधार पर सदस्यता शुल्क लेता है। अधिक जानकारी के लिए, कृपया हमारा देखें",
+    "faq1LinkText": "मूल्य निर्धारण पेज",
+    "faq2Question": "क्या यह ऐप सभी \"Shopify\" थीम के साथ संगत है?",
+    "faq2Answer": "हां, ऐप सभी 'Shopify' थीम के साथ सहजता से काम करता है।",
+    "faq3Question": "क्या यह ऐप कस्टम थीम के साथ संगत है?",
+    "faq3Answer": "वर्तमान में, कस्टम थीम या तीसरे पक्ष के बाज़ारों ('Shopify' नहीं) से खरीदी गई थीम में कभी-कभी CSS समस्याएं हो सकती हैं। हालांकि, प्रभाव न्यूनतम है। यदि आपको कोई समस्या हो तो कृपया सहायता से संपर्क करें।",
+    "dateLabels": {
+      "today": "आज",
+      "yesterday": "कल",
+      "7days": "7 दिन",
+      "30days": "30 दिन"
+    }
+  },
+
+  "dateRangePicker": {
+    "today": "आज",
+    "yesterday": "कल",
+    "last7Days": "पिछले 7 दिन",
+    "last30Days": "पिछले 30 दिन",
+    "lastMonth": "पिछला महीना",
+    "last60Days": "पिछले 60 दिन",
+    "selectDateRange": "तिथि सीमा चुनें"
+  },
+
+  "storeVerification": {
+    "pageHeading": "स्टोर सत्यापन",
+    "ageVerificationPopup": "आयु सत्यापन पॉप-अप",
+    "ageVerificationPopupDescription": "विभिन्न शर्तों द्वारा ट्रिगर किए गए पॉप-अप से ग्राहकों की आयु सत्यापित करें।",
+    "createPopup": "पॉप-अप बनाएं",
+    "popupIllustration": "पॉप-अप चित्रण",
+    "popupList": "पॉप-अप सूची",
+    "noPopupsMatch": "कोई पॉप-अप खोज या फ़िल्टर मानदंड से मेल नहीं खाता।",
+    "searchByPopupName": "पॉप-अप नाम से खोजें",
+    "searchAndFilters": "खोज और फ़िल्टर",
+    "deleteAllPopups": "सभी पॉप-अप हटाएं",
+    "addFilter": "फ़िल्टर जोड़ें +",
+    "deleteConfirmTitle": "क्या आप सभी चयनित नियमों को हटाना चाहते हैं",
+    "deleteConfirmBody": "यदि आप नियम हटाते हैं, तो आप इसे वापस नहीं ला सकते",
+    "deleteConfirmSingle": "क्या आप वाकई इस पॉप-अप को हटाना चाहते हैं?",
+    "emptyStateTitle": "उफ़! आपके पास अभी तक कोई पॉप-अप नहीं है।",
+    "emptyStateDescription": "ग्राहकों की आयु सत्यापित करना शुरू करने के लिए अभी एक नया पॉप-अप बनाएं और कस्टमाइज़ करें।",
+    "paginationShowing": "{{total}} में से {{start}} से {{end}} दिखा रहा है",
+    "tableHeaders": {
+      "popupName": "पॉप-अप नाम",
+      "target": "लक्ष्य",
+      "triggerCondition": "ट्रिगर शर्त",
+      "lastUpdated": "अंतिम अपडेट",
+      "status": "स्थिति",
+      "action": "कार्रवाई"
+    },
+    "filters": {
+      "perPage": "प्रति पेज",
+      "triggerCondition": "ट्रिगर शर्त",
+      "target": "लक्ष्य",
+      "recordPerPage": "प्रति पेज रिकॉर्ड: {{size}}",
+      "triggerLabel": "ट्रिगर: {{value}}",
+      "targetLabel": "लक्ष्य: {{value}}"
+    },
+    "triggerOptions": {
+      "alwaysShow": "हमेशा दिखाएं",
+      "loggedCustomers": "लॉग इन ग्राहक",
+      "notLoggedCustomers": "लॉग इन नहीं किए गए ग्राहक"
+    },
+    "targetOptions": {
+      "allPages": "सभी पेज",
+      "homePage": "होम पेज",
+      "specificCollections": "विशिष्ट संग्रह",
+      "specificProducts": "विशिष्ट उत्पाद",
+      "customPage": "कस्टम पेज",
+      "specificProductTags": "विशिष्ट उत्पाद टैग"
+    },
+    "relativeTime": {
+      "justNow": "अभी",
+      "minuteAgo": "{{count}} मिनट पहले",
+      "minutesAgo": "{{count}} मिनट पहले",
+      "hourAgo": "{{count}} घंटे पहले",
+      "hoursAgo": "{{count}} घंटे पहले",
+      "dayAgo": "{{count}} दिन पहले",
+      "daysAgo": "{{count}} दिन पहले"
+    },
+    "freePlanBanner": {
+      "title": "निःशुल्क प्लान सीमा",
+      "description": "आपके वर्तमान प्लान में 1 पॉप-अप शामिल है ({{used}}/{{limit}} उपयोग किया)। अधिक पॉप-अप, उन्नत कस्टमाइज़ेशन और बहुत कुछ अनलॉक करने के लिए अपग्रेड करें।",
+      "upgradeButton": "प्लान अपग्रेड करें"
+    }
+  },
+
+  "pricingBanner": {
+    "freePlanLimit": "निःशुल्क प्लान सीमा",
+    "increaseLimit": "सीमा बढ़ाएं"
+  },
+
+  "popupEditor": {
+    "editorHeading": "कॉन्फ़िगरेशन",
+    "editorDescription": "अपनी ब्रांड से मेल खाने के लिए पॉप-अप को कस्टमाइज़ करें।",
+    "heading": {
+      "create": "पॉप-अप बनाएं",
+      "edit": "पॉप-अप संपादित करें"
+    },
+    "tabs": {
+      "info": "जानकारी",
+      "background": "पृष्ठभूमि",
+      "text": "टेक्स्ट",
+      "button": "बटन",
+      "css": "CSS"
+    },
+    "desktopPreview": "डेस्कटॉप पूर्वावलोकन",
+    "mobilePreview": "मोबाइल पूर्वावलोकन",
+    "clickToRemoveBrandMark": "ब्रांड मार्क हटाने के लिए क्लिक करें",
+    "clickToShowBrandMark": "ब्रांड मार्क दिखाने के लिए क्लिक करें",
+    "infoTab": {
+      "popupInfo": "पॉप-अप जानकारी",
+      "status": "स्थिति",
+      "name": "नाम",
+      "nameRequired": "नाम",
+      "enterPopupName": "अपना पॉप-अप नाम दर्ज करें",
+      "nameHelpText": "आंतरिक संदर्भ के लिए। केवल आप इसे देख सकते हैं।",
+      "method": "विधि",
+      "noInput": "कोई इनपुट नहीं",
+      "birthdateEntry": "जन्मतिथि प्रविष्टि",
+      "verifyAge": "आयु सत्यापित करें",
+      "dateOrder": "तिथि क्रम",
+      "dateOrderHelpText": "यह प्रारूप तिथि को मई-01-2024 के रूप में प्रदर्शित करता है।",
+      "condition": "शर्त",
+      "displayPages": "प्रदर्शन पेज",
+      "selectedCollections": "चयनित संग्रह",
+      "selectCollections": "संग्रह चुनें",
+      "noCollectionsSelected": "कोई संग्रह चयनित नहीं",
+      "selectedProducts": "चयनित उत्पाद",
+      "selectProducts": "उत्पाद चुनें",
+      "noProductsSelected": "कोई उत्पाद चयनित नहीं",
+      "addCustomUrl": "कस्टम URL जोड़ें",
+      "enterUrl": "URL दर्ज करें (उदा. https://xyz.myshopify.com/products/snowboard)",
+      "addUrl": "URL जोड़ें",
+      "triggerCondition": "ट्रिगर शर्त",
+      "triggerAlways": "हमेशा दिखाएं",
+      "triggerLogged": "लॉग इन ग्राहक"
+    },
+    "backgroundTab": {
+      "popupBackground": "पॉप-अप पृष्ठभूमि",
+      "type": "प्रकार",
+      "solidColorBackground": "ठोस रंग पृष्ठभूमि",
+      "imageBackground": "छवि पृष्ठभूमि",
+      "pageBackgroundImage": "पेज पृष्ठभूमि छवि",
+      "backgroundImage": "पृष्ठभूमि छवि",
+      "pageBackgroundColor": "पेज पृष्ठभूमि रंग",
+      "backgroundColor": "पृष्ठभूमि रंग",
+      "logoOptional": "लोगो (वैकल्पिक)",
+      "logoImage": "लोगो छवि",
+      "borderSetting": "बॉर्डर सेटिंग",
+      "borderColor": "बॉर्डर रंग",
+      "borderRadius": "बॉर्डर त्रिज्या",
+      "borderWidth": "बॉर्डर चौड़ाई"
+    },
+    "textTab": {
+      "popupHeading": "पॉप-अप शीर्षक",
+      "popupSubHeading": "पॉप-अप उप-शीर्षक"
+    },
+    "buttonTab": {
+      "submitButton": "सबमिट बटन",
+      "submitButtonAction": "सबमिट बटन क्रिया",
+      "errorMessage": "त्रुटि संदेश",
+      "buttonStyle": "बटन शैली",
+      "background": "पृष्ठभूमि",
+      "cancelButton": "रद्द करें बटन",
+      "cancelButtonAction": "रद्द करें बटन क्रिया",
+      "ifVisitorClicksCancel": "यदि कोई विज़िटर रद्द करें पर क्लिक करता है",
+      "redirectUrl": "रीडायरेक्ट URL",
+      "showErrorMessage": "त्रुटि संदेश दिखाएं",
+      "cancelButtonStyle": "रद्द करें बटन शैली"
+    },
+    "cssTab": {
+      "cssTitle": "CSS",
+      "cssPlaceholder": "/* अपना कस्टम CSS यहां जोड़ें */"
+    }
+  },
+
+  "displayPages": {
+    "allPages": "सभी पेज",
+    "homePage": "होम पेज",
+    "specificCollections": "विशिष्ट संग्रह",
+    "specificProducts": "विशिष्ट उत्पाद",
+    "custom": "कस्टम"
+  },
+
+  "checkoutVerification": {
+    "pageTitle": "चेकआउट सत्यापन",
+    "pageDescription": "चेकआउट पेज के लिए आयु सत्यापन कॉन्फ़िगर करें।",
+    "bannerPromo": "चेकआउट पर आयु प्रतिबंध सक्षम करें – आज ही अपना प्लान अपग्रेड करें!",
+    "verifyYourAge": "अपनी आयु सत्यापित करें",
+    "youAreOver18": "आप 18+ से अधिक हैं",
+    "youMustBe18": "आपकी आयु कम से कम 18+ होनी चाहिए",
+    "infoBanner": "जानकारी बैनर",
+    "infoBannerDescription": "ग्राहकों को आयु-प्रतिबंधित उत्पादों की याद दिलाने के लिए एक चेकआउट बैनर बनाएं।",
+    "configuration": "कॉन्फ़िगरेशन",
+    "tabCondition": "शर्त",
+    "tabBanner": "बैनर",
+    "bannerSettingsSaved": "बैनर सेटिंग्स सहेजी गईं",
+    "bannerStatus": "बैनर स्थिति",
+    "target": "लक्ष्य",
+    "textCustomization": "टेक्स्ट कस्टमाइज़ेशन",
+    "heading": "शीर्षक",
+    "enterBannerHeading": "बैनर शीर्षक टेक्स्ट दर्ज करें",
+    "conditionAlways": "हमेशा",
+    "conditionAlwaysDescription": "बिना किसी शर्त के हमेशा बैनर दिखाएं।",
+    "specificCollection": "विशिष्ट संग्रह",
+    "specificCollectionDescription": "चयनित संग्रह के लिए बैनर दिखाएं।",
+    "specificProduct": "विशिष्ट उत्पाद",
+    "specificProductDescription": "चयनित उत्पाद के लिए बैनर दिखाएं।",
+    "changeCollections": "संग्रह बदलें",
+    "selectCollections": "संग्रह चुनें",
+    "changeProducts": "उत्पाद बदलें",
+    "selectProducts": "उत्पाद चुनें",
+    "preview": {
+      "myStore": "मेरी दुकान 3",
+      "contact": "संपर्क",
+      "emailPlaceholder": "ईमेल या मोबाइल फ़ोन नंबर",
+      "emailOffers": "मुझे समाचार और ऑफ़र ईमेल करें",
+      "delivery": "डिलीवरी",
+      "vietnam": "वियतनाम",
+      "firstName": "पहला नाम (वैकल्पिक)",
+      "lastName": "अंतिम नाम",
+      "productDemo": "उत्पाद डेमो",
+      "variantDemo": "वेरिएंट डेमो",
+      "subtotal": "उप-योग",
+      "shipping": "शिपिंग",
+      "free": "निःशुल्क",
+      "estimatedTaxes": "अनुमानित कर",
+      "total": "कुल",
+      "usd": "USD"
+    },
+    "defaults": {
+      "heading": "इन उत्पादों को खरीदने के लिए आपकी आयु कम से कम 18 वर्ष होनी चाहिए",
+      "bannerHeading": "आयु प्रतिबंध लागू है"
+    }
+  },
+
+  "termsAndConditions": {
+    "pageTitle": "नियम एवं शर्तें",
+    "tabBanner": "चेकबॉक्स",
+    "bannerPromo": "हमारे प्रीमियम प्लान के साथ नियम एवं शर्तें और अन्य उन्नत सुविधाओं तक पहुंचें!",
+    "productAndCartPage": "उत्पाद पेज और कार्ट पेज",
+    "productAndCartDescription": "ग्राहकों को कार्ट में उत्पाद जोड़ने से पहले शर्तों से सहमत होने के लिए एक चेकबॉक्स जोड़ें।",
+    "setupTitle": "नियम एवं शर्तें",
+    "setupDescription": "अपने स्टोर के लिए नियम एवं शर्तें सेट करें।",
+    "productPage": "उत्पाद पेज",
+    "cartPage": "कार्ट पेज",
+    "message": "संदेश",
+    "messageText": "टेक्स्ट",
+    "keyword": "कीवर्ड",
+    "keywordLink": "कीवर्ड का लिंक (वैकल्पिक)",
+    "keywordLinkSubtitle": "यदि URL कीवर्ड से मेल खाता है तो उसे हाइपरलिंक किया जाएगा।",
+    "size": "आकार",
+    "color": "रंग",
+    "errorMessage": "त्रुटि संदेश (वैकल्पिक)",
+    "enterErrorMessage": "त्रुटि संदेश दर्ज करें",
+    "needMoreCustomization": "अधिक कस्टमाइज़ेशन विकल्प चाहिए?",
+    "contactUs": "हमसे संपर्क करें।",
+    "clickToRemoveBrandmark": "ब्रांडमार्क हटाने के लिए क्लिक करें",
+    "protectedBy": "द्वारा संरक्षित",
+    "avdTrademark": "AVD™",
+    "desktop": "डेस्कटॉप",
+    "mobile": "मोबाइल",
+    "defaults": {
+      "checkboxText": "मैं नियम एवं शर्तों को समझता/समझती हूं और उनसे सहमत हूं।",
+      "keyword": "नियम एवं शर्तें"
+    }
+  },
+
+  "translation": {
+    "pageTitle": "अनुवाद",
+    "pageDescription": "अपने विजेट्स का कई भाषाओं में अनुवाद करें",
+    "refreshData": "डेटा रीफ्रेश करें",
+    "upgradePromo": "अधिक अनुवाद विकल्प और कई भाषाओं के समर्थन को अनलॉक करने के लिए अपग्रेड करें।",
+    "defaultLanguage": "डिफ़ॉल्ट भाषा: {{language}}",
+    "defaultLanguageDesc": "सभी विजेट्स डिफ़ॉल्ट रूप से इस भाषा से पहचाने जाते हैं।",
+    "changeDefault": "डिफ़ॉल्ट बदलें",
+    "translationList": "अनुवाद सूची",
+    "tableHeaders": {
+      "language": "भाषा",
+      "popups": "पॉप-अप",
+      "action": "कार्रवाई"
+    },
+    "emptyTitle": "आयु सत्यापन पॉपअप के लिए अनुवाद प्रबंधित करें।",
+    "emptyDescription": "आयु सत्यापन संस्करण का कई भाषाओं में अनुवाद करें।",
+    "createPopup": "पॉप-अप बनाएं",
+    "selectLanguage": "भाषा चुनें",
+    "select": "चुनें",
+    "languageLimitReached": "भाषा सीमा पूरी हो गई। कृपया अपग्रेड करें।",
+    "addLanguage": "भाषा जोड़ें",
+    "selectPopup": "पॉप-अप चुनें",
+    "searchPopups": "पॉप-अप खोजें...",
+    "noPopupsFound": "कोई पॉप-अप नहीं मिला",
+    "popupNumber": "पॉपअप #{{id}}",
+    "infoSectionTitle": "जानकारी",
+    "infoSectionDescription": "वह पॉप-अप चुनें जिसके लिए अनुवाद प्रदर्शित करना है।",
+    "textSectionTitle": "टेक्स्ट",
+    "textSectionDescription": "अनुवाद फ़ॉर्म में इनपुट फ़ील्ड टेक्स्ट को कस्टमाइज़ करें।",
+    "buttonSectionTitle": "बटन",
+    "buttonSectionDescription": "इनपुट फ़ील्ड और बटन के लेबल कस्टमाइज़ करें।",
+    "labelSectionTitle": "लेबल",
+    "labelSectionDescription": "अपनी प्राथमिकताओं या भाषा आवश्यकताओं के अनुसार महीनों के लेबल कस्टमाइज़ करें।",
+    "toast": {
+      "saved": "अनुवाद सफलतापूर्वक सहेजे गए",
+      "error": "अनुवाद सहेजने में त्रुटि"
+    },
+    "pleaseSelectPopup": "कृपया पहले एक पॉप-अप चुनें",
+    "upgradeNow": "अभी अपग्रेड करें",
+    "published": "प्रकाशित",
+    "unpublished": "अप्रकाशित",
+    "popupHeadingLabel": "शीर्षक टेक्स्ट",
+    "popupSubheadingLabel": "उप-शीर्षक टेक्स्ट",
+    "submitButtonLabel": "सबमिट बटन लेबल",
+    "cancelButtonLabel": "रद्द करें बटन लेबल",
+    "submitButtonAction": "सबमिट बटन क्रिया",
+    "cancelButtonAction": "रद्द करें बटन क्रिया",
+    "monthLabel": "महीने का लेबल",
+    "addMonth": "जोड़ें"
+  },
+
+  "pricing": {
+    "pageTitle": "मूल्य निर्धारण",
+    "plans": "प्लान",
+    "planTypes": {
+      "free": "निःशुल्क",
+      "basic": "बेसिक",
+      "premium": "प्रीमियम"
+    },
+    "billedMonthly": "मासिक बिलिंग",
+    "billedYearly": "वार्षिक बिलिंग",
+    "save25": "25% बचाएं",
+    "perMonth": "/महीना",
+    "percentOff": "25% छूट",
+    "billedOnceAYear": "{{amount}} साल में एक बार बिल किया जाता है",
+    "startFreeTrial": "3 दिन का निःशुल्क ट्रायल शुरू करें",
+    "bestSuitedForTesting": "परीक्षण उद्देश्यों और लाभों को अधिकतम करने के लिए सबसे उपयुक्त।",
+    "yourCurrentPlan": "आपका वर्तमान प्लान",
+    "comparePlanFeatures": "प्लान सुविधाओं की तुलना करें",
+    "compareDescription": "AVP Age Verification की सुविधाओं का व्यापक विवरण।",
+    "mostPopular": "सबसे लोकप्रिय",
+    "pricingFaqsTitle": "मूल्य निर्धारण FAQ",
+    "footerText": "Age Verification ऐप 8Apps द्वारा ❤️ से बनाया गया है",
+    "basicFeatures": [
+      "आयु सत्यापन पॉप-अप",
+      "1 देश और भाषा-विशिष्ट पॉप-अप",
+      "जन्मतिथि इनपुट द्वारा सत्यापन",
+      "पूर्ण रूप से कस्टमाइज़ करने योग्य पॉप-अप",
+      "विशिष्ट पेज, संग्रह, उत्पाद और टैग प्रतिबंधित करें",
+      "सत्यापित और असत्यापित रिपोर्ट",
+      "आयु सत्यापन सेटिंग्स",
+      "एकाधिक टेम्पलेट",
+      "संदेश के साथ नाबालिग उपयोगकर्ताओं को प्रतिबंधित करें"
+    ],
+    "premiumFeatures": [
+      "बेसिक में सब कुछ, साथ ही:",
+      "चेकबॉक्स से सत्यापन",
+      "असीमित देश और भाषा पॉप-अप",
+      "जन्मतिथि इनपुट कस्टमाइज़ेशन",
+      "प्रतिबंध संदेश इनपुट कस्टमाइज़ेशन",
+      "बटन बॉर्डर कस्टमाइज़ेशन",
+      "20+ पॉपअप एनिमेशन",
+      "पॉपअप पृष्ठभूमि बॉर्डर कस्टमाइज़ेशन",
+      "कस्टम JavaScript और CSS जोड़ने का उन्नत विकल्प",
+      "नियम एवं शर्तें: उत्पाद और कार्ट पेज",
+      "नियम एवं शर्तें: विशिष्ट पेज, संग्रह, उत्पादों और टैग पर प्रतिबंध",
+      "चेकआउट पेज आयु प्रतिबंध बैनर",
+      "उत्पाद और कार्ट पेज पर जन्मतिथि सत्यापन",
+      "पूर्ण रूप से कस्टमाइज़ करने योग्य विकल्प"
+    ],
+    "compareFeatures": {
+      "ageVerificationPopup": "आयु सत्यापन पॉप-अप",
+      "countryLanguagePopups": "देश और भाषा पॉप-अप",
+      "verificationByBirthday": "जन्मतिथि इनपुट द्वारा सत्यापन",
+      "fullyCustomizablePopup": "पूर्ण रूप से कस्टमाइज़ करने योग्य पॉप-अप",
+      "restrictByPages": "पेज/संग्रह/उत्पादों द्वारा प्रतिबंधित करें",
+      "verifiedUnverifiedReports": "सत्यापित और असत्यापित रिपोर्ट",
+      "ageValidationSettings": "आयु सत्यापन सेटिंग्स",
+      "multipleTemplates": "एकाधिक टेम्पलेट",
+      "restrictUnderage": "संदेश के साथ नाबालिग उपयोगकर्ताओं को प्रतिबंधित करें",
+      "verifyByCheckbox": "चेकबॉक्स से सत्यापन",
+      "birthdayInputCustomization": "जन्मतिथि इनपुट कस्टमाइज़ेशन",
+      "buttonBorderCustomization": "बटन बॉर्डर कस्टमाइज़ेशन",
+      "popupAnimations": "20+ पॉपअप एनिमेशन",
+      "customJsCss": "कस्टम JavaScript और CSS",
+      "termsAndConditions": "नियम एवं शर्तें",
+      "checkoutBanner": "चेकआउट पेज आयु प्रतिबंध बैनर",
+      "birthdateVerification": "उत्पाद और कार्ट पेज पर जन्मतिथि सत्यापन"
+    },
+    "faqs": {
+      "q1": "1. क्या आपका ऐप निःशुल्क प्लान प्रदान करता है?",
+      "a1": "हां! Age Verification ऐप एक निःशुल्क प्लान प्रदान करता है जिसमें एक बुनियादी आयु सत्यापन पॉप-अप शामिल है। यह परीक्षण उद्देश्यों और अपग्रेड करने से पहले ऐप की मुख्य सुविधाओं से परिचित होने के लिए एकदम सही है।",
+      "q2": "2. ऐप को अनइंस्टॉल किए बिना मैं शुल्क कैसे रोक सकता हूं?",
+      "a2": "आप किसी भी समय प्लान पेज से हमारे निःशुल्क प्लान पर डाउनग्रेड कर सकते हैं। इससे आपके स्टोर में बुनियादी सुविधाओं के साथ ऐप इंस्टॉल रहने के दौरान आवर्ती शुल्क बंद हो जाएगा।",
+      "q3": "3. क्या मैं उच्च भुगतान प्लान से निम्न प्लान पर डाउनग्रेड कर सकता हूं?",
+      "a3": "बिल्कुल। आप किसी भी समय प्लान के बीच स्विच कर सकते हैं। डाउनग्रेड करने पर, आपके बिलिंग चक्र का अनुपयोग हिस्सा Shopify द्वारा क्रेडिट किया जा सकता है।",
+      "q4": "4. क्या ऐप अनइंस्टॉल करने पर मेरी सेटिंग्स सुरक्षित रहेंगी?",
+      "a4": "यदि आप ऐप अनइंस्टॉल करते हैं, तो आपकी सेटिंग्स संरक्षित नहीं रहेंगी। यदि आप भविष्य में वापस आने की योजना बना रहे हैं तो हम अनइंस्टॉल करने के बजाय निःशुल्क प्लान पर डाउनग्रेड करने की सलाह देते हैं।"
+    }
+  },
+
+  "settings": {
+    "pageTitle": "सेटिंग्स",
+    "general": "सामान्य",
+    "generalDescription": "एडमिन भाषा चुनें और विज़िटर सत्यापन अवधि सेट करें।",
+    "adminLanguage": "एडमिन भाषा",
+    "adminLanguageEnglish": "English",
+    "adminLanguageDeutsch": "Deutsch",
+    "adminLanguageFrench": "Français",
+    "adminLanguageItalian": "Italiano",
+    "adminLanguageSpanish": "Español",
+    "adminLanguageHindi": "हिन्दी (Hindi)",
+    "adminLanguageHelpText": "चयनित भाषाओं का तुरंत अनुवाद किया जाएगा।",
+    "rememberVisitor": "विज़िटर को याद रखें",
+    "rememberVisitorOptions": {
+      "sessionOnly": "केवल सत्र",
+      "days": "दिन",
+      "allowVisitorToChoose": "विज़िटर को चुनने दें"
+    },
+    "enterNumberOfDays": "दिनों की संख्या दर्ज करें",
+    "daySuffix": "दिन",
+    "settingsSaved": "सेटिंग्स सहेजी गईं"
+  },
+
+  "months": {
+    "january": "जनवरी",
+    "february": "फ़रवरी",
+    "march": "मार्च",
+    "april": "अप्रैल",
+    "may": "मई",
+    "june": "जून",
+    "july": "जुलाई",
+    "august": "अगस्त",
+    "september": "सितंबर",
+    "october": "अक्टूबर",
+    "november": "नवंबर",
+    "december": "दिसंबर"
+  },
+
+  "richTextEditor": {
+    "clearFormatting": "फ़ॉर्मेटिंग साफ़ करें"
+  },
+
+  "defaults": {
+    "storeConfig": {
+      "name": "मेरा पॉप-अप",
+      "status": "सक्रिय",
+      "method": "कोई इनपुट नहीं",
+      "trigger": "हमेशा दिखाएं",
+      "bgType": "ठोस रंग पृष्ठभूमि",
+      "heading": "दुकान में आपका स्वागत है",
+      "subheading": "इस साइट पर जाने के लिए आपकी आयु कम से कम 18 वर्ष होनी चाहिए",
+      "submitText": "ठीक है",
+      "cancelText": "रद्द करें",
+      "cancelAction": "redirect",
+      "errorMsg": "त्रुटि संदेश दर्ज करें",
+      "cancelErrorMsg": "त्रुटि संदेश दर्ज करें"
+    },
+    "checkoutConfig": {
+      "heading": "इन उत्पादों को खरीदने के लिए आपकी आयु कम से कम 18 वर्ष होनी चाहिए",
+      "bannerHeading": "आयु प्रतिबंध लागू है"
+    },
+    "termsConfig": {
+      "checkboxText": "मैं नियम एवं शर्तों को समझता/समझती हूं और उनसे सहमत हूं।",
+      "keyword": "नियम एवं शर्तें"
+    }
+  },
+
+  "modal": {
+    "close": "बंद करें"
+  }
+}

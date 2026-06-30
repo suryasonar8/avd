@@ -1,0 +1,552 @@
+{
+  "common": {
+    "save": "Salva",
+    "discard": "Annulla modifiche",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "close": "Chiudi",
+    "clear": "Cancella",
+    "clearAll": "Cancella tutto",
+    "remove": "Rimuovi",
+    "enabled": "Attivato",
+    "disabled": "Disattivato",
+    "on": "Attivo",
+    "off": "Spento",
+    "edit": "Modifica",
+    "search": "Cerca",
+    "uploading": "Caricamento in corso...",
+    "addImage": "Aggiungi immagine",
+    "acceptsFormats": "Accetta .png, .jpg",
+    "clickToViewPlans": "Clicca per visualizzare i piani",
+    "basicPlanOrHigher": "Piano Basic o superiore",
+    "premiumPlan": "Piano Premium",
+    "unlimited": "Illimitato",
+    "needHelp": "Hai bisogno di aiuto? Consulta",
+    "ourDocumentGuideline": "la nostra guida documentale",
+    "savedSuccessfully": "Salvato con successo",
+    "errorSaving": "Errore durante il salvataggio: controlla il terminale per i dettagli",
+    "saveOrDiscardWarning": "Per favore salva o annulla le modifiche prima di uscire",
+    "failedToUpload": "Caricamento immagine non riuscito. Riprova.",
+    "uploadFailed": "Caricamento non riuscito",
+    "protectedBy": "Protetto da",
+    "avd": "AVD",
+    "guideline": "Linea guida",
+    "selected": "selezionato/i",
+    "completed": "completato/i",
+    "showMore": "Mostra di più",
+    "hide": "Nascondi",
+    "feature": "Funzionalità",
+    "support": "Assistenza",
+    "status": "Stato"
+  },
+
+  "navigation": {
+    "dashboard": "Dashboard",
+    "storeVerification": "Verifica del negozio",
+    "checkoutVerification": "Verifica al pagamento",
+    "termsAndConditions": "Termini e condizioni",
+    "translation": "Traduzione",
+    "pricing": "Prezzi",
+    "settings": "Impostazioni"
+  },
+
+  "dashboard": {
+    "greeting": "Ciao {{shopName}},",
+    "welcome": "Benvenuto in Age Verification Pop-up 🎉",
+    "enableAppEmbed": "Attiva l'incorporamento dell'app nel tema",
+    "activeAppEmbed": "Incorporamento app attivo",
+    "appStatus": "Stato dell'app di verifica dell'età",
+    "inactiveAgeVerification": "Verifica dell'età inattiva",
+    "activeAgeVerification": "Verifica dell'età attiva",
+    "setupGuide": "Guida alla configurazione",
+    "customizePopup": "Personalizza il pop-up di verifica dell'età",
+    "customizePopupDescription": "Crea un pop-up personalizzato che corrisponda al marchio del tuo negozio e alle esigenze legali.",
+    "customizeNow": "Personalizza ora",
+    "testPopup": "Testa il pop-up",
+    "testPopupDescription": "Verifica che il pop-up di verifica dell'età funzioni correttamente.",
+    "testNow": "Testa ora",
+    "overview": "Panoramica",
+    "totalVerification": "Verifiche totali",
+    "verified": "Verificato",
+    "unverified": "Non verificato",
+    "contactSupport": "Contatta l'assistenza",
+    "contactSupportDescription": "Offriamo assistenza 24/7, non esitare a contattarci in caso di problemi con l'app.",
+    "chatWithUs": "Chatta con noi",
+    "readUserGuideline": "Leggi la guida utente",
+    "readUserGuidelineDescription": "Articoli con istruzioni passo dopo passo per guidarti nella configurazione delle regole nel modo più semplice.",
+    "discoverUseCases": "Scopri i casi d'uso",
+    "discoverUseCasesDescription": "Esplora i nostri articoli utili su vari casi d'uso delle regole per aiutarti a verificare l'età nel tuo negozio.",
+    "viewUseCases": "Visualizza i casi d'uso",
+    "faq": "Domande frequenti",
+    "faq1Question": "Questa app ha un costo mensile?",
+    "faq1Answer": "Sì, la nostra app prevede una tariffa di abbonamento in base al piano selezionato. Per ulteriori dettagli, consulta la nostra",
+    "faq1LinkText": "pagina dei prezzi",
+    "faq2Question": "Questa app è compatibile con tutti i temi \"Shopify\"?",
+    "faq2Answer": "Sì, l'app funziona perfettamente con tutti i temi 'Shopify'.",
+    "faq3Question": "Questa app è compatibile con temi personalizzati?",
+    "faq3Answer": "Attualmente, i temi personalizzati o quelli acquistati da mercati di terze parti (non 'Shopify') potrebbero presentare occasionali problemi CSS. Tuttavia, l'impatto è minimo. Contatta l'assistenza in caso di problemi.",
+    "dateLabels": {
+      "today": "oggi",
+      "yesterday": "ieri",
+      "7days": "7 giorni",
+      "30days": "30 giorni"
+    }
+  },
+
+  "dateRangePicker": {
+    "today": "Oggi",
+    "yesterday": "Ieri",
+    "last7Days": "Ultimi 7 giorni",
+    "last30Days": "Ultimi 30 giorni",
+    "lastMonth": "Mese scorso",
+    "last60Days": "Ultimi 60 giorni",
+    "selectDateRange": "Seleziona intervallo di date"
+  },
+
+  "storeVerification": {
+    "pageHeading": "Verifica del negozio",
+    "ageVerificationPopup": "Pop-up di verifica dell'età",
+    "ageVerificationPopupDescription": "Verifica l'età dei clienti con pop-up attivati da varie condizioni.",
+    "createPopup": "Crea pop-up",
+    "popupIllustration": "Illustrazione del pop-up",
+    "popupList": "Elenco pop-up",
+    "noPopupsMatch": "Nessun pop-up corrisponde ai criteri di ricerca o filtro.",
+    "searchByPopupName": "Cerca per nome del pop-up",
+    "searchAndFilters": "Ricerca e filtri",
+    "deleteAllPopups": "Elimina tutti i pop-up",
+    "addFilter": "Aggiungi filtro +",
+    "deleteConfirmTitle": "Vuoi eliminare tutte le regole selezionate",
+    "deleteConfirmBody": "Se elimini la regola, non potrai ripristinarla",
+    "deleteConfirmSingle": "Sei sicuro di voler eliminare questo pop-up?",
+    "emptyStateTitle": "Ops! Non hai ancora nessun pop-up.",
+    "emptyStateDescription": "Crea e personalizza un nuovo pop-up ora per iniziare a verificare l'età dei clienti.",
+    "paginationShowing": "Visualizzazione da {{start}} a {{end}} di {{total}} elemento/i",
+    "tableHeaders": {
+      "popupName": "Nome del pop-up",
+      "target": "Destinazione",
+      "triggerCondition": "Condizione di attivazione",
+      "lastUpdated": "Ultimo aggiornamento",
+      "status": "Stato",
+      "action": "Azione"
+    },
+    "filters": {
+      "perPage": "Per pagina",
+      "triggerCondition": "Condizione di attivazione",
+      "target": "Destinazione",
+      "recordPerPage": "Record per pagina: {{size}}",
+      "triggerLabel": "Attivazione: {{value}}",
+      "targetLabel": "Destinazione: {{value}}"
+    },
+    "triggerOptions": {
+      "alwaysShow": "Mostra sempre",
+      "loggedCustomers": "Clienti connessi",
+      "notLoggedCustomers": "Clienti non connessi"
+    },
+    "targetOptions": {
+      "allPages": "Tutte le pagine",
+      "homePage": "Home page",
+      "specificCollections": "Collezioni specifiche",
+      "specificProducts": "Prodotti specifici",
+      "customPage": "Pagina personalizzata",
+      "specificProductTags": "Tag prodotto specifici"
+    },
+    "relativeTime": {
+      "justNow": "Proprio ora",
+      "minuteAgo": "{{count}} minuto fa",
+      "minutesAgo": "{{count}} minuti fa",
+      "hourAgo": "{{count}} ora fa",
+      "hoursAgo": "{{count}} ore fa",
+      "dayAgo": "{{count}} giorno fa",
+      "daysAgo": "{{count}} giorni fa"
+    },
+    "freePlanBanner": {
+      "title": "Limite del piano gratuito",
+      "description": "Il tuo piano attuale include 1 pop-up ({{used}}/{{limit}} utilizzato/i). Aggiorna per sbloccare più pop-up, personalizzazioni avanzate e altro.",
+      "upgradeButton": "Aggiorna piano"
+    }
+  },
+
+  "pricingBanner": {
+    "freePlanLimit": "Limite del piano gratuito",
+    "increaseLimit": "Aumenta il limite"
+  },
+
+  "popupEditor": {
+    "editorHeading": "Configurazione",
+    "editorDescription": "Personalizza il pop-up per abbinarlo al tuo marchio.",
+    "heading": {
+      "create": "Crea pop-up",
+      "edit": "Modifica pop-up"
+    },
+    "tabs": {
+      "info": "Info",
+      "background": "Sfondo",
+      "text": "Testo",
+      "button": "Pulsante",
+      "css": "CSS"
+    },
+    "desktopPreview": "Anteprima desktop",
+    "mobilePreview": "Anteprima mobile",
+    "clickToRemoveBrandMark": "Clicca per rimuovere il marchio",
+    "clickToShowBrandMark": "Clicca per mostrare il marchio",
+    "infoTab": {
+      "popupInfo": "Info pop-up",
+      "status": "Stato",
+      "name": "Nome",
+      "nameRequired": "Nome",
+      "enterPopupName": "Inserisci il nome del pop-up",
+      "nameHelpText": "Per riferimento interno. Solo tu puoi vederlo.",
+      "method": "Metodo",
+      "noInput": "Nessun input",
+      "birthdateEntry": "Inserimento data di nascita",
+      "verifyAge": "Verifica età",
+      "dateOrder": "Ordine della data",
+      "dateOrderHelpText": "Questo formato visualizza la data come Mag-01-2024.",
+      "condition": "Condizione",
+      "displayPages": "Pagina/e di visualizzazione",
+      "selectedCollections": "Collezioni selezionate",
+      "selectCollections": "Seleziona collezioni",
+      "noCollectionsSelected": "Nessuna collezione selezionata",
+      "selectedProducts": "Prodotti selezionati",
+      "selectProducts": "Seleziona prodotti",
+      "noProductsSelected": "Nessun prodotto selezionato",
+      "addCustomUrl": "Aggiungi URL personalizzato",
+      "enterUrl": "Inserisci URL (es. https://xyz.myshopify.com/products/snowboard)",
+      "addUrl": "Aggiungi URL",
+      "triggerCondition": "Condizione di attivazione",
+      "triggerAlways": "Mostra sempre",
+      "triggerLogged": "Clienti connessi"
+    },
+    "backgroundTab": {
+      "popupBackground": "Sfondo del pop-up",
+      "type": "Tipo",
+      "solidColorBackground": "Sfondo a colore solido",
+      "imageBackground": "Sfondo con immagine",
+      "pageBackgroundImage": "Immagine di sfondo della pagina",
+      "backgroundImage": "Immagine di sfondo",
+      "pageBackgroundColor": "Colore di sfondo della pagina",
+      "backgroundColor": "Colore di sfondo",
+      "logoOptional": "Logo (Opzionale)",
+      "logoImage": "Immagine del logo",
+      "borderSetting": "Impostazioni bordo",
+      "borderColor": "Colore del bordo",
+      "borderRadius": "Raggio del bordo",
+      "borderWidth": "Larghezza del bordo"
+    },
+    "textTab": {
+      "popupHeading": "Titolo del pop-up",
+      "popupSubHeading": "Sottotitolo del pop-up"
+    },
+    "buttonTab": {
+      "submitButton": "Pulsante di invio",
+      "submitButtonAction": "Azione del pulsante di invio",
+      "errorMessage": "Messaggio di errore",
+      "buttonStyle": "Stile del pulsante",
+      "background": "Sfondo",
+      "cancelButton": "Pulsante Annulla",
+      "cancelButtonAction": "Azione del pulsante Annulla",
+      "ifVisitorClicksCancel": "Se un visitatore clicca su Annulla",
+      "redirectUrl": "URL di reindirizzamento",
+      "showErrorMessage": "Mostra messaggio di errore",
+      "cancelButtonStyle": "Stile del pulsante Annulla"
+    },
+    "cssTab": {
+      "cssTitle": "CSS",
+      "cssPlaceholder": "/* Aggiungi il tuo CSS personalizzato qui */"
+    }
+  },
+
+  "displayPages": {
+    "allPages": "Tutte le pagine",
+    "homePage": "Home page",
+    "specificCollections": "Collezioni specifiche",
+    "specificProducts": "Prodotti specifici",
+    "custom": "Personalizzato"
+  },
+
+  "checkoutVerification": {
+    "pageTitle": "Verifica al pagamento",
+    "pageDescription": "Configura la verifica dell'età per la pagina di pagamento.",
+    "bannerPromo": "Attiva la restrizione dell'età al pagamento – Aggiorna il tuo piano oggi!",
+    "verifyYourAge": "Verifica la tua età",
+    "youAreOver18": "Hai più di 18 anni",
+    "youMustBe18": "Devi avere almeno 18 anni",
+    "infoBanner": "Banner informativo",
+    "infoBannerDescription": "Crea un banner al pagamento per ricordare ai clienti i prodotti con restrizione d'età.",
+    "configuration": "Configurazione",
+    "tabCondition": "Condizione",
+    "tabBanner": "Banner",
+    "bannerSettingsSaved": "Impostazioni banner salvate",
+    "bannerStatus": "Stato del banner",
+    "target": "Destinazione",
+    "textCustomization": "Personalizzazione del testo",
+    "heading": "Titolo",
+    "enterBannerHeading": "Inserisci il testo del titolo del banner",
+    "conditionAlways": "Sempre",
+    "conditionAlwaysDescription": "Mostra sempre il banner senza condizioni.",
+    "specificCollection": "Collezione specifica",
+    "specificCollectionDescription": "Mostra il banner per la collezione selezionata.",
+    "specificProduct": "Prodotto specifico",
+    "specificProductDescription": "Mostra il banner per il prodotto selezionato.",
+    "changeCollections": "Cambia collezioni",
+    "selectCollections": "Seleziona collezioni",
+    "changeProducts": "Cambia prodotti",
+    "selectProducts": "Seleziona prodotti",
+    "preview": {
+      "myStore": "Il Mio Negozio 3",
+      "contact": "Contatto",
+      "emailPlaceholder": "Email o numero di cellulare",
+      "emailOffers": "Inviami notizie e offerte via email",
+      "delivery": "Consegna",
+      "vietnam": "Vietnam",
+      "firstName": "Nome (opzionale)",
+      "lastName": "Cognome",
+      "productDemo": "Demo prodotto",
+      "variantDemo": "Demo variante",
+      "subtotal": "Subtotale",
+      "shipping": "Spedizione",
+      "free": "GRATUITO",
+      "estimatedTaxes": "Tasse stimate",
+      "total": "Totale",
+      "usd": "USD"
+    },
+    "defaults": {
+      "heading": "Devi avere almeno 18 anni per acquistare questi prodotti",
+      "bannerHeading": "Si applicano restrizioni d'età"
+    }
+  },
+
+  "termsAndConditions": {
+    "pageTitle": "Termini e condizioni",
+    "tabBanner": "Casella di controllo",
+    "bannerPromo": "Accedi ai Termini e condizioni e ad altre funzionalità avanzate con il nostro piano Premium!",
+    "productAndCartPage": "Pagina prodotto e pagina carrello",
+    "productAndCartDescription": "Aggiungi una casella di controllo per far accettare ai clienti i termini prima di aggiungere il prodotto al carrello.",
+    "setupTitle": "Termini e condizioni",
+    "setupDescription": "Configura i termini e le condizioni per il tuo negozio.",
+    "productPage": "Pagina prodotto",
+    "cartPage": "Pagina carrello",
+    "message": "Messaggio",
+    "messageText": "Testo",
+    "keyword": "Parola chiave",
+    "keywordLink": "Link alla parola chiave (Opzionale)",
+    "keywordLinkSubtitle": "L'URL verrà collegato come ipertesto se corrisponde alla parola chiave.",
+    "size": "Dimensione",
+    "color": "Colore",
+    "errorMessage": "Messaggio di errore (Opzionale)",
+    "enterErrorMessage": "Inserisci il messaggio di errore",
+    "needMoreCustomization": "Hai bisogno di più opzioni di personalizzazione?",
+    "contactUs": "Contattaci.",
+    "clickToRemoveBrandmark": "Clicca per rimuovere il marchio",
+    "protectedBy": "Protetto da",
+    "avdTrademark": "AVD™",
+    "desktop": "Desktop",
+    "mobile": "Mobile",
+    "defaults": {
+      "checkboxText": "Comprendo e accetto i termini e le condizioni.",
+      "keyword": "termini e condizioni"
+    }
+  },
+
+  "translation": {
+    "pageTitle": "Traduzione",
+    "pageDescription": "Traduci i tuoi widget in più lingue",
+    "refreshData": "Aggiorna dati",
+    "upgradePromo": "Aggiorna per sbloccare più opzioni di traduzione e il supporto per più lingue.",
+    "defaultLanguage": "Lingua predefinita: {{language}}",
+    "defaultLanguageDesc": "Tutti i widget sono identificati con questa lingua per impostazione predefinita.",
+    "changeDefault": "Cambia predefinita",
+    "translationList": "Elenco traduzioni",
+    "tableHeaders": {
+      "language": "Lingua",
+      "popups": "Pop-up",
+      "action": "Azione"
+    },
+    "emptyTitle": "Gestisci le traduzioni per il pop-up di verifica dell'età.",
+    "emptyDescription": "Traduci la versione di verifica dell'età in più lingue.",
+    "createPopup": "Crea pop-up",
+    "selectLanguage": "Seleziona una lingua",
+    "select": "Seleziona",
+    "languageLimitReached": "Limite lingue raggiunto. Aggiorna il piano.",
+    "addLanguage": "Aggiungi lingua",
+    "selectPopup": "Seleziona pop-up",
+    "searchPopups": "Cerca pop-up...",
+    "noPopupsFound": "Nessun pop-up trovato",
+    "popupNumber": "Pop-up #{{id}}",
+    "infoSectionTitle": "Info",
+    "infoSectionDescription": "Seleziona il pop-up per il quale visualizzare la traduzione.",
+    "textSectionTitle": "Testo",
+    "textSectionDescription": "Personalizza il testo dei campi di input nel modulo di traduzione.",
+    "buttonSectionTitle": "Pulsante",
+    "buttonSectionDescription": "Personalizza le etichette dei campi di input e dei pulsanti.",
+    "labelSectionTitle": "Etichetta",
+    "labelSectionDescription": "Personalizza le etichette dei mesi in base alle tue preferenze o esigenze linguistiche.",
+    "toast": {
+      "saved": "Traduzioni salvate con successo",
+      "error": "Errore durante il salvataggio delle traduzioni"
+    },
+    "pleaseSelectPopup": "Per favore seleziona prima un pop-up",
+    "upgradeNow": "Aggiorna ora",
+    "published": "Pubblicato",
+    "unpublished": "Non pubblicato",
+    "popupHeadingLabel": "Testo del titolo",
+    "popupSubheadingLabel": "Testo del sottotitolo",
+    "submitButtonLabel": "Etichetta pulsante di invio",
+    "cancelButtonLabel": "Etichetta pulsante Annulla",
+    "submitButtonAction": "Azione del pulsante di invio",
+    "cancelButtonAction": "Azione del pulsante Annulla",
+    "monthLabel": "Etichetta del mese",
+    "addMonth": "Aggiungi"
+  },
+
+  "pricing": {
+    "pageTitle": "Prezzi",
+    "plans": "Piani",
+    "planTypes": {
+      "free": "Gratuito",
+      "basic": "Base",
+      "premium": "Premium"
+    },
+    "billedMonthly": "Fatturazione mensile",
+    "billedYearly": "Fatturazione annuale",
+    "save25": "Risparmia il 25%",
+    "perMonth": "/mese",
+    "percentOff": "25% di sconto",
+    "billedOnceAYear": "{{amount}} fatturato una volta all'anno",
+    "startFreeTrial": "Inizia la prova GRATUITA di 3 giorni",
+    "bestSuitedForTesting": "Ideale per scopi di test e per massimizzare i vantaggi.",
+    "yourCurrentPlan": "Il tuo piano attuale",
+    "comparePlanFeatures": "Confronta le funzionalità dei piani",
+    "compareDescription": "Un riepilogo completo delle funzionalità di AVP Age Verification.",
+    "mostPopular": "Più popolare",
+    "pricingFaqsTitle": "FAQ sui prezzi",
+    "footerText": "L'app Age Verification è realizzata con ❤️ da 8Apps",
+    "basicFeatures": [
+      "Pop-up di verifica dell'età",
+      "1 pop-up specifico per paese e lingua",
+      "Verifica tramite inserimento data di nascita",
+      "Pop-up completamente personalizzabile",
+      "Limita pagine, collezioni, prodotti e tag specifici",
+      "Report verificati e non verificati",
+      "Impostazioni di validazione dell'età",
+      "Modelli multipli",
+      "Limita gli utenti minorenni con un messaggio"
+    ],
+    "premiumFeatures": [
+      "Tutto il contenuto di Base, più:",
+      "Verifica tramite casella di controllo",
+      "Pop-up illimitati per paese e lingua",
+      "Personalizzazione inserimento data di nascita",
+      "Personalizzazione messaggio di restrizione",
+      "Personalizzazione bordo pulsante",
+      "20+ animazioni pop-up",
+      "Personalizzazione bordo sfondo pop-up",
+      "Opzione avanzata per aggiungere JavaScript e CSS personalizzati",
+      "Termini e condizioni: pagina prodotto e pagina carrello",
+      "Termini e condizioni: restrizione su pagine, collezioni, prodotti e tag specifici",
+      "Banner restrizione d'età alla pagina di pagamento",
+      "Verifica data di nascita su pagina prodotto e carrello",
+      "Opzioni completamente personalizzabili"
+    ],
+    "compareFeatures": {
+      "ageVerificationPopup": "Pop-up di verifica dell'età",
+      "countryLanguagePopups": "Pop-up per paese e lingua",
+      "verificationByBirthday": "Verifica tramite inserimento data di nascita",
+      "fullyCustomizablePopup": "Pop-up completamente personalizzabile",
+      "restrictByPages": "Limita per pagine/collezioni/prodotti",
+      "verifiedUnverifiedReports": "Report verificati e non verificati",
+      "ageValidationSettings": "Impostazioni di validazione dell'età",
+      "multipleTemplates": "Modelli multipli",
+      "restrictUnderage": "Limita gli utenti minorenni con un messaggio",
+      "verifyByCheckbox": "Verifica tramite casella di controllo",
+      "birthdayInputCustomization": "Personalizzazione inserimento data di nascita",
+      "buttonBorderCustomization": "Personalizzazione bordo pulsante",
+      "popupAnimations": "20+ animazioni pop-up",
+      "customJsCss": "JavaScript e CSS personalizzati",
+      "termsAndConditions": "Termini e condizioni",
+      "checkoutBanner": "Banner restrizione d'età al pagamento",
+      "birthdateVerification": "Verifica data di nascita su pagina prodotto e carrello"
+    },
+    "faqs": {
+      "q1": "1. La vostra app offre un piano gratuito?",
+      "a1": "Sì! L'app Age Verification offre un piano gratuito che include un pop-up base di verifica dell'età. È perfetto per scopi di test e per familiarizzare con le funzionalità principali dell'app prima di passare a un piano superiore.",
+      "q2": "2. Come posso smettere di pagare senza disinstallare l'app?",
+      "a2": "Puoi passare al nostro piano gratuito in qualsiasi momento dalla pagina Piani. Questo interromperà gli addebiti ricorrenti mantenendo l'app installata nel tuo negozio con le funzionalità di base.",
+      "q3": "3. Posso passare da un piano a pagamento superiore a uno inferiore?",
+      "a3": "Assolutamente. Puoi passare da un piano all'altro in qualsiasi momento. In caso di downgrade, la parte non utilizzata del ciclo di fatturazione potrebbe essere accreditata da Shopify.",
+      "q4": "4. Le mie impostazioni verranno salvate se disinstallo l'app?",
+      "a4": "Se disinstalli l'app, le tue impostazioni non verranno conservate. Ti consigliamo di passare al piano gratuito invece di disinstallare se prevedi di tornare in futuro."
+    }
+  },
+
+  "settings": {
+    "pageTitle": "Impostazioni",
+    "general": "Generale",
+    "generalDescription": "Scegli la lingua di amministrazione e imposta la durata della verifica dei visitatori.",
+    "adminLanguage": "Lingua di amministrazione",
+    "adminLanguageEnglish": "English",
+    "adminLanguageDeutsch": "Deutsch",
+    "adminLanguageFrench": "Français",
+    "adminLanguageItalian": "Italiano",
+    "adminLanguageSpanish": "Español",
+    "adminLanguageHindi": "हिन्दी (Hindi)",
+    "adminLanguageHelpText": "Le lingue selezionate verranno tradotte immediatamente.",
+    "rememberVisitor": "Ricorda il visitatore",
+    "rememberVisitorOptions": {
+      "sessionOnly": "Solo sessione",
+      "days": "Giorni",
+      "allowVisitorToChoose": "Consenti al visitatore di scegliere"
+    },
+    "enterNumberOfDays": "Inserisci il numero di giorni",
+    "daySuffix": "giorno/i",
+    "settingsSaved": "Impostazioni salvate"
+  },
+
+  "months": {
+    "january": "Gennaio",
+    "february": "Febbraio",
+    "march": "Marzo",
+    "april": "Aprile",
+    "may": "Maggio",
+    "june": "Giugno",
+    "july": "Luglio",
+    "august": "Agosto",
+    "september": "Settembre",
+    "october": "Ottobre",
+    "november": "Novembre",
+    "december": "Dicembre"
+  },
+
+  "richTextEditor": {
+    "clearFormatting": "Cancella formattazione"
+  },
+
+  "defaults": {
+    "storeConfig": {
+      "name": "Il mio Pop-up",
+      "status": "Attivato",
+      "method": "Nessun input",
+      "trigger": "Mostra sempre",
+      "bgType": "Sfondo a colore solido",
+      "heading": "BENVENUTO NEL NEGOZIO",
+      "subheading": "Devi avere almeno 18 anni per visitare questo sito",
+      "submitText": "OK",
+      "cancelText": "ANNULLA",
+      "cancelAction": "redirect",
+      "errorMsg": "Inserisci il messaggio di errore",
+      "cancelErrorMsg": "Inserisci il messaggio di errore"
+    },
+    "checkoutConfig": {
+      "heading": "Devi avere almeno 18 anni per acquistare questi prodotti",
+      "bannerHeading": "Si applicano restrizioni d'età"
+    },
+    "termsConfig": {
+      "checkboxText": "Comprendo e accetto i termini e le condizioni.",
+      "keyword": "termini e condizioni"
+    }
+  },
+
+  "modal": {
+    "close": "Chiudi"
+  }
+}
