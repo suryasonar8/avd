@@ -2,51 +2,53 @@
 import { useState, useEffect } from "react";
 import { DateRangePicker as RSuiteDateRangePicker } from "rsuite";
 import dayjs from "dayjs";
-
-const predefinedRanges = [
-  {
-    label: "Today",
-    value: [dayjs().startOf("day").toDate(), dayjs().endOf("day").toDate()],
-  },
-  {
-    label: "Yesterday",
-    value: [
-      dayjs().subtract(1, "day").startOf("day").toDate(),
-      dayjs().subtract(1, "day").endOf("day").toDate(),
-    ],
-  },
-  {
-    label: "Last 7 Days",
-    value: [
-      dayjs().subtract(6, "day").startOf("day").toDate(),
-      dayjs().endOf("day").toDate(),
-    ],
-  },
-  {
-    label: "Last 30 Days",
-    value: [
-      dayjs().subtract(29, "day").startOf("day").toDate(),
-      dayjs().endOf("day").toDate(),
-    ],
-  },
-  {
-    label: "Last month",
-    value: [
-      dayjs().subtract(1, "month").startOf("month").toDate(),
-      dayjs().subtract(1, "month").endOf("month").toDate(),
-    ],
-  },
-  {
-    label: "Last 60 Days",
-    value: [
-      dayjs().subtract(59, "day").startOf("day").toDate(),
-      dayjs().endOf("day").toDate(),
-    ],
-  },
-];
+import { useTranslation } from "../context/TranslationContext";
 
 export default function DateRangePicker({ value, onChange }) {
   const [isMobile, setIsMobile] = useState(false);
+  const { t } = useTranslation();
+
+  const predefinedRanges = [
+    {
+      label: t("dateRangePicker.today"),
+      value: [dayjs().startOf("day").toDate(), dayjs().endOf("day").toDate()],
+    },
+    {
+      label: t("dateRangePicker.yesterday"),
+      value: [
+        dayjs().subtract(1, "day").startOf("day").toDate(),
+        dayjs().subtract(1, "day").endOf("day").toDate(),
+      ],
+    },
+    {
+      label: t("dateRangePicker.last7Days"),
+      value: [
+        dayjs().subtract(6, "day").startOf("day").toDate(),
+        dayjs().endOf("day").toDate(),
+      ],
+    },
+    {
+      label: t("dateRangePicker.last30Days"),
+      value: [
+        dayjs().subtract(29, "day").startOf("day").toDate(),
+        dayjs().endOf("day").toDate(),
+      ],
+    },
+    {
+      label: t("dateRangePicker.lastMonth"),
+      value: [
+        dayjs().subtract(1, "month").startOf("month").toDate(),
+        dayjs().subtract(1, "month").endOf("month").toDate(),
+      ],
+    },
+    {
+      label: t("dateRangePicker.last60Days"),
+      value: [
+        dayjs().subtract(59, "day").startOf("day").toDate(),
+        dayjs().endOf("day").toDate(),
+      ],
+    },
+  ];
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -88,7 +90,7 @@ export default function DateRangePicker({ value, onChange }) {
         ranges={isMobile ? predefinedRanges.slice(0, 3) : predefinedRanges}
         format="dd/MM/yyyy"
         character=" - "
-        placeholder="Select Date Range"
+        placeholder={t("dateRangePicker.selectDateRange")}
         placement="auto"
         shouldDisableDate={(date) => dayjs(date).isAfter(dayjs(), "day")}
         showHeader={false}
@@ -132,27 +134,27 @@ export default function DateRangePicker({ value, onChange }) {
             .format("YYYY-MM-DD");
 
           if (startStr === todayStr && endStr === todayStr) {
-            return "Today";
+            return t("dateRangePicker.today");
           }
 
           if (startStr === yesterdayStr && endStr === yesterdayStr) {
-            return "Yesterday";
+            return t("dateRangePicker.yesterday");
           }
 
           if (startStr === sevenDaysAgoStr && endStr === todayStr) {
-            return "Last 7 Days";
+            return t("dateRangePicker.last7Days");
           }
 
           if (startStr === thirtyDaysAgoStr && endStr === todayStr) {
-            return "Last 30 Days";
+            return t("dateRangePicker.last30Days");
           }
 
           if (startStr === lastMonthStartStr && endStr === lastMonthEndStr) {
-            return "Last month";
+            return t("dateRangePicker.lastMonth");
           }
 
           if (startStr === sixtyDaysAgoStr && endStr === todayStr) {
-            return "Last 60 Days";
+            return t("dateRangePicker.last60Days");
           }
 
           return isMobile

@@ -4,14 +4,16 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 import { useState } from "react";
 import { usePlan } from "../../context/PlanContext";
 import { DISPLAY_PAGES } from "../../constants/display-pages";
+import { useTranslation } from "../../context/TranslationContext";
 
 export function InfoTab({ config, setConfig }) {
   const shopify = useAppBridge();
   const [urlInput, setUrlInput] = useState("");
   const { canAccess } = usePlan();
+  const { t } = useTranslation();
   return (
     <>
-      <Card title="Pop-up Info">
+      <Card title={t("popupEditor.infoTab.popupInfo")}>
         <div
           style={{
             display: "flex",
@@ -29,7 +31,7 @@ export function InfoTab({ config, setConfig }) {
                 marginBottom: "8px",
               }}
             >
-              Status
+              {t("popupEditor.infoTab.status")}
             </label>
             <select
               value={config.status}
@@ -45,8 +47,8 @@ export function InfoTab({ config, setConfig }) {
                 background: "#FFF",
               }}
             >
-              <option>Enabled</option>
-              <option>Disabled</option>
+              <option value="Enabled">{t("common.enabled")}</option>
+              <option value="Disabled">{t("common.disabled")}</option>
             </select>
           </div>
 
@@ -59,7 +61,7 @@ export function InfoTab({ config, setConfig }) {
                 marginBottom: "8px",
               }}
             >
-              Name <span style={{ color: "red" }}>*</span>
+              {t("popupEditor.infoTab.name")} <span style={{ color: "red" }}>*</span>
             </label>
             <div style={{ position: "relative" }}>
               <input
@@ -68,7 +70,7 @@ export function InfoTab({ config, setConfig }) {
                 onChange={(e) =>
                   setConfig((prev) => ({ ...prev, name: e.target.value }))
                 }
-                placeholder="Enter your pop-up name"
+                placeholder={t("popupEditor.infoTab.enterPopupName")}
                 style={{
                   boxSizing: "border-box",
                   width: "100%",
@@ -96,7 +98,7 @@ export function InfoTab({ config, setConfig }) {
                 marginTop: "4px",
               }}
             >
-              For internal reference. Only you can see it.
+              {t("popupEditor.infoTab.nameHelpText")}
             </p>
           </div>
         </div>
@@ -110,7 +112,7 @@ export function InfoTab({ config, setConfig }) {
               marginBottom: "8px",
             }}
           >
-            Method
+            {t("popupEditor.infoTab.method")}
           </label>
           <div
             style={{
@@ -135,7 +137,7 @@ export function InfoTab({ config, setConfig }) {
                   setConfig((prev) => ({ ...prev, method: "No input" }))
                 }
               />{" "}
-              No input
+              {t("popupEditor.infoTab.noInput")}
             </label>
             <label
               style={{
@@ -155,7 +157,7 @@ export function InfoTab({ config, setConfig }) {
                   setConfig((prev) => ({ ...prev, method: "Birthdate entry" }))
                 }
               />{" "}
-              Birthdate entry
+              {t("popupEditor.infoTab.birthdateEntry")}
             </label>
           </div>
         </div>
@@ -171,7 +173,7 @@ export function InfoTab({ config, setConfig }) {
                   marginBottom: "8px",
                 }}
               >
-                Verify age
+                {t("popupEditor.infoTab.verifyAge")}
               </label>
               <input
                 type="number"
@@ -201,7 +203,7 @@ export function InfoTab({ config, setConfig }) {
                   marginBottom: "8px",
                 }}
               >
-                Date order
+                {t("popupEditor.infoTab.dateOrder")}
               </label>
               <select
                 value={config.dateOrder || "MM,DD,YY"}
@@ -228,7 +230,7 @@ export function InfoTab({ config, setConfig }) {
                   marginTop: "4px",
                 }}
               >
-                This format displays the date as May-01-2024.
+                {t("popupEditor.infoTab.dateOrderHelpText")}
               </p>
             </div>
           </>
@@ -236,8 +238,8 @@ export function InfoTab({ config, setConfig }) {
       </Card>
 
       <Card
-        title="Condition"
-        badge={!canAccess("sv.info.pages.home") ? <Badge text="Basic plan or higher" type="basic" /> : null}
+        title={t("checkoutVerification.target")}
+        badge={!canAccess("sv.info.pages.home") ? <Badge text={t("common.basicPlanOrHigher")} type="basic" /> : null}
       >
         <div style={{ marginBottom: "16px" }}>
           <label
@@ -248,7 +250,7 @@ export function InfoTab({ config, setConfig }) {
               marginBottom: "8px",
             }}
           >
-            Display page(s)
+            {t("popupEditor.infoTab.displayPages")}
           </label>
           <div
             style={{
@@ -258,7 +260,7 @@ export function InfoTab({ config, setConfig }) {
             }}
           >
             {DISPLAY_PAGES.map((page) => (
-              <div key={page}>
+              <div key={page.value}>
                 <label
                   style={{
                     display: "flex",
@@ -266,35 +268,35 @@ export function InfoTab({ config, setConfig }) {
                     gap: "8px",
                     fontSize: "13px",
                     cursor:
-                      page === "All pages" ||
+                      page.value === "All pages" ||
                       canAccess(
-                        page === "Home page"
+                        page.value === "Home page"
                           ? "sv.info.pages.home"
-                          : page === "Specific collections"
+                          : page.value === "Specific collections"
                             ? "sv.info.pages.collections"
-                            : page === "Specific products"
+                            : page.value === "Specific products"
                               ? "sv.info.pages.products"
                               : "sv.info.pages.custom",
                       )
                         ? "pointer"
                         : "default",
                     opacity:
-                      page === "All pages" ||
+                      page.value === "All pages" ||
                       canAccess(
-                        page === "Home page"
+                        page.value === "Home page"
                           ? "sv.info.pages.home"
-                          : page === "Specific collections"
+                          : page.value === "Specific collections"
                             ? "sv.info.pages.collections"
-                            : page === "Specific products"
+                            : page.value === "Specific products"
                               ? "sv.info.pages.products"
                               : "sv.info.pages.custom",
                       )
                         ? 1
                         : 0.6,
                     marginBottom:
-                      config.pages === page &&
-                      page !== "All pages" &&
-                      page !== "Home page"
+                      config.pages === page.value &&
+                      page.value !== "All pages" &&
+                      page.value !== "Home page"
                         ? "12px"
                         : "0",
                   }}
@@ -303,26 +305,26 @@ export function InfoTab({ config, setConfig }) {
                     type="radio"
                     name="pages"
                     disabled={
-                      !(page === "All pages") &&
+                      !(page.value === "All pages") &&
                       !canAccess(
-                        page === "Home page"
+                        page.value === "Home page"
                           ? "sv.info.pages.home"
-                          : page === "Specific collections"
+                          : page.value === "Specific collections"
                             ? "sv.info.pages.collections"
-                            : page === "Specific products"
+                            : page.value === "Specific products"
                               ? "sv.info.pages.products"
                               : "sv.info.pages.custom",
                       )
                     }
-                    checked={config.pages === page}
+                    checked={config.pages === page.value}
                     onChange={() =>
-                      setConfig((prev) => ({ ...prev, pages: page }))
+                      setConfig((prev) => ({ ...prev, pages: page.value }))
                     }
                   />{" "}
-                  {page}
+                  {t(page.labelKey)}
                 </label>
 
-                {page === "Specific collections" && config.pages === page && (
+                {page.value === "Specific collections" && config.pages === page.value && (
                   <div style={{ marginBottom: "16px", paddingLeft: "24px" }}>
                     <div
                       style={{
@@ -333,7 +335,7 @@ export function InfoTab({ config, setConfig }) {
                       }}
                     >
                       <label style={{ fontSize: "12px", fontWeight: "600" }}>
-                        Selected Collections
+                        {t("popupEditor.infoTab.selectedCollections")}
                       </label>
                       <button
                         onClick={async () => {
@@ -368,7 +370,7 @@ export function InfoTab({ config, setConfig }) {
                           cursor: "pointer",
                         }}
                       >
-                        Select Collections
+                        {t("popupEditor.infoTab.selectCollections")}
                       </button>
                     </div>
                     <div
@@ -419,14 +421,14 @@ export function InfoTab({ config, setConfig }) {
                       ))}
                       {(config.selectedCollections || []).length === 0 && (
                         <p style={{ fontSize: "12px", color: "#6D7175" }}>
-                          No collections selected
+                          {t("popupEditor.infoTab.noCollectionsSelected")}
                         </p>
                       )}
                     </div>
                   </div>
                 )}
 
-                {page === "Specific products" && config.pages === page && (
+                {page.value === "Specific products" && config.pages === page.value && (
                   <div style={{ marginBottom: "16px", paddingLeft: "24px" }}>
                     <div
                       style={{
@@ -437,7 +439,7 @@ export function InfoTab({ config, setConfig }) {
                       }}
                     >
                       <label style={{ fontSize: "12px", fontWeight: "600" }}>
-                        Selected Products
+                        {t("popupEditor.infoTab.selectedProducts")}
                       </label>
                       <button
                         onClick={async () => {
@@ -472,7 +474,7 @@ export function InfoTab({ config, setConfig }) {
                           cursor: "pointer",
                         }}
                       >
-                        Select Products
+                        {t("popupEditor.infoTab.selectProducts")}
                       </button>
                     </div>
                     <div
@@ -523,14 +525,14 @@ export function InfoTab({ config, setConfig }) {
                       ))}
                       {(config.selectedProducts || []).length === 0 && (
                         <p style={{ fontSize: "12px", color: "#6D7175" }}>
-                          No products selected
+                          {t("popupEditor.infoTab.noProductsSelected")}
                         </p>
                       )}
                     </div>
                   </div>
                 )}
 
-                {page === "Custom" && config.pages === page && (
+                {page.value === "Custom" && config.pages === page.value && (
                   <div style={{ marginBottom: "16px", paddingLeft: "24px" }}>
                     <label
                       style={{
@@ -540,7 +542,7 @@ export function InfoTab({ config, setConfig }) {
                         marginBottom: "8px",
                       }}
                     >
-                      Add custom URL
+                      {t("popupEditor.infoTab.addCustomUrl")}
                     </label>
                     <div
                       style={{
@@ -553,7 +555,7 @@ export function InfoTab({ config, setConfig }) {
                         type="text"
                         value={urlInput}
                         onChange={(e) => setUrlInput(e.target.value)}
-                        placeholder="Enter URL (e.g. https://xyz.myshopify.com/products/snowboard)"
+                        placeholder={t("popupEditor.infoTab.enterUrl")}
                         style={{
                           boxSizing: "border-box",
                           flex: 1,
@@ -582,7 +584,7 @@ export function InfoTab({ config, setConfig }) {
                           cursor: "pointer",
                         }}
                       >
-                        Add URL
+                        {t("popupEditor.infoTab.addUrl")}
                       </button>
                     </div>
                     {config.customUrl && (
@@ -638,7 +640,7 @@ export function InfoTab({ config, setConfig }) {
               marginBottom: "8px",
             }}
           >
-            Trigger condition
+            {t("popupEditor.infoTab.triggerCondition")}
           </label>
           <div
             style={{
@@ -664,7 +666,7 @@ export function InfoTab({ config, setConfig }) {
                   setConfig((prev) => ({ ...prev, trigger: "Always show" }))
                 }
               />{" "}
-              Always show
+              {t("popupEditor.infoTab.triggerAlways")}
             </label>
             <label
               style={{
@@ -690,7 +692,7 @@ export function InfoTab({ config, setConfig }) {
                   }))
                 }
               />{" "}
-              Logged customers
+              {t("popupEditor.infoTab.triggerLogged")}
             </label>
           </div>
         </div>

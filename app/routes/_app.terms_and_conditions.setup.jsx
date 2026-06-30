@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLoaderData, useFetcher, redirect } from "react-router";
 import { useAppBridge, SaveBar } from "@shopify/app-bridge-react";
+import { useTranslation } from "../context/TranslationContext";
 import { usePlan } from "../context/PlanContext";
 import { authenticate } from "../shopify.server";
 import { Card } from "../components/Card";
@@ -179,6 +180,7 @@ function PreviewPanel({
   setSettings,
 }) {
   const [device, setDevice] = useState("desktop");
+  const { t } = useTranslation();
 
   const renderText = () => {
     const text = checkboxText || "";
@@ -228,7 +230,7 @@ function PreviewPanel({
             display: "flex",
             alignItems: "center",
           }}
-          title="Desktop"
+          title={t("termsAndConditions.desktop")}
         >
           {/* Monitor icon */}
           <svg
@@ -257,7 +259,7 @@ function PreviewPanel({
             display: "flex",
             alignItems: "center",
           }}
-          title="Mobile"
+          title={t("termsAndConditions.mobile")}
         >
           {/* Phone icon */}
           <svg
@@ -359,7 +361,7 @@ function PreviewPanel({
           {showBrandMark !== false && (
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <span style={{ fontSize: "11px", color: "#6D7175" }}>
-                Protected by
+                {t("termsAndConditions.protectedBy")}
               </span>
               <div
                 style={{
@@ -396,7 +398,7 @@ function PreviewPanel({
                     fontWeight: 600,
                   }}
                 >
-                  AVD™
+                  {t("termsAndConditions.avdTrademark")}
                 </a>
               </div>
             </div>
@@ -445,7 +447,7 @@ function PreviewPanel({
               textDecoration: "none",
             }}
           >
-            Click to remove brandmark
+            {t("termsAndConditions.clickToRemoveBrandmark")}
           </a>
         </div>
       )}
@@ -462,14 +464,15 @@ export default function TermsAndConditionsSetup() {
   const shopify = useAppBridge();
   const [activeTab, setActiveTab] = useState("condition");
   const { canAccess } = usePlan();
+  const { t } = useTranslation();
 
   const isDirty = JSON.stringify(settings) !== JSON.stringify(initialSettings);
 
   useEffect(() => {
     if (fetcher.data?.success) {
-      shopify.toast.show("Settings saved");
+      shopify.toast.show(t("common.savedSuccessfully"));
     }
-  }, [fetcher.data, shopify]);
+  }, [fetcher.data, shopify, t]);
 
   const handleSave = () => {
     fetcher.submit({ settings: JSON.stringify(settings) }, { method: "post" });
@@ -507,9 +510,9 @@ export default function TermsAndConditionsSetup() {
           onClick={handleSave}
           disabled={fetcher.state === "submitting"}
         >
-          Save
+          {t("common.save")}
         </button>
-        <button onClick={handleDiscard}>Discard</button>
+        <button onClick={handleDiscard}>{t("common.discard")}</button>
       </SaveBar>
 
       {/* Header */}
@@ -533,7 +536,7 @@ export default function TermsAndConditionsSetup() {
               padding: 0,
               lineHeight: 1,
             }}
-            aria-label="Back"
+            aria-label={t("common.close")}
           >
             ←
           </button>
@@ -545,14 +548,14 @@ export default function TermsAndConditionsSetup() {
               color: "#202223",
             }}
           >
-            Terms and conditions
+            {t("termsAndConditions.setupTitle")}
           </h1>
         </div>
       </div>
       <p
         style={{ margin: "0 0 20px 28px", fontSize: "13px", color: "#6D7175" }}
       >
-        Set up terms and conditions for your store.
+        {t("termsAndConditions.setupDescription")}
       </p>
 
       {fetcher.data?.errors && (
@@ -581,13 +584,13 @@ export default function TermsAndConditionsSetup() {
           style={tabStyle("condition")}
           onClick={() => setActiveTab("condition")}
         >
-          Condition
+          {t("checkoutVerification.tabCondition")}
         </button>
         <button
           style={tabStyle("checkbox")}
           onClick={() => setActiveTab("checkbox")}
         >
-          Checkbox
+          {t("termsAndConditions.tabBanner")}
         </button>
       </div>
 
@@ -627,12 +630,12 @@ export default function TermsAndConditionsSetup() {
                   style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >
                   <span style={{ fontSize: "13px", fontWeight: 700 }}>
-                    Status
+                    {t("common.status")}
                   </span>
-                  {!canAccess("terms.condition.status") && <Badge text="Premium plan" type="premium" />}
+                  {!canAccess("terms.condition.status") && <Badge text={t("common.premiumPlan")} type="premium" />}
                 </div>
                 <RadioInput
-                  label="Enabled"
+                  label={t("common.enabled")}
                   name="status"
                   value={true}
                   checked={settings.enabled === true}
@@ -640,7 +643,7 @@ export default function TermsAndConditionsSetup() {
                   disabled={!canAccess("terms.condition.status")}
                 />
                 <RadioInput
-                  label="Disabled"
+                  label={t("common.disabled")}
                   name="status"
                   value={false}
                   checked={settings.enabled === false}
@@ -678,21 +681,21 @@ export default function TermsAndConditionsSetup() {
                     }}
                   >
                     <span style={{ fontSize: "13px", fontWeight: 700 }}>
-                      Display page(s)
+                      {t("popupEditor.infoTab.displayPages")}
                     </span>
                     <span style={{ fontSize: "12px", color: "#6D7175" }}>
                       *
                     </span>
-                    {!canAccess("terms.condition.pages") && <Badge text="Premium plan" type="premium" />}
+                    {!canAccess("terms.condition.pages") && <Badge text={t("common.premiumPlan")} type="premium" />}
                   </div>
                   <CheckboxInput
-                    label="Product page"
+                    label={t("termsAndConditions.productPage")}
                     checked={settings.displayPages.includes("product")}
                     onChange={() => togglePage("product")}
                     disabled={!canAccess("terms.condition.pages")}
                   />
                   <CheckboxInput
-                    label="Cart page"
+                    label={t("termsAndConditions.cartPage")}
                     checked={settings.displayPages.includes("cart")}
                     onChange={() => togglePage("cart")}
                     disabled={!canAccess("terms.condition.pages")}
@@ -724,12 +727,12 @@ export default function TermsAndConditionsSetup() {
                     }}
                   >
                     <span style={{ fontSize: "13px", fontWeight: 700 }}>
-                      Trigger condition
+                      {t("popupEditor.infoTab.triggerCondition")}
                     </span>
-                    {!canAccess("terms.condition.trigger") && <Badge text="Premium plan" type="premium" />}
+                    {!canAccess("terms.condition.trigger") && <Badge text={t("common.premiumPlan")} type="premium" />}
                   </div>
                   <RadioInput
-                    label="Always show"
+                    label={t("storeVerification.triggerOptions.alwaysShow")}
                     name="trigger"
                     value="always"
                     checked={settings.triggerCondition === "always"}
@@ -739,7 +742,7 @@ export default function TermsAndConditionsSetup() {
                     disabled={!canAccess("terms.condition.trigger")}
                   />
                   <RadioInput
-                    label="Logged customers"
+                    label={t("storeVerification.triggerOptions.loggedCustomers")}
                     name="trigger"
                     value="logged"
                     checked={settings.triggerCondition === "logged"}
@@ -749,7 +752,7 @@ export default function TermsAndConditionsSetup() {
                     disabled={!canAccess("terms.condition.trigger")}
                   />
                   <RadioInput
-                    label="Not logged customers"
+                    label={t("settings.adminLanguageOther")}
                     name="trigger"
                     value="not_logged"
                     checked={settings.triggerCondition === "not_logged"}
@@ -763,11 +766,11 @@ export default function TermsAndConditionsSetup() {
             </>
           ) : (
             <Card
-              title="Message"
-              badge={!canAccess("terms.checkbox.text") ? <Badge text="Premium plan" type="premium" /> : null}
+              title={t("termsAndConditions.message")}
+              badge={!canAccess("terms.checkbox.text") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
             >
               <TextInput
-                label="Text"
+                label={t("termsAndConditions.messageText")}
                 required
                 value={settings.checkboxText}
                 onChange={(val) =>
@@ -777,27 +780,27 @@ export default function TermsAndConditionsSetup() {
                 disabled={!canAccess("terms.checkbox.text")}
               />
               <TextInput
-                label="Keyword"
+                label={t("termsAndConditions.keyword")}
                 required
                 value={settings.keyword}
                 onChange={(val) => setSettings({ ...settings, keyword: val })}
                 disabled={!canAccess("terms.checkbox.keyword")}
               />
               <TextInput
-                label="Link to keyword (Optional)"
+                label={t("termsAndConditions.keywordLink")}
                 value={settings.link}
                 onChange={(val) => setSettings({ ...settings, link: val })}
-                subtitle="The URL will be hyperlinked if it matches the keyword."
+                subtitle={t("termsAndConditions.keywordLinkSubtitle")}
                 disabled={!canAccess("terms.checkbox.link")}
               />
               <NumberInput
-                label="Size"
+                label={t("termsAndConditions.size")}
                 value={settings.size}
                 onChange={(val) => setSettings({ ...settings, size: val })}
                 disabled={!canAccess("terms.checkbox.size")}
               />
               <ColorInput
-                label="Color"
+                label={t("termsAndConditions.color")}
                 value={settings.color}
                 onChange={(val) => setSettings({ ...settings, color: val })}
                 disabled={!canAccess("terms.checkbox.color")}
@@ -813,22 +816,22 @@ export default function TermsAndConditionsSetup() {
                 disabled={!canAccess("terms.checkbox.error")}
               />
 
-              <p
-                style={{
-                  fontSize: "12px",
-                  color: "#6D7175",
-                  marginTop: "12px",
-                }}
+            <p
+              style={{
+                fontSize: "12px",
+                color: "#6D7175",
+                marginTop: "12px",
+              }}
+            >
+              {t("termsAndConditions.needMoreCustomization")}{" "}
+              <a
+                href="#"
+                style={{ color: "#2C6ECB", textDecoration: "none" }}
               >
-                Need more customization options?{" "}
-                <a
-                  href="#"
-                  style={{ color: "#2C6ECB", textDecoration: "none" }}
-                >
-                  Contact us.
-                </a>
-              </p>
-            </Card>
+                {t("termsAndConditions.contactUs")}
+              </a>
+            </p>
+          </Card>
           )}
         </div>
 
@@ -853,9 +856,9 @@ export default function TermsAndConditionsSetup() {
           color: "#6D7175",
         }}
       >
-        Need help? Please view{" "}
+        {t("common.needHelp")}{" "}
         <a href="#" style={{ color: "#2C6ECB", textDecoration: "none" }}>
-          our document guideline
+          {t("common.ourDocumentGuideline")}
         </a>
       </div>
     </div>

@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router";
+import { useTranslation } from "../../context/TranslationContext";
 
 export default function FreePlanBanner({ popupsCount, popupLimit }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div
@@ -28,7 +30,7 @@ export default function FreePlanBanner({ popupsCount, popupLimit }) {
               fontSize: "13px",
             }}
           >
-            Free Plan Limit
+            {t("storeVerification.freePlanBanner.title")}
           </span>
         </div>
         <div
@@ -39,9 +41,10 @@ export default function FreePlanBanner({ popupsCount, popupLimit }) {
             maxWidth: "600px",
           }}
         >
-          Your current plan includes 1 pop-up ({popupsCount}/{popupLimit}{" "}
-          used). Upgrade to unlock more pop-ups, advanced customization and
-          more.
+          {t("storeVerification.freePlanBanner.description", {
+            used: popupsCount,
+            limit: popupLimit,
+          })}
         </div>
       </div>
       <button
@@ -58,7 +61,7 @@ export default function FreePlanBanner({ popupsCount, popupLimit }) {
           flexShrink: 0,
         }}
       >
-        Upgrade plan
+        {t("storeVerification.freePlanBanner.upgradeButton")}
       </button>
     </div>
   );

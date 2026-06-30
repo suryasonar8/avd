@@ -1,10 +1,12 @@
 import { Card } from "../Card";
 import { RichTextEditor } from "../RichTextEditor";
+import { useTranslation } from "../../context/TranslationContext";
 
 export function TextTab({ config, setConfig }) {
+  const { t } = useTranslation();
   return (
     <>
-      <Card title="Pop-up heading">
+      <Card title={t("popupEditor.textTab.popupHeading")}>
         <RichTextEditor
           value={config.text.heading}
           onChange={(val) =>
@@ -15,7 +17,7 @@ export function TextTab({ config, setConfig }) {
           }
         />
       </Card>
-      <Card title="Pop-up sub-heading">
+      <Card title={t("popupEditor.textTab.popupSubHeading")}>
         <RichTextEditor
           value={config.text.subheading}
           onChange={(val) =>

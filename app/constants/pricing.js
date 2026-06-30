@@ -1,135 +1,151 @@
 import { PLAN_TYPES } from "./features";
 
-export const BASIC_FEATURES = [
-    "Age verification pop-up",
-    "1 Country and language-specific pop-up",
-    "Verification by birthday input",
-    "Fully customizable pop-up",
-    "Restrict specific pages, collections, products, and tags",
-    "Verified and unverified reports",
-    "Age validation settings",
-    "Multiple templates",
-    "Restrict underage users with a message",
+/**
+ * Feature lists and comparison data for the pricing page.
+ * Translation keys reference arrays and objects in en.json under "pricing.*"
+ */
+
+// Translation keys for basic plan features
+export const BASIC_FEATURE_KEYS = [
+    "pricing.basicFeatures.0",
+    "pricing.basicFeatures.1",
+    "pricing.basicFeatures.2",
+    "pricing.basicFeatures.3",
+    "pricing.basicFeatures.4",
+    "pricing.basicFeatures.5",
+    "pricing.basicFeatures.6",
+    "pricing.basicFeatures.7",
+    "pricing.basicFeatures.8",
 ];
 
-export const PREMIUM_FEATURES = [
-    "Everything in Basic, plus:",
-    "Verify by checkbox",
-    "Unlimited country and language pop_ups",
-    "Birthday input customization",
-    "Restriction message input customization",
-    "Button border customization",
-    "20+ popup animations",
-    "Popup background border customization",
-    "Advanced option to add custom JavaScript and CSS",
-    "Terms & Conditions: product and cart page",
-    "Terms & Conditions: Restrict on specific pages, collections, products, and tags",
-    "Checkout page age restriction banner",
-    "Birthdate verification on product and cart page",
-    "Fully customizable options",
+// Translation keys for premium plan features
+export const PREMIUM_FEATURE_KEYS = [
+    "pricing.premiumFeatures.0",
+    "pricing.premiumFeatures.1",
+    "pricing.premiumFeatures.2",
+    "pricing.premiumFeatures.3",
+    "pricing.premiumFeatures.4",
+    "pricing.premiumFeatures.5",
+    "pricing.premiumFeatures.6",
+    "pricing.premiumFeatures.7",
+    "pricing.premiumFeatures.8",
+    "pricing.premiumFeatures.9",
+    "pricing.premiumFeatures.10",
+    "pricing.premiumFeatures.11",
+    "pricing.premiumFeatures.12",
+    "pricing.premiumFeatures.13",
 ];
 
+// Comparison features use translation keys for the feature name column
 export const COMPARE_FEATURES = [
     {
-        feature: "Age verification pop-up",
+        featureKey: "pricing.compareFeatures.ageVerificationPopup",
         [PLAN_TYPES.FREE]: true,
         [PLAN_TYPES.BASIC]: true,
         [PLAN_TYPES.PREMIUM]: true,
     },
     {
-        feature: "Country & language pop-ups",
+        featureKey: "pricing.compareFeatures.countryLanguagePopups",
         [PLAN_TYPES.FREE]: "1",
         [PLAN_TYPES.BASIC]: "1",
-        [PLAN_TYPES.PREMIUM]: "Unlimited",
+        [PLAN_TYPES.PREMIUM]: "common.unlimited",
     },
     {
-        feature: "Verification by birthday input",
+        featureKey: "pricing.compareFeatures.verificationByBirthday",
         [PLAN_TYPES.FREE]: false,
         [PLAN_TYPES.BASIC]: true,
         [PLAN_TYPES.PREMIUM]: true,
     },
     {
-        feature: "Fully customizable pop-up",
+        featureKey: "pricing.compareFeatures.fullyCustomizablePopup",
         [PLAN_TYPES.FREE]: false,
         [PLAN_TYPES.BASIC]: true,
         [PLAN_TYPES.PREMIUM]: true,
     },
     {
-        feature: "Restrict by pages/collections/products",
+        featureKey: "pricing.compareFeatures.restrictByPages",
         [PLAN_TYPES.FREE]: false,
         [PLAN_TYPES.BASIC]: true,
         [PLAN_TYPES.PREMIUM]: true,
     },
     {
-        feature: "Verified and unverified reports",
+        featureKey: "pricing.compareFeatures.verifiedUnverifiedReports",
         [PLAN_TYPES.FREE]: false,
         [PLAN_TYPES.BASIC]: true,
         [PLAN_TYPES.PREMIUM]: true,
     },
     {
-        feature: "Age validation settings",
+        featureKey: "pricing.compareFeatures.ageValidationSettings",
         [PLAN_TYPES.FREE]: false,
         [PLAN_TYPES.BASIC]: true,
         [PLAN_TYPES.PREMIUM]: true,
     },
-    { feature: "Multiple templates", [PLAN_TYPES.FREE]: false, [PLAN_TYPES.BASIC]: true, [PLAN_TYPES.PREMIUM]: true },
     {
-        feature: "Restrict underage users with a message",
+        featureKey: "pricing.compareFeatures.multipleTemplates",
         [PLAN_TYPES.FREE]: false,
         [PLAN_TYPES.BASIC]: true,
         [PLAN_TYPES.PREMIUM]: true,
     },
-    { feature: "Verify by checkbox", [PLAN_TYPES.FREE]: false, [PLAN_TYPES.BASIC]: false, [PLAN_TYPES.PREMIUM]: true },
     {
-        feature: "Birthday input customization",
+        featureKey: "pricing.compareFeatures.restrictUnderage",
+        [PLAN_TYPES.FREE]: false,
+        [PLAN_TYPES.BASIC]: true,
+        [PLAN_TYPES.PREMIUM]: true,
+    },
+    {
+        featureKey: "pricing.compareFeatures.verifyByCheckbox",
         [PLAN_TYPES.FREE]: false,
         [PLAN_TYPES.BASIC]: false,
         [PLAN_TYPES.PREMIUM]: true,
     },
     {
-        feature: "Button border customization",
-        [PLAN_TYPES.FREE]: false,
-        [PLAN_TYPES.BASIC]: false,
-        [PLAN_TYPES.PREMIUM]: true,
-    },
-    { feature: "20+ popup animations", [PLAN_TYPES.FREE]: false, [PLAN_TYPES.BASIC]: false, [PLAN_TYPES.PREMIUM]: true },
-    {
-        feature: "Custom JavaScript and CSS",
-        [PLAN_TYPES.FREE]: false,
-        [PLAN_TYPES.BASIC]: false,
-        [PLAN_TYPES.PREMIUM]: true,
-    },
-    { feature: "Terms & Conditions", [PLAN_TYPES.FREE]: false, [PLAN_TYPES.BASIC]: false, [PLAN_TYPES.PREMIUM]: true },
-    {
-        feature: "Checkout page age restriction banner",
+        featureKey: "pricing.compareFeatures.birthdayInputCustomization",
         [PLAN_TYPES.FREE]: false,
         [PLAN_TYPES.BASIC]: false,
         [PLAN_TYPES.PREMIUM]: true,
     },
     {
-        feature: "Birthdate verification on product & cart page",
+        featureKey: "pricing.compareFeatures.buttonBorderCustomization",
+        [PLAN_TYPES.FREE]: false,
+        [PLAN_TYPES.BASIC]: false,
+        [PLAN_TYPES.PREMIUM]: true,
+    },
+    {
+        featureKey: "pricing.compareFeatures.popupAnimations",
+        [PLAN_TYPES.FREE]: false,
+        [PLAN_TYPES.BASIC]: false,
+        [PLAN_TYPES.PREMIUM]: true,
+    },
+    {
+        featureKey: "pricing.compareFeatures.customJsCss",
+        [PLAN_TYPES.FREE]: false,
+        [PLAN_TYPES.BASIC]: false,
+        [PLAN_TYPES.PREMIUM]: true,
+    },
+    {
+        featureKey: "pricing.compareFeatures.termsAndConditions",
+        [PLAN_TYPES.FREE]: false,
+        [PLAN_TYPES.BASIC]: false,
+        [PLAN_TYPES.PREMIUM]: true,
+    },
+    {
+        featureKey: "pricing.compareFeatures.checkoutBanner",
+        [PLAN_TYPES.FREE]: false,
+        [PLAN_TYPES.BASIC]: false,
+        [PLAN_TYPES.PREMIUM]: true,
+    },
+    {
+        featureKey: "pricing.compareFeatures.birthdateVerification",
         [PLAN_TYPES.FREE]: false,
         [PLAN_TYPES.BASIC]: false,
         [PLAN_TYPES.PREMIUM]: true,
     },
 ];
 
-
-export const PRICING_FAQS = [
-    {
-        q: "1. Does your app offer a free plan?",
-        a: "Yes! The Age Verification App offers a free plan that includes a basic age verification pop-up. It's perfect for testing purposes and getting familiar with the app's core features before upgrading.",
-    },
-    {
-        q: "2. How can I stop being charged without uninstalling the app?",
-        a: "You can downgrade to our Free plan at any time from the Plans page. This will stop any recurring charges while keeping the app installed in your store with basic features.",
-    },
-    {
-        q: "3. Can I downgrade from a higher paid plan to a lower one?",
-        a: "Absolutely. You can switch between plans at any time. When you downgrade, any unused portion of your billing cycle may be credited back to you by Shopify.",
-    },
-    {
-        q: "4. Will my settings be saved if I uninstall the app?",
-        a: "If you uninstall the app, your settings will not be preserved. We recommend downgrading to the free plan instead of uninstalling if you plan to return in the future.",
-    },
+// FAQ keys for the pricing page
+export const PRICING_FAQ_KEYS = [
+    { qKey: "pricing.faqs.q1", aKey: "pricing.faqs.a1" },
+    { qKey: "pricing.faqs.q2", aKey: "pricing.faqs.a2" },
+    { qKey: "pricing.faqs.q3", aKey: "pricing.faqs.a3" },
+    { qKey: "pricing.faqs.q4", aKey: "pricing.faqs.a4" },
 ];

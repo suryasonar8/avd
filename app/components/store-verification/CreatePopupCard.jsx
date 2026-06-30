@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router";
+import { useTranslation } from "../../context/TranslationContext";
 
 export default function CreatePopupCard({ canCreate }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleCreatePopUp = () => {
     if (!canCreate) {
@@ -36,7 +38,7 @@ export default function CreatePopupCard({ canCreate }) {
       >
         <img
           src="/popup-illustration.png"
-          alt="Pop-up Illustration"
+          alt={t("storeVerification.popupIllustration")}
           style={{ maxWidth: "100%", height: "auto" }}
         />
       </div>
@@ -50,11 +52,10 @@ export default function CreatePopupCard({ canCreate }) {
         }}
       >
         <h2 style={{ fontSize: "16px", fontWeight: "700", margin: 0 }}>
-          Age Verification Pop-up
+          {t("storeVerification.ageVerificationPopup")}
         </h2>
         <p style={{ fontSize: "14px", color: "#6D7175", margin: 0 }}>
-          Verify customers&apos; age with pop-ups triggered by various
-          conditions.
+          {t("storeVerification.ageVerificationPopupDescription")}
         </p>
         <div style={{ marginTop: "8px" }}>
           <button
@@ -71,7 +72,7 @@ export default function CreatePopupCard({ canCreate }) {
               cursor: canCreate ? "pointer" : "not-allowed",
             }}
           >
-            Create pop-up
+            {t("storeVerification.createPopup")}
           </button>
         </div>
       </div>

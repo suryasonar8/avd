@@ -2,6 +2,7 @@ import { useLoaderData, useFetcher, useNavigate } from "react-router";
 import { useState, useEffect, useRef } from "react";
 import { authenticate } from "../shopify.server";
 import { usePlan } from "../context/PlanContext";
+import { useTranslation } from "../context/TranslationContext";
 import { PopupService } from "../services/popup.service";
 import { PLAN_TYPES } from "../constants/features";
 import PricingBanner from "../components/PricingBanner";
@@ -39,6 +40,7 @@ export default function AppPage() {
   const navigate = useNavigate();
   const fetcher = useFetcher();
   const { plan } = usePlan();
+  const { t, locale } = useTranslation();
   const deleteModalRef = useRef(null);
 
   const popupLimit = plan === PLAN_TYPES.FREE ? 1 : 50;
@@ -48,7 +50,7 @@ export default function AppPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
   const [activeFilters, setActiveFilters] = useState([
-    { type: "pageSize", label: "Record per page: 10", value: 10 },
+    { type: "pageSize", value: 10 },
   ]);
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteMode, setDeleteMode] = useState("all");
@@ -58,20 +60,20 @@ export default function AppPage() {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this pop-up?")) {
+    if (window.confirm(t("storeVerification.deleteConfirmSingle"))) {
       fetcher.submit({ action: "delete", id }, { method: "POST" });
     }
   };
 
-  const handleAddFilter = (type, value, label) => {
+  const handleAddFilter = (type, value) => {
     setActiveFilters((prev) => {
       const existingIndex = prev.findIndex((f) => f.type === type);
       if (existingIndex >= 0) {
         const next = [...prev];
-        next[existingIndex] = { type, value, label };
+        next[existingIndex] = { type, value };
         return next;
       }
-      return [...prev, { type, value, label }];
+      return [...prev, { type, value }];
     });
     setCurrentPage(1);
   };
@@ -83,7 +85,7 @@ export default function AppPage() {
 
   const handleClearAllFilters = () => {
     setActiveFilters([
-      { type: "pageSize", label: "Record per page: 10", value: 10 },
+      { type: "pageSize", value: 10 },
     ]);
     setSearchQuery("");
     setCurrentPage(1);
@@ -122,14 +124,14 @@ export default function AppPage() {
     const diffHour = Math.floor(diffMin / 60);
     const diffDay = Math.floor(diffHour / 24);
 
-    if (diffMs < 0 || diffSec < 60) return "Just now";
+    if (diffMs < 0 || diffSec < 60) return t("storeVerification.relativeTime.justNow");
     if (diffMin < 60)
-      return `${diffMin} ${diffMin === 1 ? "minute" : "minutes"} ago`;
+      return t("storeVerification.relativeTime.minutesAgo", { count: diffMin });
     if (diffHour < 24)
-      return `${diffHour} ${diffHour === 1 ? "hour" : "hours"} ago`;
-    if (diffDay < 7) return `${diffDay} ${diffDay === 1 ? "day" : "days"} ago`;
+      return t("storeVerification.relativeTime.hoursAgo", { count: diffHour });
+    if (diffDay < 7) return t("storeVerification.relativeTime.daysAgo", { count: diffDay });
 
-    return date.toLocaleDateString(undefined, {
+    return date.toLocaleDateString(locale, {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -179,11 +181,24 @@ export default function AppPage() {
     startIndex + itemsPerPage,
   );
 
+  // Compute filter labels dynamically so they update with language change
+  const activeFiltersWithLabels = activeFilters.map((f) => {
+    let label = "";
+    if (f.type === "pageSize") {
+      label = t("storeVerification.filters.recordPerPage", { size: f.value });
+    } else if (f.type === "trigger") {
+      label = t("storeVerification.filters.triggerLabel", { value: f.value });
+    } else if (f.type === "target") {
+      label = t("storeVerification.filters.targetLabel", { value: f.value });
+    }
+    return { ...f, label };
+  });
+
   return (
-    <s-page heading="Store verification">
+    <s-page heading={t("storeVerification.pageHeading")}>
       {plan === PLAN_TYPES.FREE && (
         <PricingBanner
-          text={`Your current plan includes 1 pop-up (${popups.length}/${popupLimit} used). Upgrade to unlock more pop-ups, advanced customization and more.`}
+          text={t("storeVerification.freePlanBanner.description", { used: popups.length, limit: popupLimit })}
         />
       )}
 
@@ -193,7 +208,7 @@ export default function AppPage() {
       {/* Pop-up list Section */}
       <div style={{ marginBottom: "16px" }}>
         <h3 style={{ fontSize: "14px", fontWeight: "700", color: "#1A1C1D" }}>
-          Pop-up list
+          {t("storeVerification.popupList")}
         </h3>
       </div>
 
@@ -210,7 +225,7 @@ export default function AppPage() {
           <PopupToolbar
             searchQuery={searchQuery}
             onSearchQueryChange={handleSearchQueryChange}
-            activeFilters={activeFilters}
+            activeFilters={activeFiltersWithLabels}
             onAddFilter={handleAddFilter}
             onRemoveFilter={handleRemoveFilter}
             onClearAllFilters={handleClearAllFilters}
@@ -279,9 +294,11 @@ export default function AppPage() {
               </svg>
             </button>
             <span style={{ fontSize: "13px", color: "#4A4D4F" }}>
-              Showing {totalItems === 0 ? 0 : startIndex + 1} to{" "}
-              {Math.min(startIndex + itemsPerPage, totalItems)} of {totalItems}{" "}
-              item(s)
+              {t("storeVerification.paginationShowing", {
+                start: totalItems === 0 ? 0 : startIndex + 1,
+                end: Math.min(startIndex + itemsPerPage, totalItems),
+                total: totalItems
+              })}
             </span>
             <button
               type="button"
@@ -345,7 +362,7 @@ export default function AppPage() {
           <h2
             style={{ fontSize: "18px", fontWeight: "700", marginBottom: "8px" }}
           >
-            Whoops! You don&apos;t have any pop-ups yet.
+            {t("storeVerification.emptyStateTitle")}
           </h2>
           <p
             style={{
@@ -355,8 +372,7 @@ export default function AppPage() {
               lineHeight: "1.5",
             }}
           >
-            Create and customize a new pop-up now to start verify
-            customers&apos; age.
+            {t("storeVerification.emptyStateDescription")}
           </p>
         </div>
       )}

@@ -8,6 +8,7 @@ import { ButtonTab } from "./ButtonTab";
 import { CSSTab } from "./CSSTab";
 import { Preview } from "./Preview";
 import { DISPLAY_PAGES } from "../../constants/display-pages";
+import { useTranslation } from "../../context/TranslationContext";
 
 const TAB_COMPONENTS = {
   Info: InfoTab,
@@ -127,6 +128,8 @@ export function PopupEditor({
 
   const isSubmitting = useRef(false);
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (fetcher) {
       if (fetcher.state !== "idle") {
@@ -135,7 +138,7 @@ export function PopupEditor({
 
       if (isSubmitting.current && fetcher.state === "idle") {
         if (fetcher.data?.success) {
-          shopify.toast.show("Saved successfully");
+          shopify.toast.show(t("common.savedSuccessfully"));
           isSubmitting.current = false;
           if (onSaveSuccess) {
             onSaveSuccess();
@@ -144,23 +147,23 @@ export function PopupEditor({
           fetcher.data?.errors ||
           fetcher.data?.data?.metafieldsSet?.userErrors?.length > 0
         ) {
-          shopify.toast.show("Error saving: check terminal for details", {
+          shopify.toast.show(t("common.errorSaving"), {
             isError: true,
           });
           isSubmitting.current = false;
         }
       }
     }
-  }, [fetcher?.state, fetcher?.data, shopify, onSaveSuccess, fetcher]);
+  }, [fetcher?.state, fetcher?.data, shopify, onSaveSuccess, fetcher, t]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("saved") === "true") {
-      shopify.toast.show("Saved successfully");
+      shopify.toast.show(t("common.savedSuccessfully"));
       const newUrl = window.location.pathname;
       window.history.replaceState({}, "", newUrl);
     }
-  }, [shopify]);
+  }, [shopify, t]);
 
   const handleSave = useCallback(() => {
     if (isUploading) return;
@@ -177,15 +180,22 @@ export function PopupEditor({
 
   const handleBack = useCallback(() => {
     if (isDirty) {
-      shopify.toast.show("Please save or discard your changes before leaving", {
+      shopify.toast.show(t("common.saveOrDiscardWarning"), {
         isError: true,
       });
     } else {
       navigate("/store_verification");
     }
-  }, [isDirty, navigate, shopify]);
+  }, [isDirty, navigate, shopify, t]);
 
   const tabs = ["Info", "Background", "Text", "Button", "CSS"];
+  const tabTranslationKeys = {
+    Info: "popupEditor.tabs.info",
+    Background: "popupEditor.tabs.background",
+    Text: "popupEditor.tabs.text",
+    Button: "popupEditor.tabs.button",
+    CSS: "popupEditor.tabs.css",
+  };
   const ActiveTabComponent = TAB_COMPONENTS[activeTab];
 
   return (
@@ -196,10 +206,10 @@ export function PopupEditor({
           onClick={handleSave}
           disabled={isUploading || !config.name?.trim()}
         >
-          {isUploading ? "Uploading..." : "Save"}
+          {isUploading ? t("common.uploading") : t("common.save")}
         </button>
         <button type="button" onClick={handleDiscard}>
-          Discard
+          {t("common.discard")}
         </button>
       </SaveBar>
 
@@ -230,6 +240,7 @@ export function PopupEditor({
               alignItems: "center",
               color: "#1A1C1D",
             }}
+            aria-label={t("common.close")}
           >
             ←
           </button>
@@ -272,7 +283,7 @@ export function PopupEditor({
               cursor: "pointer",
             }}
           >
-            {tab}
+            {t(tabTranslationKeys[tab])}
           </button>
         ))}
       </div>

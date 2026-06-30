@@ -1,13 +1,15 @@
 import { Card } from "../Card";
 import { Badge } from "../Badge";
 import { usePlan } from "../../context/PlanContext";
+import { useTranslation } from "../../context/TranslationContext";
 
 export function CSSTab({ config, setConfig }) {
   const { canAccess } = usePlan();
+  const { t } = useTranslation();
   const hasAccess = canAccess("sv.css.input");
 
   return (
-    <Card title="CSS" badge={!hasAccess ? <Badge text="Premium plan" type="premium" /> : null}>
+    <Card title={t("popupEditor.cssTab.cssTitle")} badge={!hasAccess ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}>
       <div
         style={{
           borderRadius: "8px",
@@ -33,7 +35,7 @@ export function CSSTab({ config, setConfig }) {
           onChange={(e) =>
             setConfig((prev) => ({ ...prev, css: e.target.value }))
           }
-          placeholder="/* Add your custom CSS here */"
+          placeholder={t("popupEditor.cssTab.cssPlaceholder")}
           style={{
             width: "100%",
             minHeight: "400px",

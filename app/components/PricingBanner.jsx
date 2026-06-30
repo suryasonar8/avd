@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { usePlan } from "../context/PlanContext";
 import { PLAN_TYPES } from "../constants/features";
+import { useTranslation } from "../context/TranslationContext";
 
 export default function PricingBanner({ text }) {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(true);
   const { plan } = usePlan();
+  const { t } = useTranslation();
 
   if (!isVisible || plan !== PLAN_TYPES.FREE) return null;
 
@@ -59,7 +61,7 @@ export default function PricingBanner({ text }) {
               fontSize: "13px",
             }}
           >
-            Free Plan Limit
+            {t("pricingBanner.freePlanLimit")}
           </span>
         </div>
         {/* Close Button */}
@@ -127,7 +129,7 @@ export default function PricingBanner({ text }) {
           onMouseOver={(e) => (e.currentTarget.style.background = "#F6F6F7")}
           onMouseOut={(e) => (e.currentTarget.style.background = "#FFF")}
         >
-          Increase limit
+          {t("pricingBanner.increaseLimit")}
         </button>
       </div>
     </div>

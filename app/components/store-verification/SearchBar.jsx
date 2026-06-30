@@ -1,10 +1,12 @@
 import { SearchInputIcon } from "./Icons";
+import { useTranslation } from "../../context/TranslationContext";
 
 export default function SearchBar({
   searchQuery,
   onSearchQueryChange,
   setIsSearching,
 }) {
+  const { t } = useTranslation();
   return (
     <div
       style={{
@@ -35,7 +37,7 @@ export default function SearchBar({
         </span>
         <input
           type="text"
-          placeholder="Searching by pop-up name"
+          placeholder={t("storeVerification.searchByPopupName")}
           value={searchQuery}
           onChange={(e) => onSearchQueryChange(e.target.value)}
           style={{
@@ -68,7 +70,7 @@ export default function SearchBar({
           padding: "6px 12px",
         }}
       >
-        Cancel
+        {t("common.cancel")}
       </button>
     </div>
   );

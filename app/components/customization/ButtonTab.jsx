@@ -4,12 +4,14 @@ import { ColorInput } from "../ColorInput";
 import { NumberInput } from "../NumberInput";
 import { RichTextEditor } from "../RichTextEditor";
 import { usePlan } from "../../context/PlanContext";
+import { useTranslation } from "../../context/TranslationContext";
 
 export function ButtonTab({ config, setConfig }) {
   const { canAccess } = usePlan();
+  const { t } = useTranslation();
   return (
     <>
-      <Card title="Submit button">
+      <Card title={t("popupEditor.buttonTab.submitButton")}>
         <RichTextEditor
           value={config.button.submitText}
           onChange={(val) =>
@@ -21,7 +23,7 @@ export function ButtonTab({ config, setConfig }) {
         />
       </Card>
 
-      <Card title="Submit button action">
+      <Card title={t("popupEditor.buttonTab.submitButtonAction")}>
         <div style={{ marginBottom: "8px" }}>
           <label
             style={{
@@ -31,7 +33,7 @@ export function ButtonTab({ config, setConfig }) {
               marginBottom: "8px",
             }}
           >
-            Error message
+            {t("popupEditor.buttonTab.errorMessage")}
           </label>
           <div style={{ position: "relative" }}>
             <input
@@ -66,11 +68,11 @@ export function ButtonTab({ config, setConfig }) {
         </div>
       </Card>
 
-      <Card title="Button style">
+      <Card title={t("popupEditor.buttonTab.buttonStyle")}>
         <ColorInput
-          label="Background"
+          label={t("popupEditor.buttonTab.background")}
           disabled={!canAccess("sv.btn.bg")}
-          badge={!canAccess("sv.btn.bg") ? <Badge text="Basic plan or higher" type="basic" /> : null}
+          badge={!canAccess("sv.btn.bg") ? <Badge text={t("common.basicPlanOrHigher")} type="basic" /> : null}
           value={config.button.bgColor}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -80,9 +82,9 @@ export function ButtonTab({ config, setConfig }) {
           }
         />
         <ColorInput
-          label="Border color"
+          label={t("popupEditor.backgroundTab.borderColor")}
           disabled={!canAccess("sv.btn.border-color")}
-          badge={!canAccess("sv.btn.border-color") ? <Badge text="Premium plan" type="premium" /> : null}
+          badge={!canAccess("sv.btn.border-color") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
           value={config.button.borderColor}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -92,9 +94,9 @@ export function ButtonTab({ config, setConfig }) {
           }
         />
         <NumberInput
-          label="Border radius"
+          label={t("popupEditor.backgroundTab.borderRadius")}
           disabled={!canAccess("sv.btn.border-radius")}
-          badge={!canAccess("sv.btn.border-radius") ? <Badge text="Premium plan" type="premium" /> : null}
+          badge={!canAccess("sv.btn.border-radius") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
           value={config.button.borderRadius}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -104,9 +106,9 @@ export function ButtonTab({ config, setConfig }) {
           }
         />
         <NumberInput
-          label="Border width"
+          label={t("popupEditor.backgroundTab.borderWidth")}
           disabled={!canAccess("sv.btn.border-width")}
-          badge={!canAccess("sv.btn.border-width") ? <Badge text="Premium plan" type="premium" /> : null}
+          badge={!canAccess("sv.btn.border-width") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
           value={config.button.borderWidth}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -117,7 +119,7 @@ export function ButtonTab({ config, setConfig }) {
         />
       </Card>
 
-      <Card title="Cancel button">
+      <Card title={t("popupEditor.buttonTab.cancelButton")}>
         <RichTextEditor
           value={config.button.cancelText}
           onChange={(val) =>
@@ -129,12 +131,12 @@ export function ButtonTab({ config, setConfig }) {
         />
       </Card>
 
-      <Card title="Cancel button action">
+      <Card title={t("popupEditor.buttonTab.cancelButtonAction")}>
         <div style={{ marginBottom: "16px" }}>
           <p
             style={{ fontSize: "13px", color: "#6D7175", marginBottom: "12px" }}
           >
-            If a visitor clicks Cancel
+            {t("popupEditor.buttonTab.ifVisitorClicksCancel")}
           </p>
           <div
             style={{ display: "flex", flexDirection: "column", gap: "12px" }}
@@ -158,7 +160,7 @@ export function ButtonTab({ config, setConfig }) {
                   }))
                 }
               />
-              Redirect URL
+              {t("popupEditor.buttonTab.redirectUrl")}
             </label>
             {config.button.cancelAction === "redirect" && (
               <div style={{ marginLeft: "24px", marginTop: "-4px" }}>
@@ -202,7 +204,7 @@ export function ButtonTab({ config, setConfig }) {
                   }))
                 }
               />
-              Show error message
+              {t("popupEditor.buttonTab.showErrorMessage")}
             </label>
             {config.button.cancelAction === "errorMsg" && (
               <div
@@ -250,11 +252,11 @@ export function ButtonTab({ config, setConfig }) {
         </div>
       </Card>
 
-      <Card title="Cancel button style">
+      <Card title={t("popupEditor.buttonTab.cancelButtonStyle")}>
         <ColorInput
-          label="Background"
+          label={t("popupEditor.buttonTab.background")}
           disabled={!canAccess("sv.cbtn.bg")}
-          badge={!canAccess("sv.cbtn.bg") ? <Badge text="Basic plan or higher" type="basic" /> : null}
+          badge={!canAccess("sv.cbtn.bg") ? <Badge text={t("common.basicPlanOrHigher")} type="basic" /> : null}
           value={config.button.cancelBgColor}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -264,9 +266,9 @@ export function ButtonTab({ config, setConfig }) {
           }
         />
         <ColorInput
-          label="Border color"
+          label={t("popupEditor.backgroundTab.borderColor")}
           disabled={!canAccess("sv.cbtn.border-color")}
-          badge={!canAccess("sv.cbtn.border-color") ? <Badge text="Premium plan" type="premium" /> : null}
+          badge={!canAccess("sv.cbtn.border-color") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
           value={config.button.cancelBorderColor}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -276,9 +278,9 @@ export function ButtonTab({ config, setConfig }) {
           }
         />
         <NumberInput
-          label="Border radius"
+          label={t("popupEditor.backgroundTab.borderRadius")}
           disabled={!canAccess("sv.cbtn.border-radius")}
-          badge={!canAccess("sv.cbtn.border-radius") ? <Badge text="Premium plan" type="premium" /> : null}
+          badge={!canAccess("sv.cbtn.border-radius") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
           value={config.button.cancelBorderRadius}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -288,9 +290,9 @@ export function ButtonTab({ config, setConfig }) {
           }
         />
         <NumberInput
-          label="Border width"
+          label={t("popupEditor.backgroundTab.borderWidth")}
           disabled={!canAccess("sv.cbtn.border-width")}
-          badge={!canAccess("sv.cbtn.border-width") ? <Badge text="Premium plan" type="premium" /> : null}
+          badge={!canAccess("sv.cbtn.border-width") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
           value={config.button.cancelBorderWidth}
           onChange={(val) =>
             setConfig((prev) => ({

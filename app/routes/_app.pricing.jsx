@@ -1,23 +1,24 @@
 import { useState } from "react";
 import { authenticate } from "../shopify.server";
+import { useTranslation } from "../context/TranslationContext";
+import {
+  BASIC_FEATURE_KEYS,
+  PREMIUM_FEATURE_KEYS,
+  COMPARE_FEATURES,
+  PRICING_FAQ_KEYS,
+} from "../constants/pricing";
+import { PLAN_TYPES } from "../constants/features";
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
   return null;
 };
 
-import {
-  BASIC_FEATURES,
-  PREMIUM_FEATURES,
-  COMPARE_FEATURES,
-  PRICING_FAQS,
-} from "../constants/pricing";
-import { PLAN_TYPES } from "../constants/features";
-
 export default function PlansPage() {
   const [billing, setBilling] = useState("yearly");
   const [openFaq, setOpenFaq] = useState(null);
   const [showCompare, setShowCompare] = useState(false);
+  const { t } = useTranslation();
 
   const basicMonthly = billing === "yearly" ? 2.99 : 3.99;
   const premiumMonthly = billing === "yearly" ? 6.75 : 8.99;
@@ -25,14 +26,14 @@ export default function PlansPage() {
   const premiumAnnual = (premiumMonthly * 12).toFixed(2);
 
   return (
-    <s-page heading="Plans">
+    <s-page heading={t("pricing.pageTitle")}>
       {/* Support button */}
       <s-button
         slot="primary-action"
         variant="plain"
         href="mailto:support@example.com"
       >
-        Support
+        {t("common.support")}
       </s-button>
 
       {/* Billing toggle */}
@@ -69,7 +70,7 @@ export default function PlansPage() {
                 transition: "all 0.2s",
               }}
             >
-              Billed Monthly
+              {t("pricing.billedMonthly")}
             </button>
             <button
               onClick={() => setBilling("yearly")}
@@ -90,7 +91,7 @@ export default function PlansPage() {
                 transition: "all 0.2s",
               }}
             >
-              Billed Yearly{" "}
+              {t("pricing.billedYearly")}{" "}
               <span
                 style={{
                   background: "#e3f1e3",
@@ -101,7 +102,7 @@ export default function PlansPage() {
                   borderRadius: "99px",
                 }}
               >
-                Save 25%
+                {t("pricing.save25")}
               </span>
             </button>
           </div>
@@ -135,7 +136,7 @@ export default function PlansPage() {
                 marginBottom: "8px",
               }}
             >
-              BASIC
+              {t("pricing.planTypes.basic")}
             </p>
             <div
               style={{
@@ -154,7 +155,7 @@ export default function PlansPage() {
               >
                 ${basicMonthly}
               </span>
-              <span style={{ fontSize: "14px", color: "#6d7175" }}>/month</span>
+              <span style={{ fontSize: "14px", color: "#6d7175" }}>{t("pricing.perMonth")}</span>
               <span
                 style={{
                   background: "#e3f1e3",
@@ -166,7 +167,7 @@ export default function PlansPage() {
                   marginLeft: "4px",
                 }}
               >
-                25% off
+                {t("pricing.percentOff")}
               </span>
             </div>
             {billing === "yearly" && (
@@ -177,16 +178,16 @@ export default function PlansPage() {
                   marginBottom: "16px",
                 }}
               >
-                ${basicAnnual} billed once a year
+                {t("pricing.billedOnceAYear", { amount: `$${basicAnnual}` })}
               </p>
             )}
             <div style={{ margin: "16px 0" }}>
               <s-button variant="primary" fullWidth>
-                Start 3-days FREE Trial
+                {t("pricing.startFreeTrial")}
               </s-button>
             </div>
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {BASIC_FEATURES.map((f, i) => (
+              {BASIC_FEATURE_KEYS.map((fKey, i) => (
                 <li
                   key={i}
                   style={{
@@ -207,7 +208,7 @@ export default function PlansPage() {
                   >
                     ✓
                   </span>
-                  {f}
+                  {t(fKey)}
                 </li>
               ))}
             </ul>
@@ -241,7 +242,7 @@ export default function PlansPage() {
                   margin: 0,
                 }}
               >
-                PREMIUM
+                {t("pricing.planTypes.premium")}
               </p>
               <span
                 style={{
@@ -253,7 +254,7 @@ export default function PlansPage() {
                   borderRadius: "99px",
                 }}
               >
-                Most Popular
+                {t("pricing.mostPopular")}
               </span>
             </div>
             <div
@@ -273,7 +274,7 @@ export default function PlansPage() {
               >
                 ${premiumMonthly}
               </span>
-              <span style={{ fontSize: "14px", color: "#6d7175" }}>/month</span>
+              <span style={{ fontSize: "14px", color: "#6d7175" }}>{t("pricing.perMonth")}</span>
               <span
                 style={{
                   background: "#e3f1e3",
@@ -285,7 +286,7 @@ export default function PlansPage() {
                   marginLeft: "4px",
                 }}
               >
-                25% off
+                {t("pricing.percentOff")}
               </span>
             </div>
             {billing === "yearly" && (
@@ -296,16 +297,16 @@ export default function PlansPage() {
                   marginBottom: "16px",
                 }}
               >
-                ${premiumAnnual} billed once a year
+                {t("pricing.billedOnceAYear", { amount: `$${premiumAnnual}` })}
               </p>
             )}
             <div style={{ margin: "16px 0" }}>
               <s-button variant="primary" fullWidth>
-                Start 3-days FREE Trial
+                {t("pricing.startFreeTrial")}
               </s-button>
             </div>
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {PREMIUM_FEATURES.map((f, i) => (
+              {PREMIUM_FEATURE_KEYS.map((fKey, i) => (
                 <li
                   key={i}
                   style={{
@@ -331,7 +332,7 @@ export default function PlansPage() {
                       ✓
                     </span>
                   )}
-                  {f}
+                  {t(fKey)}
                 </li>
               ))}
             </ul>
@@ -362,7 +363,7 @@ export default function PlansPage() {
                 marginBottom: "8px",
               }}
             >
-              Free
+              {t("pricing.planTypes.free")}
             </p>
             <div
               style={{
@@ -381,10 +382,10 @@ export default function PlansPage() {
               >
                 $0
               </span>
-              <span style={{ fontSize: "14px", color: "#6d7175" }}>/month</span>
+              <span style={{ fontSize: "14px", color: "#6d7175" }}>{t("pricing.perMonth")}</span>
             </div>
             <p style={{ fontSize: "13px", color: "#6d7175", margin: 0 }}>
-              Best suited for testing purposes and maximizing benefits.
+              {t("pricing.bestSuitedForTesting")}
             </p>
           </div>
           <div>
@@ -398,7 +399,7 @@ export default function PlansPage() {
                 background: "#f6f6f7",
               }}
             >
-              Your Current Plan
+              {t("pricing.yourCurrentPlan")}
             </span>
           </div>
         </div>
@@ -425,12 +426,12 @@ export default function PlansPage() {
                 margin: 0,
               }}
             >
-              Compare plan features
+              {t("pricing.comparePlanFeatures")}
             </p>
             <p
               style={{ fontSize: "12px", color: "#6d7175", margin: "2px 0 0" }}
             >
-              A comprehensive breakdown of AVP Age Verification&apos;s features.
+              {t("pricing.compareDescription")}
             </p>
           </div>
           <button
@@ -448,7 +449,7 @@ export default function PlansPage() {
               marginLeft: "16px",
             }}
           >
-            {showCompare ? "Hide" : "Show more"}
+            {showCompare ? t("common.hide") : t("common.showMore")}
           </button>
         </div>
 
@@ -480,7 +481,7 @@ export default function PlansPage() {
                       borderBottom: "1px solid #e1e3e5",
                     }}
                   >
-                    Feature
+                    {t("common.feature")}
                   </th>
                   <th
                     style={{
@@ -491,7 +492,7 @@ export default function PlansPage() {
                       borderBottom: "1px solid #e1e3e5",
                     }}
                   >
-                    Free
+                    {t("pricing.planTypes.free")}
                   </th>
                   <th
                     style={{
@@ -502,7 +503,7 @@ export default function PlansPage() {
                       borderBottom: "1px solid #e1e3e5",
                     }}
                   >
-                    Basic
+                    {t("pricing.planTypes.basic")}
                   </th>
                   <th
                     style={{
@@ -513,7 +514,7 @@ export default function PlansPage() {
                       borderBottom: "1px solid #e1e3e5",
                     }}
                   >
-                    Premium
+                    {t("pricing.planTypes.premium")}
                   </th>
                 </tr>
               </thead>
@@ -521,7 +522,7 @@ export default function PlansPage() {
                 {COMPARE_FEATURES.map((row, i) => (
                   <tr key={i} style={{ borderBottom: "1px solid #e1e3e5" }}>
                     <td style={{ padding: "10px 16px", color: "#202223" }}>
-                      {row.feature}
+                      {t(row.featureKey)}
                     </td>
                     {[
                       PLAN_TYPES.FREE,
@@ -543,7 +544,9 @@ export default function PlansPage() {
                             <span style={{ color: "#c9cccf" }}>—</span>
                           )
                         ) : (
-                          <span style={{ color: "#202223" }}>{row[plan]}</span>
+                          <span style={{ color: "#202223" }}>
+                            {typeof row[plan] === "string" ? t(row[plan]) : row[plan]}
+                          </span>
                         )}
                       </td>
                     ))}
@@ -567,9 +570,9 @@ export default function PlansPage() {
               gap: "8px",
             }}
           >
-            <span>©</span> Pricing FAQs
+            <span>©</span> {t("pricing.pricingFaqsTitle")}
           </h2>
-          {PRICING_FAQS.map((item, i) => (
+          {PRICING_FAQ_KEYS.map((item, i) => (
             <div
               key={i}
               style={{
@@ -597,7 +600,7 @@ export default function PlansPage() {
                   textAlign: "left",
                 }}
               >
-                {item.q}
+                {t(item.qKey)}
                 <span
                   style={{
                     color: "#6d7175",
@@ -620,7 +623,7 @@ export default function PlansPage() {
                     paddingTop: "12px",
                   }}
                 >
-                  {item.a}
+                  {t(item.aKey)}
                 </div>
               )}
             </div>
@@ -638,10 +641,10 @@ export default function PlansPage() {
             color: "#6d7175",
           }}
         >
-          The Age Verification App is made with{" "}
-          <span style={{ color: "#e44c65" }}>❤️</span> by 8Apps
+          {t("pricing.footerText")}
         </div>
       </s-section>
     </s-page>
   );
 }
+

@@ -52,10 +52,13 @@ export const action = async ({ request }) => {
   }
 };
 
+import { useTranslation } from "../context/TranslationContext";
+
 export default function CheckoutVerificationSetup() {
   const navigate = useNavigate();
   const { config: initialConfig } = useLoaderData();
   const [config, setConfig] = useState(initialConfig);
+  const { t } = useTranslation();
 
   // Reset config when initialConfig changes (e.g. after save or navigation)
   useEffect(() => {
@@ -70,9 +73,9 @@ export default function CheckoutVerificationSetup() {
 
   useEffect(() => {
     if (fetcher.data?.success) {
-      shopify.toast.show("Banner settings saved");
+      shopify.toast.show(t("checkoutVerification.bannerSettingsSaved"));
     }
-  }, [fetcher.data, shopify]);
+  }, [fetcher.data, shopify, t]);
 
   const handleSave = () => {
     fetcher.submit({ config: JSON.stringify(config) }, { method: "POST" });
@@ -113,9 +116,9 @@ export default function CheckoutVerificationSetup() {
           onClick={handleSave}
           disabled={fetcher.state === "submitting"}
         >
-          Save
+          {t("common.save")}
         </button>
-        <button onClick={handleDiscard}>Discard</button>
+        <button onClick={handleDiscard}>{t("common.discard")}</button>
       </SaveBar>
 
       {/* Header */}
@@ -139,7 +142,7 @@ export default function CheckoutVerificationSetup() {
             display: "flex",
             alignItems: "center",
           }}
-          aria-label="Back"
+          aria-label={t("common.close")}
         >
           ←
         </button>
@@ -151,7 +154,7 @@ export default function CheckoutVerificationSetup() {
             color: "#202223",
           }}
         >
-          Configuration
+          {t("checkoutVerification.configuration")}
         </h1>
       </div>
 
@@ -171,13 +174,13 @@ export default function CheckoutVerificationSetup() {
           style={tabStyle("condition")}
           onClick={() => setActiveTab("condition")}
         >
-          Condition
+          {t("checkoutVerification.tabCondition")}
         </button>
         <button
           style={tabStyle("banner")}
           onClick={() => setActiveTab("banner")}
         >
-          Banner
+          {t("checkoutVerification.tabBanner")}
         </button>
       </div>
       {fetcher.data?.errors && (

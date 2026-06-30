@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { DEFAULT_BANNER_HEADING } from "../../constants/checkout-verification";
+import { useTranslation } from "../../context/TranslationContext";
 
 export default function PreviewPanel({ config }) {
   const [device, setDevice] = useState("desktop");
   const showBanner = config?.status === "enabled";
   const bannerHeading = config?.heading || DEFAULT_BANNER_HEADING;
+  const { t } = useTranslation();
 
   return (
     <div
@@ -38,6 +40,7 @@ export default function PreviewPanel({ config }) {
             padding: "8px 12px",
             cursor: "pointer",
           }}
+          title={t("termsAndConditions.desktop")}
         >
           <svg
             width="20"
@@ -61,6 +64,7 @@ export default function PreviewPanel({ config }) {
             padding: "8px 12px",
             cursor: "pointer",
           }}
+          title={t("termsAndConditions.mobile")}
         >
           <svg
             width="20"
@@ -117,7 +121,7 @@ export default function PreviewPanel({ config }) {
               }}
             >
               <h2 style={{ fontSize: "20px", fontWeight: 700, margin: 0 }}>
-                My Store 3
+                {t("checkoutVerification.preview.myStore")}
               </h2>
               <svg
                 width="24"
@@ -174,11 +178,11 @@ export default function PreviewPanel({ config }) {
                     marginBottom: "8px",
                   }}
                 >
-                  Contact
+                  {t("checkoutVerification.preview.contact")}
                 </label>
                 <input
                   type="text"
-                  placeholder="Email or mobile phone number"
+                  placeholder={t("checkoutVerification.preview.emailPlaceholder")}
                   style={{
                     width: "100%",
                     padding: "12px",
@@ -203,7 +207,7 @@ export default function PreviewPanel({ config }) {
                     disabled
                   />
                   <span style={{ fontSize: "13px" }}>
-                    Email me with news and offers
+                    {t("checkoutVerification.preview.emailOffers")}
                   </span>
                 </div>
               </div>
@@ -218,7 +222,7 @@ export default function PreviewPanel({ config }) {
                     marginBottom: "8px",
                   }}
                 >
-                  Delivery
+                  {t("checkoutVerification.preview.delivery")}
                 </label>
                 <div
                   style={{
@@ -241,7 +245,7 @@ export default function PreviewPanel({ config }) {
                       }}
                       disabled
                     >
-                      <option>Vietnam</option>
+                      <option>{t("checkoutVerification.preview.vietnam")}</option>
                     </select>
                     <div
                       style={{
@@ -258,7 +262,7 @@ export default function PreviewPanel({ config }) {
                   <div style={{ display: "flex", gap: "10px" }}>
                     <input
                       type="text"
-                      placeholder="First name (option)"
+                      placeholder={t("checkoutVerification.preview.firstName")}
                       style={{
                         flex: 1,
                         padding: "12px",
@@ -270,7 +274,7 @@ export default function PreviewPanel({ config }) {
                     />
                     <input
                       type="text"
-                      placeholder="Last name"
+                      placeholder={t("checkoutVerification.preview.lastName")}
                       style={{
                         flex: 1,
                         padding: "12px",
@@ -327,12 +331,12 @@ export default function PreviewPanel({ config }) {
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
                   <span style={{ fontSize: "14px", fontWeight: 500 }}>
-                    Product demo
+                    {t("checkoutVerification.preview.productDemo")}
                   </span>
                   <span style={{ fontSize: "14px" }}>$19.99</span>
                 </div>
                 <div style={{ fontSize: "12px", color: "#6D7175" }}>
-                  Variant demo
+                  {t("checkoutVerification.preview.variantDemo")}
                 </div>
               </div>
             </div>
@@ -353,7 +357,7 @@ export default function PreviewPanel({ config }) {
                   fontSize: "13px",
                 }}
               >
-                <span>Subtotal</span>
+                <span>{t("checkoutVerification.preview.subtotal")}</span>
                 <span>$19.99</span>
               </div>
               <div
@@ -363,8 +367,8 @@ export default function PreviewPanel({ config }) {
                   fontSize: "13px",
                 }}
               >
-                <span>Shipping</span>
-                <span>FREE</span>
+                <span>{t("checkoutVerification.preview.shipping")}</span>
+                <span>{t("checkoutVerification.preview.free")}</span>
               </div>
               <div
                 style={{
@@ -374,7 +378,7 @@ export default function PreviewPanel({ config }) {
                 }}
               >
                 <span>
-                  Estimated taxes <span style={{ color: "#AAA" }}>?</span>
+                  {t("checkoutVerification.preview.estimatedTaxes")} <span style={{ color: "#AAA" }}>?</span>
                 </span>
                 <span>$5.99</span>
               </div>
@@ -387,7 +391,7 @@ export default function PreviewPanel({ config }) {
                   marginTop: "12px",
                 }}
               >
-                <span>Total</span>
+                <span>{t("checkoutVerification.preview.total")}</span>
                 <span>
                   <span
                     style={{
@@ -396,7 +400,7 @@ export default function PreviewPanel({ config }) {
                       color: "#6D7175",
                     }}
                   >
-                    USD
+                    {t("checkoutVerification.preview.usd")}
                   </span>{" "}
                   $25.98
                 </span>

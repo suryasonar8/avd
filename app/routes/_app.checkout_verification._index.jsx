@@ -20,14 +20,17 @@ export const action = async ({ request }) => {
   return null;
 };
 
+import { useTranslation } from "../context/TranslationContext";
+
 export default function CheckoutVerification() {
   const navigate = useNavigate();
   const { config } = useLoaderData();
+  const { t } = useTranslation();
   const isEnabled = config.status === "enabled";
 
   return (
-    <s-page heading="Checkout verification">
-      <PricingBanner text="Enable age restriction at checkout - Upgrade your plan today!" />
+    <s-page heading={t("checkoutVerification.pageTitle")}>
+      <PricingBanner text={t("checkoutVerification.bannerPromo")} />
 
       <s-section>
         <s-stack gap="base">
@@ -45,7 +48,7 @@ export default function CheckoutVerification() {
           >
             <span style={{ fontSize: "18px" }}>⚠️</span>
             <strong style={{ fontSize: "14px", color: "#663c00" }}>
-              Verify your age
+              {t("checkoutVerification.verifyYourAge")}
             </strong>
           </div>
 
@@ -78,7 +81,7 @@ export default function CheckoutVerification() {
               ✓
             </div>
             <strong style={{ fontSize: "14px", color: "#1e4620" }}>
-              You're over 18+
+              {t("checkoutVerification.youAreOver18")}
             </strong>
           </div>
 
@@ -110,7 +113,7 @@ export default function CheckoutVerification() {
               !
             </div>
             <strong style={{ fontSize: "14px", color: "#5f2120" }}>
-              You must be at least 18+
+              {t("checkoutVerification.youMustBe18")}
             </strong>
           </div>
 
@@ -134,7 +137,7 @@ export default function CheckoutVerification() {
               <div
                 style={{ display: "flex", alignItems: "center", gap: "8px" }}
               >
-                <strong style={{ fontSize: "14px" }}>Info banner</strong>
+                <strong style={{ fontSize: "14px" }}>{t("checkoutVerification.infoBanner")}</strong>
                 <span
                   style={{
                     fontSize: "12px",
@@ -145,7 +148,7 @@ export default function CheckoutVerification() {
                     padding: "1px 7px",
                   }}
                 >
-                  {isEnabled ? "Enabled" : "Disabled"}
+                  {isEnabled ? t("common.enabled") : t("common.disabled")}
                 </span>
               </div>
               <p
@@ -155,8 +158,7 @@ export default function CheckoutVerification() {
                   color: "#6d7175",
                 }}
               >
-                Create a checkout banner to remind customers of age-restricted
-                products.
+                {t("checkoutVerification.infoBannerDescription")}
               </p>
             </div>
             <s-button
@@ -164,7 +166,7 @@ export default function CheckoutVerification() {
               size="slim"
               onClick={() => navigate("/checkout_verification/setup")}
             >
-              Customize
+              {t("dashboard.customizeNow")}
             </s-button>
           </div>
         </s-stack>

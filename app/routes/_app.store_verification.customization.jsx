@@ -157,10 +157,13 @@ export const action = async ({ request }) => {
   return redirect(`/store_verification/${popup.id}?saved=true`);
 };
 
+import { useTranslation } from "../context/TranslationContext";
+
 export default function StoreVerificationCustomization() {
   const loaderData = useLoaderData();
   const submit = useSubmit();
   const shopify = useAppBridge();
+  const { t } = useTranslation();
 
   const handleSave = (config) => {
     submit({ config: JSON.stringify(config) }, { method: "POST" });
@@ -171,8 +174,8 @@ export default function StoreVerificationCustomization() {
       settings={loaderData?.settings}
       globalSettings={loaderData?.globalSettings}
       onSave={handleSave}
-      heading="Configuration"
-      description="Customization the pop-up to match your brand."
+      heading={t("popupEditor.editorHeading")}
+      description={t("popupEditor.editorDescription")}
       saveBarId="customization-save-bar"
       submit={submit}
       shopify={shopify}

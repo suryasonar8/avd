@@ -48,6 +48,8 @@ export const loader = async ({ request }) => {
   };
 };
 
+import { useTranslation } from "../context/TranslationContext";
+
 export default function TranslationPage() {
   const {
     shop,
@@ -61,10 +63,11 @@ export default function TranslationPage() {
   const { plan } = usePlan();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
+  const { t } = useTranslation();
   const canAddLanguage = translatedLanguages.length < limit;
 
   const languages = [
-    { label: "Select", value: "" },
+    { label: t("translation.select"), value: "" },
     ...shopLocales
       .filter((lang) => lang.locale !== primaryLocale)
       .map((lang) => ({
@@ -80,7 +83,7 @@ export default function TranslationPage() {
   const handleAddLanguage = () => {
     if (!canAddLanguage) {
       if (typeof shopify !== "undefined") {
-        shopify.toast.show("Language limit reached. Please upgrade.");
+        shopify.toast.show(t("translation.languageLimitReached"));
       }
       navigate("/pricing");
       return;
@@ -128,10 +131,10 @@ export default function TranslationPage() {
               color: "#202223",
             }}
           >
-            Translation
+            {t("translation.pageTitle")}
           </h1>
           <p style={{ margin: 0, color: "#6d7175", fontSize: "14px" }}>
-            Translate your widgets to multiple languages
+            {t("translation.pageDescription")}
           </p>
         </div>
         <button
@@ -147,12 +150,12 @@ export default function TranslationPage() {
             boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
           }}
         >
-          Refresh data
+          {t("translation.refreshData")}
         </button>
       </div>
 
       {/* Free Plan Limit Banner */}
-      <PricingBanner text="Upgrade to unlock more translation options and support for multiple languages." />
+      <PricingBanner text={t("translation.upgradePromo")} />
 
       {/* Default Language Card */}
       <div
@@ -177,12 +180,12 @@ export default function TranslationPage() {
               color: "#202223",
             }}
           >
-            Default language: {primaryLocaleName}
+            {t("translation.defaultLanguage", { language: primaryLocaleName })}
           </h2>
           <p
             style={{ margin: "0 0 20px 0", color: "#6d7175", fontSize: "14px" }}
           >
-            All widgets are identified with this language by default.
+            {t("translation.defaultLanguageDesc")}
           </p>
           <button
             onClick={handleRedirect}
@@ -198,13 +201,13 @@ export default function TranslationPage() {
               boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
             }}
           >
-            Change default
+            {t("translation.changeDefault")}
           </button>
         </div>
       </div>
 
       {/* Translation List Card */}
-      <Card title="Translation list">
+      <Card title={t("translation.translationList")}>
         {translatedLanguages.length > 0 ? (
           <div style={{ padding: "0 16px" }}>
             <table
@@ -224,7 +227,7 @@ export default function TranslationPage() {
                       color: "#6d7175",
                     }}
                   >
-                    Language
+                    {t("translation.tableHeaders.language")}
                   </th>
                   <th
                     style={{
@@ -234,7 +237,7 @@ export default function TranslationPage() {
                       color: "#6d7175",
                     }}
                   >
-                    Pop-ups
+                    {t("translation.tableHeaders.popups")}
                   </th>
                   <th
                     style={{
@@ -245,7 +248,7 @@ export default function TranslationPage() {
                       textAlign: "right",
                     }}
                   >
-                    Action
+                    {t("translation.tableHeaders.action")}
                   </th>
                 </tr>
               </thead>
@@ -332,7 +335,7 @@ export default function TranslationPage() {
                             padding: "4px 8px",
                           }}
                         >
-                          Edit
+                          {t("common.edit")}
                         </button>
                       </td>
                     </tr>
@@ -361,7 +364,7 @@ export default function TranslationPage() {
                   fontSize: "13px",
                 }}
               >
-                {hasPopups ? "Add language" : "Create pop-up"}
+                {hasPopups ? t("translation.addLanguage") : t("translation.createPopup")}
               </button>
             </div>
           </div>
@@ -392,7 +395,7 @@ export default function TranslationPage() {
                 color: "#202223",
               }}
             >
-              Manage translations for the age verification popup.
+              {t("translation.emptyTitle")}
             </h3>
             <p
               style={{
@@ -403,7 +406,7 @@ export default function TranslationPage() {
                 lineHeight: "1.5",
               }}
             >
-              Translate the age verification version into multiple languages.
+              {t("translation.emptyDescription")}
             </p>
             <button
               onClick={handleAddLanguage}
@@ -421,7 +424,7 @@ export default function TranslationPage() {
                 boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
               }}
             >
-              {hasPopups ? "Add language" : "Create pop-up"}
+              {hasPopups ? t("translation.addLanguage") : t("translation.createPopup")}
             </button>
           </div>
         )}
@@ -431,9 +434,9 @@ export default function TranslationPage() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Add language"
+        title={t("translation.addLanguage")}
         primaryAction={{
-          content: "Add",
+          content: t("translation.addLanguage").split(" ")[0] || "Add",
           onAction: () => {
             navigate(`/translation/setup/${selectedLanguage}/add`);
             setIsModalOpen(false);
@@ -442,7 +445,7 @@ export default function TranslationPage() {
           disabled: !selectedLanguage,
         }}
         secondaryAction={{
-          content: "Cancel",
+          content: t("common.cancel"),
           onAction: () => setIsModalOpen(false),
         }}
       >
@@ -456,7 +459,7 @@ export default function TranslationPage() {
               marginBottom: "8px",
             }}
           >
-            Select a language
+            {t("translation.selectLanguage")}
           </label>
           <div style={{ position: "relative" }}>
             <select

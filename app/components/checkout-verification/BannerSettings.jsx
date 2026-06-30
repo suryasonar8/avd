@@ -1,11 +1,12 @@
 import { BANNER_TEXT_MAX_LENGTH } from "../../constants/checkout-verification";
 import SettingsSection from "./SettingsSection";
 import { Badge } from "../Badge";
-
 import { usePlan } from "../../context/PlanContext";
+import { useTranslation } from "../../context/TranslationContext";
 
 export default function BannerSettings({ config, onChange }) {
   const { canAccess } = usePlan();
+  const { t } = useTranslation();
   const hasBasicPlan = canAccess("checkout.banner.heading");
   const heading = config.heading || "";
   const maxLength = BANNER_TEXT_MAX_LENGTH;
@@ -20,9 +21,9 @@ export default function BannerSettings({ config, onChange }) {
 
   return (
     <SettingsSection
-      title="Text customization"
+      title={t("checkoutVerification.textCustomization")}
       badge={
-        !hasBasicPlan ? <Badge text="Basic plan or higher" type="basic" /> : null
+        !hasBasicPlan ? <Badge text={t("common.basicPlanOrHigher")} type="basic" /> : null
       }
       disabled={!hasBasicPlan}
     >
@@ -35,7 +36,7 @@ export default function BannerSettings({ config, onChange }) {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          <label style={{ fontSize: "14px", color: "#6D7175" }}>Heading</label>
+          <label style={{ fontSize: "14px", color: "#6D7175" }}>{t("checkoutVerification.heading")}</label>
           <span style={{ color: "#D72C0D" }}>*</span>
         </div>
         <div style={{ position: "relative" }}>
@@ -44,7 +45,7 @@ export default function BannerSettings({ config, onChange }) {
             value={heading}
             onChange={handleHeadingChange}
             disabled={!hasBasicPlan}
-            placeholder="Enter banner heading text"
+            placeholder={t("checkoutVerification.enterBannerHeading")}
             style={{
               width: "100%",
               padding: "12px 60px 12px 12px",

@@ -5,12 +5,14 @@ import { NumberInput } from "../NumberInput";
 import { useState, useRef } from "react";
 import { useFetcher } from "react-router";
 import { usePlan } from "../../context/PlanContext";
+import { useTranslation } from "../../context/TranslationContext";
 
 export function BackgroundTab({ config, setConfig, setIsUploading }) {
   const fetcher = useFetcher();
   const fileInputRef = useRef(null);
   const logoInputRef = useRef(null);
   const { canAccess } = usePlan();
+  const { t } = useTranslation();
   const [localUploading, setLocalUploading] = useState(null); // 'background' or 'logo'
 
   const handleImageUpload = async (event, type) => {
@@ -87,7 +89,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
       }
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Failed to upload image. Please try again.");
+      alert(t("common.uploadFailedTryAgain") || "Failed to upload image. Please try again.");
     } finally {
       setLocalUploading(null);
       setIsUploading(false);
@@ -110,7 +112,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
 
   return (
     <>
-      <Card title="Pop-up background">
+      <Card title={t("popupEditor.backgroundTab.popupBackground")}>
         <div style={{ marginBottom: "16px" }}>
           <label
             style={{
@@ -120,7 +122,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
               marginBottom: "12px",
             }}
           >
-            Type
+            {t("popupEditor.backgroundTab.type")}
           </label>
           <div
             style={{
@@ -151,7 +153,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                   })
                 }
               />{" "}
-              Solid color background
+              {t("popupEditor.backgroundTab.solidColorBackground")}
             </label>
             <label
               style={{
@@ -177,7 +179,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                   })
                 }
               />{" "}
-              Image background
+              {t("popupEditor.backgroundTab.imageBackground")}
             </label>
           </div>
         </div>
@@ -192,7 +194,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                 marginBottom: "8px",
               }}
             >
-              Page background image
+              {t("popupEditor.backgroundTab.pageBackgroundImage")}
             </label>
 
             <input
@@ -228,7 +230,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                       borderRadius: "4px",
                     }}
                   />
-                  <span style={{ fontSize: "13px" }}>Background image</span>
+                  <span style={{ fontSize: "13px" }}>{t("popupEditor.backgroundTab.backgroundImage")}</span>
                 </div>
                 <button
                   onClick={() => removeImage("background")}
@@ -241,7 +243,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                     fontWeight: "500",
                   }}
                 >
-                  Remove
+                  {t("common.remove")}
                 </button>
               </div>
             ) : (
@@ -269,18 +271,18 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                   }}
                 >
                   {localUploading === "background"
-                    ? "Uploading..."
-                    : "Add image"}
+                    ? t("common.uploading")
+                    : t("common.addImage")}
                 </button>
                 <p style={{ fontSize: "12px", color: "#6D7175", margin: 0 }}>
-                  Accepts .png, .jpg
+                  {t("common.acceptsFormats")}
                 </p>
               </div>
             )}
           </div>
         )}
         <ColorInput
-          label="Page background color"
+          label={t("popupEditor.backgroundTab.pageBackgroundColor")}
           required
           value={config.background.pageColor}
           onChange={(val) =>
@@ -291,9 +293,9 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
           }
         />
         <ColorInput
-          label="Background color"
+          label={t("popupEditor.backgroundTab.backgroundColor")}
           disabled={!canAccess("sv.bg.color")}
-          badge={!canAccess("sv.bg.color") ? <Badge text="Basic plan or higher" type="basic" /> : null}
+          badge={!canAccess("sv.bg.color") ? <Badge text={t("common.basicPlanOrHigher")} type="basic" /> : null}
           value={config.background.bgColor}
           onChange={(val) =>
             setConfig({
@@ -321,10 +323,10 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                 opacity: canAccess("sv.bg.logo") ? 1 : 0.5,
               }}
             >
-              Logo (Optional)
+              {t("popupEditor.backgroundTab.logoOptional")}
             </label>
             {!canAccess("sv.bg.logo") && (
-              <Badge text="Basic plan or higher" type="basic" />
+              <Badge text={t("common.basicPlanOrHigher")} type="basic" />
             )}
           </div>
 
@@ -365,7 +367,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                     border: "1px solid #EEE",
                   }}
                 />
-                <span style={{ fontSize: "13px" }}>Logo image</span>
+                <span style={{ fontSize: "13px" }}>{t("popupEditor.backgroundTab.logoImage")}</span>
               </div>
               <button
                 onClick={() => removeImage("logo")}
@@ -380,7 +382,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                 }}
                 disabled={!canAccess("sv.bg.logo")}
               >
-                Remove
+                {t("common.remove")}
               </button>
             </div>
           ) : (
@@ -409,10 +411,10 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                   opacity: canAccess("sv.bg.logo") ? 1 : 0.5,
                 }}
               >
-                {localUploading === "logo" ? "Uploading..." : "Add image"}
+                {localUploading === "logo" ? t("common.uploading") : t("common.addImage")}
               </button>
               <p style={{ fontSize: "12px", color: "#6D7175", margin: 0 }}>
-                Accepts .png, .jpg
+                {t("common.acceptsFormats")}
               </p>
             </div>
           )}
@@ -420,11 +422,11 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
       </Card>
 
       <Card
-        title="Border setting"
-        badge={!canAccess("sv.bg.border-color") ? <Badge text="Premium plan" type="premium" /> : null}
+        title={t("popupEditor.backgroundTab.borderSetting")}
+        badge={!canAccess("sv.bg.border-color") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
       >
         <ColorInput
-          label="Border color"
+          label={t("popupEditor.backgroundTab.borderColor")}
           disabled={!canAccess("sv.bg.border-color")}
           value={config.background.borderColor}
           onChange={(val) =>
@@ -437,7 +439,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
         <div style={{ display: "flex", gap: "16px" }}>
           <div style={{ flex: 1 }}>
             <NumberInput
-              label="Border radius"
+              label={t("popupEditor.backgroundTab.borderRadius")}
               disabled={!canAccess("sv.bg.border-radius")}
               value={config.background.borderRadius}
               onChange={(val) =>
@@ -450,7 +452,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
           </div>
           <div style={{ flex: 1 }}>
             <NumberInput
-              label="Border width"
+              label={t("popupEditor.backgroundTab.borderWidth")}
               disabled={!canAccess("sv.bg.border-width")}
               value={config.background.borderWidth}
               onChange={(val) =>

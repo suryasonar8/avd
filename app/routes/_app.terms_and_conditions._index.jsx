@@ -13,16 +13,19 @@ export const loader = async ({ request }) => {
 
 export const action = async ({ request }) => {};
 
+import { useTranslation } from "../context/TranslationContext";
+
 export default function TermsAndConditions() {
   const navigate = useNavigate();
   const { settings } = useLoaderData();
+  const { t } = useTranslation();
 
   const isEnabled = settings?.enabled || false;
 
   return (
-    <s-page heading="Terms and conditions">
+    <s-page heading={t("termsAndConditions.pageTitle")}>
       {/* Free Plan Limit Banner */}
-      <PricingBanner text="Access Terms and Conditions and other advanced features with our Premium plan!" />
+      <PricingBanner text={t("termsAndConditions.bannerPromo")} />
 
       {/* Preview Card */}
       <s-section>
@@ -119,7 +122,7 @@ export default function TermsAndConditions() {
             htmlFor="accept-terms"
             style={{ fontSize: "14px", color: "#333" }}
           >
-            {settings?.checkboxText || "I accept the terms and conditions."}
+            {settings?.checkboxText || t("termsAndConditions.defaults.checkboxText")}
           </label>
         </div>
 
@@ -142,7 +145,7 @@ export default function TermsAndConditions() {
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <strong style={{ fontSize: "14px" }}>
-                Product page &amp; cart page
+                {t("termsAndConditions.productAndCartPage")}
               </strong>
               <span
                 style={{
@@ -154,14 +157,13 @@ export default function TermsAndConditions() {
                   padding: "1px 7px",
                 }}
               >
-                {isEnabled ? "Enabled" : "Disabled"}
+                {isEnabled ? t("common.enabled") : t("common.disabled")}
               </span>
             </div>
             <p
               style={{ margin: "4px 0 0", fontSize: "13px", color: "#6d7175" }}
             >
-              Add a checkbox for customers to agree to terms before adding
-              product to cart.
+              {t("termsAndConditions.productAndCartDescription")}
             </p>
           </div>
           <s-button
@@ -169,7 +171,7 @@ export default function TermsAndConditions() {
             size="slim"
             onClick={() => navigate("/terms_and_conditions/setup")}
           >
-            Customize
+            {t("dashboard.customizeNow")}
           </s-button>
         </div>
       </s-section>
@@ -183,9 +185,9 @@ export default function TermsAndConditions() {
           color: "#6d7175",
         }}
       >
-        Need help? Please view{" "}
+        {t("common.needHelp")}{" "}
         <a href="#" style={{ color: "#2c6ecb", textDecoration: "none" }}>
-          our document guideline
+          {t("common.ourDocumentGuideline")}
         </a>
       </div>
     </s-page>

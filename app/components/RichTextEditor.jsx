@@ -12,6 +12,7 @@ import {
   useEditorState,
 } from "react-simple-wysiwyg";
 import React, { useState, useRef, useEffect } from "react";
+import { useTranslation } from "../context/TranslationContext";
 
 const CustomDropdown = ({ title, items, value, onChange, style }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -160,83 +161,51 @@ const CustomColorPicker = ({ value, onChange }) => {
             left: 0,
             background: "white",
             border: "1px solid #CBCFD2",
-            borderRadius: "12px",
+            borderRadius: "8px",
             marginTop: "4px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+            boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
             zIndex: 100,
-            padding: "12px",
-            width: "220px",
+            padding: "8px",
+            display: "grid",
+            gridTemplateColumns: "repeat(6, 1fr)",
+            gap: "4px",
           }}
         >
-          <div
-            style={{
-              height: "120px",
-              background:
-                "linear-gradient(to right, #fff, transparent), linear-gradient(to top, #000, transparent), #f00",
-              borderRadius: "8px",
-              marginBottom: "12px",
-              position: "relative",
-              cursor: "crosshair",
-            }}
-            onClick={(e) => {
-              onChange("#ff0000");
-              setIsOpen(false);
-            }}
-          />
-          <input
-            type="range"
-            min="0"
-            max="360"
-            style={{ width: "100%", marginBottom: "12px", cursor: "pointer" }}
-            onChange={(e) => {
-              const hue = e.target.value;
-              onChange(`hsl(${hue}, 100%, 50%)`);
-            }}
-          />
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-            {[
-              "#000000",
-              "#ffffff",
-              "#ff0000",
-              "#00ff00",
-              "#0000ff",
-              "#ffff00",
-              "#ff00ff",
-              "#00ffff",
-            ].map((c) => (
-              <div
-                key={c}
-                onClick={() => {
-                  onChange(c);
-                  setIsOpen(false);
-                }}
-                style={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "4px",
-                  background: c,
-                  border: "1px solid #eee",
-                  cursor: "pointer",
-                }}
-              />
-            ))}
-          </div>
+          {[
+            "#000000",
+            "#ffffff",
+            "#ff0000",
+            "#00ff00",
+            "#0000ff",
+            "#ffff00",
+            "#ff00ff",
+            "#00ffff",
+          ].map((c) => (
+            <div
+              key={c}
+              onClick={() => {
+                onChange(c);
+                setIsOpen(false);
+              }}
+              style={{
+                width: "20px",
+                height: "20px",
+                borderRadius: "4px",
+                background: c,
+                border: "1px solid #eee",
+                cursor: "pointer",
+              }}
+            />
+          ))}
         </div>
       )}
     </div>
   );
 };
 
-const BtnCustomClear = createButton(
-  "Clear formatting",
-  <span style={{ fontSize: "14px", fontWeight: "400" }}>
-    T<sub style={{ fontSize: "10px", bottom: "0" }}>x</sub>
-  </span>,
-  "removeFormat",
-);
-
 const EditorToolbar = ({ value, onChange }) => {
   const { $el } = useEditorState();
+  const { t } = useTranslation();
   const [currentFont, setCurrentFont] = useState("Arial");
   const [currentSize, setCurrentSize] = useState("18px");
   const [currentColor, setCurrentColor] = useState("");
@@ -291,7 +260,16 @@ const EditorToolbar = ({ value, onChange }) => {
         onChange={handleCommand}
         style={{ width: "55px" }}
       />
-      <BtnCustomClear />
+      <button
+        type="button"
+        title={t("richTextEditor.clearFormatting")}
+        onClick={() => handleCommand("removeFormat")}
+        className="rsw-btn"
+      >
+        <span style={{ fontSize: "14px", fontWeight: "400" }}>
+          T<sub style={{ fontSize: "10px", bottom: "0" }}>x</sub>
+        </span>
+      </button>
     </Toolbar>
   );
 };

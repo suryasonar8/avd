@@ -2,31 +2,70 @@ import { Outlet, useLoaderData, useRouteError } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate } from "../shopify.server";
 import { PlanProvider } from "../context/PlanContext";
+import { TranslationProvider } from "../context/TranslationContext";
 import { getShopPlan, buildAccessMap } from "../services/plan.service";
+import { loadTranslations } from "../i18n/i18n";
+import { useTranslation } from "../context/TranslationContext";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
   const plan = await getShopPlan(admin, session.shop);
   const access = buildAccessMap(plan);
-  return { plan, access };
+
+  // Load admin language from shop settings
+  let locale = "en";
+  try {
+    const settingsResponse = await admin.graphql(
+      `#graphql
+      query getSettings {
+        shop {
+          metafield(namespace: "avd", key: "settings") {
+            value
+          }
+        }
+      }`,
+    );
+    const settingsData = await settingsResponse.json();
+    const metafieldValue = settingsData.data.shop.metafield?.value;
+    if (metafieldValue) {
+      const settings = JSON.parse(metafieldValue);
+      if (settings.adminLanguage && settings.adminLanguage !== "English") {
+        locale = settings.adminLanguage.toLowerCase();
+      }
+    }
+  } catch (e) {
+    // Fall back to English if settings can't be loaded
+    console.warn("[i18n] Could not load admin language setting:", e.message);
+  }
+
+  const translations = await loadTranslations(locale);
+
+  return { plan, access, translations, locale };
 };
 
-export default function App() {
-  const { plan, access } = useLoaderData();
+function AppNav() {
+  const { t } = useTranslation();
   return (
-    <>
-      <s-app-nav>
-        <s-link href="/store_verification">Store verification</s-link>
-        <s-link href="/checkout_verification">Checkout Verification</s-link>
-        <s-link href="/translation">Translation</s-link>
-        <s-link href="/terms_and_conditions">Terms and Conditions</s-link>
-        <s-link href="/settings">settings</s-link>
-        <s-link href="/pricing">Pricing</s-link>
-      </s-app-nav>
+    <s-app-nav>
+      <s-link href="/store_verification">{t("navigation.storeVerification")}</s-link>
+      <s-link href="/checkout_verification">{t("navigation.checkoutVerification")}</s-link>
+      <s-link href="/translation">{t("navigation.translation")}</s-link>
+      <s-link href="/terms_and_conditions">{t("navigation.termsAndConditions")}</s-link>
+      <s-link href="/settings">{t("navigation.settings")}</s-link>
+      <s-link href="/pricing">{t("navigation.pricing")}</s-link>
+    </s-app-nav>
+  );
+}
+
+export default function App() {
+  const { plan, access, translations, locale } = useLoaderData();
+  return (
+    <TranslationProvider translations={translations} locale={locale}>
+      <AppNav />
       <PlanProvider plan={plan} access={access}>
         <Outlet />
       </PlanProvider>
-    </>
+    </TranslationProvider>
   );
 }
 

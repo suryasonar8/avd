@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { RichTextEditor } from "./RichTextEditor";
+import { useTranslation } from "../context/TranslationContext";
 
 export const SectionTitle = ({ title, description }) => (
   <div style={{ marginBottom: "24px" }}>
@@ -137,6 +138,7 @@ export const PopupSelector = ({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const dropdownRef = useRef(null);
+  const { t } = useTranslation();
 
   const filteredPopups = useMemo(() => {
     if (!searchTerm) return popups;
@@ -167,11 +169,11 @@ export const PopupSelector = ({
     <div style={{ position: "relative" }} ref={dropdownRef}>
       <input
         type="text"
-        placeholder="Select pop-up"
+        placeholder={t("translation.selectPopup")}
         readOnly
         value={
           selectedPopup
-            ? selectedPopup.config.name || `Popup #${selectedPopup.id}`
+            ? selectedPopup.config.name || t("translation.popupNumber", { id: selectedPopup.id })
             : ""
         }
         onClick={() => !isReadOnly && setIsOpen(!isOpen)}
@@ -219,7 +221,7 @@ export const PopupSelector = ({
         >
           <input
             type="text"
-            placeholder="Search pop-ups..."
+            placeholder={t("translation.searchPopups")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             autoFocus
@@ -269,7 +271,7 @@ export const PopupSelector = ({
                   }
                 }}
               >
-                {popup.config.name || `Popup #${popup.id}`}
+                {popup.config.name || t("translation.popupNumber", { id: popup.id })}
               </div>
             ))}
             {filteredPopups.length === 0 && (
@@ -280,7 +282,7 @@ export const PopupSelector = ({
                   color: "#6d7175",
                 }}
               >
-                No pop-ups found
+                {t("translation.noPopupsFound")}
               </div>
             )}
           </div>

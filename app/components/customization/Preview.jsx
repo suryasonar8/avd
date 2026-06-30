@@ -1,4 +1,5 @@
 import { useFetcher } from "react-router";
+import { useTranslation } from "../../context/TranslationContext";
 
 export const Preview = ({
   config,
@@ -9,6 +10,7 @@ export const Preview = ({
   setGlobalSettings,
 }) => {
   const fetcher = useFetcher();
+  const { t } = useTranslation();
   const showBrandMark = globalSettings?.showBrandMark !== false;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -46,7 +48,7 @@ export const Preview = ({
               cursor: "pointer",
               fontSize: "18px",
             }}
-            title="Desktop Preview"
+            title={t("popupEditor.desktopPreview")}
           >
             <svg
               width="20"
@@ -71,7 +73,7 @@ export const Preview = ({
               cursor: "pointer",
               fontSize: "18px",
             }}
-            title="Mobile Preview"
+            title={t("popupEditor.mobilePreview")}
           >
             <svg
               width="20"
@@ -181,18 +183,11 @@ export const Preview = ({
                             width: previewMode === "desktop" ? "120px" : "80px",
                           }}
                         >
-                          <option>January</option>
-                          <option>February</option>
-                          <option>March</option>
-                          <option>April</option>
-                          <option>May</option>
-                          <option>June</option>
-                          <option>July</option>
-                          <option>August</option>
-                          <option>September</option>
-                          <option>October</option>
-                          <option>November</option>
-                          <option>December</option>
+                          {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((m) => (
+                            <option key={m} value={m}>
+                              {t("months." + m.toLowerCase())}
+                            </option>
+                          ))}
                         </select>
                       );
                     }
@@ -300,7 +295,7 @@ export const Preview = ({
                   gap: "4px",
                 }}
               >
-                Protected by{" "}
+                {t("termsAndConditions.protectedBy")}{" "}
                 <span
                   style={{
                     color: "#FFF",
@@ -313,7 +308,7 @@ export const Preview = ({
                   <span
                     style={{ color: "#005F99", textDecoration: "underline" }}
                   >
-                    AVD
+                    {t("termsAndConditions.avdTrademark")}
                   </span>
                 </span>
               </div>
@@ -343,7 +338,7 @@ export const Preview = ({
                   cursor: "pointer",
                 }}
               >
-                Click to remove brand mark
+                {t("popupEditor.clickToRemoveBrandMark")}
               </button>
           ) : (
             <button
@@ -365,7 +360,7 @@ export const Preview = ({
                 cursor: "pointer",
               }}
             >
-              Click to show brand mark
+              {t("popupEditor.clickToShowBrandMark")}
             </button>
           )}
         </div>
@@ -373,9 +368,9 @@ export const Preview = ({
 
       <div style={{ textAlign: "center", padding: "12px" }}>
         <p style={{ color: "#6D7175", fontSize: "13px" }}>
-          Need help? Please view{" "}
+          {t("common.needHelp")}{" "}
           <a href="#" style={{ color: "#005F99", textDecoration: "none" }}>
-            our document guideline
+            {t("common.ourDocumentGuideline")}
           </a>
         </p>
       </div>

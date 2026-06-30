@@ -4,6 +4,7 @@ import { FilterMainMenu, FilterOptionsMenu } from "./FilterMenus";
 import ActiveFilterChip from "./ActiveFilterChip";
 import SearchBar from "./SearchBar";
 import { SearchButtonIcon, FilterButtonIcon, TrashIcon } from "./Icons";
+import { useTranslation } from "../../context/TranslationContext";
 
 export default function PopupToolbar({
   searchQuery,
@@ -18,6 +19,7 @@ export default function PopupToolbar({
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const [activeFilterMenu, setActiveFilterMenu] = useState("main");
   const [dropdownAnchor, setDropdownAnchor] = useState("add"); // "add", "pageSize", "trigger", "target"
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!isFilterDropdownOpen) {
@@ -68,7 +70,7 @@ export default function PopupToolbar({
               boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
               gap: "1px",
             }}
-            title="Search & Filters"
+            title={t("storeVerification.searchAndFilters")}
           >
             <SearchButtonIcon />
             <FilterButtonIcon />
@@ -90,7 +92,7 @@ export default function PopupToolbar({
               color: "#FF4D4D",
               boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
             }}
-            title="Delete All Pop-ups"
+            title={t("storeVerification.deleteAllPopups")}
           >
             <TrashIcon />
           </button>
@@ -129,16 +131,16 @@ export default function PopupToolbar({
       >
         {activeFilters.map((filter, index) => (
           <ActiveFilterChip
-            key={index}
-            filter={filter}
-            onRemoveFilter={onRemoveFilter}
-            onAddFilter={onAddFilter}
-            activeFilters={activeFilters}
-            isDropdownOpen={isFilterDropdownOpen}
-            setIsDropdownOpen={setIsFilterDropdownOpen}
-            dropdownAnchor={dropdownAnchor}
-            setDropdownAnchor={setDropdownAnchor}
-            setActiveFilterMenu={setActiveFilterMenu}
+             key={index}
+             filter={filter}
+             onRemoveFilter={onRemoveFilter}
+             onAddFilter={onAddFilter}
+             activeFilters={activeFilters}
+             isDropdownOpen={isFilterDropdownOpen}
+             setIsDropdownOpen={setIsFilterDropdownOpen}
+             dropdownAnchor={dropdownAnchor}
+             setDropdownAnchor={setDropdownAnchor}
+             setActiveFilterMenu={setActiveFilterMenu}
           />
         ))}
 
@@ -167,7 +169,7 @@ export default function PopupToolbar({
               opacity: allFiltersApplied ? 0.6 : 1,
             }}
           >
-            Add filter +
+            {t("storeVerification.addFilter")}
           </button>
 
           {isFilterDropdownOpen && dropdownAnchor === "add" && (
@@ -205,7 +207,7 @@ export default function PopupToolbar({
             padding: "4px 8px",
           }}
         >
-          Clear all
+          {t("common.clearAll")}
         </button>
       </div>
     </div>

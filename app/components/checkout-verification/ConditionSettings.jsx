@@ -3,11 +3,12 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 import SettingsSection from "./SettingsSection";
 import CustomRadio from "./CustomRadio";
 import { Badge } from "../Badge";
-
 import { usePlan } from "../../context/PlanContext";
+import { useTranslation } from "../../context/TranslationContext";
 
 export default function ConditionSettings({ config, onChange }) {
   const { canAccess } = usePlan();
+  const { t } = useTranslation();
   const shopify = useAppBridge();
   const disabled = !canAccess("checkout.condition.target");
 
@@ -79,21 +80,21 @@ export default function ConditionSettings({ config, onChange }) {
   return (
     <>
       <SettingsSection
-        title="Banner status"
+        title={t("checkoutVerification.bannerStatus")}
         badge={
           !canAccess("checkout.condition.status") ? (
-            <Badge text="Basic plan or higher" type="basic" />
+            <Badge text={t("common.basicPlanOrHigher")} type="basic" />
           ) : null
         }
       >
         <CustomRadio
-          label="Enabled"
+          label={t("common.enabled")}
           checked={config.status === "enabled"}
           onChange={() => handleStatusChange("enabled")}
           disabled={!canAccess("checkout.condition.status")}
         />
         <CustomRadio
-          label="Disabled"
+          label={t("common.disabled")}
           checked={config.status === "disabled"}
           onChange={() => handleStatusChange("disabled")}
           disabled={!canAccess("checkout.condition.status")}
@@ -101,23 +102,23 @@ export default function ConditionSettings({ config, onChange }) {
       </SettingsSection>
 
       <SettingsSection
-        title="Target"
+        title={t("checkoutVerification.target")}
         badge={
           !canAccess("checkout.condition.target") ? (
-            <Badge text="Basic plan or higher" type="basic" />
+            <Badge text={t("common.basicPlanOrHigher")} type="basic" />
           ) : null
         }
       >
         <CustomRadio
-          label="Always"
-          description="Always show the banner without any conditions."
+          label={t("checkoutVerification.conditionAlways")}
+          description={t("checkoutVerification.conditionAlwaysDescription")}
           checked={config.target === "always"}
           onChange={() => handleTargetChange("always")}
           disabled={!canAccess("checkout.condition.target")}
         />
         <CustomRadio
-          label="Specific collection"
-          description="Show the banner to selected collection."
+          label={t("checkoutVerification.specificCollection")}
+          description={t("checkoutVerification.specificCollectionDescription")}
           checked={config.target === "collection"}
           onChange={() => handleTargetChange("collection")}
           disabled={!canAccess("checkout.condition.target")}
@@ -140,8 +141,8 @@ export default function ConditionSettings({ config, onChange }) {
               }}
             >
               {(config.selectedCollections || []).length > 0
-                ? "Change collections"
-                : "Select collections"}
+                ? t("checkoutVerification.changeCollections")
+                : t("checkoutVerification.selectCollections")}
             </button>
             {(config.selectedCollections || []).length > 0 && (
               <div
@@ -191,8 +192,8 @@ export default function ConditionSettings({ config, onChange }) {
         )}
 
         <CustomRadio
-          label="Specific product"
-          description="Show the banner to selected product."
+          label={t("checkoutVerification.specificProduct")}
+          description={t("checkoutVerification.specificProductDescription")}
           checked={config.target === "product"}
           onChange={() => handleTargetChange("product")}
           disabled={!canAccess("checkout.condition.target")}
@@ -215,8 +216,8 @@ export default function ConditionSettings({ config, onChange }) {
               }}
             >
               {(config.selectedProducts || []).length > 0
-                ? "Change products"
-                : "Select products"}
+                ? t("checkoutVerification.changeProducts")
+                : t("checkoutVerification.selectProducts")}
             </button>
             {(config.selectedProducts || []).length > 0 && (
               <div

@@ -6,6 +6,7 @@ import { getAppEmbedStatus } from "../utils/theme.server";
 import { PopupService } from "../services/popup.service";
 import { AnalyticsService } from "../services/analytics.service";
 import DateRangePicker from "../components/DateRangePicker";
+import { useTranslation } from "../context/TranslationContext";
 import dayjs from "dayjs";
 
 export const loader = async ({ request }) => {
@@ -143,6 +144,7 @@ export default function Dashboard() {
   } = useLoaderData();
   const fetcher = useFetcher();
   const analyticsFetcher = useFetcher();
+  const { t } = useTranslation();
 
   // Default date range: last 7 days
   const defaultStartDate = dayjs().subtract(7, "day").format("YYYY-MM-DD");
@@ -160,25 +162,25 @@ export default function Dashboard() {
     const thirtyDaysAgoStr = dayjs().subtract(30, "day").format("YYYY-MM-DD");
 
     if (dateRange.startDate === todayStr && dateRange.endDate === todayStr) {
-      return "today";
+      return t("dashboard.dateLabels.today");
     }
     if (
       dateRange.startDate === yesterdayStr &&
       dateRange.endDate === yesterdayStr
     ) {
-      return "yesterday";
+      return t("dashboard.dateLabels.yesterday");
     }
     if (
       dateRange.startDate === sevenDaysAgoStr &&
       dateRange.endDate === yesterdayStr
     ) {
-      return "7 days";
+      return t("dashboard.dateLabels.7days");
     }
     if (
       dateRange.startDate === thirtyDaysAgoStr &&
       dateRange.endDate === yesterdayStr
     ) {
-      return "30 days";
+      return t("dashboard.dateLabels.30days");
     }
     return null;
   };
@@ -220,29 +222,27 @@ export default function Dashboard() {
 
   const faqData = [
     {
-      question: "Does this app cost me monthly?",
+      question: t("dashboard.faq1Question"),
       answer: (
         <>
-          Yes, our app charges a subscription fee based on your selected plan.
-          For more details, please view our{" "}
+          {t("dashboard.faq1Answer")}{" "}
           <s-link
             href="/pricing"
             style={{ color: "#005BD3", textDecoration: "underline" }}
           >
-            pricing page
+            {t("dashboard.faq1LinkText")}
           </s-link>
           .
         </>
       ),
     },
     {
-      question: 'Is this app compatible with all "Shopify" themes?',
-      answer: "Yes, the app works seamlessly with all 'Shopify' themes.",
+      question: t("dashboard.faq2Question"),
+      answer: t("dashboard.faq2Answer"),
     },
     {
-      question: "Is this app compatible with custom themes?",
-      answer:
-        "Currently, custom themes or those purchases from third-party markets (not 'Shopify') may have occasional CSS issues. However, the impact is minimal. Please contact support if you get any problems with it.",
+      question: t("dashboard.faq3Question"),
+      answer: t("dashboard.faq3Answer"),
     },
   ];
 
@@ -261,10 +261,10 @@ export default function Dashboard() {
             margin: "0 0 8px 0",
           }}
         >
-          Hello {shopName},
+          {t("dashboard.greeting", { shopName })}
         </h1>
         <p style={{ fontSize: "16px", color: "#6D7175", margin: 0 }}>
-          Welcome to Age Verification Pop-up 🎉
+          {t("dashboard.welcome")}
         </p>
       </div>
 
@@ -290,7 +290,7 @@ export default function Dashboard() {
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <span style={{ fontSize: "20px" }}>🔲</span>
             <span style={{ fontSize: "14px", fontWeight: "500" }}>
-              Enable app embed on theme
+              {t("dashboard.enableAppEmbed")}
             </span>
             <span
               style={{
@@ -302,7 +302,7 @@ export default function Dashboard() {
                 borderRadius: "99px",
               }}
             >
-              {appEmbedEnabled ? "On" : "Off"}
+              {appEmbedEnabled ? t("common.on") : t("common.off")}
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -310,7 +310,7 @@ export default function Dashboard() {
               variant="secondary"
               onClick={() => window.open(appEmbedUrl, "_blank")}
             >
-              <span style={{ marginRight: "4px" }}>🔗</span> Active app embed
+              <span style={{ marginRight: "4px" }}>🔗</span> {t("dashboard.activeAppEmbed")}
             </s-button>
             <a
               href="#"
@@ -320,7 +320,7 @@ export default function Dashboard() {
                 textDecoration: "none",
               }}
             >
-              Guideline
+              {t("common.guideline")}
             </a>
           </div>
         </div>
@@ -335,7 +335,7 @@ export default function Dashboard() {
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <span style={{ fontSize: "20px" }}>🔳</span>
             <span style={{ fontSize: "14px", fontWeight: "500" }}>
-              Age Verification app status
+              {t("dashboard.appStatus")}
             </span>
             <span
               style={{
@@ -347,7 +347,7 @@ export default function Dashboard() {
                 borderRadius: "99px",
               }}
             >
-              {currentStatus ? "On" : "Off"}
+              {currentStatus ? t("common.on") : t("common.off")}
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -365,8 +365,8 @@ export default function Dashboard() {
               }}
             >
               {currentStatus
-                ? "Inactive Age Verification"
-                : "Active Age Verification"}
+                ? t("dashboard.inactiveAgeVerification")
+                : t("dashboard.activeAgeVerification")}
             </s-button>
             <a
               href="#"
@@ -376,14 +376,14 @@ export default function Dashboard() {
                 textDecoration: "none",
               }}
             >
-              Guideline
+              {t("common.guideline")}
             </a>
           </div>
         </div>
       </div>
 
       {/* Setup guide Card */}
-      <Card title="Setup guide">
+      <Card title={t("dashboard.setupGuide")}>
         <div style={{ position: "absolute", right: "20px", top: "20px" }}>
           <span style={{ cursor: "pointer", color: "#6D7175" }}>•••</span>
         </div>
@@ -398,7 +398,7 @@ export default function Dashboard() {
             }}
           >
             <span>
-              {(popupActive ? 1 : 0) + (isTested ? 1 : 0)}/2 completed
+              {(popupActive ? 1 : 0) + (isTested ? 1 : 0)}/2 {t("common.completed")}
             </span>
           </div>
           <div
@@ -485,7 +485,7 @@ export default function Dashboard() {
                 flex: 1,
               }}
             >
-              Customize Age Verification Popup
+              {t("dashboard.customizePopup")}
             </span>
             {/* Chevron */}
             <svg
@@ -519,14 +519,13 @@ export default function Dashboard() {
                   margin: "0 0 16px 0",
                 }}
               >
-                Create a custom popup that matches your store's branding and
-                legal needs.
+                {t("dashboard.customizePopupDescription")}
               </p>
               <s-button
                 variant="primary"
                 href="/store_verification/customization"
               >
-                Customize now
+                {t("dashboard.customizeNow")}
               </s-button>
             </div>
           )}
@@ -600,7 +599,7 @@ export default function Dashboard() {
                 flex: 1,
               }}
             >
-              Test the Popup
+              {t("dashboard.testPopup")}
             </span>
             {/* Chevron */}
             <svg
@@ -634,7 +633,7 @@ export default function Dashboard() {
                   margin: "0 0 16px 0",
                 }}
               >
-                Verify that your age verification popup is working correctly.
+                {t("dashboard.testPopupDescription")}
               </p>
               <s-button
                 variant="primary"
@@ -650,7 +649,7 @@ export default function Dashboard() {
                   );
                 }}
               >
-                Test now
+                {t("dashboard.testNow")}
               </s-button>
             </div>
           )}
@@ -667,7 +666,7 @@ export default function Dashboard() {
         }}
       >
         <h2 style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>
-          Overview{" "}
+          {t("dashboard.overview")}{" "}
           {activeLabel && (
             <span
               style={{
@@ -710,7 +709,7 @@ export default function Dashboard() {
               marginBottom: "8px",
             }}
           >
-            Total verification
+            {t("dashboard.totalVerification")}
           </p>
           <span
             style={{ fontSize: "48px", fontWeight: "700", color: "#202223" }}
@@ -734,7 +733,7 @@ export default function Dashboard() {
               marginBottom: "8px",
             }}
           >
-            Verified
+            {t("dashboard.verified")}
           </p>
           <span
             style={{ fontSize: "48px", fontWeight: "700", color: "#202223" }}
@@ -758,7 +757,7 @@ export default function Dashboard() {
               marginBottom: "8px",
             }}
           >
-            Unverified
+            {t("dashboard.unverified")}
           </p>
           <span
             style={{ fontSize: "48px", fontWeight: "700", color: "#202223" }}
@@ -795,16 +794,15 @@ export default function Dashboard() {
           >
             <span style={{ fontSize: "20px" }}>💬</span>
             <h3 style={{ fontSize: "14px", fontWeight: "700", margin: 0 }}>
-              Contact support
+              {t("dashboard.contactSupport")}
             </h3>
           </div>
           <p
             style={{ fontSize: "13px", color: "#6D7175", marginBottom: "16px" }}
           >
-            We provide <b>24/7</b> support, feel free to contact us if you get
-            any problems with the app.
+            {t("dashboard.contactSupportDescription")}
           </p>
-          <s-button variant="secondary">Chat with us</s-button>
+          <s-button variant="secondary">{t("dashboard.chatWithUs")}</s-button>
         </div>
 
         <div
@@ -825,16 +823,15 @@ export default function Dashboard() {
           >
             <span style={{ fontSize: "20px" }}>📖</span>
             <h3 style={{ fontSize: "14px", fontWeight: "700", margin: 0 }}>
-              Read user guideline
+              {t("dashboard.readUserGuideline")}
             </h3>
           </div>
           <p
             style={{ fontSize: "13px", color: "#6D7175", marginBottom: "16px" }}
           >
-            Step-by-step instruction articles to guide you in setting up rules
-            in the easiest way.
+            {t("dashboard.readUserGuidelineDescription")}
           </p>
-          <s-button variant="secondary">Read user guideline</s-button>
+          <s-button variant="secondary">{t("dashboard.readUserGuideline")}</s-button>
         </div>
 
         <div
@@ -855,21 +852,20 @@ export default function Dashboard() {
           >
             <span style={{ fontSize: "20px" }}>🗺️</span>
             <h3 style={{ fontSize: "14px", fontWeight: "700", margin: 0 }}>
-              Discover use cases
+              {t("dashboard.discoverUseCases")}
             </h3>
           </div>
           <p
             style={{ fontSize: "13px", color: "#6D7175", marginBottom: "16px" }}
           >
-            Explore our helpful articles on various rule use cases to assist you
-            in verifying age of your store.
+            {t("dashboard.discoverUseCasesDescription")}
           </p>
-          <s-button variant="secondary">View use cases</s-button>
+          <s-button variant="secondary">{t("dashboard.viewUseCases")}</s-button>
         </div>
       </div>
 
       {/* FAQ Section */}
-      <Card title="Frequently Ask Questions">
+      <Card title={t("dashboard.faq")}>
         <div
           style={{
             display: "flex",

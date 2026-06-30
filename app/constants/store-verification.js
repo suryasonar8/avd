@@ -8,7 +8,7 @@ export const DEFAULT_STORE_CONFIG = {
     method: "No input",
     verifyAge: 18,
     dateOrder: "MM,DD,YY",
-    pages: DISPLAY_PAGES[0],
+    pages: DISPLAY_PAGES[0].value,
     trigger: "Always show",
     background: {
         type: "Solid color background",

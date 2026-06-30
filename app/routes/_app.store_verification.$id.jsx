@@ -151,11 +151,14 @@ export const action = async ({ request, params }) => {
   return { success: true };
 };
 
+import { useTranslation } from "../context/TranslationContext";
+
 export default function StoreVerificationEdit() {
   const loaderData = useLoaderData();
   const fetcher = useFetcher();
   const shopify = useAppBridge();
   const { id } = useParams();
+  const { t } = useTranslation();
 
   const handleSave = (config) => {
     fetcher.submit({ config: JSON.stringify(config) }, { method: "POST" });
@@ -167,8 +170,8 @@ export default function StoreVerificationEdit() {
       settings={loaderData?.settings}
       globalSettings={loaderData?.globalSettings}
       onSave={handleSave}
-      heading="Configuration"
-      description="Customization the pop-up to match your brand."
+      heading={t("popupEditor.editorHeading")}
+      description={t("popupEditor.editorDescription")}
       saveBarId={`edit-save-bar-${id}`}
       fetcher={fetcher}
       shopify={shopify}

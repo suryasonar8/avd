@@ -1,10 +1,12 @@
 import { useState, useImperativeHandle, forwardRef } from "react";
+import { useTranslation } from "../../context/TranslationContext";
 
 const DeleteConfirmModal = forwardRef(function DeleteConfirmModal(
   { onConfirm },
   ref,
 ) {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation();
 
   useImperativeHandle(ref, () => ({
     open: () => setIsOpen(true),
@@ -54,7 +56,7 @@ const DeleteConfirmModal = forwardRef(function DeleteConfirmModal(
               color: "#1A1C1D",
             }}
           >
-            Do you want to delete all selected rules
+            {t("storeVerification.deleteConfirmTitle")}
           </span>
           <button
             type="button"
@@ -71,7 +73,7 @@ const DeleteConfirmModal = forwardRef(function DeleteConfirmModal(
               alignItems: "center",
               justifyContent: "center",
             }}
-            title="Close"
+            title={t("common.close")}
           >
             ×
           </button>
@@ -86,7 +88,7 @@ const DeleteConfirmModal = forwardRef(function DeleteConfirmModal(
             lineHeight: "1.6",
           }}
         >
-          If you delete the rule, you won't be able to revert it
+          {t("storeVerification.deleteConfirmBody")}
         </div>
 
         {/* Modal Footer */}
@@ -120,7 +122,7 @@ const DeleteConfirmModal = forwardRef(function DeleteConfirmModal(
               transition: "background 0.1s",
             }}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             type="button"
@@ -146,7 +148,7 @@ const DeleteConfirmModal = forwardRef(function DeleteConfirmModal(
               transition: "background 0.1s",
             }}
           >
-            Delete
+            {t("common.delete")}
           </button>
         </div>
       </div>

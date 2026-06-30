@@ -78,19 +78,22 @@ export const action = async ({ request }) => {
   return { success: !errors?.length };
 };
 
+import { useTranslation } from "../context/TranslationContext";
+
 export default function SettingsPage() {
   const { settings: initialSettings } = useLoaderData();
   const [settings, setSettings] = useState(initialSettings);
   const fetcher = useFetcher();
   const shopify = useAppBridge();
+  const { t } = useTranslation();
 
   const isDirty = JSON.stringify(settings) !== JSON.stringify(initialSettings);
 
   useEffect(() => {
     if (fetcher.data?.success) {
-      shopify.toast.show("Settings saved");
+      shopify.toast.show(t("settings.settingsSaved"));
     }
-  }, [fetcher.data, shopify]);
+  }, [fetcher.data, shopify, t]);
 
   const handleSave = () => {
     fetcher.submit({ settings: JSON.stringify(settings) }, { method: "POST" });
@@ -101,12 +104,12 @@ export default function SettingsPage() {
   };
 
   return (
-    <s-page heading="Settings">
+    <s-page heading={t("settings.pageTitle")}>
       <SaveBar id="settings-save-bar" open={isDirty}>
         <button variant="primary" onClick={handleSave}>
-          Save
+          {t("common.save")}
         </button>
-        <button onClick={handleDiscard}>Discard</button>
+        <button onClick={handleDiscard}>{t("common.discard")}</button>
       </SaveBar>
 
       <div
@@ -121,15 +124,15 @@ export default function SettingsPage() {
           <h2
             style={{ fontSize: "16px", fontWeight: "600", marginBottom: "8px" }}
           >
-            General
+            {t("settings.general")}
           </h2>
           <p style={{ fontSize: "13px", color: "#6D7175", lineHeight: "1.5" }}>
-            Choose the admin language and set visitor verification duration.
+            {t("settings.generalDescription")}
           </p>
         </div>
 
         <div style={{ maxWidth: "600px" }}>
-          <Card title="Admin language">
+          <Card title={t("settings.adminLanguage")}>
             <select
               value={settings.adminLanguage || "English"}
               onChange={(e) =>
@@ -144,8 +147,8 @@ export default function SettingsPage() {
                 fontSize: "14px",
               }}
             >
-              <option>English</option>
-              <option>Other</option>
+              <option value="English">{t("settings.adminLanguageEnglish")}</option>
+              <option value="Other">{t("settings.adminLanguageOther")}</option>
             </select>
             <p
               style={{
@@ -154,11 +157,11 @@ export default function SettingsPage() {
                 marginTop: "8px",
               }}
             >
-              Selected languages will be translated immediately.
+              {t("settings.adminLanguageHelpText")}
             </p>
           </Card>
 
-          <Card title="Remember visitor">
+          <Card title={t("settings.rememberVisitor")}>
             <div style={{ marginBottom: "16px" }}>
               <select
                 value={settings.rememberVisitor || "Session only"}
@@ -174,9 +177,9 @@ export default function SettingsPage() {
                   fontSize: "14px",
                 }}
               >
-                <option>Session only</option>
-                <option>Days</option>
-                <option>Allow visitor to choose</option>
+                <option value="Session only">{t("settings.rememberVisitorOptions.sessionOnly")}</option>
+                <option value="Days">{t("settings.rememberVisitorOptions.days")}</option>
+                <option value="Allow visitor to choose">{t("settings.rememberVisitorOptions.allowVisitorToChoose")}</option>
               </select>
             </div>
 
@@ -190,7 +193,7 @@ export default function SettingsPage() {
                     marginBottom: "8px",
                   }}
                 >
-                  Enter number of days
+                  {t("settings.enterNumberOfDays")}
                 </label>
                 <div style={{ position: "relative" }}>
                   <input
@@ -221,7 +224,7 @@ export default function SettingsPage() {
                       color: "#6D7175",
                     }}
                   >
-                    day(s)
+                    {t("settings.daySuffix")}
                   </span>
                 </div>
               </div>
@@ -230,13 +233,13 @@ export default function SettingsPage() {
 
           <div style={{ marginTop: "24px", textAlign: "left" }}>
             <p style={{ fontSize: "13px", color: "#6D7175" }}>
-              Need help? Please view{" "}
+              {t("common.needHelp")}{" "}
               <a
                 href="#"
                 style={{ color: "#005BD3", textDecoration: "none" }}
                 onClick={(e) => e.preventDefault()}
               >
-                our document guideline
+                {t("common.ourDocumentGuideline")}
               </a>
             </p>
           </div>

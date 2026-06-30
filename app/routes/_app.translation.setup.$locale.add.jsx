@@ -18,8 +18,23 @@ import { PopupService } from "../services/popup.service";
 import db from "../db.server";
 import { Card } from "../components/Card";
 import { Badge } from "../components/Badge";
-import { MONTH_NAMES } from "../constants/translation";
 import { usePlan } from "../context/PlanContext";
+import { useTranslation } from "../context/TranslationContext";
+
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+];
 
 export const loader = async ({ request, params }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -152,6 +167,7 @@ export default function TranslationSetupPage() {
   const navigate = useNavigate();
   const submit = useSubmit();
   const shopify = useAppBridge();
+  const { t } = useTranslation();
 
   const [searchParams] = useSearchParams();
   const initialPopupId = searchParams.get("popupId") || "";
@@ -159,13 +175,13 @@ export default function TranslationSetupPage() {
 
   useEffect(() => {
     if (actionData?.success) {
-      shopify.toast.show("Translations saved successfully");
+      shopify.toast.show(t("translation.toast.saved"));
     } else if (actionData?.error || actionData?.errors) {
-      shopify.toast.show(actionData.error || "Error saving translations", {
+      shopify.toast.show(actionData.error || t("translation.toast.error"), {
         isError: true,
       });
     }
-  }, [actionData, shopify]);
+  }, [actionData, shopify, t]);
 
   const [translations, setTranslations] = useState({
     heading: "",
@@ -287,7 +303,7 @@ export default function TranslationSetupPage() {
 
   const handleBack = () => {
     if (isDirty) {
-      shopify.toast.show("Please save or discard your changes before leaving", {
+      shopify.toast.show(t("common.saveOrDiscardWarning"), {
         isError: true,
       });
     } else {
@@ -301,7 +317,7 @@ export default function TranslationSetupPage() {
 
   const handleSave = () => {
     if (!selectedPopupId) {
-      shopify.toast.show("Please select a pop-up first", { isError: true });
+      shopify.toast.show(t("translation.pleaseSelectPopup"), { isError: true });
       return;
     }
     submit(
@@ -369,22 +385,22 @@ export default function TranslationSetupPage() {
               {currentLanguage}
             </h1>
             {!canAccess("translation.unlimited") && (
-              <Badge text="Basic plan or higher" type="basic" />
+              <Badge text={t("common.basicPlanOrHigher")} type="basic" />
             )}
           </div>
           <p
             style={{ margin: "8px 0 0 0", color: "#6d7175", fontSize: "14px" }}
           >
-            Translate your widgets to multiple languages
+            {t("translation.pageDescription")}
           </p>
         </div>
 
         <SaveBar id="translation-save-bar" open={isDirty && !isReadOnly}>
           <button variant="primary" onClick={handleSave} disabled={isReadOnly}>
-            Save
+            {t("common.save")}
           </button>
           <button type="button" onClick={handleDiscard}>
-            Discard
+            {t("common.discard")}
           </button>
         </SaveBar>
       </div>
@@ -400,8 +416,8 @@ export default function TranslationSetupPage() {
           }}
         >
           <SectionTitle
-            title="Info"
-            description="Select the pop-up used to display the translation for."
+            title={t("translation.infoSectionTitle")}
+            description={t("translation.infoSectionDescription")}
           />
           <Card>
             <div style={{ marginBottom: "20px" }}>
@@ -414,7 +430,7 @@ export default function TranslationSetupPage() {
                   marginBottom: "8px",
                 }}
               >
-                Status
+                {t("common.status")}
               </label>
               <div
                 style={{
@@ -438,11 +454,11 @@ export default function TranslationSetupPage() {
                       width: "100%",
                     }}
                   >
-                    <span style={{ color: "#202223" }}>Upgrade now</span>
-                    <Badge text="Basic plan or higher" type="basic" />
+                    <span style={{ color: "#202223" }}>{t("translation.upgradeNow")}</span>
+                    <Badge text={t("common.basicPlanOrHigher")} type="basic" />
                   </div>
                 ) : (
-                  <span>{isPublished ? "Published" : "Unpublished"}</span>
+                  <span>{isPublished ? t("translation.published") : t("translation.unpublished")}</span>
                 )}
               </div>
             </div>
@@ -456,7 +472,7 @@ export default function TranslationSetupPage() {
                   marginBottom: "8px",
                 }}
               >
-                Pop-up <span style={{ color: "#d72c0d" }}>*</span>
+                {t("translation.selectPopup")} <span style={{ color: "#d72c0d" }}>*</span>
               </label>
               <PopupSelector
                 popups={popups}
@@ -478,13 +494,13 @@ export default function TranslationSetupPage() {
           }}
         >
           <SectionTitle
-            title="Text"
-            description="Customize the input field text in the Translation form."
+            title={t("translation.textSectionTitle")}
+            description={t("translation.textSectionDescription")}
           />
           <Card>
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
-              label="Heading text"
+              label={t("translation.popupHeadingLabel")}
               original={selectedPopup?.config.text?.heading}
               value={translations.heading}
               onChange={(val) =>
@@ -494,7 +510,7 @@ export default function TranslationSetupPage() {
             />
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
-              label="Sub-heading text"
+              label={t("translation.popupSubheadingLabel")}
               original={selectedPopup?.config.text?.subheading}
               value={translations.subheading}
               onChange={(val) =>
@@ -515,13 +531,13 @@ export default function TranslationSetupPage() {
           }}
         >
           <SectionTitle
-            title="Button"
-            description="Customize labels for input fields and buttons."
+            title={t("translation.buttonSectionTitle")}
+            description={t("translation.buttonSectionDescription")}
           />
           <Card>
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
-              label="Submit button label"
+              label={t("translation.submitButtonLabel")}
               original={selectedPopup?.config.button?.submitText}
               value={translations.submitLabel}
               onChange={(val) =>
@@ -531,7 +547,7 @@ export default function TranslationSetupPage() {
             />
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
-              label="Cancel button label"
+              label={t("translation.cancelButtonLabel")}
               original={selectedPopup?.config.button?.cancelText}
               value={translations.cancelLabel}
               onChange={(val) =>
@@ -541,7 +557,7 @@ export default function TranslationSetupPage() {
             />
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
-              label="Submit button action"
+              label={t("translation.submitButtonAction")}
               original={selectedPopup?.config.button?.submitAction}
               value={translations.submitAction}
               onChange={(val) =>
@@ -551,7 +567,7 @@ export default function TranslationSetupPage() {
             />
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
-              label="Cancel button action"
+              label={t("translation.cancelButtonAction")}
               original={selectedPopup?.config.button?.cancelAction}
               value={translations.cancelAction}
               onChange={(val) =>
@@ -572,8 +588,8 @@ export default function TranslationSetupPage() {
           }}
         >
           <SectionTitle
-            title="Label"
-            description="Customize the labels used for months to match your preferences or language requirements."
+            title={t("translation.labelSectionTitle")}
+            description={t("translation.labelSectionDescription")}
           />
           <Card>
             <div
@@ -586,8 +602,8 @@ export default function TranslationSetupPage() {
               {visibleMonths.map((month) => (
                 <TranslationField
                   key={month}
-                  label="Month label"
-                  original={selectedPopupId ? month : "Month"}
+                  label={t("translation.monthLabel")}
+                  original={selectedPopupId ? t("months." + month.toLowerCase()) : t("translation.monthLabel")}
                   value={translations.months[month]}
                   disabled={isReadOnly || !selectedPopupId}
                   onChange={(val) =>
@@ -630,7 +646,7 @@ export default function TranslationSetupPage() {
                     <span style={{ fontSize: "18px", fontWeight: "400" }}>
                       +
                     </span>{" "}
-                    Add
+                    {t("translation.addMonth")}
                   </button>
                 </div>
               )}
@@ -646,9 +662,9 @@ export default function TranslationSetupPage() {
           }}
         >
           <p style={{ fontSize: "13px", color: "#6d7175" }}>
-            Need help? Please view{" "}
+            {t("common.needHelp")}{" "}
             <a href="#" style={{ color: "#005BD3", textDecoration: "none" }}>
-              our document guideline
+              {t("common.ourDocumentGuideline")}
             </a>
           </p>
         </div>

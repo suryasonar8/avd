@@ -1,3 +1,5 @@
+import { useTranslation } from "../../context/TranslationContext";
+
 export default function PopupTable({
   paginatedPopups,
   selectedIds,
@@ -7,6 +9,24 @@ export default function PopupTable({
   onOpenDeleteModal,
   getRelativeTime,
 }) {
+  const { t } = useTranslation();
+
+  const getTargetTranslation = (val) => {
+    if (val === "All pages") return t("storeVerification.targetOptions.allPages");
+    if (val === "Home page") return t("storeVerification.targetOptions.homePage");
+    if (val === "Specific collections") return t("storeVerification.targetOptions.specificCollections");
+    if (val === "Specific products") return t("storeVerification.targetOptions.specificProducts");
+    if (val === "Custom page") return t("storeVerification.targetOptions.customPage");
+    if (val === "Specific product tags") return t("storeVerification.targetOptions.specificProductTags");
+    return val;
+  };
+
+  const getTriggerTranslation = (val) => {
+    if (val === "Always show") return t("storeVerification.triggerOptions.alwaysShow");
+    if (val === "Logged customers") return t("storeVerification.triggerOptions.loggedCustomers");
+    return val;
+  };
+
   return (
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
       <thead>
@@ -57,7 +77,7 @@ export default function PopupTable({
                 verticalAlign: "middle",
               }}
             >
-              {selectedIds.length} selected
+              {selectedIds.length} {t("common.selected")}
             </th>
             <th
               style={{
@@ -102,7 +122,7 @@ export default function PopupTable({
                     boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
                   }}
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </button>
                 <button
                   type="button"
@@ -126,7 +146,7 @@ export default function PopupTable({
                     boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
                   }}
                 >
-                  Delete
+                  {t("common.delete")}
                 </button>
               </div>
             </th>
@@ -157,19 +177,19 @@ export default function PopupTable({
               />
             </th>
             <th style={{ padding: "12px 16px", fontSize: "13px" }}>
-              Pop-up name
+              {t("storeVerification.tableHeaders.popupName")}
             </th>
             <th style={{ padding: "12px 16px", fontSize: "13px" }}>
-              Target
+              {t("storeVerification.tableHeaders.target")}
             </th>
             <th style={{ padding: "12px 16px", fontSize: "13px" }}>
-              Trigger condition
+              {t("storeVerification.tableHeaders.triggerCondition")}
             </th>
             <th style={{ padding: "12px 16px", fontSize: "13px" }}>
-              Last updated
+              {t("storeVerification.tableHeaders.lastUpdated")}
             </th>
             <th style={{ padding: "12px 16px", fontSize: "13px" }}>
-              Status
+              {t("storeVerification.tableHeaders.status")}
             </th>
             <th
               style={{
@@ -178,7 +198,7 @@ export default function PopupTable({
                 textAlign: "right",
               }}
             >
-              Action
+              {t("storeVerification.tableHeaders.action")}
             </th>
           </tr>
         )}
@@ -215,10 +235,10 @@ export default function PopupTable({
               {popup.name}
             </td>
             <td style={{ padding: "12px 16px", color: "#4A4D4F" }}>
-              {popup.target}
+              {getTargetTranslation(popup.target)}
             </td>
             <td style={{ padding: "12px 16px", color: "#4A4D4F" }}>
-              {popup.trigger}
+              {getTriggerTranslation(popup.trigger)}
             </td>
             <td style={{ padding: "12px 16px", color: "#4A4D4F" }}>
               {getRelativeTime(popup.updatedAt)}
@@ -236,7 +256,7 @@ export default function PopupTable({
                   fontWeight: "600",
                 }}
               >
-                {popup.status}
+                {popup.status === "Enabled" ? t("common.enabled") : t("common.disabled")}
               </span>
             </td>
             <td
@@ -273,7 +293,7 @@ export default function PopupTable({
                     alignItems: "center",
                     transition: "color 0.1s",
                   }}
-                  title="Edit"
+                  title={t("common.edit")}
                 >
                   <svg
                     width="18"
@@ -307,7 +327,7 @@ export default function PopupTable({
                     alignItems: "center",
                     transition: "color 0.1s",
                   }}
-                  title="Delete"
+                  title={t("common.delete")}
                 >
                   <svg
                     width="18"
@@ -338,7 +358,7 @@ export default function PopupTable({
                 color: "#6D7175",
               }}
             >
-              No pop-ups match the search or filter criteria.
+              {t("storeVerification.noPopupsMatch")}
             </td>
           </tr>
         )}
