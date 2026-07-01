@@ -71,16 +71,25 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
       }
 
       const imageUrl = createData.file.image?.url;
+      const imageId = createData.file.id;
 
       if (type === "background") {
         setConfig((prev) => ({
           ...prev,
-          background: { ...prev.background, backgroundImage: imageUrl },
+          background: {
+            ...prev.background,
+            backgroundImage: imageUrl,
+            backgroundImageId: imageId,
+          },
         }));
       } else {
         setConfig((prev) => ({
           ...prev,
-          background: { ...prev.background, logo: imageUrl },
+          background: {
+            ...prev.background,
+            logo: imageUrl,
+            logoId: imageId,
+          },
         }));
       }
     } catch (error) {
@@ -95,17 +104,49 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
     }
   };
 
-  const removeImage = (type) => {
+  const removeImage = async (type) => {
+    const fileId =
+      type === "background"
+        ? config.background.backgroundImageId
+        : config.background.logoId;
+
     if (type === "background") {
       setConfig((prev) => ({
         ...prev,
-        background: { ...prev.background, backgroundImage: null },
+        background: {
+          ...prev.background,
+          backgroundImage: null,
+          backgroundImageId: null,
+        },
       }));
     } else {
       setConfig((prev) => ({
         ...prev,
-        background: { ...prev.background, logo: null },
+        background: {
+          ...prev.background,
+          logo: null,
+          logoId: null,
+        },
       }));
+    }
+
+    if (fileId) {
+      try {
+        const formData = new FormData();
+        formData.append("intent", "delete_file");
+        formData.append("fileId", fileId);
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+        if (!data.success) {
+          console.error("Failed to delete file from Shopify:", data.errors);
+        }
+      } catch (error) {
+        console.error("Error deleting file:", error);
+      }
     }
   };
 
@@ -179,67 +220,67 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
               {t("popupEditor.backgroundTab.pageBackgroundImage")}
             </label>
 
-            <s-drop-zone
-              accept=".png, .jpg, .jpeg"
-              onChange={(e) => {
-                const file = e.currentTarget.files?.[0] || e.detail?.files?.[0];
-                handleImageUpload(file, "background");
-              }}
-              disabled={localUploading === "background"}
-            >
-              {config.background.backgroundImage && (
+            {config.background.backgroundImage ? (
+              <div
+                style={{
+                  border: "1px solid #CBCFD2",
+                  borderRadius: "8px",
+                  padding: "12px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  background: "#F9FAFB",
+                }}
+              >
                 <div
-                  style={{
-                    padding: "12px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    width: "100%",
-                    background: "#F9FAFB",
-                  }}
+                  style={{ display: "flex", alignItems: "center", gap: "12px" }}
                 >
-                  <div
-                    style={{ display: "flex", alignItems: "center", gap: "12px" }}
-                  >
-                    <img
-                      src={config.background.backgroundImage}
-                      alt="Background"
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                        objectFit: "cover",
-                        borderRadius: "4px",
-                      }}
-                    />
-                    <span style={{ fontSize: "13px" }}>
-                      {t("popupEditor.backgroundTab.backgroundImage")}
-                    </span>
-                  </div>
-                  <s-button
-                    variant="plain"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeImage("background");
+                  <img
+                    src={config.background.backgroundImage}
+                    alt="Background"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      objectFit: "cover",
+                      borderRadius: "4px",
                     }}
-                  >
-                    {t("common.remove")}
-                  </s-button>
+                  />
+                  <span style={{ fontSize: "13px" }}>
+                    {t("popupEditor.backgroundTab.backgroundImage")}
+                  </span>
                 </div>
-              )}
-            </s-drop-zone>
+                <s-button
+                  variant="plain"
+                  onClick={() => removeImage("background")}
+                >
+                  {t("common.remove")}
+                </s-button>
+              </div>
+            ) : (
+              <s-drop-zone
+                accept=".png, .jpg, .jpeg"
+                onChange={(e) => {
+                  const file = e.currentTarget.files?.[0] || e.detail?.files?.[0];
+                  handleImageUpload(file, "background");
+                }}
+                disabled={localUploading === "background"}
+              />
+            )}
           </div>
         )}
-        <ColorInput
-          label={t("popupEditor.backgroundTab.pageBackgroundColor")}
-          required
-          value={config.background.pageColor}
-          onChange={(val) =>
-            setConfig({
-              ...config,
-              background: { ...config.background, pageColor: val },
-            })
-          }
-        />
+        {config.background.type !== "Image background" && (
+          <ColorInput
+            label={t("popupEditor.backgroundTab.pageBackgroundColor")}
+            required
+            value={config.background.pageColor}
+            onChange={(val) =>
+              setConfig({
+                ...config,
+                background: { ...config.background, pageColor: val },
+              })
+            }
+          />
+        )}
         <ColorInput
           label={t("popupEditor.backgroundTab.backgroundColor")}
           disabled={!canAccess("sv.bg.color")}
@@ -282,58 +323,56 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
             )}
           </div>
 
-          <s-drop-zone
-            accept=".png, .jpg, .jpeg"
-            onChange={(e) => {
-              const file = e.currentTarget.files?.[0] || e.detail?.files?.[0];
-              handleImageUpload(file, "logo");
-            }}
-            disabled={!canAccess("sv.bg.logo") || localUploading === "logo"}
-          >
-            {config.background.logo && (
+          {config.background.logo ? (
+            <div
+              style={{
+                border: "1px solid #CBCFD2",
+                borderRadius: "8px",
+                padding: "12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                background: "#F9FAFB",
+              }}
+            >
               <div
-                style={{
-                  padding: "12px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                  background: "#F9FAFB",
-                }}
+                style={{ display: "flex", alignItems: "center", gap: "12px" }}
               >
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "12px" }}
-                >
-                  <img
-                    src={config.background.logo}
-                    alt="Logo"
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      objectFit: "contain",
-                      borderRadius: "4px",
-                      background: "#FFF",
-                      padding: "2px",
-                      border: "1px solid #EEE",
-                    }}
-                  />
-                  <span style={{ fontSize: "13px" }}>
-                    {t("popupEditor.backgroundTab.logoImage")}
-                  </span>
-                </div>
-                <s-button
-                  variant="plain"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeImage("logo");
+                <img
+                  src={config.background.logo}
+                  alt="Logo"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    objectFit: "contain",
+                    borderRadius: "4px",
+                    background: "#FFF",
+                    padding: "2px",
+                    border: "1px solid #EEE",
                   }}
-                  disabled={!canAccess("sv.bg.logo")}
-                >
-                  {t("common.remove")}
-                </s-button>
+                />
+                <span style={{ fontSize: "13px" }}>
+                  {t("popupEditor.backgroundTab.logoImage")}
+                </span>
               </div>
-            )}
-          </s-drop-zone>
+              <s-button
+                variant="plain"
+                onClick={() => removeImage("logo")}
+                disabled={!canAccess("sv.bg.logo")}
+              >
+                {t("common.remove")}
+              </s-button>
+            </div>
+          ) : (
+            <s-drop-zone
+              accept=".png, .jpg, .jpeg"
+              onChange={(e) => {
+                const file = e.currentTarget.files?.[0] || e.detail?.files?.[0];
+                handleImageUpload(file, "logo");
+              }}
+              disabled={!canAccess("sv.bg.logo") || localUploading === "logo"}
+            />
+          )}
         </div>
       </div>
 

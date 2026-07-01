@@ -145,6 +145,43 @@ export const action = async ({ request }) => {
     };
   }
 
+  if (intent === "delete_file") {
+    const fileId = formData.get("fileId");
+    if (!fileId) {
+      return { success: false, errors: [{ message: "Missing fileId" }] };
+    }
+
+    const response = await admin.graphql(
+      `#graphql
+      mutation fileDelete($fileIds: [ID!]!) {
+        fileDelete(fileIds: $fileIds) {
+          deletedFileIds
+          userErrors {
+            field
+            message
+          }
+        }
+      }`,
+      {
+        variables: {
+          fileIds: [fileId],
+        },
+      },
+    );
+
+    const responseData = await response.json();
+    const userErrors = responseData.data?.fileDelete?.userErrors;
+
+    if (userErrors && userErrors.length > 0) {
+      return { success: false, errors: userErrors };
+    }
+
+    return {
+      success: true,
+      deletedFileIds: responseData.data?.fileDelete?.deletedFileIds,
+    };
+  }
+
   return new Response(JSON.stringify({ error: "Invalid intent" }), {
     status: 400,
     headers: { "Content-Type": "application/json" },
