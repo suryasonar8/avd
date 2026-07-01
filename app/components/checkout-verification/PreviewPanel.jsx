@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { DEFAULT_BANNER_HEADING } from "../../constants/checkout-verification";
 import { useTranslation } from "../../context/TranslationContext";
@@ -9,375 +10,345 @@ export default function PreviewPanel({ config }) {
   const { t } = useTranslation();
 
   return (
-    <div
-      style={{
-        flex: 1,
-        background: "#fff",
-        border: "1px solid #E1E3E5",
-        borderRadius: "12px",
-        padding: "0",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
-    >
-      {/* Device Toggle */}
-      <div
-        style={{
-          padding: "16px",
-          display: "flex",
-          justifyContent: "center",
-          gap: "8px",
-          borderBottom: "1px solid #F1F1F1",
-        }}
-      >
-        <s-button
-          onClick={() => setDevice("desktop")}
-          variant={device === "desktop" ? "primary" : "secondary"}
-          title={t("termsAndConditions.desktop")}
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#444"
-            strokeWidth="2"
-          >
-            <rect x="2" y="3" width="20" height="14" rx="2" />
-            <line x1="8" y1="21" x2="16" y2="21" />
-            <line x1="12" y1="17" x2="12" y2="21" />
-          </svg>
-        </s-button>
-        <s-button
-          onClick={() => setDevice("mobile")}
-          variant={device === "mobile" ? "primary" : "secondary"}
-          title={t("termsAndConditions.mobile")}
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#444"
-            strokeWidth="2"
-          >
-            <rect x="5" y="2" width="14" height="20" rx="2" />
-            <line x1="12" y1="18" x2="12.01" y2="18" />
-          </svg>
-        </s-button>
-      </div>
-
-      {/* Checkout Mockup Content */}
-      <div
-        style={{
-          background: "#F9F9F9",
-          padding: device === "mobile" ? "20px" : "40px",
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
+    <s-box inlineSize="100%" style={{ display: "block", flex: 1, minWidth: 0 }}>
+      <s-section>
+        {/* Device Toggle */}
         <div
           style={{
-            width: "100%",
-            maxWidth: device === "mobile" ? "375px" : "900px",
-            background: "#fff",
-            border: "1px solid #E1E3E5",
-            borderRadius: "8px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+            padding: "16px",
             display: "flex",
-            flexDirection: device === "mobile" ? "column" : "row",
-            overflow: "hidden",
+            justifyContent: "center",
+            gap: "8px",
+            borderBottom: "1px solid #F1F1F1",
           }}
         >
-          {/* Main Checkout Area */}
+          <s-button
+            onClick={() => setDevice("desktop")}
+            variant={device === "desktop" ? "primary" : "secondary"}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#444"
+              strokeWidth="2"
+            >
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+          </s-button>
+          <s-button
+            onClick={() => setDevice("mobile")}
+            variant={device === "mobile" ? "primary" : "secondary"}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#444"
+              strokeWidth="2"
+            >
+              <rect x="5" y="2" width="14" height="20" rx="2" />
+              <line x1="12" y1="18" x2="12.01" y2="18" />
+            </svg>
+          </s-button>
+        </div>
+
+        {/* Checkout Mockup Content */}
+        <div
+          style={{
+            background: "#F9F9F9",
+            padding: "24px",
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            width: "100%",
+            boxSizing: "border-box",
+          }}
+        >
+          {/* Device Layout Container */}
           <div
             style={{
-              padding: "24px",
-              flex: 1,
-              borderRight: device === "mobile" ? "none" : "1px solid #F1F1F1",
-              borderBottom: device === "mobile" ? "1px solid #F1F1F1" : "none",
+              width: "100%",
+              maxWidth: device === "mobile" ? "375px" : "800px",
+              boxSizing: "border-box",
+              display: "flex",
+              justifyContent: "center",
             }}
           >
+            {/* Mockup Card */}
             <div
               style={{
+                width: "100%",
+                background: "#fff",
+                border: "1px solid #E1E3E5",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "24px",
+                flexDirection: device === "mobile" ? "column" : "row",
+                overflow: "hidden",
+                boxSizing: "border-box",
               }}
             >
-              <h2 style={{ fontSize: "20px", fontWeight: 700, margin: 0 }}>
-                {t("checkoutVerification.preview.myStore")}
-              </h2>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#006FBB"
-                strokeWidth="2"
+              {/* Main Checkout Area */}
+              <div
+                style={{
+                  padding: "24px 16px",
+                  flex: 1,
+                  borderRight:
+                    device === "mobile" ? "none" : "1px solid #F1F1F1",
+                  borderBottom:
+                    device === "mobile" ? "1px solid #F1F1F1" : "none",
+                  boxSizing: "border-box",
+                }}
               >
-                <circle cx="9" cy="21" r="1" />
-                <circle cx="20" cy="21" r="1" />
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-              </svg>
-            </div>
-
-            {/* Age Restriction Banner Preview */}
-            {showBanner && (
-              <div style={{ marginBottom: "20px" }}>
-                <s-banner tone="warning">
-                  <s-text>{bannerHeading}</s-text>
-                </s-banner>
-              </div>
-            )}
-
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "20px" }}
-            >
-              {/* Contact */}
-              <div>
-                <label
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    display: "block",
-                    marginBottom: "8px",
-                  }}
-                >
-                  {t("checkoutVerification.preview.contact")}
-                </label>
-                <input
-                  type="text"
-                  placeholder={t("checkoutVerification.preview.emailPlaceholder")}
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    border: "1px solid #E1E3E5",
-                    borderRadius: "6px",
-                    fontSize: "14px",
-                    boxSizing: "border-box",
-                  }}
-                  disabled
-                />
                 <div
                   style={{
                     display: "flex",
+                    justifyContent: "space-between",
                     alignItems: "center",
-                    gap: "8px",
-                    marginTop: "12px",
+                    marginBottom: "24px",
                   }}
                 >
-                  <input
-                    type="checkbox"
-                    style={{ width: "16px", height: "16px" }}
-                    disabled
-                  />
-                  <span style={{ fontSize: "13px" }}>
-                    {t("checkoutVerification.preview.emailOffers")}
-                  </span>
+                  <h2 style={{ fontSize: "20px", fontWeight: 700, margin: 0 }}>
+                    {t("checkoutVerification.preview.myStore")}
+                  </h2>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#006FBB"
+                    strokeWidth="2"
+                  >
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                  </svg>
                 </div>
-              </div>
 
-              {/* Delivery */}
-              <div>
-                <label
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    display: "block",
-                    marginBottom: "8px",
-                  }}
-                >
-                  {t("checkoutVerification.preview.delivery")}
-                </label>
+                {/* Age Restriction Banner Preview */}
+                {showBanner && (
+                  <div style={{ marginBottom: "20px" }}>
+                    <s-banner tone="warning">
+                      <s-text>{bannerHeading}</s-text>
+                    </s-banner>
+                  </div>
+                )}
+
                 <div
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    gap: "10px",
+                    gap: "20px",
                   }}
                 >
-                  <div style={{ position: "relative" }}>
-                    <select
+                  {/* Contact */}
+                  <div>
+                    <label
                       style={{
-                        width: "100%",
-                        padding: "12px",
-                        border: "1px solid #E1E3E5",
-                        borderRadius: "6px",
                         fontSize: "14px",
-                        appearance: "none",
-                        background: "#fff",
-                        color: "#333",
+                        fontWeight: 600,
+                        display: "block",
+                        marginBottom: "8px",
                       }}
+                    >
+                      {t("checkoutVerification.preview.contact")}
+                    </label>
+                    <s-text-field
+                      placeholder={t(
+                        "checkoutVerification.preview.emailPlaceholder",
+                      )}
                       disabled
-                    >
-                      <option>{t("checkoutVerification.preview.vietnam")}</option>
-                    </select>
-                    <div
-                      style={{
-                        position: "absolute",
-                        right: "12px",
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        pointerEvents: "none",
-                      }}
-                    >
-                      ▼
+                    />
+                    <div style={{ marginTop: "12px" }}>
+                      <s-checkbox
+                        label={t("checkoutVerification.preview.emailOffers")}
+                        disabled
+                      />
                     </div>
                   </div>
-                  <div style={{ display: "flex", gap: "10px" }}>
-                    <input
-                      type="text"
-                      placeholder={t("checkoutVerification.preview.firstName")}
+
+                  {/* Delivery */}
+                  <div>
+                    <label
                       style={{
-                        flex: 1,
-                        padding: "12px",
-                        border: "1px solid #E1E3E5",
-                        borderRadius: "6px",
                         fontSize: "14px",
+                        fontWeight: 600,
+                        display: "block",
+                        marginBottom: "8px",
                       }}
-                      disabled
-                    />
-                    <input
-                      type="text"
-                      placeholder={t("checkoutVerification.preview.lastName")}
+                    >
+                      {t("checkoutVerification.preview.delivery")}
+                    </label>
+                    <div
                       style={{
-                        flex: 1,
-                        padding: "12px",
-                        border: "1px solid #E1E3E5",
-                        borderRadius: "6px",
-                        fontSize: "14px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "10px",
                       }}
-                      disabled
-                    />
+                    >
+                      <s-select disabled>
+                        <s-option value={t("checkoutVerification.preview.vietnam")}>
+                          {t("checkoutVerification.preview.vietnam")}
+                        </s-option>
+                      </s-select>
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        <div style={{ flex: 1 }}>
+                          <s-text-field
+                            placeholder={t(
+                              "checkoutVerification.preview.firstName",
+                            )}
+                            disabled
+                          />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <s-text-field
+                            placeholder={t(
+                              "checkoutVerification.preview.lastName",
+                            )}
+                            disabled
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Sidebar Area */}
-          <div
-            style={{
-              width: device === "mobile" ? "100%" : "340px",
-              padding: "24px",
-              background: "#fbfbfb",
-            }}
-          >
-            <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
+              {/* Sidebar Area */}
               <div
                 style={{
-                  width: "64px",
-                  height: "64px",
-                  background: "#fff",
-                  border: "1px solid #E1E3E5",
-                  borderRadius: "8px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  overflow: "hidden",
+                  width: device === "mobile" ? "100%" : "30%",
+                  minWidth: device === "mobile" ? "100%" : "220px",
+                  padding: "24px 16px",
+                  background: "#fbfbfb",
+                  boxSizing: "border-box",
                 }}
               >
-                <svg
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#DDD"
-                  strokeWidth="1"
-                >
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-              </div>
-              <div style={{ flex: 1 }}>
                 <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
+                  style={{ display: "flex", gap: "12px", marginBottom: "20px" }}
                 >
-                  <span style={{ fontSize: "14px", fontWeight: 500 }}>
-                    {t("checkoutVerification.preview.productDemo")}
-                  </span>
-                  <span style={{ fontSize: "14px" }}>$19.99</span>
-                </div>
-                <div style={{ fontSize: "12px", color: "#6D7175" }}>
-                  {t("checkoutVerification.preview.variantDemo")}
-                </div>
-              </div>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "8px",
-                borderTop: "1px solid #F1F1F1",
-                paddingTop: "20px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: "13px",
-                }}
-              >
-                <span>{t("checkoutVerification.preview.subtotal")}</span>
-                <span>$19.99</span>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: "13px",
-                }}
-              >
-                <span>{t("checkoutVerification.preview.shipping")}</span>
-                <span>{t("checkoutVerification.preview.free")}</span>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: "13px",
-                }}
-              >
-                <span>
-                  {t("checkoutVerification.preview.estimatedTaxes")} <span style={{ color: "#AAA" }}>?</span>
-                </span>
-                <span>$5.99</span>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: "18px",
-                  fontWeight: 700,
-                  marginTop: "12px",
-                }}
-              >
-                <span>{t("checkoutVerification.preview.total")}</span>
-                <span>
-                  <span
+                  <div
                     style={{
-                      fontSize: "12px",
-                      fontWeight: 400,
-                      color: "#6D7175",
+                      width: "64px",
+                      height: "64px",
+                      background: "#fff",
+                      border: "1px solid #E1E3E5",
+                      borderRadius: "8px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      overflow: "hidden",
                     }}
                   >
-                    {t("checkoutVerification.preview.usd")}
-                  </span>{" "}
-                  $25.98
-                </span>
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#DDD"
+                      strokeWidth="1"
+                    >
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <polyline points="21 15 16 10 5 21" />
+                    </svg>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <span style={{ fontSize: "14px", fontWeight: 500 }}>
+                        {t("checkoutVerification.preview.productDemo")}
+                      </span>
+                      <span style={{ fontSize: "14px" }}>$19.99</span>
+                    </div>
+                    <div style={{ fontSize: "12px", color: "#6D7175" }}>
+                      {t("checkoutVerification.preview.variantDemo")}
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                    borderTop: "1px solid #F1F1F1",
+                    paddingTop: "20px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "13px",
+                    }}
+                  >
+                    <span>{t("checkoutVerification.preview.subtotal")}</span>
+                    <span>$19.99</span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "13px",
+                    }}
+                  >
+                    <span>{t("checkoutVerification.preview.shipping")}</span>
+                    <span>{t("checkoutVerification.preview.free")}</span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "13px",
+                    }}
+                  >
+                    <span>
+                      {t("checkoutVerification.preview.estimatedTaxes")}{" "}
+                      <span style={{ color: "#AAA" }}>?</span>
+                    </span>
+                    <span>$5.99</span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "18px",
+                      fontWeight: 700,
+                      marginTop: "12px",
+                    }}
+                  >
+                    <span>{t("checkoutVerification.preview.total")}</span>
+                    <span>
+                      <span
+                        style={{
+                          fontSize: "12px",
+                          fontWeight: 400,
+                          color: "#6D7175",
+                        }}
+                      >
+                        {t("checkoutVerification.preview.usd")}
+                      </span>{" "}
+                      $25.98
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </s-section>
+    </s-box>
   );
 }

@@ -159,120 +159,118 @@ export default function SettingsPage() {
         </div>
 
         <div style={{ maxWidth: "600px" }}>
-          <div
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid #E1E3E5",
-              borderRadius: "8px",
-              padding: "16px",
-              marginBottom: "20px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
-            }}
-          >
-            <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-              {t("settings.adminLanguage")}
-            </s-text>
-            <s-divider></s-divider>
-            <s-select
-              value={adminLanguage}
-              onChange={(e) => {
-                const newLang = e.currentTarget.value;
-                setAdminLanguage(newLang);
-                // Immediately update translations across the app
-                changeLocale(newLang);
-                // Persist the setting to the server
-                fetcher.submit(
-                  {
-                    settings: JSON.stringify({
-                      ...settings,
-                      adminLanguage: newLang,
-                    }),
-                  },
-                  { method: "POST" },
-                );
-              }}
-            >
-              <s-option value="en">
-                {t("settings.adminLanguageEnglish")}
-              </s-option>
-              <s-option value="de">
-                {t("settings.adminLanguageDeutsch")}
-              </s-option>
-              <s-option value="fr">
-                {t("settings.adminLanguageFrench")}
-              </s-option>
-              <s-option value="it">
-                {t("settings.adminLanguageItalian")}
-              </s-option>
-              <s-option value="es">
-                {t("settings.adminLanguageSpanish")}
-              </s-option>
-              <s-option value="hi">{t("settings.adminLanguageHindi")}</s-option>
-            </s-select>
-            <p
-              style={{
-                fontSize: "12px",
-                color: "#6D7175",
-                marginTop: "0",
-                marginBottom: "0",
-              }}
-            >
-              {t("settings.adminLanguageHelpText")}
-            </p>
+          <div style={{ marginBottom: "20px" }}>
+            <s-section>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                }}
+              >
+                <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+                  {t("settings.adminLanguage")}
+                </s-text>
+                <s-divider></s-divider>
+                <s-select
+                  value={adminLanguage}
+                  onChange={(e) => {
+                    const newLang = e.currentTarget.value;
+                    setAdminLanguage(newLang);
+                    // Immediately update translations across the app
+                    changeLocale(newLang);
+                    // Persist the setting to the server
+                    fetcher.submit(
+                      {
+                        settings: JSON.stringify({
+                          ...settings,
+                          adminLanguage: newLang,
+                        }),
+                      },
+                      { method: "POST" },
+                    );
+                  }}
+                >
+                  <s-option value="en">
+                    {t("settings.adminLanguageEnglish")}
+                  </s-option>
+                  <s-option value="de">
+                    {t("settings.adminLanguageDeutsch")}
+                  </s-option>
+                  <s-option value="fr">
+                    {t("settings.adminLanguageFrench")}
+                  </s-option>
+                  <s-option value="it">
+                    {t("settings.adminLanguageItalian")}
+                  </s-option>
+                  <s-option value="es">
+                    {t("settings.adminLanguageSpanish")}
+                  </s-option>
+                  <s-option value="hi">{t("settings.adminLanguageHindi")}</s-option>
+                </s-select>
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: "#6D7175",
+                    marginTop: "0",
+                    marginBottom: "0",
+                  }}
+                >
+                  {t("settings.adminLanguageHelpText")}
+                </p>
+              </div>
+            </s-section>
           </div>
 
-          <div
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid #E1E3E5",
-              borderRadius: "8px",
-              padding: "16px",
-              marginBottom: "20px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
-            }}
-          >
-            <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-              {t("settings.rememberVisitor")}
-            </s-text>
-            <s-divider></s-divider>
-            <s-select
-              value={settings.rememberVisitor || "Session only"}
-              onChange={(e) =>
-                setSettings({
-                  ...settings,
-                  rememberVisitor: e.currentTarget.value,
-                })
-              }
-            >
-              <s-option value="Session only">
-                {t("settings.rememberVisitorOptions.sessionOnly")}
-              </s-option>
-              <s-option value="Days">
-                {t("settings.rememberVisitorOptions.days")}
-              </s-option>
-              <s-option value="Allow visitor to choose">
-                {t("settings.rememberVisitorOptions.allowVisitorToChoose")}
-              </s-option>
-            </s-select>
-
-            {settings.rememberVisitor === "Days" && (
-              <div>
-                <s-number-field
-                  label={t("settings.enterNumberOfDays")}
-                  value={settings.rememberDays || 30}
+          <div style={{ marginBottom: "20px" }}>
+            <s-section>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                }}
+              >
+                <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+                  {t("settings.rememberVisitor")}
+                </s-text>
+                <s-divider></s-divider>
+                <s-select
+                  value={settings.rememberVisitor || "Session only"}
                   onChange={(e) =>
                     setSettings({
                       ...settings,
-                      rememberDays: parseInt(e.currentTarget.value) || 0,
+                      rememberVisitor: e.currentTarget.value,
                     })
                   }
-                />
+                >
+                  <s-option value="Session only">
+                    {t("settings.rememberVisitorOptions.sessionOnly")}
+                  </s-option>
+                  <s-option value="Days">
+                    {t("settings.rememberVisitorOptions.days")}
+                  </s-option>
+                  <s-option value="Allow visitor to choose">
+                    {t("settings.rememberVisitorOptions.allowVisitorToChoose")}
+                  </s-option>
+                </s-select>
+
+                {settings.rememberVisitor === "Days" && (
+                  <div>
+                    <s-number-field
+                      label={t("settings.enterNumberOfDays")}
+                      value={settings.rememberDays || 30}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          rememberDays: parseInt(e.currentTarget.value) || 0,
+                        })
+                      }
+                    />
+                  </div>
+                )}
               </div>
-            )}
+            </s-section>
           </div>
 
           <div style={{ marginTop: "24px", textAlign: "left" }}>

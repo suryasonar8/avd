@@ -129,225 +129,223 @@ export default function TranslationPage() {
       {/* Free Plan Limit Banner */}
       <PricingBanner text={t("translation.upgradePromo")} />
       {/* Default Language Card */}
-      <div
-        style={{
-          background: "#FFF",
-          borderRadius: "12px",
-          padding: "24px",
-          border: "1px solid #E1E3E5",
-          marginBottom: "24px",
-          display: "flex",
-          alignItems: "flex-start",
-          gap: "16px",
-        }}
-      >
-        <div style={{ fontSize: "24px", marginTop: "4px" }}>🔄</div>
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            gap: "8px",
-          }}
-        >
-          <s-heading>
-            {t("translation.defaultLanguage", { language: primaryLocaleName })}
-          </s-heading>
-          <s-text color="subdued">
-            {t("translation.defaultLanguageDesc")}
-          </s-text>
-          <s-button onClick={handleRedirect}>
-            {t("translation.changeDefault")}
-          </s-button>
-        </div>
-      </div>
-      {/* Translation List Card */}
-      <div
-        style={{
-          background: "#FFFFFF",
-          border: "1px solid #E1E3E5",
-          borderRadius: "12px",
-          padding: "24px",
-          marginBottom: "24px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-        }}
-      >
-        <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-          {t("translation.translationList")}
-        </s-text>
-        <s-divider></s-divider>
-
-        {translatedLanguages.length > 0 ? (
-          <div>
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                textAlign: "left",
-              }}
-            >
-              <thead>
-                <tr style={{ borderBottom: "1px solid #E1E3E5" }}>
-                  <th
-                    style={{
-                      padding: "16px 8px",
-                      fontSize: "13px",
-                      fontWeight: "600",
-                      color: "#6d7175",
-                    }}
-                  >
-                    {t("translation.tableHeaders.language")}
-                  </th>
-                  <th
-                    style={{
-                      padding: "16px 8px",
-                      fontSize: "13px",
-                      fontWeight: "600",
-                      color: "#6d7175",
-                    }}
-                  >
-                    {t("translation.tableHeaders.popups")}
-                  </th>
-                  <th
-                    style={{
-                      padding: "16px 8px",
-                      fontSize: "13px",
-                      fontWeight: "600",
-                      color: "#6d7175",
-                      textAlign: "right",
-                    }}
-                  >
-                    {t("translation.tableHeaders.action")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {translatedLanguages.map((item) => {
-                  const langName =
-                    shopLocales.find((l) => l.locale === item.locale)?.name ||
-                    item.locale;
-                  return (
-                    <tr
-                      key={item.locale}
-                      style={{ borderBottom: "1px solid #F1F2F3" }}
-                    >
-                      <td style={{ padding: "16px 8px", fontSize: "14px" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
-                          }}
-                        >
-                          <span style={{ fontWeight: "500" }}>{langName}</span>
-                          <span
-                            style={{
-                              fontSize: "11px",
-                              color: "#6d7175",
-                              background: "#f1f2f3",
-                              padding: "2px 6px",
-                              borderRadius: "4px",
-                            }}
-                          >
-                            {item.locale.toUpperCase()}
-                          </span>
-                        </div>
-                      </td>
-                      <td style={{ padding: "16px 8px", fontSize: "14px" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: "4px",
-                          }}
-                        >
-                          {item.popups.map((p) => (
-                            <span
-                              key={p.id}
-                              style={{
-                                background: "#EBF5FF",
-                                color: "#006FBB",
-                                padding: "2px 8px",
-                                borderRadius: "12px",
-                                fontSize: "12px",
-                                fontWeight: "500",
-                              }}
-                            >
-                              {p.name}
-                            </span>
-                          ))}
-                        </div>
-                      </td>
-                      <td
-                        style={{
-                          padding: "16px 8px",
-                          textAlign: "right",
-                        }}
-                      >
-                        <s-button
-                          onClick={() => {
-                            const popupId = item.popups[0]?.id;
-                            const url = `/translation/setup/${item.locale}/add${
-                              popupId
-                                ? `?popupId=${encodeURIComponent(popupId)}`
-                                : ""
-                            }`;
-                            navigate(url);
-                          }}
-                        >
-                          {t("common.edit")}
-                        </s-button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+      <div style={{ marginBottom: "24px" }}>
+        <s-section>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: "16px",
+            }}
+          >
+            <div style={{ fontSize: "24px", marginTop: "4px" }}>🔄</div>
             <div
               style={{
-                padding: "24px 0 0 0",
-                textAlign: "center",
-                marginTop: "16px",
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: "8px",
               }}
             >
-              <s-button onClick={handleAddLanguage} variant="primary">
-                {hasPopups
-                  ? t("translation.addLanguage")
-                  : t("translation.createPopup")}
+              <s-heading>
+                {t("translation.defaultLanguage", { language: primaryLocaleName })}
+              </s-heading>
+              <s-text color="subdued">
+                {t("translation.defaultLanguageDesc")}
+              </s-text>
+              <s-button onClick={handleRedirect}>
+                {t("translation.changeDefault")}
               </s-button>
             </div>
           </div>
-        ) : (
+        </s-section>
+      </div>
+      {/* Translation List Card */}
+      <div style={{ marginBottom: "24px" }}>
+        <s-section>
           <div
             style={{
-              textAlign: "center",
-              padding: "60px 0 0 0",
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
+              gap: "16px",
             }}
           >
-            <img
-              src="/translation-empty-state.png"
-              alt="No translations"
-              style={{
-                width: "140px",
-                marginBottom: "24px",
-                opacity: 0.8,
-              }}
-            />
-            <s-heading>{t("translation.emptyTitle")}</s-heading>
-            <s-text>{t("translation.emptyDescription")}</s-text>
-            <s-button onClick={handleAddLanguage} variant="primary">
-              {hasPopups
-                ? t("translation.addLanguage")
-                : t("translation.createPopup")}
-            </s-button>
+            <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+              {t("translation.translationList")}
+            </s-text>
+            <s-divider></s-divider>
+
+            {translatedLanguages.length > 0 ? (
+              <div>
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    textAlign: "left",
+                  }}
+                >
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid #E1E3E5" }}>
+                      <th
+                        style={{
+                          padding: "16px 8px",
+                          fontSize: "13px",
+                          fontWeight: "600",
+                          color: "#6d7175",
+                        }}
+                      >
+                        {t("translation.tableHeaders.language")}
+                      </th>
+                      <th
+                        style={{
+                          padding: "16px 8px",
+                          fontSize: "13px",
+                          fontWeight: "600",
+                          color: "#6d7175",
+                        }}
+                      >
+                        {t("translation.tableHeaders.popups")}
+                      </th>
+                      <th
+                        style={{
+                          padding: "16px 8px",
+                          fontSize: "13px",
+                          fontWeight: "600",
+                          color: "#6d7175",
+                          textAlign: "right",
+                        }}
+                      >
+                        {t("translation.tableHeaders.action")}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {translatedLanguages.map((item) => {
+                      const langName =
+                        shopLocales.find((l) => l.locale === item.locale)?.name ||
+                        item.locale;
+                      return (
+                        <tr
+                          key={item.locale}
+                          style={{ borderBottom: "1px solid #F1F2F3" }}
+                        >
+                          <td style={{ padding: "16px 8px", fontSize: "14px" }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                              }}
+                            >
+                              <span style={{ fontWeight: "500" }}>{langName}</span>
+                              <span
+                                style={{
+                                  fontSize: "11px",
+                                  color: "#6d7175",
+                                  background: "#f1f2f3",
+                                  padding: "2px 6px",
+                                  borderRadius: "4px",
+                                }}
+                              >
+                                {item.locale.toUpperCase()}
+                              </span>
+                            </div>
+                          </td>
+                          <td style={{ padding: "16px 8px", fontSize: "14px" }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                gap: "4px",
+                              }}
+                            >
+                              {item.popups.map((p) => (
+                                <span
+                                  key={p.id}
+                                  style={{
+                                    background: "#EBF5FF",
+                                    color: "#006FBB",
+                                    padding: "2px 8px",
+                                    borderRadius: "12px",
+                                    fontSize: "12px",
+                                    fontWeight: "500",
+                                  }}
+                                >
+                                  {p.name}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td
+                            style={{
+                              padding: "16px 8px",
+                              textAlign: "right",
+                            }}
+                          >
+                            <s-button
+                              onClick={() => {
+                                const popupId = item.popups[0]?.id;
+                                const url = `/translation/setup/${item.locale}/add${
+                                  popupId
+                                    ? `?popupId=${encodeURIComponent(popupId)}`
+                                    : ""
+                                }`;
+                                navigate(url);
+                              }}
+                            >
+                              {t("common.edit")}
+                            </s-button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <div
+                  style={{
+                    padding: "24px 0 0 0",
+                    textAlign: "center",
+                    marginTop: "16px",
+                  }}
+                >
+                  <s-button onClick={handleAddLanguage} variant="primary">
+                    {hasPopups
+                      ? t("translation.addLanguage")
+                      : t("translation.createPopup")}
+                  </s-button>
+                </div>
+              </div>
+            ) : (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "60px 0 0 0",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <img
+                  src="/translation-empty-state.png"
+                  alt="No translations"
+                  style={{
+                    width: "140px",
+                    marginBottom: "24px",
+                    opacity: 0.8,
+                  }}
+                />
+                <s-heading>{t("translation.emptyTitle")}</s-heading>
+                <s-text>{t("translation.emptyDescription")}</s-text>
+                <s-button onClick={handleAddLanguage} variant="primary">
+                  {hasPopups
+                    ? t("translation.addLanguage")
+                    : t("translation.createPopup")}
+                </s-button>
+              </div>
+            )}
           </div>
-        )}
+        </s-section>
       </div>
       {/* Add Language Modal */}
       <Modal
