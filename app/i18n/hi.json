@@ -13,11 +13,9 @@
     "on": "चालू",
     "off": "बंद",
     "edit": "संपादित करें",
-    "search": "खोजें",
     "uploading": "अपलोड हो रहा है...",
     "addImage": "छवि जोड़ें",
     "acceptsFormats": ".png, .jpg स्वीकार करता है",
-    "clickToViewPlans": "प्लान देखने के लिए क्लिक करें",
     "basicPlanOrHigher": "बेसिक प्लान या उच्चतर",
     "premiumPlan": "प्रीमियम प्लान",
     "unlimited": "असीमित",
@@ -26,23 +24,15 @@
     "savedSuccessfully": "सफलतापूर्वक सहेजा गया",
     "errorSaving": "सहेजने में त्रुटि: विवरण के लिए टर्मिनल जांचें",
     "saveOrDiscardWarning": "कृपया पेज छोड़ने से पहले अपने बदलाव सहेजें या रद्द करें",
-    "failedToUpload": "छवि अपलोड करने में विफल। कृपया पुनः प्रयास करें।",
     "uploadFailed": "अपलोड विफल",
-    "protectedBy": "द्वारा संरक्षित",
-    "avd": "AVD",
     "guideline": "मार्गदर्शिका",
     "selected": "चयनित",
     "completed": "पूर्ण",
     "showMore": "और दिखाएं",
     "showLess": "कम दिखाएं",
-    "hide": "छिपाएं",
-    "feature": "सुविधा",
-    "support": "सहायता",
     "status": "स्थिति"
   },
-
   "navigation": {
-    "dashboard": "डैशबोर्ड",
     "storeVerification": "स्टोर सत्यापन",
     "checkoutVerification": "चेकआउट सत्यापन",
     "termsAndConditions": "नियम एवं शर्तें",
@@ -50,7 +40,6 @@
     "pricing": "मूल्य निर्धारण",
     "settings": "सेटिंग्स"
   },
-
   "dashboard": {
     "greeting": "नमस्ते {{shopName}},",
     "welcome": "Age Verification Pop-up में आपका स्वागत है 🎉",
@@ -93,7 +82,6 @@
       "30days": "30 दिन"
     }
   },
-
   "dateRangePicker": {
     "today": "आज",
     "yesterday": "कल",
@@ -103,7 +91,6 @@
     "last60Days": "पिछले 60 दिन",
     "selectDateRange": "तिथि सीमा चुनें"
   },
-
   "storeVerification": {
     "pageHeading": "स्टोर सत्यापन",
     "ageVerificationPopup": "आयु सत्यापन पॉप-अप",
@@ -153,32 +140,21 @@
     },
     "relativeTime": {
       "justNow": "अभी",
-      "minuteAgo": "{{count}} मिनट पहले",
       "minutesAgo": "{{count}} मिनट पहले",
-      "hourAgo": "{{count}} घंटे पहले",
       "hoursAgo": "{{count}} घंटे पहले",
-      "dayAgo": "{{count}} दिन पहले",
       "daysAgo": "{{count}} दिन पहले"
     },
     "freePlanBanner": {
-      "title": "निःशुल्क प्लान सीमा",
-      "description": "आपके वर्तमान प्लान में 1 पॉप-अप शामिल है ({{used}}/{{limit}} उपयोग किया)। अधिक पॉप-अप, उन्नत कस्टमाइज़ेशन और बहुत कुछ अनलॉक करने के लिए अपग्रेड करें।",
-      "upgradeButton": "प्लान अपग्रेड करें"
+      "description": "आपके वर्तमान प्लान में 1 पॉप-अप शामिल है ({{used}}/{{limit}} उपयोग किया)। अधिक पॉप-अप, उन्नत कस्टमाइज़ेशन और बहुत कुछ अनलॉक करने के लिए अपग्रेड करें।"
     }
   },
-
   "pricingBanner": {
     "freePlanLimit": "निःशुल्क प्लान सीमा",
     "increaseLimit": "सीमा बढ़ाएं"
   },
-
   "popupEditor": {
     "editorHeading": "कॉन्फ़िगरेशन",
     "editorDescription": "अपनी ब्रांड से मेल खाने के लिए पॉप-अप को कस्टमाइज़ करें।",
-    "heading": {
-      "create": "पॉप-अप बनाएं",
-      "edit": "पॉप-अप संपादित करें"
-    },
     "tabs": {
       "info": "जानकारी",
       "background": "पृष्ठभूमि",
@@ -194,7 +170,6 @@
       "popupInfo": "पॉप-अप जानकारी",
       "status": "स्थिति",
       "name": "नाम",
-      "nameRequired": "नाम",
       "enterPopupName": "अपना पॉप-अप नाम दर्ज करें",
       "nameHelpText": "आंतरिक संदर्भ के लिए। केवल आप इसे देख सकते हैं।",
       "method": "विधि",
@@ -256,7 +231,6 @@
       "cssPlaceholder": "/* अपना कस्टम CSS यहां जोड़ें */"
     }
   },
-
   "displayPages": {
     "allPages": "सभी पेज",
     "homePage": "होम पेज",
@@ -264,10 +238,8 @@
     "specificProducts": "विशिष्ट उत्पाद",
     "custom": "कस्टम"
   },
-
   "checkoutVerification": {
     "pageTitle": "चेकआउट सत्यापन",
-    "pageDescription": "चेकआउट पेज के लिए आयु सत्यापन कॉन्फ़िगर करें।",
     "bannerPromo": "चेकआउट पर आयु प्रतिबंध सक्षम करें – आज ही अपना प्लान अपग्रेड करें!",
     "verifyYourAge": "अपनी आयु सत्यापित करें",
     "youAreOver18": "आप 18+ से अधिक हैं",
@@ -310,13 +282,8 @@
       "estimatedTaxes": "अनुमानित कर",
       "total": "कुल",
       "usd": "USD"
-    },
-    "defaults": {
-      "heading": "इन उत्पादों को खरीदने के लिए आपकी आयु कम से कम 18 वर्ष होनी चाहिए",
-      "bannerHeading": "आयु प्रतिबंध लागू है"
     }
   },
-
   "termsAndConditions": {
     "pageTitle": "नियम एवं शर्तें",
     "tabBanner": "चेकबॉक्स",
@@ -334,8 +301,6 @@
     "keywordLinkSubtitle": "यदि URL कीवर्ड से मेल खाता है तो उसे हाइपरलिंक किया जाएगा।",
     "size": "आकार",
     "color": "रंग",
-    "errorMessage": "त्रुटि संदेश (वैकल्पिक)",
-    "enterErrorMessage": "त्रुटि संदेश दर्ज करें",
     "needMoreCustomization": "अधिक कस्टमाइज़ेशन विकल्प चाहिए?",
     "contactUs": "हमसे संपर्क करें।",
     "clickToRemoveBrandmark": "ब्रांडमार्क हटाने के लिए क्लिक करें",
@@ -344,11 +309,9 @@
     "desktop": "डेस्कटॉप",
     "mobile": "मोबाइल",
     "defaults": {
-      "checkboxText": "मैं नियम एवं शर्तों को समझता/समझती हूं और उनसे सहमत हूं।",
-      "keyword": "नियम एवं शर्तें"
+      "checkboxText": "मैं नियम एवं शर्तों को समझता/समझती हूं और उनसे सहमत हूं।"
     }
   },
-
   "translation": {
     "pageTitle": "अनुवाद",
     "pageDescription": "अपने विजेट्स का कई भाषाओं में अनुवाद करें",
@@ -374,13 +337,9 @@
     "searchPopups": "पॉप-अप खोजें...",
     "noPopupsFound": "कोई पॉप-अप नहीं मिला",
     "popupNumber": "पॉपअप #{{id}}",
-    "infoSectionTitle": "जानकारी",
     "infoSectionDescription": "वह पॉप-अप चुनें जिसके लिए अनुवाद प्रदर्शित करना है।",
-    "textSectionTitle": "टेक्स्ट",
     "textSectionDescription": "अनुवाद फ़ॉर्म में इनपुट फ़ील्ड टेक्स्ट को कस्टमाइज़ करें।",
-    "buttonSectionTitle": "बटन",
     "buttonSectionDescription": "इनपुट फ़ील्ड और बटन के लेबल कस्टमाइज़ करें।",
-    "labelSectionTitle": "लेबल",
     "labelSectionDescription": "अपनी प्राथमिकताओं या भाषा आवश्यकताओं के अनुसार महीनों के लेबल कस्टमाइज़ करें।",
     "toast": {
       "saved": "अनुवाद सफलतापूर्वक सहेजे गए",
@@ -399,10 +358,7 @@
     "monthLabel": "महीने का लेबल",
     "addMonth": "जोड़ें"
   },
-
   "pricing": {
-    "pageTitle": "मूल्य निर्धारण",
-    "plans": "प्लान",
     "planTypes": {
       "free": "निःशुल्क",
       "basic": "बेसिक",
@@ -410,10 +366,7 @@
     },
     "billedMonthly": "मासिक बिलिंग",
     "billedYearly": "वार्षिक बिलिंग",
-    "save25": "25% बचाएं",
     "perMonth": "/महीना",
-    "percentOff": "25% छूट",
-    "billedOnceAYear": "{{amount}} साल में एक बार बिल किया जाता है",
     "startFreeTrial": "3 दिन का निःशुल्क ट्रायल शुरू करें",
     "bestSuitedForTesting": "परीक्षण उद्देश्यों और लाभों को अधिकतम करने के लिए सबसे उपयुक्त।",
     "yourCurrentPlan": "आपका वर्तमान प्लान",
@@ -465,7 +418,6 @@
       "a4": "यदि आप ऐप अनइंस्टॉल करते हैं, तो आपकी सेटिंग्स संरक्षित नहीं रहेंगी। यदि आप भविष्य में वापस आने की योजना बना रहे हैं तो हम अनइंस्टॉल करने के बजाय निःशुल्क प्लान पर डाउनग्रेड करने की सलाह देते हैं।"
     }
   },
-
   "settings": {
     "pageTitle": "सेटिंग्स",
     "general": "सामान्य",
@@ -485,10 +437,8 @@
       "allowVisitorToChoose": "विज़िटर को चुनने दें"
     },
     "enterNumberOfDays": "दिनों की संख्या दर्ज करें",
-    "daySuffix": "दिन",
     "settingsSaved": "सेटिंग्स सहेजी गईं"
   },
-
   "months": {
     "january": "जनवरी",
     "february": "फ़रवरी",
@@ -503,37 +453,7 @@
     "november": "नवंबर",
     "december": "दिसंबर"
   },
-
   "richTextEditor": {
     "clearFormatting": "फ़ॉर्मेटिंग साफ़ करें"
-  },
-
-  "defaults": {
-    "storeConfig": {
-      "name": "मेरा पॉप-अप",
-      "status": "सक्रिय",
-      "method": "कोई इनपुट नहीं",
-      "trigger": "हमेशा दिखाएं",
-      "bgType": "ठोस रंग पृष्ठभूमि",
-      "heading": "दुकान में आपका स्वागत है",
-      "subheading": "इस साइट पर जाने के लिए आपकी आयु कम से कम 18 वर्ष होनी चाहिए",
-      "submitText": "ठीक है",
-      "cancelText": "रद्द करें",
-      "cancelAction": "redirect",
-      "errorMsg": "त्रुटि संदेश दर्ज करें",
-      "cancelErrorMsg": "त्रुटि संदेश दर्ज करें"
-    },
-    "checkoutConfig": {
-      "heading": "इन उत्पादों को खरीदने के लिए आपकी आयु कम से कम 18 वर्ष होनी चाहिए",
-      "bannerHeading": "आयु प्रतिबंध लागू है"
-    },
-    "termsConfig": {
-      "checkboxText": "मैं नियम एवं शर्तों को समझता/समझती हूं और उनसे सहमत हूं।",
-      "keyword": "नियम एवं शर्तें"
-    }
-  },
-
-  "modal": {
-    "close": "बंद करें"
   }
 }

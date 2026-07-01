@@ -185,7 +185,7 @@ export function InfoTab({ config, setConfig }) {
           }}
         >
           <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-            {t("checkoutVerification.condition")}
+            {t("popupEditor.infoTab.condition")}
           </s-text>
           {!canAccess("sv.info.pages.home") ? (
             <Badge text={t("common.basicPlanOrHigher")} type="basic" />

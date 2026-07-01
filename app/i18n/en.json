@@ -13,11 +13,9 @@
     "on": "On",
     "off": "Off",
     "edit": "Edit",
-    "search": "Search",
     "uploading": "Uploading...",
     "addImage": "Add image",
     "acceptsFormats": "Accepts .png, .jpg",
-    "clickToViewPlans": "Click to view plans",
     "basicPlanOrHigher": "Basic plan or higher",
     "premiumPlan": "Premium plan",
     "unlimited": "Unlimited",
@@ -26,22 +24,15 @@
     "savedSuccessfully": "Saved successfully",
     "errorSaving": "Error saving: check terminal for details",
     "saveOrDiscardWarning": "Please save or discard your changes before leaving",
-    "failedToUpload": "Failed to upload image. Please try again.",
     "uploadFailed": "Upload failed",
-    "protectedBy": "Protected by",
-    "avd": "AVD",
     "guideline": "Guideline",
     "selected": "selected",
     "completed": "completed",
     "showMore": "Show more",
     "showLess": "Show less",
-    "hide": "Hide",
-    "feature": "Feature",
-    "support": "Support",
     "status": "Status"
   },
   "navigation": {
-    "dashboard": "Dashboard",
     "storeVerification": "Store Verification",
     "checkoutVerification": "Checkout Verification",
     "termsAndConditions": "Terms & Conditions",
@@ -149,17 +140,12 @@
     },
     "relativeTime": {
       "justNow": "Just now",
-      "minuteAgo": "{{count}} minute ago",
       "minutesAgo": "{{count}} minutes ago",
-      "hourAgo": "{{count}} hour ago",
       "hoursAgo": "{{count}} hours ago",
-      "dayAgo": "{{count}} day ago",
       "daysAgo": "{{count}} days ago"
     },
     "freePlanBanner": {
-      "title": "Free Plan Limit",
-      "description": "Your current plan includes 1 pop-up ({{used}}/{{limit}} used). Upgrade to unlock more pop-ups, advanced customization and more.",
-      "upgradeButton": "Upgrade plan"
+      "description": "Your current plan includes 1 pop-up ({{used}}/{{limit}} used). Upgrade to unlock more pop-ups, advanced customization and more."
     }
   },
   "pricingBanner": {
@@ -169,10 +155,6 @@
   "popupEditor": {
     "editorHeading": "Configuration",
     "editorDescription": "Customize the pop-up to match your brand.",
-    "heading": {
-      "create": "Create pop-up",
-      "edit": "Edit pop-up"
-    },
     "tabs": {
       "info": "Info",
       "background": "Background",
@@ -188,7 +170,6 @@
       "popupInfo": "Pop-up Info",
       "status": "Status",
       "name": "Name",
-      "nameRequired": "Name",
       "enterPopupName": "Enter your pop-up name",
       "nameHelpText": "For internal reference. Only you can see it.",
       "method": "Method",
@@ -259,7 +240,6 @@
   },
   "checkoutVerification": {
     "pageTitle": "Checkout Verification",
-    "pageDescription": "Configure age verification for the checkout page.",
     "bannerPromo": "Enable age restriction at checkout - Upgrade your plan today!",
     "verifyYourAge": "Verify your age",
     "youAreOver18": "You're over 18+",
@@ -271,7 +251,7 @@
     "tabBanner": "Banner",
     "bannerSettingsSaved": "Banner settings saved",
     "bannerStatus": "Banner status",
-    "condition": "Condition",
+    "target": "Target",
     "textCustomization": "Text customization",
     "heading": "Heading",
     "enterBannerHeading": "Enter banner heading text",
@@ -302,10 +282,6 @@
       "estimatedTaxes": "Estimated taxes",
       "total": "Total",
       "usd": "USD"
-    },
-    "defaults": {
-      "heading": "You must be at least 18 years old to purchase these products",
-      "bannerHeading": "Age restriction applies"
     }
   },
   "termsAndConditions": {
@@ -325,8 +301,6 @@
     "keywordLinkSubtitle": "The URL will be hyperlinked if it matches the keyword.",
     "size": "Size",
     "color": "Color",
-    "errorMessage": "Error message (Optional)",
-    "enterErrorMessage": "Enter error message",
     "needMoreCustomization": "Need more customization options?",
     "contactUs": "Contact us.",
     "clickToRemoveBrandmark": "Click to remove brandmark",
@@ -335,8 +309,7 @@
     "desktop": "Desktop",
     "mobile": "Mobile",
     "defaults": {
-      "checkboxText": "I understand and agree to the terms and conditions.",
-      "keyword": "terms and conditions"
+      "checkboxText": "I understand and agree to the terms and conditions."
     }
   },
   "translation": {
@@ -364,13 +337,9 @@
     "searchPopups": "Search pop-ups...",
     "noPopupsFound": "No pop-ups found",
     "popupNumber": "Popup #{{id}}",
-    "infoSectionTitle": "Info",
     "infoSectionDescription": "Select the pop-up used to display the translation for.",
-    "textSectionTitle": "Text",
     "textSectionDescription": "Customize the input field text in the Translation form.",
-    "buttonSectionTitle": "Button",
     "buttonSectionDescription": "Customize labels for input fields and buttons.",
-    "labelSectionTitle": "Label",
     "labelSectionDescription": "Customize the labels used for months to match your preferences or language requirements.",
     "toast": {
       "saved": "Translations saved successfully",
@@ -390,8 +359,6 @@
     "addMonth": "Add"
   },
   "pricing": {
-    "pageTitle": "Pricing",
-    "plans": "Plans",
     "planTypes": {
       "free": "Free",
       "basic": "Basic",
@@ -399,10 +366,7 @@
     },
     "billedMonthly": "Billed Monthly",
     "billedYearly": "Billed Yearly",
-    "save25": "Save 25%",
     "perMonth": "/month",
-    "percentOff": "25% off",
-    "billedOnceAYear": "{{amount}} billed once a year",
     "startFreeTrial": "Start 3-days FREE Trial",
     "bestSuitedForTesting": "Best suited for testing purposes and maximizing benefits.",
     "yourCurrentPlan": "Your Current Plan",
@@ -473,7 +437,6 @@
       "allowVisitorToChoose": "Allow visitor to choose"
     },
     "enterNumberOfDays": "Enter number of days",
-    "daySuffix": "day(s)",
     "settingsSaved": "Settings saved"
   },
   "months": {
@@ -492,32 +455,5 @@
   },
   "richTextEditor": {
     "clearFormatting": "Clear formatting"
-  },
-  "defaults": {
-    "storeConfig": {
-      "name": "My Pop-up",
-      "status": "Enabled",
-      "method": "No input",
-      "trigger": "Always show",
-      "bgType": "Solid color background",
-      "heading": "WELCOME TO SHOPs",
-      "subheading": "You must be at least 18 to visit this site",
-      "submitText": "OK",
-      "cancelText": "CANCEL",
-      "cancelAction": "redirect",
-      "errorMsg": "Enter error message",
-      "cancelErrorMsg": "Enter error message"
-    },
-    "checkoutConfig": {
-      "heading": "You must be at least 18 years old to purchase these products",
-      "bannerHeading": "Age restriction applies"
-    },
-    "termsConfig": {
-      "checkboxText": "I understand and agree to the terms and conditions.",
-      "keyword": "terms and conditions"
-    }
-  },
-  "modal": {
-    "close": "Close"
   }
 }

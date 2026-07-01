@@ -13,11 +13,9 @@
     "on": "Attivo",
     "off": "Spento",
     "edit": "Modifica",
-    "search": "Cerca",
     "uploading": "Caricamento in corso...",
     "addImage": "Aggiungi immagine",
     "acceptsFormats": "Accetta .png, .jpg",
-    "clickToViewPlans": "Clicca per visualizzare i piani",
     "basicPlanOrHigher": "Piano Basic o superiore",
     "premiumPlan": "Piano Premium",
     "unlimited": "Illimitato",
@@ -26,23 +24,15 @@
     "savedSuccessfully": "Salvato con successo",
     "errorSaving": "Errore durante il salvataggio: controlla il terminale per i dettagli",
     "saveOrDiscardWarning": "Per favore salva o annulla le modifiche prima di uscire",
-    "failedToUpload": "Caricamento immagine non riuscito. Riprova.",
     "uploadFailed": "Caricamento non riuscito",
-    "protectedBy": "Protetto da",
-    "avd": "AVD",
     "guideline": "Linea guida",
     "selected": "selezionato/i",
     "completed": "completato/i",
     "showMore": "Mostra di più",
     "showLess": "Mostra meno",
-    "hide": "Nascondi",
-    "feature": "Funzionalità",
-    "support": "Assistenza",
     "status": "Stato"
   },
-
   "navigation": {
-    "dashboard": "Dashboard",
     "storeVerification": "Verifica del negozio",
     "checkoutVerification": "Verifica al pagamento",
     "termsAndConditions": "Termini e condizioni",
@@ -50,7 +40,6 @@
     "pricing": "Prezzi",
     "settings": "Impostazioni"
   },
-
   "dashboard": {
     "greeting": "Ciao {{shopName}},",
     "welcome": "Benvenuto in Age Verification Pop-up 🎉",
@@ -93,7 +82,6 @@
       "30days": "30 giorni"
     }
   },
-
   "dateRangePicker": {
     "today": "Oggi",
     "yesterday": "Ieri",
@@ -103,7 +91,6 @@
     "last60Days": "Ultimi 60 giorni",
     "selectDateRange": "Seleziona intervallo di date"
   },
-
   "storeVerification": {
     "pageHeading": "Verifica del negozio",
     "ageVerificationPopup": "Pop-up di verifica dell'età",
@@ -153,32 +140,21 @@
     },
     "relativeTime": {
       "justNow": "Proprio ora",
-      "minuteAgo": "{{count}} minuto fa",
       "minutesAgo": "{{count}} minuti fa",
-      "hourAgo": "{{count}} ora fa",
       "hoursAgo": "{{count}} ore fa",
-      "dayAgo": "{{count}} giorno fa",
       "daysAgo": "{{count}} giorni fa"
     },
     "freePlanBanner": {
-      "title": "Limite del piano gratuito",
-      "description": "Il tuo piano attuale include 1 pop-up ({{used}}/{{limit}} utilizzato/i). Aggiorna per sbloccare più pop-up, personalizzazioni avanzate e altro.",
-      "upgradeButton": "Aggiorna piano"
+      "description": "Il tuo piano attuale include 1 pop-up ({{used}}/{{limit}} utilizzato/i). Aggiorna per sbloccare più pop-up, personalizzazioni avanzate e altro."
     }
   },
-
   "pricingBanner": {
     "freePlanLimit": "Limite del piano gratuito",
     "increaseLimit": "Aumenta il limite"
   },
-
   "popupEditor": {
     "editorHeading": "Configurazione",
     "editorDescription": "Personalizza il pop-up per abbinarlo al tuo marchio.",
-    "heading": {
-      "create": "Crea pop-up",
-      "edit": "Modifica pop-up"
-    },
     "tabs": {
       "info": "Info",
       "background": "Sfondo",
@@ -194,7 +170,6 @@
       "popupInfo": "Info pop-up",
       "status": "Stato",
       "name": "Nome",
-      "nameRequired": "Nome",
       "enterPopupName": "Inserisci il nome del pop-up",
       "nameHelpText": "Per riferimento interno. Solo tu puoi vederlo.",
       "method": "Metodo",
@@ -256,7 +231,6 @@
       "cssPlaceholder": "/* Aggiungi il tuo CSS personalizzato qui */"
     }
   },
-
   "displayPages": {
     "allPages": "Tutte le pagine",
     "homePage": "Home page",
@@ -264,10 +238,8 @@
     "specificProducts": "Prodotti specifici",
     "custom": "Personalizzato"
   },
-
   "checkoutVerification": {
     "pageTitle": "Verifica al pagamento",
-    "pageDescription": "Configura la verifica dell'età per la pagina di pagamento.",
     "bannerPromo": "Attiva la restrizione dell'età al pagamento – Aggiorna il tuo piano oggi!",
     "verifyYourAge": "Verifica la tua età",
     "youAreOver18": "Hai più di 18 anni",
@@ -310,13 +282,8 @@
       "estimatedTaxes": "Tasse stimate",
       "total": "Totale",
       "usd": "USD"
-    },
-    "defaults": {
-      "heading": "Devi avere almeno 18 anni per acquistare questi prodotti",
-      "bannerHeading": "Si applicano restrizioni d'età"
     }
   },
-
   "termsAndConditions": {
     "pageTitle": "Termini e condizioni",
     "tabBanner": "Casella di controllo",
@@ -334,8 +301,6 @@
     "keywordLinkSubtitle": "L'URL verrà collegato come ipertesto se corrisponde alla parola chiave.",
     "size": "Dimensione",
     "color": "Colore",
-    "errorMessage": "Messaggio di errore (Opzionale)",
-    "enterErrorMessage": "Inserisci il messaggio di errore",
     "needMoreCustomization": "Hai bisogno di più opzioni di personalizzazione?",
     "contactUs": "Contattaci.",
     "clickToRemoveBrandmark": "Clicca per rimuovere il marchio",
@@ -344,11 +309,9 @@
     "desktop": "Desktop",
     "mobile": "Mobile",
     "defaults": {
-      "checkboxText": "Comprendo e accetto i termini e le condizioni.",
-      "keyword": "termini e condizioni"
+      "checkboxText": "Comprendo e accetto i termini e le condizioni."
     }
   },
-
   "translation": {
     "pageTitle": "Traduzione",
     "pageDescription": "Traduci i tuoi widget in più lingue",
@@ -374,13 +337,9 @@
     "searchPopups": "Cerca pop-up...",
     "noPopupsFound": "Nessun pop-up trovato",
     "popupNumber": "Pop-up #{{id}}",
-    "infoSectionTitle": "Info",
     "infoSectionDescription": "Seleziona il pop-up per il quale visualizzare la traduzione.",
-    "textSectionTitle": "Testo",
     "textSectionDescription": "Personalizza il testo dei campi di input nel modulo di traduzione.",
-    "buttonSectionTitle": "Pulsante",
     "buttonSectionDescription": "Personalizza le etichette dei campi di input e dei pulsanti.",
-    "labelSectionTitle": "Etichetta",
     "labelSectionDescription": "Personalizza le etichette dei mesi in base alle tue preferenze o esigenze linguistiche.",
     "toast": {
       "saved": "Traduzioni salvate con successo",
@@ -399,10 +358,7 @@
     "monthLabel": "Etichetta del mese",
     "addMonth": "Aggiungi"
   },
-
   "pricing": {
-    "pageTitle": "Prezzi",
-    "plans": "Piani",
     "planTypes": {
       "free": "Gratuito",
       "basic": "Base",
@@ -410,10 +366,7 @@
     },
     "billedMonthly": "Fatturazione mensile",
     "billedYearly": "Fatturazione annuale",
-    "save25": "Risparmia il 25%",
     "perMonth": "/mese",
-    "percentOff": "25% di sconto",
-    "billedOnceAYear": "{{amount}} fatturato una volta all'anno",
     "startFreeTrial": "Inizia la prova GRATUITA di 3 giorni",
     "bestSuitedForTesting": "Ideale per scopi di test e per massimizzare i vantaggi.",
     "yourCurrentPlan": "Il tuo piano attuale",
@@ -465,7 +418,6 @@
       "a4": "Se disinstalli l'app, le tue impostazioni non verranno conservate. Ti consigliamo di passare al piano gratuito invece di disinstallare se prevedi di tornare in futuro."
     }
   },
-
   "settings": {
     "pageTitle": "Impostazioni",
     "general": "Generale",
@@ -485,10 +437,8 @@
       "allowVisitorToChoose": "Consenti al visitatore di scegliere"
     },
     "enterNumberOfDays": "Inserisci il numero di giorni",
-    "daySuffix": "giorno/i",
     "settingsSaved": "Impostazioni salvate"
   },
-
   "months": {
     "january": "Gennaio",
     "february": "Febbraio",
@@ -503,37 +453,7 @@
     "november": "Novembre",
     "december": "Dicembre"
   },
-
   "richTextEditor": {
     "clearFormatting": "Cancella formattazione"
-  },
-
-  "defaults": {
-    "storeConfig": {
-      "name": "Il mio Pop-up",
-      "status": "Attivato",
-      "method": "Nessun input",
-      "trigger": "Mostra sempre",
-      "bgType": "Sfondo a colore solido",
-      "heading": "BENVENUTO NEL NEGOZIO",
-      "subheading": "Devi avere almeno 18 anni per visitare questo sito",
-      "submitText": "OK",
-      "cancelText": "ANNULLA",
-      "cancelAction": "redirect",
-      "errorMsg": "Inserisci il messaggio di errore",
-      "cancelErrorMsg": "Inserisci il messaggio di errore"
-    },
-    "checkoutConfig": {
-      "heading": "Devi avere almeno 18 anni per acquistare questi prodotti",
-      "bannerHeading": "Si applicano restrizioni d'età"
-    },
-    "termsConfig": {
-      "checkboxText": "Comprendo e accetto i termini e le condizioni.",
-      "keyword": "termini e condizioni"
-    }
-  },
-
-  "modal": {
-    "close": "Chiudi"
   }
 }
