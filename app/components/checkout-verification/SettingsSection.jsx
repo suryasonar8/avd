@@ -14,12 +14,18 @@ export default function SettingsSection({ title, badge, children, disabled }) {
         opacity: disabled ? 0.6 : 1,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "6px",
+          alignItems: "flex-start",
+        }}
+      >
         <span style={{ fontSize: "15px", fontWeight: 700, color: "#202223" }}>
           {title}
         </span>
-        {badge &&
-          (typeof badge === "string" ? <Badge text={badge} /> : badge)}
+        {badge && (typeof badge === "string" ? <Badge text={badge} /> : badge)}
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {children}
