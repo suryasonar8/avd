@@ -1,4 +1,3 @@
-import { Card } from "../Card";
 import { Badge } from "../Badge";
 import { ColorInput } from "../ColorInput";
 import { NumberInput } from "../NumberInput";
@@ -89,7 +88,10 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
       }
     } catch (error) {
       console.error("Upload error:", error);
-      alert(t("common.uploadFailedTryAgain") || "Failed to upload image. Please try again.");
+      alert(
+        t("common.uploadFailedTryAgain") ||
+          "Failed to upload image. Please try again.",
+      );
     } finally {
       setLocalUploading(null);
       setIsUploading(false);
@@ -112,80 +114,58 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
 
   return (
     <>
-      <Card title={t("popupEditor.backgroundTab.popupBackground")}>
-        <div style={{ marginBottom: "16px" }}>
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E1E3E5",
+          borderRadius: "8px",
+          padding: "16px",
+          marginBottom: "20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+          {t("popupEditor.backgroundTab.popupBackground")}
+        </s-text>
+        <s-divider></s-divider>
+
+        <div>
           <label
             style={{
               display: "block",
               fontSize: "13px",
               fontWeight: "600",
-              marginBottom: "12px",
+              marginBottom: "8px",
             }}
           >
             {t("popupEditor.backgroundTab.type")}
           </label>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "12px",
-            }}
+          <s-choice-list
+            name="bgType"
+            value={config.background.type}
+            onChange={(e) =>
+              setConfig({
+                ...config,
+                background: {
+                  ...config.background,
+                  type: e.currentTarget.value,
+                },
+              })
+            }
           >
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                fontSize: "13px",
-              }}
-            >
-              <input
-                type="radio"
-                name="bgType"
-                checked={config.background.type === "Solid color background"}
-                onChange={() =>
-                  setConfig({
-                    ...config,
-                    background: {
-                      ...config.background,
-                      type: "Solid color background",
-                    },
-                  })
-                }
-              />{" "}
+            <s-choice value="Solid color background">
               {t("popupEditor.backgroundTab.solidColorBackground")}
-            </label>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                fontSize: "13px",
-                opacity: 1,
-                cursor: "pointer",
-              }}
-            >
-              <input
-                type="radio"
-                name="bgType"
-                checked={config.background.type === "Image background"}
-                onChange={() =>
-                  setConfig({
-                    ...config,
-                    background: {
-                      ...config.background,
-                      type: "Image background",
-                    },
-                  })
-                }
-              />{" "}
+            </s-choice>
+            <s-choice value="Image background">
               {t("popupEditor.backgroundTab.imageBackground")}
-            </label>
-          </div>
+            </s-choice>
+          </s-choice-list>
         </div>
 
         {config.background.type === "Image background" && (
-          <div style={{ marginBottom: "16px" }}>
+          <div>
             <label
               style={{
                 display: "block",
@@ -230,21 +210,16 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                       borderRadius: "4px",
                     }}
                   />
-                  <span style={{ fontSize: "13px" }}>{t("popupEditor.backgroundTab.backgroundImage")}</span>
+                  <span style={{ fontSize: "13px" }}>
+                    {t("popupEditor.backgroundTab.backgroundImage")}
+                  </span>
                 </div>
-                <button
+                <s-button
+                  variant="plain"
                   onClick={() => removeImage("background")}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "#D72C0D",
-                    cursor: "pointer",
-                    fontSize: "13px",
-                    fontWeight: "500",
-                  }}
                 >
                   {t("common.remove")}
-                </button>
+                </s-button>
               </div>
             ) : (
               <div
@@ -256,25 +231,15 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                   background: "#F9FAFB",
                 }}
               >
-                <button
+                <s-button
                   disabled={localUploading === "background"}
                   onClick={() => fileInputRef.current.click()}
-                  style={{
-                    padding: "8px 16px",
-                    borderRadius: "8px",
-                    border: "1px solid #CBCFD2",
-                    background: "#FFF",
-                    fontSize: "13px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    marginBottom: "8px",
-                  }}
                 >
                   {localUploading === "background"
                     ? t("common.uploading")
                     : t("common.addImage")}
-                </button>
-                <p style={{ fontSize: "12px", color: "#6D7175", margin: 0 }}>
+                </s-button>
+                <p style={{ fontSize: "12px", color: "#6D7175", margin: "8px 0 0 0" }}>
                   {t("common.acceptsFormats")}
                 </p>
               </div>
@@ -295,7 +260,11 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
         <ColorInput
           label={t("popupEditor.backgroundTab.backgroundColor")}
           disabled={!canAccess("sv.bg.color")}
-          badge={!canAccess("sv.bg.color") ? <Badge text={t("common.basicPlanOrHigher")} type="basic" /> : null}
+          badge={
+            !canAccess("sv.bg.color") ? (
+              <Badge text={t("common.basicPlanOrHigher")} type="basic" />
+            ) : null
+          }
           value={config.background.bgColor}
           onChange={(val) =>
             setConfig({
@@ -367,23 +336,17 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                     border: "1px solid #EEE",
                   }}
                 />
-                <span style={{ fontSize: "13px" }}>{t("popupEditor.backgroundTab.logoImage")}</span>
+                <span style={{ fontSize: "13px" }}>
+                  {t("popupEditor.backgroundTab.logoImage")}
+                </span>
               </div>
-              <button
+              <s-button
+                variant="plain"
                 onClick={() => removeImage("logo")}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "#D72C0D",
-                  cursor: "pointer",
-                  fontSize: "13px",
-                  fontWeight: "500",
-                  opacity: canAccess("sv.bg.logo") ? 1 : 0.5,
-                }}
                 disabled={!canAccess("sv.bg.logo")}
               >
                 {t("common.remove")}
-              </button>
+              </s-button>
             </div>
           ) : (
             <div
@@ -395,36 +358,49 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                 background: "#F9FAFB",
               }}
             >
-              <button
+              <s-button
                 disabled={!canAccess("sv.bg.logo") || localUploading === "logo"}
                 onClick={() => logoInputRef.current.click()}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: "8px",
-                  border: "1px solid #CBCFD2",
-                  background: "#FFF",
-                  color: "#1A1C1D",
-                  fontSize: "13px",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                  marginBottom: "8px",
-                  opacity: canAccess("sv.bg.logo") ? 1 : 0.5,
-                }}
               >
-                {localUploading === "logo" ? t("common.uploading") : t("common.addImage")}
-              </button>
-              <p style={{ fontSize: "12px", color: "#6D7175", margin: 0 }}>
+                {localUploading === "logo"
+                  ? t("common.uploading")
+                  : t("common.addImage")}
+              </s-button>
+              <p style={{ fontSize: "12px", color: "#6D7175", margin: "8px 0 0 0" }}>
                 {t("common.acceptsFormats")}
               </p>
             </div>
           )}
         </div>
-      </Card>
+      </div>
 
-      <Card
-        title={t("popupEditor.backgroundTab.borderSetting")}
-        badge={!canAccess("sv.bg.border-color") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E1E3E5",
+          borderRadius: "8px",
+          padding: "16px",
+          marginBottom: "20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
       >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+            {t("popupEditor.backgroundTab.borderSetting")}
+          </s-text>
+          {!canAccess("sv.bg.border-color") ? (
+            <Badge text={t("common.premiumPlan")} type="premium" />
+          ) : null}
+        </div>
+        <s-divider></s-divider>
         <ColorInput
           label={t("popupEditor.backgroundTab.borderColor")}
           disabled={!canAccess("sv.bg.border-color")}
@@ -464,7 +440,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
             />
           </div>
         </div>
-      </Card>
+      </div>
     </>
   );
 }

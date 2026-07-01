@@ -59,48 +59,22 @@ export default function PopupToolbar({
       >
         <div></div>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-          <button
+          <s-button
             type="button"
             onClick={() => setIsSearching(true)}
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid #E1E3E5",
-              borderRadius: "8px",
-              width: "60px",
-              height: "40px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-              gap: "1px",
-            }}
             title={t("storeVerification.searchAndFilters")}
           >
             <SearchButtonIcon />
             <FilterButtonIcon />
-          </button>
+          </s-button>
 
-          <button
+          <s-button
             type="button"
             onClick={onBulkDelete}
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid #E1E3E5",
-              borderRadius: "8px",
-              width: "60px",
-              height: "40px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: "#FF4D4D",
-              boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-            }}
             title={t("storeVerification.deleteAllPopups")}
           >
             <TrashIcon />
-          </button>
+          </s-button>
         </div>
       </div>
     );

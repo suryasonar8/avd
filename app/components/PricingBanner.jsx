@@ -29,7 +29,8 @@ export default function PricingBanner({ text }) {
     <s-banner
       ref={bannerRef}
       tone="info"
-      title={t("pricingBanner.freePlanLimit")}
+      heading={t("pricingBanner.freePlanLimit")}
+      dismissible
     >
       <s-stack gap="base">
         <s-text>{text}</s-text>

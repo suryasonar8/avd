@@ -1,4 +1,3 @@
-import { Card } from "../Card";
 import { Badge } from "../Badge";
 import { usePlan } from "../../context/PlanContext";
 import { useTranslation } from "../../context/TranslationContext";
@@ -9,7 +8,34 @@ export function CSSTab({ config, setConfig }) {
   const hasAccess = canAccess("sv.css.input");
 
   return (
-    <Card title={t("popupEditor.cssTab.cssTitle")} badge={!hasAccess ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}>
+    <div
+      style={{
+        background: "#FFFFFF",
+        border: "1px solid #E1E3E5",
+        borderRadius: "8px",
+        padding: "16px",
+        marginBottom: "20px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+        }}
+      >
+        <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+          {t("popupEditor.cssTab.cssTitle")}
+        </s-text>
+        {!hasAccess ? (
+          <Badge text={t("common.premiumPlan")} type="premium" />
+        ) : null}
+      </div>
+      <s-divider></s-divider>
+
       <div
         style={{
           borderRadius: "8px",
@@ -49,6 +75,6 @@ export function CSSTab({ config, setConfig }) {
           }}
         />
       </div>
-    </Card>
+    </div>
   );
 }

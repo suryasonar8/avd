@@ -1,4 +1,3 @@
-import { Card } from "../Card";
 import { RichTextEditor } from "../RichTextEditor";
 import { useTranslation } from "../../context/TranslationContext";
 
@@ -6,7 +5,22 @@ export function TextTab({ config, setConfig }) {
   const { t } = useTranslation();
   return (
     <>
-      <Card title={t("popupEditor.textTab.popupHeading")}>
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E1E3E5",
+          borderRadius: "8px",
+          padding: "16px",
+          marginBottom: "20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+          {t("popupEditor.textTab.popupHeading")}
+        </s-text>
+        <s-divider></s-divider>
         <RichTextEditor
           value={config.text.heading}
           onChange={(val) =>
@@ -16,8 +30,24 @@ export function TextTab({ config, setConfig }) {
             }))
           }
         />
-      </Card>
-      <Card title={t("popupEditor.textTab.popupSubHeading")}>
+      </div>
+
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E1E3E5",
+          borderRadius: "8px",
+          padding: "16px",
+          marginBottom: "20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+          {t("popupEditor.textTab.popupSubHeading")}
+        </s-text>
+        <s-divider></s-divider>
         <RichTextEditor
           value={config.text.subheading}
           onChange={(val) =>
@@ -27,7 +57,7 @@ export function TextTab({ config, setConfig }) {
             }))
           }
         />
-      </Card>
+      </div>
     </>
   );
 }

@@ -1,4 +1,3 @@
-import { Card } from "../Card";
 import { Badge } from "../Badge";
 import { ColorInput } from "../ColorInput";
 import { NumberInput } from "../NumberInput";
@@ -11,7 +10,22 @@ export function ButtonTab({ config, setConfig }) {
   const { t } = useTranslation();
   return (
     <>
-      <Card title={t("popupEditor.buttonTab.submitButton")}>
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E1E3E5",
+          borderRadius: "8px",
+          padding: "16px",
+          marginBottom: "20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+          {t("popupEditor.buttonTab.submitButton")}
+        </s-text>
+        <s-divider></s-divider>
         <RichTextEditor
           value={config.button.submitText}
           onChange={(val) =>
@@ -21,54 +35,66 @@ export function ButtonTab({ config, setConfig }) {
             }))
           }
         />
-      </Card>
+      </div>
 
-      <Card title={t("popupEditor.buttonTab.submitButtonAction")}>
-        <div style={{ marginBottom: "8px" }}>
-          <label
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E1E3E5",
+          borderRadius: "8px",
+          padding: "16px",
+          marginBottom: "20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+          {t("popupEditor.buttonTab.submitButtonAction")}
+        </s-text>
+        <s-divider></s-divider>
+        <div>
+          <s-text-field
+            label={t("popupEditor.buttonTab.errorMessage")}
+            value={config.button.errorMsg || ""}
+            maxLength={255}
+            onChange={(e) =>
+              setConfig((prev) => ({
+                ...prev,
+                button: { ...prev.button, errorMsg: e.currentTarget.value },
+              }))
+            }
+          />
+          <p
             style={{
-              display: "block",
-              fontSize: "13px",
-              fontWeight: "600",
-              marginBottom: "8px",
+              fontSize: "12px",
+              color: "#6D7175",
+              marginTop: "4px",
+              textAlign: "right",
+              marginBottom: 0,
             }}
           >
-            {t("popupEditor.buttonTab.errorMessage")}
-          </label>
-          <div style={{ position: "relative" }}>
-            <input
-              type="text"
-              value={config.button.errorMsg || ""}
-              onChange={(e) =>
-                setConfig((prev) => ({
-                  ...prev,
-                  button: { ...prev.button, errorMsg: e.target.value },
-                }))
-              }
-              style={{
-                boxSizing: "border-box",
-                width: "100%",
-                padding: "10px",
-                borderRadius: "8px",
-                border: "1px solid #CBCFD2",
-              }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "10px",
-                fontSize: "12px",
-                color: "#6D7175",
-              }}
-            >
-              {(config.button.errorMsg || "").length}/255
-            </span>
-          </div>
+            {(config.button.errorMsg || "").length}/255
+          </p>
         </div>
-      </Card>
+      </div>
 
-      <Card title={t("popupEditor.buttonTab.buttonStyle")}>
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E1E3E5",
+          borderRadius: "8px",
+          padding: "16px",
+          marginBottom: "20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+          {t("popupEditor.buttonTab.buttonStyle")}
+        </s-text>
+        <s-divider></s-divider>
         <ColorInput
           label={t("popupEditor.buttonTab.background")}
           disabled={!canAccess("sv.btn.bg")}
@@ -117,9 +143,24 @@ export function ButtonTab({ config, setConfig }) {
             }))
           }
         />
-      </Card>
+      </div>
 
-      <Card title={t("popupEditor.buttonTab.cancelButton")}>
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E1E3E5",
+          borderRadius: "8px",
+          padding: "16px",
+          marginBottom: "20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+          {t("popupEditor.buttonTab.cancelButton")}
+        </s-text>
+        <s-divider></s-divider>
         <RichTextEditor
           value={config.button.cancelText}
           onChange={(val) =>
@@ -129,130 +170,113 @@ export function ButtonTab({ config, setConfig }) {
             }))
           }
         />
-      </Card>
+      </div>
 
-      <Card title={t("popupEditor.buttonTab.cancelButtonAction")}>
-        <div style={{ marginBottom: "16px" }}>
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E1E3E5",
+          borderRadius: "8px",
+          padding: "16px",
+          marginBottom: "20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+          {t("popupEditor.buttonTab.cancelButtonAction")}
+        </s-text>
+        <s-divider></s-divider>
+
+        <div>
           <p
             style={{ fontSize: "13px", color: "#6D7175", marginBottom: "12px" }}
           >
             {t("popupEditor.buttonTab.ifVisitorClicksCancel")}
           </p>
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "12px" }}
-          >
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                fontSize: "13px",
-              }}
-            >
-              <input
-                type="radio"
-                name="cancelAction"
-                checked={config.button.cancelAction === "redirect"}
-                onChange={() =>
-                  setConfig((prev) => ({
-                    ...prev,
-                    button: { ...prev.button, cancelAction: "redirect" },
-                  }))
-                }
-              />
-              {t("popupEditor.buttonTab.redirectUrl")}
-            </label>
-            {config.button.cancelAction === "redirect" && (
-              <div style={{ marginLeft: "24px", marginTop: "-4px" }}>
-                <input
-                  type="text"
-                  value={config.button.redirectUrl || ""}
-                  onChange={(e) =>
-                    setConfig((prev) => ({
-                      ...prev,
-                      button: { ...prev.button, redirectUrl: e.target.value },
-                    }))
-                  }
-                  style={{
-                    boxSizing: "border-box",
-                    width: "100%",
-                    padding: "8px 12px",
-                    borderRadius: "6px",
-                    border: "1px solid #CBCFD2",
-                    fontSize: "13px",
-                  }}
-                />
-              </div>
-            )}
 
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                fontSize: "13px",
-              }}
-            >
-              <input
-                type="radio"
-                name="cancelAction"
-                checked={config.button.cancelAction === "errorMsg"}
-                onChange={() =>
+          <s-choice-list
+            name="cancelAction"
+            value={config.button.cancelAction}
+            onChange={(e) =>
+              setConfig((prev) => ({
+                ...prev,
+                button: { ...prev.button, cancelAction: e.currentTarget.value },
+              }))
+            }
+          >
+            <s-choice value="redirect">
+              {t("popupEditor.buttonTab.redirectUrl")}
+            </s-choice>
+            <s-choice value="errorMsg">
+              {t("popupEditor.buttonTab.showErrorMessage")}
+            </s-choice>
+          </s-choice-list>
+
+          {config.button.cancelAction === "redirect" && (
+            <div style={{ marginTop: "12px" }}>
+              <s-text-field
+                label={t("popupEditor.buttonTab.redirectUrl")}
+                value={config.button.redirectUrl || ""}
+                onChange={(e) =>
                   setConfig((prev) => ({
                     ...prev,
-                    button: { ...prev.button, cancelAction: "errorMsg" },
+                    button: { ...prev.button, redirectUrl: e.currentTarget.value },
                   }))
                 }
               />
-              {t("popupEditor.buttonTab.showErrorMessage")}
-            </label>
-            {config.button.cancelAction === "errorMsg" && (
-              <div
+            </div>
+          )}
+
+          {config.button.cancelAction === "errorMsg" && (
+            <div style={{ marginTop: "12px" }}>
+              <s-text-field
+                label={t("popupEditor.buttonTab.errorMessage")}
+                value={config.button.cancelErrorMsg || ""}
+                maxLength={255}
+                onChange={(e) =>
+                  setConfig((prev) => ({
+                    ...prev,
+                    button: {
+                      ...prev.button,
+                      cancelErrorMsg: e.currentTarget.value,
+                    },
+                  }))
+                }
+              />
+              <p
                 style={{
-                  marginLeft: "24px",
-                  marginTop: "-4px",
-                  position: "relative",
+                  fontSize: "12px",
+                  color: "#6D7175",
+                  marginTop: "4px",
+                  textAlign: "right",
+                  marginBottom: 0,
                 }}
               >
-                <input
-                  type="text"
-                  value={config.button.cancelErrorMsg || ""}
-                  onChange={(e) =>
-                    setConfig((prev) => ({
-                      ...prev,
-                      button: {
-                        ...prev.button,
-                        cancelErrorMsg: e.target.value,
-                      },
-                    }))
-                  }
-                  style={{
-                    boxSizing: "border-box",
-                    width: "100%",
-                    padding: "8px 12px",
-                    borderRadius: "6px",
-                    border: "1px solid #CBCFD2",
-                    fontSize: "13px",
-                  }}
-                />
-                <span
-                  style={{
-                    position: "absolute",
-                    right: "10px",
-                    top: "10px",
-                    fontSize: "12px",
-                    color: "#6D7175",
-                  }}
-                >
-                  {(config.button.cancelErrorMsg || "").length}/255
-                </span>
-              </div>
-            )}
-          </div>
+                {(config.button.cancelErrorMsg || "").length}/255
+              </p>
+            </div>
+          )}
         </div>
-      </Card>
+      </div>
 
-      <Card title={t("popupEditor.buttonTab.cancelButtonStyle")}>
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E1E3E5",
+          borderRadius: "8px",
+          padding: "16px",
+          marginBottom: "20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+          {t("popupEditor.buttonTab.cancelButtonStyle")}
+        </s-text>
+        <s-divider></s-divider>
         <ColorInput
           label={t("popupEditor.buttonTab.background")}
           disabled={!canAccess("sv.cbtn.bg")}
@@ -301,7 +325,7 @@ export function ButtonTab({ config, setConfig }) {
             }))
           }
         />
-      </Card>
+      </div>
     </>
   );
 }
