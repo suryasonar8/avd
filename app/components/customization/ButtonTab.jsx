@@ -198,18 +198,17 @@ export function ButtonTab({ config, setConfig }) {
 
           <s-choice-list
             name="cancelAction"
-            value={config.button.cancelAction}
             onChange={(e) =>
               setConfig((prev) => ({
                 ...prev,
-                button: { ...prev.button, cancelAction: e.currentTarget.value },
+                button: { ...prev.button, cancelAction: e.currentTarget.values[0] },
               }))
             }
           >
-            <s-choice value="redirect">
+            <s-choice value="redirect" selected={config.button.cancelAction === "redirect"}>
               {t("popupEditor.buttonTab.redirectUrl")}
             </s-choice>
-            <s-choice value="errorMsg">
+            <s-choice value="errorMsg" selected={config.button.cancelAction === "errorMsg"}>
               {t("popupEditor.buttonTab.showErrorMessage")}
             </s-choice>
           </s-choice-list>

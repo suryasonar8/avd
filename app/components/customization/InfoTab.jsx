@@ -10,6 +10,7 @@ export function InfoTab({ config, setConfig }) {
   const [urlInput, setUrlInput] = useState("");
   const { canAccess } = usePlan();
   const { t } = useTranslation();
+  
   return (
     <>
       <div
@@ -97,15 +98,20 @@ export function InfoTab({ config, setConfig }) {
           </label>
           <s-choice-list
             name="method"
-            value={config.method}
             onChange={(e) =>
-              setConfig((prev) => ({ ...prev, method: e.currentTarget.value }))
+              setConfig((prev) => ({
+                ...prev,
+                method: e.currentTarget.values[0],
+              }))
             }
           >
-            <s-choice value="No input">
+            <s-choice value="No input" selected={config.method === "No input"}>
               {t("popupEditor.infoTab.noInput")}
             </s-choice>
-            <s-choice value="Birthdate entry">
+            <s-choice
+              value="Birthdate entry"
+              selected={config.method === "Birthdate entry"}
+            >
               {t("popupEditor.infoTab.birthdateEntry")}
             </s-choice>
           </s-choice-list>
@@ -114,10 +120,11 @@ export function InfoTab({ config, setConfig }) {
         {config.method === "Birthdate entry" && (
           <>
             <div>
-              <s-text-field
-                type="number"
+              <s-number-field
                 label={t("popupEditor.infoTab.verifyAge")}
                 value={String(config.verifyAge || 18)}
+                min="0"
+                max="120"
                 onChange={(e) =>
                   setConfig((prev) => ({
                     ...prev,
@@ -206,9 +213,8 @@ export function InfoTab({ config, setConfig }) {
           </label>
           <s-choice-list
             name="pages"
-            value={config.pages}
             onChange={(e) =>
-              setConfig((prev) => ({ ...prev, pages: e.currentTarget.value }))
+              setConfig((prev) => ({ ...prev, pages: e.currentTarget.values[0] }))
             }
           >
             {DISPLAY_PAGES.map((page) => {
@@ -225,7 +231,7 @@ export function InfoTab({ config, setConfig }) {
                 );
               return (
                 <Fragment key={page.value}>
-                  <s-choice value={page.value} disabled={!hasAccess}>
+                  <s-choice value={page.value} disabled={!hasAccess} selected={config.pages === page.value}>
                     {t(page.labelKey)}
                   </s-choice>
 
@@ -538,17 +544,17 @@ export function InfoTab({ config, setConfig }) {
           </label>
           <s-choice-list
             name="trigger"
-            value={config.trigger}
             onChange={(e) =>
-              setConfig((prev) => ({ ...prev, trigger: e.currentTarget.value }))
+              setConfig((prev) => ({ ...prev, trigger: e.currentTarget.values[0] }))
             }
           >
-            <s-choice value="Always show">
+            <s-choice value="Always show" selected={config.trigger === "Always show"}>
               {t("popupEditor.infoTab.triggerAlways")}
             </s-choice>
             <s-choice
               value="Logged customers"
               disabled={!canAccess("sv.info.trigger.logged")}
+              selected={config.trigger === "Logged customers"}
             >
               {t("popupEditor.infoTab.triggerLogged")}
             </s-choice>

@@ -88,12 +88,11 @@ export default function ConditionSettings({ config, onChange }) {
       >
         <s-choice-list
           name="status"
-          value={config.status}
-          onChange={(e) => handleStatusChange(e.currentTarget.value)}
+          onChange={(e) => handleStatusChange(e.currentTarget.values[0])}
           disabled={!canAccess("checkout.condition.status")}
         >
-          <s-choice value="enabled">{t("common.enabled")}</s-choice>
-          <s-choice value="disabled">{t("common.disabled")}</s-choice>
+          <s-choice value="enabled" selected={config.status === "enabled"}>{t("common.enabled")}</s-choice>
+          <s-choice value="disabled" selected={config.status === "disabled"}>{t("common.disabled")}</s-choice>
         </s-choice-list>
       </SettingsSection>
 
@@ -107,16 +106,15 @@ export default function ConditionSettings({ config, onChange }) {
       >
         <s-choice-list
           name="target"
-          value={config.target}
-          onChange={(e) => handleTargetChange(e.currentTarget.value)}
+          onChange={(e) => handleTargetChange(e.currentTarget.values[0])}
           disabled={!canAccess("checkout.condition.target")}
         >
-          <s-choice value="always">
+          <s-choice value="always" selected={config.target === "always"}>
             {t("checkoutVerification.conditionAlways")}
             <s-text slot="details">{t("checkoutVerification.conditionAlwaysDescription")}</s-text>
           </s-choice>
 
-          <s-choice value="collection">
+          <s-choice value="collection" selected={config.target === "collection"}>
             {t("checkoutVerification.specificCollection")}
             <s-text slot="details">{t("checkoutVerification.specificCollectionDescription")}</s-text>
           </s-choice>
@@ -171,7 +169,7 @@ export default function ConditionSettings({ config, onChange }) {
             </div>
           )}
 
-          <s-choice value="product">
+          <s-choice value="product" selected={config.target === "product"}>
             {t("checkoutVerification.specificProduct")}
             <s-text slot="details">{t("checkoutVerification.specificProductDescription")}</s-text>
           </s-choice>

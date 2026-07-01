@@ -42,17 +42,16 @@ export default function ConditionSettings({ settings, setSettings }) {
         </div>
         <s-choice-list
           name="status"
-          value={settings.enabled ? "true" : "false"}
           onChange={(e) =>
             setSettings({
               ...settings,
-              enabled: e.currentTarget.value === "true",
+              enabled: e.currentTarget.values[0] === "true",
             })
           }
           disabled={!canAccess("terms.condition.status")}
         >
-          <s-choice value="true">{t("common.enabled")}</s-choice>
-          <s-choice value="false">{t("common.disabled")}</s-choice>
+          <s-choice value="true" selected={settings.enabled === true}>{t("common.enabled")}</s-choice>
+          <s-choice value="false" selected={settings.enabled === false}>{t("common.disabled")}</s-choice>
         </s-choice-list>
       </div>
 
@@ -141,22 +140,21 @@ export default function ConditionSettings({ settings, setSettings }) {
           </div>
           <s-choice-list
             name="trigger"
-            value={settings.triggerCondition}
             onChange={(e) =>
               setSettings({
                 ...settings,
-                triggerCondition: e.currentTarget.value,
+                triggerCondition: e.currentTarget.values[0],
               })
             }
             disabled={!canAccess("terms.condition.trigger")}
           >
-            <s-choice value="always">
+            <s-choice value="always" selected={settings.triggerCondition === "always"}>
               {t("storeVerification.triggerOptions.alwaysShow")}
             </s-choice>
-            <s-choice value="logged">
+            <s-choice value="logged" selected={settings.triggerCondition === "logged"}>
               {t("storeVerification.triggerOptions.loggedCustomers")}
             </s-choice>
-            <s-choice value="not_logged">
+            <s-choice value="not_logged" selected={settings.triggerCondition === "not_logged"}>
               {t("storeVerification.triggerOptions.notLoggedCustomers")}
             </s-choice>
           </s-choice-list>

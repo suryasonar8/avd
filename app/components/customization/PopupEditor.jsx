@@ -78,7 +78,6 @@ export function PopupEditor({
   shopify,
 }) {
   const navigate = useNavigate();
-  const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState("Info");
   const [previewMode, setPreviewMode] = useState("desktop");
 
