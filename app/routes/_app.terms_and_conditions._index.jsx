@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 import { TermsService } from "../services/terms.service";
@@ -103,36 +102,17 @@ export default function TermsAndConditions() {
         </div>
 
         {/* Checkbox */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            marginTop: "4px",
-          }}
-        >
-          <input
-            type="checkbox"
-            id="accept-terms"
-            disabled
-            checked={isEnabled}
-            style={{ width: "16px", height: "16px" }}
-          />
-          <label
-            htmlFor="accept-terms"
-            style={{ fontSize: "14px", color: "#333" }}
-          >
-            {settings?.checkboxText || t("termsAndConditions.defaults.checkboxText")}
-          </label>
-        </div>
-
-        <hr
-          style={{
-            border: "none",
-            borderTop: "1px solid #e6e6e6",
-            margin: "20px 0",
-          }}
+        <s-checkbox
+          id="accept-terms"
+          disabled
+          checked={isEnabled}
+          label={
+            settings?.checkboxText ||
+            t("termsAndConditions.defaults.checkboxText")
+          }
         />
+
+        <s-divider></s-divider>
 
         {/* Product page & cart page row */}
         <div
@@ -144,9 +124,9 @@ export default function TermsAndConditions() {
         >
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <strong style={{ fontSize: "14px" }}>
+              <s-heading>
                 {t("termsAndConditions.productAndCartPage")}
-              </strong>
+              </s-heading>
               <span
                 style={{
                   fontSize: "12px",
@@ -160,11 +140,9 @@ export default function TermsAndConditions() {
                 {isEnabled ? t("common.enabled") : t("common.disabled")}
               </span>
             </div>
-            <p
-              style={{ margin: "4px 0 0", fontSize: "13px", color: "#6d7175" }}
-            >
+            <s-text color="subdued">
               {t("termsAndConditions.productAndCartDescription")}
-            </p>
+            </s-text>
           </div>
           <s-button
             variant="secondary"
@@ -186,9 +164,7 @@ export default function TermsAndConditions() {
         }}
       >
         {t("common.needHelp")}{" "}
-        <a href="#" style={{ color: "#2c6ecb", textDecoration: "none" }}>
-          {t("common.ourDocumentGuideline")}
-        </a>
+        <s-link href="#">{t("common.ourDocumentGuideline")}</s-link>
       </div>
     </s-page>
   );

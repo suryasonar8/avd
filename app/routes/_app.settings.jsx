@@ -162,10 +162,10 @@ export default function SettingsPage() {
 
         <div style={{ maxWidth: "600px" }}>
           <Card title={t("settings.adminLanguage")}>
-            <select
+            <s-select
               value={adminLanguage}
               onChange={(e) => {
-                const newLang = e.target.value;
+                const newLang = e.currentTarget.value;
                 setAdminLanguage(newLang);
                 // Immediately update translations across the app
                 changeLocale(newLang);
@@ -180,22 +180,24 @@ export default function SettingsPage() {
                   { method: "POST" },
                 );
               }}
-              style={{
-                width: "100%",
-                padding: "8px 12px",
-                borderRadius: "8px",
-                border: "1px solid #CBCFD2",
-                background: "#FFF",
-                fontSize: "14px",
-              }}
             >
-              <option value="en">{t("settings.adminLanguageEnglish")}</option>
-              <option value="de">{t("settings.adminLanguageDeutsch")}</option>
-              <option value="fr">{t("settings.adminLanguageFrench")}</option>
-              <option value="it">{t("settings.adminLanguageItalian")}</option>
-              <option value="es">{t("settings.adminLanguageSpanish")}</option>
-              <option value="hi">{t("settings.adminLanguageHindi")}</option>
-            </select>
+              <s-option value="en">
+                {t("settings.adminLanguageEnglish")}
+              </s-option>
+              <s-option value="de">
+                {t("settings.adminLanguageDeutsch")}
+              </s-option>
+              <s-option value="fr">
+                {t("settings.adminLanguageFrench")}
+              </s-option>
+              <s-option value="it">
+                {t("settings.adminLanguageItalian")}
+              </s-option>
+              <s-option value="es">
+                {t("settings.adminLanguageSpanish")}
+              </s-option>
+              <s-option value="hi">{t("settings.adminLanguageHindi")}</s-option>
+            </s-select>
             <p
               style={{
                 fontSize: "12px",
@@ -208,77 +210,38 @@ export default function SettingsPage() {
           </Card>
 
           <Card title={t("settings.rememberVisitor")}>
-            <div style={{ marginBottom: "16px" }}>
-              <select
-                value={settings.rememberVisitor || "Session only"}
-                onChange={(e) =>
-                  setSettings({ ...settings, rememberVisitor: e.target.value })
-                }
-                style={{
-                  width: "100%",
-                  padding: "8px 12px",
-                  borderRadius: "8px",
-                  border: "1px solid #CBCFD2",
-                  background: "#FFF",
-                  fontSize: "14px",
-                }}
-              >
-                <option value="Session only">
-                  {t("settings.rememberVisitorOptions.sessionOnly")}
-                </option>
-                <option value="Days">
-                  {t("settings.rememberVisitorOptions.days")}
-                </option>
-                <option value="Allow visitor to choose">
-                  {t("settings.rememberVisitorOptions.allowVisitorToChoose")}
-                </option>
-              </select>
-            </div>
+            <s-select
+              value={settings.rememberVisitor || "Session only"}
+              onChange={(e) =>
+                setSettings({
+                  ...settings,
+                  rememberVisitor: e.currentTarget.value,
+                })
+              }
+            >
+              <s-option value="Session only">
+                {t("settings.rememberVisitorOptions.sessionOnly")}
+              </s-option>
+              <s-option value="Days">
+                {t("settings.rememberVisitorOptions.days")}
+              </s-option>
+              <s-option value="Allow visitor to choose">
+                {t("settings.rememberVisitorOptions.allowVisitorToChoose")}
+              </s-option>
+            </s-select>
 
             {settings.rememberVisitor === "Days" && (
-              <div>
-                <label
-                  style={{
-                    display: "block",
-                    fontSize: "13px",
-                    fontWeight: "600",
-                    marginBottom: "8px",
-                  }}
-                >
-                  {t("settings.enterNumberOfDays")}
-                </label>
-                <div style={{ position: "relative" }}>
-                  <input
-                    type="number"
-                    value={settings.rememberDays || 30}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        rememberDays: parseInt(e.target.value),
-                      })
-                    }
-                    style={{
-                      width: "100%",
-                      padding: "8px 12px",
-                      borderRadius: "8px",
-                      border: "1px solid #CBCFD2",
-                      fontSize: "14px",
-                      boxSizing: "border-box",
-                    }}
-                  />
-                  <span
-                    style={{
-                      position: "absolute",
-                      right: "12px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      fontSize: "13px",
-                      color: "#6D7175",
-                    }}
-                  >
-                    {t("settings.daySuffix")}
-                  </span>
-                </div>
+              <div style={{ marginTop: "16px" }}>
+                <s-number-field
+                  label={t("settings.enterNumberOfDays")}
+                  value={settings.rememberDays || 30}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      rememberDays: parseInt(e.currentTarget.value) || 0,
+                    })
+                  }
+                />
               </div>
             )}
           </Card>

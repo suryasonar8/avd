@@ -7,6 +7,7 @@ import { Modal } from "../components/Modal";
 import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
 import PricingBanner from "../components/PricingBanner";
+import { useTranslation } from "../context/TranslationContext";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -47,8 +48,6 @@ export const loader = async ({ request }) => {
     limit,
   };
 };
-
-import { useTranslation } from "../context/TranslationContext";
 
 export default function TranslationPage() {
   const {
@@ -123,35 +122,10 @@ export default function TranslationPage() {
         }}
       >
         <div>
-          <h1
-            style={{
-              fontSize: "28px",
-              fontWeight: "700",
-              margin: "0 0 8px 0",
-              color: "#202223",
-            }}
-          >
-            {t("translation.pageTitle")}
-          </h1>
-          <p style={{ margin: 0, color: "#6d7175", fontSize: "14px" }}>
-            {t("translation.pageDescription")}
-          </p>
+          <s-heading>{t("translation.pageTitle")}</s-heading>
+          <s-text>{t("translation.pageDescription")}</s-text>
         </div>
-        <button
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "white",
-            border: "1px solid #dcdfe3",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: "600",
-            fontSize: "13px",
-            color: "#202223",
-            boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
-          }}
-        >
-          {t("translation.refreshData")}
-        </button>
+        <s-button>{t("translation.refreshData")}</s-button>
       </div>
       {/* Free Plan Limit Banner */}
       <PricingBanner text={t("translation.upgradePromo")} />
@@ -169,38 +143,24 @@ export default function TranslationPage() {
         }}
       >
         <div style={{ fontSize: "24px", marginTop: "4px" }}>🔄</div>
-        <div style={{ flex: 1 }}>
-          <h2
-            style={{
-              fontSize: "16px",
-              fontWeight: "700",
-              margin: "0 0 4px 0",
-              color: "#202223",
-            }}
-          >
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: "8px",
+          }}
+        >
+          <s-heading>
             {t("translation.defaultLanguage", { language: primaryLocaleName })}
-          </h2>
-          <p
-            style={{ margin: "0 0 20px 0", color: "#6d7175", fontSize: "14px" }}
-          >
+          </s-heading>
+          <s-text color="subdued">
             {t("translation.defaultLanguageDesc")}
-          </p>
-          <button
-            onClick={handleRedirect}
-            style={{
-              padding: "8px 16px",
-              backgroundColor: "white",
-              border: "1px solid #dcdfe3",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontWeight: "600",
-              fontSize: "13px",
-              color: "#202223",
-              boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
-            }}
-          >
+          </s-text>
+          <s-button onClick={handleRedirect}>
             {t("translation.changeDefault")}
-          </button>
+          </s-button>
         </div>
       </div>
       {/* Translation List Card */}
@@ -312,7 +272,7 @@ export default function TranslationPage() {
                           textAlign: "right",
                         }}
                       >
-                        <button
+                        <s-button
                           onClick={() => {
                             const popupId = item.popups[0]?.id;
                             const url = `/translation/setup/${item.locale}/add${
@@ -322,18 +282,9 @@ export default function TranslationPage() {
                             }`;
                             navigate(url);
                           }}
-                          style={{
-                            background: "none",
-                            border: "none",
-                            color: "#006FBB",
-                            cursor: "pointer",
-                            fontSize: "14px",
-                            fontWeight: "500",
-                            padding: "4px 8px",
-                          }}
                         >
                           {t("common.edit")}
-                        </button>
+                        </s-button>
                       </td>
                     </tr>
                   );
@@ -348,23 +299,11 @@ export default function TranslationPage() {
                 marginTop: "16px",
               }}
             >
-              <button
-                onClick={handleAddLanguage}
-                style={{
-                  padding: "8px 16px",
-                  backgroundColor: canAddLanguage ? "#202223" : "#F1F1F1",
-                  color: canAddLanguage ? "white" : "#919EAB",
-                  border: "none",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  fontWeight: "600",
-                  fontSize: "13px",
-                }}
-              >
+              <s-button onClick={handleAddLanguage} variant="primary">
                 {hasPopups
                   ? t("translation.addLanguage")
                   : t("translation.createPopup")}
-              </button>
+              </s-button>
             </div>
           </div>
         ) : (
@@ -386,52 +325,17 @@ export default function TranslationPage() {
                 opacity: 0.8,
               }}
             />
-            <h3
-              style={{
-                fontSize: "18px",
-                fontWeight: "700",
-                margin: "0 0 8px 0",
-                color: "#202223",
-              }}
-            >
-              {t("translation.emptyTitle")}
-            </h3>
-            <p
-              style={{
-                margin: "0 0 24px 0",
-                color: "#6d7175",
-                fontSize: "14px",
-                maxWidth: "400px",
-                lineHeight: "1.5",
-              }}
-            >
-              {t("translation.emptyDescription")}
-            </p>
-            <button
-              onClick={handleAddLanguage}
-              style={{
-                padding: "10px 24px",
-                backgroundColor:
-                  canAddLanguage || !hasPopups ? "#202223" : "#F1F1F1",
-                color: canAddLanguage || !hasPopups ? "white" : "#919EAB",
-                border: "none",
-                borderRadius: "8px",
-                cursor:
-                  canAddLanguage || !hasPopups ? "pointer" : "not-allowed",
-                fontWeight: "600",
-                fontSize: "14px",
-                boxShadow: "0 1px 0 rgba(0,0,0,0.05)",
-              }}
-            >
+            <s-heading>{t("translation.emptyTitle")}</s-heading>
+            <s-text>{t("translation.emptyDescription")}</s-text>
+            <s-button onClick={handleAddLanguage} variant="primary">
               {hasPopups
                 ? t("translation.addLanguage")
                 : t("translation.createPopup")}
-            </button>
+            </s-button>
           </div>
         )}
       </Card>
       {/* Add Language Modal */}
-      {console.log("selectedLanguage", selectedLanguage)}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

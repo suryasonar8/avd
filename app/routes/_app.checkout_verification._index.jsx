@@ -51,14 +51,7 @@ export default function CheckoutVerification() {
             <s-text>{t("checkoutVerification.youMustBe18")}</s-text>
           </s-banner>
 
-          <hr
-            style={{
-              border: "none",
-              borderTop: "1px solid #e1e3e5",
-              margin: "12px 0",
-            }}
-          />
-
+          <s-divider></s-divider>
           {/* Info banner section */}
           <div
             style={{
@@ -71,20 +64,14 @@ export default function CheckoutVerification() {
               <div
                 style={{ display: "flex", alignItems: "center", gap: "8px" }}
               >
-                <strong style={{ fontSize: "14px" }}>{t("checkoutVerification.infoBanner")}</strong>
+                <s-heading>{t("checkoutVerification.infoBanner")}</s-heading>
                 <s-badge tone={isEnabled ? "success" : "neutral"}>
                   {isEnabled ? t("common.enabled") : t("common.disabled")}
                 </s-badge>
               </div>
-              <p
-                style={{
-                  margin: "4px 0 0",
-                  fontSize: "13px",
-                  color: "#6d7175",
-                }}
-              >
+              <s-text color="subdued">
                 {t("checkoutVerification.infoBannerDescription")}
-              </p>
+              </s-text>
             </div>
             <s-button
               variant="secondary"

@@ -82,9 +82,7 @@ export default function AppPage() {
   };
 
   const handleClearAllFilters = () => {
-    setActiveFilters([
-      { type: "pageSize", value: 10 },
-    ]);
+    setActiveFilters([{ type: "pageSize", value: 10 }]);
     setSearchQuery("");
     setCurrentPage(1);
   };
@@ -122,12 +120,14 @@ export default function AppPage() {
     const diffHour = Math.floor(diffMin / 60);
     const diffDay = Math.floor(diffHour / 24);
 
-    if (diffMs < 0 || diffSec < 60) return t("storeVerification.relativeTime.justNow");
+    if (diffMs < 0 || diffSec < 60)
+      return t("storeVerification.relativeTime.justNow");
     if (diffMin < 60)
       return t("storeVerification.relativeTime.minutesAgo", { count: diffMin });
     if (diffHour < 24)
       return t("storeVerification.relativeTime.hoursAgo", { count: diffHour });
-    if (diffDay < 7) return t("storeVerification.relativeTime.daysAgo", { count: diffDay });
+    if (diffDay < 7)
+      return t("storeVerification.relativeTime.daysAgo", { count: diffDay });
 
     return date.toLocaleDateString(locale, {
       year: "numeric",
@@ -196,7 +196,10 @@ export default function AppPage() {
     <s-page heading={t("storeVerification.pageHeading")}>
       {plan === PLAN_TYPES.FREE && (
         <PricingBanner
-          text={t("storeVerification.freePlanBanner.description", { used: popups.length, limit: popupLimit })}
+          text={t("storeVerification.freePlanBanner.description", {
+            used: popups.length,
+            limit: popupLimit,
+          })}
         />
       )}
 
@@ -257,23 +260,10 @@ export default function AppPage() {
               borderBottomRightRadius: "12px",
             }}
           >
-            <button
+            <s-button
               type="button"
               disabled={activePage === 1}
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "8px",
-                border: "1px solid #E1E3E5",
-                background: activePage === 1 ? "#F6F6F7" : "#FFFFFF",
-                color: activePage === 1 ? "#BABFC4" : "#4A4D4F",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: activePage === 1 ? "not-allowed" : "pointer",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-              }}
             >
               <svg
                 width="16"
@@ -290,33 +280,20 @@ export default function AppPage() {
                   strokeLinejoin="round"
                 />
               </svg>
-            </button>
+            </s-button>
             <span style={{ fontSize: "13px", color: "#4A4D4F" }}>
               {t("storeVerification.paginationShowing", {
                 start: totalItems === 0 ? 0 : startIndex + 1,
                 end: Math.min(startIndex + itemsPerPage, totalItems),
-                total: totalItems
+                total: totalItems,
               })}
             </span>
-            <button
+            <s-button
               type="button"
               disabled={activePage === totalPages}
               onClick={() =>
                 setCurrentPage((prev) => Math.min(prev + 1, totalPages))
               }
-              style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "8px",
-                border: "1px solid #E1E3E5",
-                background: activePage === totalPages ? "#F6F6F7" : "#FFFFFF",
-                color: activePage === totalPages ? "#BABFC4" : "#4A4D4F",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: activePage === totalPages ? "not-allowed" : "pointer",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-              }}
             >
               <svg
                 width="16"
@@ -333,7 +310,7 @@ export default function AppPage() {
                   strokeLinejoin="round"
                 />
               </svg>
-            </button>
+            </s-button>
           </div>
         </div>
       ) : (

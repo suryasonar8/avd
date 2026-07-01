@@ -8,7 +8,6 @@ import {
 import { useState, useMemo, useEffect } from "react";
 import { useAppBridge, SaveBar } from "@shopify/app-bridge-react";
 import {
-  SectionTitle,
   TranslationField,
   PopupSelector,
 } from "../components/TranslationComponents";
@@ -33,7 +32,7 @@ const MONTH_NAMES = [
   "September",
   "October",
   "November",
-  "December"
+  "December",
 ];
 
 export const loader = async ({ request, params }) => {
@@ -388,11 +387,7 @@ export default function TranslationSetupPage() {
               <Badge text={t("common.basicPlanOrHigher")} type="basic" />
             )}
           </div>
-          <p
-            style={{ margin: "8px 0 0 0", color: "#6d7175", fontSize: "14px" }}
-          >
-            {t("translation.pageDescription")}
-          </p>
+          <s-text color="subdued">{t("translation.pageDescription")}</s-text>
         </div>
 
         <SaveBar id="translation-save-bar" open={isDirty && !isReadOnly}>
@@ -415,10 +410,7 @@ export default function TranslationSetupPage() {
             marginBottom: "40px",
           }}
         >
-          <SectionTitle
-            title={t("translation.infoSectionTitle")}
-            description={t("translation.infoSectionDescription")}
-          />
+          <s-text>{t("translation.infoSectionDescription")}</s-text>
           <Card>
             <div style={{ marginBottom: "20px" }}>
               <label
@@ -454,11 +446,17 @@ export default function TranslationSetupPage() {
                       width: "100%",
                     }}
                   >
-                    <span style={{ color: "#202223" }}>{t("translation.upgradeNow")}</span>
+                    <span style={{ color: "#202223" }}>
+                      {t("translation.upgradeNow")}
+                    </span>
                     <Badge text={t("common.basicPlanOrHigher")} type="basic" />
                   </div>
                 ) : (
-                  <span>{isPublished ? t("translation.published") : t("translation.unpublished")}</span>
+                  <span>
+                    {isPublished
+                      ? t("translation.published")
+                      : t("translation.unpublished")}
+                  </span>
                 )}
               </div>
             </div>
@@ -472,7 +470,8 @@ export default function TranslationSetupPage() {
                   marginBottom: "8px",
                 }}
               >
-                {t("translation.selectPopup")} <span style={{ color: "#d72c0d" }}>*</span>
+                {t("translation.selectPopup")}{" "}
+                <span style={{ color: "#d72c0d" }}>*</span>
               </label>
               <PopupSelector
                 popups={popups}
@@ -493,10 +492,7 @@ export default function TranslationSetupPage() {
             marginBottom: "40px",
           }}
         >
-          <SectionTitle
-            title={t("translation.textSectionTitle")}
-            description={t("translation.textSectionDescription")}
-          />
+          <s-text>{t("translation.textSectionDescription")}</s-text>
           <Card>
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
@@ -530,10 +526,7 @@ export default function TranslationSetupPage() {
             marginBottom: "40px",
           }}
         >
-          <SectionTitle
-            title={t("translation.buttonSectionTitle")}
-            description={t("translation.buttonSectionDescription")}
-          />
+          <s-text>{t("translation.buttonSectionDescription")}</s-text>
           <Card>
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
@@ -587,10 +580,7 @@ export default function TranslationSetupPage() {
             marginBottom: "40px",
           }}
         >
-          <SectionTitle
-            title={t("translation.labelSectionTitle")}
-            description={t("translation.labelSectionDescription")}
-          />
+          <s-text>{t("translation.labelSectionDescription")}</s-text>
           <Card>
             <div
               style={{
@@ -603,7 +593,11 @@ export default function TranslationSetupPage() {
                 <TranslationField
                   key={month}
                   label={t("translation.monthLabel")}
-                  original={selectedPopupId ? t("months." + month.toLowerCase()) : t("translation.monthLabel")}
+                  original={
+                    selectedPopupId
+                      ? t("months." + month.toLowerCase())
+                      : t("translation.monthLabel")
+                  }
                   value={translations.months[month]}
                   disabled={isReadOnly || !selectedPopupId}
                   onChange={(val) =>
@@ -620,7 +614,7 @@ export default function TranslationSetupPage() {
 
               {visibleMonths.length < 12 && (
                 <div>
-                  <button
+                  <s-button
                     onClick={() => {
                       if (isReadOnly) return;
                       const nextMonth = MONTH_NAMES[visibleMonths.length];
@@ -629,25 +623,12 @@ export default function TranslationSetupPage() {
                       }
                     }}
                     disabled={isReadOnly || !selectedPopupId}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      padding: "8px 16px",
-                      background: "white",
-                      border: "1px solid #e1e3e5",
-                      borderRadius: "8px",
-                      cursor: isReadOnly ? "not-allowed" : "pointer",
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#202223",
-                    }}
                   >
                     <span style={{ fontSize: "18px", fontWeight: "400" }}>
                       +
                     </span>{" "}
                     {t("translation.addMonth")}
-                  </button>
+                  </s-button>
                 </div>
               )}
             </div>
@@ -661,12 +642,10 @@ export default function TranslationSetupPage() {
             paddingBottom: "40px",
           }}
         >
-          <p style={{ fontSize: "13px", color: "#6d7175" }}>
+          <s-text>
             {t("common.needHelp")}{" "}
-            <a href="#" style={{ color: "#005BD3", textDecoration: "none" }}>
-              {t("common.ourDocumentGuideline")}
-            </a>
-          </p>
+            <s-link href="#">{t("common.ourDocumentGuideline")}</s-link>
+          </s-text>
         </div>
       </div>
     </div>
