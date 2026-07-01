@@ -526,7 +526,7 @@ export default function Dashboard() {
                 variant="primary"
                 href="/store_verification/customization"
               >
-                {t("dashboard.customizeNow")}
+                {t("dashboard.customize")}
               </s-button>
             </div>
           )}

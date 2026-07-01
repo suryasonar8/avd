@@ -51,7 +51,7 @@
     "setupGuide": "Setup guide",
     "customizePopup": "Customize Age Verification Popup",
     "customizePopupDescription": "Create a custom popup that matches your store's branding and legal needs.",
-    "customizeNow": "Customize now",
+    "customize": "Customize",
     "testPopup": "Test the Popup",
     "testPopupDescription": "Verify that your age verification popup is working correctly.",
     "testNow": "Test now",
@@ -240,6 +240,7 @@
   },
   "checkoutVerification": {
     "pageTitle": "Checkout Verification",
+    "customize": "Customize",
     "bannerPromo": "Enable age restriction at checkout - Upgrade your plan today!",
     "verifyYourAge": "Verify your age",
     "youAreOver18": "You're over 18+",
@@ -286,6 +287,7 @@
   },
   "termsAndConditions": {
     "pageTitle": "Terms & Conditions",
+    "customize": "Customize",
     "tabBanner": "Checkbox",
     "bannerPromo": "Access Terms and Conditions and other advanced features with our Premium plan!",
     "productAndCartPage": "Product page & cart page",

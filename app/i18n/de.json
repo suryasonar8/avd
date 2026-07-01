@@ -51,7 +51,7 @@
     "setupGuide": "Einrichtungsanleitung",
     "customizePopup": "Altersverifizierungs-Popup anpassen",
     "customizePopupDescription": "Erstellen Sie ein individuelles Popup, das zu Ihrem Markenauftritt und Ihren rechtlichen Anforderungen passt.",
-    "customizeNow": "Jetzt anpassen",
+    "customize": "Anpassen",
     "testPopup": "Popup testen",
     "testPopupDescription": "Überprüfen Sie, ob Ihr Altersverifizierungs-Popup korrekt funktioniert.",
     "testNow": "Jetzt testen",
@@ -240,6 +240,7 @@
   },
   "checkoutVerification": {
     "pageTitle": "Checkout-Verifizierung",
+    "customize": "Anpassen",
     "bannerPromo": "Aktivieren Sie die Altersbeschränkung an der Kasse – Upgraden Sie Ihren Plan noch heute!",
     "verifyYourAge": "Bestätigen Sie Ihr Alter",
     "youAreOver18": "Sie sind über 18+",
@@ -286,6 +287,7 @@
   },
   "termsAndConditions": {
     "pageTitle": "Allgemeine Geschäftsbedingungen",
+    "customize": "Anpassen",
     "tabBanner": "Kontrollkästchen",
     "bannerPromo": "Zugang zu den AGB und anderen erweiterten Funktionen mit unserem Premium-Plan!",
     "productAndCartPage": "Produktseite & Warenkorbseite",

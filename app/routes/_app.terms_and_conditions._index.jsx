@@ -147,7 +147,7 @@ export default function TermsAndConditions() {
             size="slim"
             onClick={() => navigate("/terms_and_conditions/setup")}
           >
-            {t("dashboard.customizeNow")}
+            {t("termsAndConditions.customize")}
           </s-button>
         </div>
       </s-section>

@@ -51,7 +51,7 @@
     "setupGuide": "Guida alla configurazione",
     "customizePopup": "Personalizza il pop-up di verifica dell'età",
     "customizePopupDescription": "Crea un pop-up personalizzato che corrisponda al marchio del tuo negozio e alle esigenze legali.",
-    "customizeNow": "Personalizza ora",
+    "customize": "Personalizza",
     "testPopup": "Testa il pop-up",
     "testPopupDescription": "Verifica che il pop-up di verifica dell'età funzioni correttamente.",
     "testNow": "Testa ora",
@@ -240,6 +240,7 @@
   },
   "checkoutVerification": {
     "pageTitle": "Verifica al pagamento",
+    "customize": "Personalizza",
     "bannerPromo": "Attiva la restrizione dell'età al pagamento – Aggiorna il tuo piano oggi!",
     "verifyYourAge": "Verifica la tua età",
     "youAreOver18": "Hai più di 18 anni",
@@ -286,6 +287,7 @@
   },
   "termsAndConditions": {
     "pageTitle": "Termini e condizioni",
+    "customize": "Personalizza",
     "tabBanner": "Casella di controllo",
     "bannerPromo": "Accedi ai Termini e condizioni e ad altre funzionalità avanzate con il nostro piano Premium!",
     "productAndCartPage": "Pagina prodotto e pagina carrello",

@@ -76,7 +76,7 @@ export default function CheckoutVerification() {
               size="slim"
               onClick={() => navigate("/checkout_verification/setup")}
             >
-              {t("dashboard.customizeNow")}
+              {t("checkoutVerification.customize")}
             </s-button>
           </div>
         </s-stack>
