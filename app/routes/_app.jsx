@@ -13,7 +13,7 @@ const LANGUAGE_MAP = {
   Français: "fr",
   Italiano: "it",
   Español: "es",
-  "हिन्दी (Hindi)": "hi",
+  हिन्दी: "hi",
   Hindi: "hi",
   en: "en",
   de: "de",
@@ -65,10 +65,16 @@ function AppNav() {
   const { t } = useTranslation();
   return (
     <s-app-nav>
-      <s-link href="/store_verification">{t("navigation.storeVerification")}</s-link>
-      <s-link href="/checkout_verification">{t("navigation.checkoutVerification")}</s-link>
+      <s-link href="/store_verification">
+        {t("navigation.storeVerification")}
+      </s-link>
+      <s-link href="/checkout_verification">
+        {t("navigation.checkoutVerification")}
+      </s-link>
       <s-link href="/translation">{t("navigation.translation")}</s-link>
-      <s-link href="/terms_and_conditions">{t("navigation.termsAndConditions")}</s-link>
+      <s-link href="/terms_and_conditions">
+        {t("navigation.termsAndConditions")}
+      </s-link>
       <s-link href="/settings">{t("navigation.settings")}</s-link>
       <s-link href="/pricing">{t("navigation.pricing")}</s-link>
     </s-app-nav>

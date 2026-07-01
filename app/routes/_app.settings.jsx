@@ -1,7 +1,7 @@
 import { useFetcher, useLoaderData } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { SaveBar } from "@shopify/app-bridge-react";
 import { useTranslation } from "../context/TranslationContext";
 
@@ -84,14 +84,18 @@ const LANGUAGE_MAP = {
   Français: "fr",
   Italiano: "it",
   Español: "es",
-  "हिन्दी (Hindi)": "hi",
-  Hindi: "hi",
+  हिन्दी: "hi",
 };
 
 export default function SettingsPage() {
   const { settings: initialSettings = {} } = useLoaderData();
-  const { adminLanguage: initialAdminLanguage, ...initialOtherSettings } =
-    initialSettings;
+  const { initialOtherSettings, initialAdminLanguage } = useMemo(() => {
+    const { adminLanguage, ...others } = initialSettings;
+    return {
+      initialOtherSettings: others,
+      initialAdminLanguage: adminLanguage,
+    };
+  }, [initialSettings]);
 
   const [settings, setSettings] = useState(initialOtherSettings);
   const [adminLanguage, setAdminLanguage] = useState(() => {
@@ -101,21 +105,23 @@ export default function SettingsPage() {
   const fetcher = useFetcher();
   const shopify = useAppBridge();
   const { t, changeLocale } = useTranslation();
-  const lastProcessedFetcherData = useRef(null);
+  const isSubmitting = useRef(false);
 
   const isDirty =
     JSON.stringify(settings) !== JSON.stringify(initialOtherSettings);
 
   useEffect(() => {
-    if (
-      fetcher.data?.success &&
-      fetcher.data !== lastProcessedFetcherData.current
-    ) {
-      lastProcessedFetcherData.current = fetcher.data;
-      shopify.toast.show(t("settings.settingsSaved"));
-      setSettings(initialOtherSettings);
+    if (fetcher.state !== "idle") {
+      isSubmitting.current = true;
     }
-  }, [fetcher.data, initialOtherSettings, shopify, t]);
+
+    if (isSubmitting.current && fetcher.state === "idle") {
+      if (fetcher.data?.success) {
+        shopify.toast.show(t("settings.settingsSaved"));
+        isSubmitting.current = false;
+      }
+    }
+  }, [fetcher.state, fetcher.data, shopify, t]);
 
   const handleSave = () => {
     fetcher.submit(
@@ -206,7 +212,9 @@ export default function SettingsPage() {
                   <s-option value="es">
                     {t("settings.adminLanguageSpanish")}
                   </s-option>
-                  <s-option value="hi">{t("settings.adminLanguageHindi")}</s-option>
+                  <s-option value="hi">
+                    {t("settings.adminLanguageHindi")}
+                  </s-option>
                 </s-select>
                 <p
                   style={{
