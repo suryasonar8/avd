@@ -193,7 +193,32 @@ export default function AppPage() {
   });
 
   return (
-    <s-page heading={t("storeVerification.pageHeading")}>
+    <s-page>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          marginBottom: "32px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "20px",
+              fontWeight: "700",
+              margin: 0,
+              color: "#1A1C1D",
+            }}
+          >
+            {t("storeVerification.pageHeading")}
+          </h2>
+        </div>
+      </div>
       {plan === PLAN_TYPES.FREE && (
         <PricingBanner
           text={t("storeVerification.freePlanBanner.description", {

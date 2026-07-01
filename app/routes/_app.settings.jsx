@@ -137,13 +137,40 @@ export default function SettingsPage() {
   };
 
   return (
-    <s-page heading={t("settings.pageTitle")}>
+    <s-page>
       <SaveBar id="settings-save-bar" open={isDirty}>
         <button variant="primary" onClick={handleSave}>
           {t("common.save")}
         </button>
         <button onClick={handleDiscard}>{t("common.discard")}</button>
       </SaveBar>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          marginBottom: "32px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            marginBottom: "4px",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "20px",
+              fontWeight: "700",
+              margin: 0,
+              color: "#1A1C1D",
+            }}
+          >
+            {t("settings.pageTitle")}
+          </h2>
+        </div>
+      </div>
 
       <div
         style={{

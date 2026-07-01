@@ -54,7 +54,7 @@ export default function PlansPage() {
         >
           <h2
             style={{
-              fontSize: "26px",
+              fontSize: "20px",
               fontWeight: "700",
               margin: 0,
               color: "#1A1C1D",

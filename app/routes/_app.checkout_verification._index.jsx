@@ -27,7 +27,32 @@ export default function CheckoutVerification() {
   const isEnabled = config.status === "enabled";
 
   return (
-    <s-page heading={t("checkoutVerification.pageTitle")}>
+    <s-page>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          marginBottom: "32px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "20px",
+              fontWeight: "700",
+              margin: 0,
+              color: "#1A1C1D",
+            }}
+          >
+            {t("checkoutVerification.pageTitle")}
+          </h2>
+        </div>
+      </div>
       <PricingBanner text={t("checkoutVerification.bannerPromo")} />
 
       <s-section>

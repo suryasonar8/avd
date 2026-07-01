@@ -21,7 +21,35 @@ export default function TermsAndConditions() {
   const isEnabled = settings?.enabled || false;
 
   return (
-    <s-page heading={t("termsAndConditions.pageTitle")}>
+    <s-page>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          marginBottom: "32px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            marginBottom: "4px",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "20px",
+              fontWeight: "700",
+              margin: 0,
+              color: "#1A1C1D",
+            }}
+          >
+            {t("termsAndConditions.pageTitle")}
+          </h2>
+          <s-text>{t("termsAndConditions.setupDescription")}</s-text>
+        </div>
+      </div>
       {/* Free Plan Limit Banner */}
       <PricingBanner text={t("termsAndConditions.bannerPromo")} />
 
