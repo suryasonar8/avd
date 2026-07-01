@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 import { usePlan } from "../context/PlanContext";
-import { Card } from "../components/Card";
 import { Modal } from "../components/Modal";
 import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
@@ -164,9 +163,25 @@ export default function TranslationPage() {
         </div>
       </div>
       {/* Translation List Card */}
-      <Card title={t("translation.translationList")}>
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E1E3E5",
+          borderRadius: "12px",
+          padding: "24px",
+          marginBottom: "24px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+          {t("translation.translationList")}
+        </s-text>
+        <s-divider></s-divider>
+
         {translatedLanguages.length > 0 ? (
-          <div style={{ padding: "0 16px" }}>
+          <div>
             <table
               style={{
                 width: "100%",
@@ -293,9 +308,8 @@ export default function TranslationPage() {
             </table>
             <div
               style={{
-                padding: "24px 0",
+                padding: "24px 0 0 0",
                 textAlign: "center",
-                borderTop: "1px solid #E1E3E5",
                 marginTop: "16px",
               }}
             >
@@ -310,7 +324,7 @@ export default function TranslationPage() {
           <div
             style={{
               textAlign: "center",
-              padding: "60px 0",
+              padding: "60px 0 0 0",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -334,7 +348,7 @@ export default function TranslationPage() {
             </s-button>
           </div>
         )}
-      </Card>
+      </div>
       {/* Add Language Modal */}
       <Modal
         isOpen={isModalOpen}

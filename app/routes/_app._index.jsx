@@ -309,7 +309,8 @@ export default function Dashboard() {
               variant="secondary"
               onClick={() => window.open(appEmbedUrl, "_blank")}
             >
-              <span style={{ marginRight: "4px" }}>🔗</span> {t("dashboard.activeAppEmbed")}
+              <span style={{ marginRight: "4px" }}>🔗</span>{" "}
+              {t("dashboard.activeAppEmbed")}
             </s-button>
             <a
               href="#"
@@ -397,7 +398,8 @@ export default function Dashboard() {
             }}
           >
             <span>
-              {(popupActive ? 1 : 0) + (isTested ? 1 : 0)}/2 {t("common.completed")}
+              {(popupActive ? 1 : 0) + (isTested ? 1 : 0)}/2{" "}
+              {t("common.completed")}
             </span>
           </div>
           <div
@@ -830,7 +832,9 @@ export default function Dashboard() {
           >
             {t("dashboard.readUserGuidelineDescription")}
           </p>
-          <s-button variant="secondary">{t("dashboard.readUserGuideline")}</s-button>
+          <s-button variant="secondary">
+            {t("dashboard.readUserGuideline")}
+          </s-button>
         </div>
 
         <div

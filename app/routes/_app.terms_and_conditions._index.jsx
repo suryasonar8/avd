@@ -103,7 +103,6 @@ export default function TermsAndConditions() {
         {/* Checkbox */}
         <s-checkbox
           id="accept-terms"
-          disabled
           checked={isEnabled}
           label={
             settings?.checkboxText ||

@@ -2,7 +2,6 @@ import { useFetcher, useLoaderData } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { useState, useEffect, useRef } from "react";
-import { Card } from "../components/Card";
 import { SaveBar } from "@shopify/app-bridge-react";
 import { useTranslation } from "../context/TranslationContext";
 
@@ -160,7 +159,22 @@ export default function SettingsPage() {
         </div>
 
         <div style={{ maxWidth: "600px" }}>
-          <Card title={t("settings.adminLanguage")}>
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid #E1E3E5",
+              borderRadius: "8px",
+              padding: "16px",
+              marginBottom: "20px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+            }}
+          >
+            <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+              {t("settings.adminLanguage")}
+            </s-text>
+            <s-divider></s-divider>
             <s-select
               value={adminLanguage}
               onChange={(e) => {
@@ -201,14 +215,30 @@ export default function SettingsPage() {
               style={{
                 fontSize: "12px",
                 color: "#6D7175",
-                marginTop: "8px",
+                marginTop: "0",
+                marginBottom: "0",
               }}
             >
               {t("settings.adminLanguageHelpText")}
             </p>
-          </Card>
+          </div>
 
-          <Card title={t("settings.rememberVisitor")}>
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid #E1E3E5",
+              borderRadius: "8px",
+              padding: "16px",
+              marginBottom: "20px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+            }}
+          >
+            <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
+              {t("settings.rememberVisitor")}
+            </s-text>
+            <s-divider></s-divider>
             <s-select
               value={settings.rememberVisitor || "Session only"}
               onChange={(e) =>
@@ -230,7 +260,7 @@ export default function SettingsPage() {
             </s-select>
 
             {settings.rememberVisitor === "Days" && (
-              <div style={{ marginTop: "16px" }}>
+              <div>
                 <s-number-field
                   label={t("settings.enterNumberOfDays")}
                   value={settings.rememberDays || 30}
@@ -243,7 +273,7 @@ export default function SettingsPage() {
                 />
               </div>
             )}
-          </Card>
+          </div>
 
           <div style={{ marginTop: "24px", textAlign: "left" }}>
             <p style={{ fontSize: "13px", color: "#6D7175" }}>

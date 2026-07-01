@@ -26,19 +26,20 @@ export default function PricingBanner({ text }) {
   if (!isVisible || plan !== PLAN_TYPES.FREE) return null;
 
   return (
-    <s-banner
-      ref={bannerRef}
-      tone="info"
-      heading={t("pricingBanner.freePlanLimit")}
-      dismissible
-    >
-      <s-stack gap="base">
-        <s-text>{text}</s-text>
-        <s-button variant="secondary" onClick={() => navigate("/pricing")}>
-          {t("pricingBanner.increaseLimit")}
-        </s-button>
-      </s-stack>
-    </s-banner>
+    <div style={{ marginBottom: "20px" }}>
+      <s-banner
+        ref={bannerRef}
+        tone="info"
+        heading={t("pricingBanner.freePlanLimit")}
+        dismissible
+      >
+        <s-stack gap="base">
+          <s-text>{text}</s-text>
+          <s-button variant="secondary" onClick={() => navigate("/pricing")}>
+            {t("pricingBanner.increaseLimit")}
+          </s-button>
+        </s-stack>
+      </s-banner>
+    </div>
   );
 }
-

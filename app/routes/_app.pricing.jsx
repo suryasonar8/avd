@@ -9,6 +9,7 @@ import {
 } from "../constants/pricing";
 import { PLAN_TYPES } from "../constants/features";
 import { useIsMounted } from "../hooks/useIsMounted";
+import DiscountModal from "../components/DiscountModal";
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
@@ -26,7 +27,6 @@ export default function PlansPage() {
   const [hoveredPremiumBtn, setHoveredPremiumBtn] = useState(false);
   const { t } = useTranslation();
   const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
-  const [discountCode, setDiscountCode] = useState("");
 
   if (!isMounted) {
     return null;
@@ -109,7 +109,7 @@ export default function PlansPage() {
               background: "#ffffff",
               border: "1px solid #e4e4e7",
               borderRadius: "16px",
-              padding: "32px",
+              padding: "24px",
               boxShadow: hoveredBasic
                 ? "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
                 : "0 1px 3px 0 rgba(0, 0, 0, 0.05)",
@@ -181,41 +181,17 @@ export default function PlansPage() {
                   ? t("pricing.billedYearly")
                   : t("pricing.billedMonthly")}
               </p>
-              <button
-                style={{
-                  display: "block",
-                  width: "100%",
-                  padding: "12px 24px",
-                  background: hoveredBasicBtn
-                    ? "linear-gradient(180deg, #3a3a3e 0%, #252529 100%)"
-                    : "linear-gradient(180deg, #2d2d30 0%, #1b1b1f 100%)",
-                  color: "#ffffff",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  border: "1px solid #0f0f11",
-                  borderRadius: "8px",
-                  textAlign: "center",
-                  cursor: "pointer",
-                  boxShadow: hoveredBasicBtn
-                    ? "0 2px 4px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15)"
-                    : "0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-                  transition: "all 0.2s ease",
-                  margin: "16px 0",
-                  textDecoration: "none",
-                }}
+              <s-button
+                variant="primary"
                 onMouseEnter={() => setHoveredBasicBtn(true)}
                 onMouseLeave={() => setHoveredBasicBtn(false)}
               >
                 {t("pricing.startFreeTrial")}
-              </button>
+              </s-button>
             </div>
-            <div
-              style={{
-                height: "1px",
-                backgroundColor: "#f4f4f5",
-                margin: "24px 0",
-              }}
-            />
+            <div style={{ margin: "24px 0" }}>
+              <s-divider></s-divider>
+            </div>
             <div>
               <div
                 style={{
@@ -277,7 +253,7 @@ export default function PlansPage() {
               background: "#ffffff",
               border: "1px solid #e4e4e7",
               borderRadius: "16px",
-              padding: "32px",
+              padding: "24px",
               boxShadow: hoveredPremium
                 ? "0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
                 : "0 1px 3px 0 rgba(0, 0, 0, 0.05)",
@@ -370,41 +346,17 @@ export default function PlansPage() {
                   ? t("pricing.billedYearly")
                   : t("pricing.billedMonthly")}
               </p>
-              <button
-                style={{
-                  display: "block",
-                  width: "100%",
-                  padding: "12px 24px",
-                  background: hoveredPremiumBtn
-                    ? "linear-gradient(180deg, #3a3a3e 0%, #252529 100%)"
-                    : "linear-gradient(180deg, #2d2d30 0%, #1b1b1f 100%)",
-                  color: "#ffffff",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  border: "1px solid #0f0f11",
-                  borderRadius: "8px",
-                  textAlign: "center",
-                  cursor: "pointer",
-                  boxShadow: hoveredPremiumBtn
-                    ? "0 2px 4px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15)"
-                    : "0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-                  transition: "all 0.2s ease",
-                  margin: "16px 0",
-                  textDecoration: "none",
-                }}
+              <s-button
+                variant="primary"
                 onMouseEnter={() => setHoveredPremiumBtn(true)}
                 onMouseLeave={() => setHoveredPremiumBtn(false)}
               >
                 {t("pricing.startFreeTrial")}
-              </button>
+              </s-button>
             </div>
-            <div
-              style={{
-                height: "1px",
-                backgroundColor: "#f4f4f5",
-                margin: "24px 0",
-              }}
-            />
+            <div style={{ margin: "24px 0" }}>
+              <s-divider></s-divider>
+            </div>
             <div>
               <div
                 style={{
@@ -467,7 +419,7 @@ export default function PlansPage() {
             background: "#ffffff",
             border: "1px solid #e4e4e7",
             borderRadius: "16px",
-            padding: "32px",
+            padding: "24px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -552,7 +504,7 @@ export default function PlansPage() {
             background: "#ffffff",
             border: "1px solid #e4e4e7",
             borderRadius: "16px",
-            padding: "24px 32px",
+            padding: "24px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -779,219 +731,82 @@ export default function PlansPage() {
           >
             <span>©</span> {t("pricing.pricingFaqsTitle")}
           </h2>
-          {PRICING_FAQ_KEYS.map((item, i) => (
-            <div
-              key={i}
-              style={{
-                border: "1px solid #e1e3e5",
-                borderRadius: "8px",
-                marginBottom: "8px",
-                overflow: "hidden",
-                background: "#ffffff",
-              }}
-            >
-              <button
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+          <div
+            style={{
+              background: "#ffffff",
+              border: "1px solid #e4e4e7",
+              borderRadius: "16px",
+              padding: "24px",
+              boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)",
+            }}
+          >
+            {PRICING_FAQ_KEYS.map((item, i) => (
+              <div
+                key={i}
                 style={{
-                  width: "100%",
-                  padding: "14px 16px",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#202223",
-                  textAlign: "left",
+                  border: "1px solid #e1e3e5",
+                  borderRadius: "8px",
+                  marginBottom: i === PRICING_FAQ_KEYS.length - 1 ? 0 : "8px",
+                  overflow: "hidden",
+                  background: "#ffffff",
                 }}
               >
-                {t(item.qKey)}
-                <span
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   style={{
-                    color: "#6d7175",
-                    fontSize: "12px",
-                    flexShrink: 0,
-                    marginLeft: "12px",
+                    width: "100%",
+                    padding: "14px 16px",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#202223",
+                    textAlign: "left",
                   }}
                 >
-                  {openFaq === i ? "▲" : "▼"}
-                </span>
-              </button>
-              {openFaq === i && (
-                <div
-                  style={{
-                    padding: "0 16px 14px",
-                    fontSize: "13px",
-                    color: "#6d7175",
-                    lineHeight: "1.6",
-                    borderTop: "1px solid #f1f1f1",
-                    paddingTop: "12px",
-                  }}
-                >
-                  {t(item.aKey)}
-                </div>
-              )}
-            </div>
-          ))}
+                  {t(item.qKey)}
+                  <span
+                    style={{
+                      color: "#6d7175",
+                      fontSize: "12px",
+                      flexShrink: 0,
+                      marginLeft: "12px",
+                    }}
+                  >
+                    {openFaq === i ? "▲" : "▼"}
+                  </span>
+                </button>
+                {openFaq === i && (
+                  <div
+                    style={{
+                      padding: "0 16px 14px",
+                      fontSize: "13px",
+                      color: "#6d7175",
+                      lineHeight: "1.6",
+                      borderTop: "1px solid #f1f1f1",
+                      paddingTop: "12px",
+                    }}
+                  >
+                    {t(item.aKey)}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </s-section>
 
-      {isDiscountModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.4)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            fontFamily: "Inter, -apple-system, system-ui, sans-serif",
-          }}
-          onClick={() => {
-            setIsDiscountModalOpen(false);
-            setDiscountCode("");
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#ffffff",
-              borderRadius: "20px",
-              width: "90%",
-              maxWidth: "540px",
-              padding: "24px",
-              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-              position: "relative",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "20px",
-              }}
-            >
-              <h3
-                style={{
-                  fontSize: "18px",
-                  fontWeight: "700",
-                  color: "#1a1c1d",
-                  margin: 0,
-                }}
-              >
-                Apply your discount code
-              </h3>
-              <button
-                onClick={() => {
-                  setIsDiscountModalOpen(false);
-                  setDiscountCode("");
-                }}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "#8c8c8c",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "4px",
-                  transition: "color 0.15s ease",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#1a1c1d")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#8c8c8c")}
-              >
-                <svg
-                  viewBox="0 0 20 20"
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    fill: "currentColor",
-                  }}
-                >
-                  <path d="M11.414 10l6.293-6.293a1 1 0 10-1.414-1.414L10 8.586 3.707 2.293a1 1 0 00-1.414 1.414L8.586 10l-6.293 6.293a1 1 0 101.414 1.414L10 11.414l6.293 6.293a1 1 0 001.414-1.414L11.414 10z" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Body */}
-            <div style={{ marginBottom: "24px" }}>
-              <label
-                htmlFor="discount-code-input"
-                style={{
-                  display: "block",
-                  fontSize: "14px",
-                  color: "#6d7175",
-                  marginBottom: "8px",
-                }}
-              >
-                Discount code
-              </label>
-              <input
-                id="discount-code-input"
-                type="text"
-                value={discountCode}
-                onChange={(e) => setDiscountCode(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "12px 16px",
-                  border: "1px solid #dcdfe3",
-                  borderRadius: "12px",
-                  fontSize: "15px",
-                  outline: "none",
-                  transition: "border-color 0.2s, box-shadow 0.2s",
-                  fontFamily: "inherit",
-                  boxSizing: "border-box",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#0066cc";
-                  e.target.style.boxShadow = "0 0 0 2px rgba(0, 102, 204, 0.1)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#dcdfe3";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-            </div>
-
-            {/* Footer */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
-              <button
-                disabled={!discountCode.trim()}
-                onClick={() => {
-                  setIsDiscountModalOpen(false);
-                  setDiscountCode("");
-                }}
-                style={{
-                  padding: "10px 24px",
-                  backgroundColor: discountCode.trim() ? "#202223" : "#d4d4d8",
-                  color: "#ffffff",
-                  border: "none",
-                  borderRadius: "12px",
-                  cursor: discountCode.trim() ? "pointer" : "default",
-                  fontWeight: "600",
-                  fontSize: "14px",
-                  transition: "background-color 0.2s",
-                }}
-              >
-                Apply
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DiscountModal
+        isOpen={isDiscountModalOpen}
+        onClose={() => setIsDiscountModalOpen(false)}
+        onApply={(code) => {
+          console.log("Discount code applied:", code);
+        }}
+      />
     </s-page>
   );
 }
