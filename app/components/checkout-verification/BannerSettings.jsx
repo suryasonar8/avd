@@ -23,9 +23,10 @@ export default function BannerSettings({ config, onChange }) {
     <SettingsSection
       title={t("checkoutVerification.textCustomization")}
       badge={
-        !hasBasicPlan ? <Badge text={t("common.basicPlanOrHigher")} type="basic" /> : null
+        !hasBasicPlan ? (
+          <Badge text={t("common.basicPlanOrHigher")} type="basic" />
+        ) : null
       }
-      disabled={!hasBasicPlan}
     >
       <div
         style={{
