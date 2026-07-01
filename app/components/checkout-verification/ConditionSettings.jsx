@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import SettingsSection from "./SettingsSection";
-import CustomRadio from "./CustomRadio";
 import { Badge } from "../Badge";
 import { usePlan } from "../../context/PlanContext";
 import { useTranslation } from "../../context/TranslationContext";

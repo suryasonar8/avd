@@ -17,61 +17,23 @@ function TextInput({
   disabled,
 }) {
   return (
-    <div style={{ marginBottom: "12px", opacity: disabled ? 0.6 : 1 }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "4px",
-          marginBottom: "4px",
+    <div style={{ marginBottom: "16px", opacity: disabled ? 0.6 : 1 }}>
+      <s-text-field
+        label={label}
+        required={required}
+        value={value || ""}
+        disabled={disabled}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        onChange={(e) => {
+          const val = e.currentTarget.value;
+          onChange(maxLength ? val.slice(0, maxLength) : val);
         }}
-      >
-        <label style={{ fontSize: "13px", color: "#6D7175" }}>{label}</label>
-        {required && <span style={{ color: "red" }}>*</span>}
-      </div>
-      <div style={{ position: "relative" }}>
-        <input
-          type="text"
-          value={value || ""}
-          onChange={(e) =>
-            onChange(
-              maxLength ? e.target.value.slice(0, maxLength) : e.target.value,
-            )
-          }
-          placeholder={placeholder}
-          disabled={disabled}
-          style={{
-            width: "100%",
-            padding: "8px 12px",
-            paddingRight: maxLength ? "60px" : "12px",
-            borderRadius: "8px",
-            border: "1px solid #E1E3E5",
-            fontSize: "13px",
-            backgroundColor: disabled ? "#F1F1F1" : "#F6F6F7",
-            color: disabled ? "#919EAB" : "#202223",
-            boxSizing: "border-box",
-            cursor: disabled ? "not-allowed" : "text",
-          }}
-        />
-        {maxLength && (
-          <span
-            style={{
-              position: "absolute",
-              right: "10px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              fontSize: "12px",
-              color: "#6D7175",
-            }}
-          >
-            {(value || "").length}/{maxLength}
-          </span>
-        )}
-      </div>
+      />
       {subtitle && (
         <p
           style={{
-            fontSize: "11px",
+            fontSize: "12px",
             color: "#6D7175",
             marginTop: "4px",
             marginBottom: 0,
@@ -140,18 +102,10 @@ export default function CheckboxSettings({ settings, setSettings }) {
         disabled={!canAccess("terms.checkbox.error")}
       />
 
-      <p
-        style={{
-          fontSize: "12px",
-          color: "#6D7175",
-          marginTop: "12px",
-        }}
-      >
+      <s-text>
         {t("termsAndConditions.needMoreCustomization")}{" "}
-        <a href="#" style={{ color: "#2C6ECB", textDecoration: "none" }}>
-          {t("termsAndConditions.contactUs")}
-        </a>
-      </p>
+        <s-link href="#">{t("termsAndConditions.contactUs")}</s-link>
+      </s-text>
     </Card>
   );
 }

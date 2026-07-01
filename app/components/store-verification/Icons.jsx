@@ -86,3 +86,22 @@ export const SearchInputIcon = () => (
     />
   </svg>
 );
+
+export const PlusIcon = (props) => (
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 12 12"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style={{ display: "inline-block", verticalAlign: "middle", ...props.style }}
+    {...props}
+  >
+    <path
+      d="M6 2v8M2 6h8"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);

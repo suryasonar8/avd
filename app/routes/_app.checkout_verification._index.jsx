@@ -1,7 +1,7 @@
-import { useState } from "react";
 import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 import PricingBanner from "../components/PricingBanner";
+import { useTranslation } from "../context/TranslationContext";
 
 import { CheckoutBannerService } from "../services/checkout-banner.service";
 
@@ -19,8 +19,6 @@ export const action = async ({ request }) => {
   // Placeholder for future action logic if needed
   return null;
 };
-
-import { useTranslation } from "../context/TranslationContext";
 
 export default function CheckoutVerification() {
   const navigate = useNavigate();

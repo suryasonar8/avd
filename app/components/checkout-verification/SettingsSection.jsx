@@ -1,4 +1,4 @@
-import BlueBadge from "./BlueBadge";
+import { Badge } from "../Badge";
 
 export default function SettingsSection({ title, badge, children, disabled }) {
   return (
@@ -19,7 +19,7 @@ export default function SettingsSection({ title, badge, children, disabled }) {
           {title}
         </span>
         {badge &&
-          (typeof badge === "string" ? <BlueBadge text={badge} /> : badge)}
+          (typeof badge === "string" ? <Badge text={badge} /> : badge)}
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {children}

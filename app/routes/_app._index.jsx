@@ -140,7 +140,6 @@ export default function Dashboard() {
     settings,
     appEmbedEnabled,
     analytics,
-    shopDomain: shop,
   } = useLoaderData();
   const fetcher = useFetcher();
   const analyticsFetcher = useFetcher();

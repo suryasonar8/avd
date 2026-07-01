@@ -9,6 +9,7 @@ import PreviewPanel from "../components/checkout-verification/PreviewPanel";
 import ConditionSettings from "../components/checkout-verification/ConditionSettings";
 import BannerSettings from "../components/checkout-verification/BannerSettings";
 import { CheckoutBannerService } from "../services/checkout-banner.service";
+import { useTranslation } from "../context/TranslationContext";
 
 const DEFAULT_CONFIG = {
   status: "disabled",
@@ -51,8 +52,6 @@ export const action = async ({ request }) => {
     return { success: false, errors: [error.message] };
   }
 };
-
-import { useTranslation } from "../context/TranslationContext";
 
 export default function CheckoutVerificationSetup() {
   const navigate = useNavigate();

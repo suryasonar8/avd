@@ -2,6 +2,7 @@ import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 import { TermsService } from "../services/terms.service";
 import PricingBanner from "../components/PricingBanner";
+import { useTranslation } from "../context/TranslationContext";
 
 export const loader = async ({ request }) => {
   const { session } = await authenticate.admin(request);
@@ -11,8 +12,6 @@ export const loader = async ({ request }) => {
 };
 
 export const action = async ({ request }) => {};
-
-import { useTranslation } from "../context/TranslationContext";
 
 export default function TermsAndConditions() {
   const navigate = useNavigate();

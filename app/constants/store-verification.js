@@ -20,7 +20,7 @@ export const DEFAULT_STORE_CONFIG = {
         borderWidth: 0,
     },
     text: {
-        heading: "WELCOME TO SHOPs",
+        heading: "WELCOME TO SHOP",
         subheading: "You must be at least 18 to visit this site",
     },
     button: {

@@ -54,26 +54,17 @@ export default function CreatePopupCard({ canCreate }) {
         <h2 style={{ fontSize: "16px", fontWeight: "700", margin: 0 }}>
           {t("storeVerification.ageVerificationPopup")}
         </h2>
-        <p style={{ fontSize: "14px", color: "#6D7175", margin: 0 }}>
+        <s-text color="subdued">
           {t("storeVerification.ageVerificationPopupDescription")}
-        </p>
+        </s-text>
         <div style={{ marginTop: "8px" }}>
-          <button
+          <s-button
             onClick={handleCreatePopUp}
             disabled={!canCreate}
-            style={{
-              background: canCreate ? "#202223" : "#F1F1F1",
-              color: canCreate ? "#FFFFFF" : "#919EAB",
-              border: canCreate ? "none" : "1px solid #CBCFD2",
-              borderRadius: "6px",
-              padding: "8px 16px",
-              fontSize: "13px",
-              fontWeight: "600",
-              cursor: canCreate ? "pointer" : "not-allowed",
-            }}
+            variant={canCreate ? "primary" : "secondary"}
           >
             {t("storeVerification.createPopup")}
-          </button>
+          </s-button>
         </div>
       </div>
     </div>

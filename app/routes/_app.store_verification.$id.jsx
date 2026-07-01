@@ -4,6 +4,7 @@ import { authenticate } from "../shopify.server";
 import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
 import { PopupEditor } from "../components/customization/PopupEditor";
+import { useTranslation } from "../context/TranslationContext";
 
 export const loader = async ({ request, params }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -150,8 +151,6 @@ export const action = async ({ request, params }) => {
 
   return { success: true };
 };
-
-import { useTranslation } from "../context/TranslationContext";
 
 export default function StoreVerificationEdit() {
   const loaderData = useLoaderData();

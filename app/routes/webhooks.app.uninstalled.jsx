@@ -11,6 +11,9 @@ export const action = async ({ request }) => {
       // 1. Cleanup Prisma Database
       const deletedPopups = await db.popup.deleteMany({ where: { shop } });
       await db.shopPlan.deleteMany({ where: { shop } });
+      await db.termsSettings.deleteMany({ where: { shop } });
+      await db.checkoutBanner.deleteMany({ where: { shop } });
+      await db.analyticsEvent.deleteMany({ where: { shop } });
       console.log(`Deleted ${deletedPopups.count} popups from DB for ${shop}`);
 
       // 2. Cleanup Metafield Definitions (this deletes definition and values)
@@ -20,6 +23,7 @@ export const action = async ({ request }) => {
         { namespace: "avd", key: "settings" },
         { namespace: "avd", key: "active_popup" },
         { namespace: "avd", key: "checkout_banner" },
+        { namespace: "avd", key: "terms_settings" },
       ];
 
       for (const def of defsToCleanup) {

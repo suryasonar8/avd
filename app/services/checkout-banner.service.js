@@ -85,7 +85,7 @@ export const CheckoutBannerService = {
             }
         } else {
             // Delete Metafield Value but NOT Definition
-            await admin.graphql(
+            const deleteResult = await admin.graphql(
                 `#graphql
         mutation deleteBanner($metafields: [MetafieldIdentifierInput!]!) {
           metafieldsDelete(metafields: $metafields) {
@@ -105,6 +105,13 @@ export const CheckoutBannerService = {
                     },
                 },
             );
+
+            const deleteData = await deleteResult.json();
+            const deleteErrors = deleteData?.data?.metafieldsDelete?.userErrors;
+            if (deleteErrors && deleteErrors.length > 0) {
+                console.error("Failed to delete checkout banner metafield:", JSON.stringify(deleteErrors, null, 2));
+                return { success: false, errors: deleteErrors };
+            }
         }
 
         return { success: true };

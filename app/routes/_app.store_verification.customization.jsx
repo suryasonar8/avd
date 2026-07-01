@@ -4,6 +4,7 @@ import { authenticate } from "../shopify.server";
 import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
 import { PopupEditor } from "../components/customization/PopupEditor";
+import { useTranslation } from "../context/TranslationContext";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -156,8 +157,6 @@ export const action = async ({ request }) => {
   // Redirect to the newly created popup's edit page
   return redirect(`/store_verification/${popup.id}?saved=true`);
 };
-
-import { useTranslation } from "../context/TranslationContext";
 
 export default function StoreVerificationCustomization() {
   const loaderData = useLoaderData();

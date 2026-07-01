@@ -113,18 +113,13 @@ export function PopupEditor({
   }, [globalSettings]);
 
   const isDirty = useMemo(() => {
-    const isSubmitting = fetcher
-      ? fetcher.state !== "idle"
-      : navigation.state !== "idle";
-    if (isSubmitting) return false;
-
     const sanitize = (cfg) => {
       const { id, createdAt, updatedAt, ...rest } = cfg || {};
       return JSON.stringify(rest);
     };
 
     return sanitize(config) !== sanitize(initialConfig);
-  }, [config, initialConfig, fetcher?.state, navigation.state]);
+  }, [config, initialConfig]);
 
   const isSubmitting = useRef(false);
 

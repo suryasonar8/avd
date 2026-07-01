@@ -3,7 +3,12 @@ import DropdownContainer from "./DropdownContainer";
 import { FilterMainMenu, FilterOptionsMenu } from "./FilterMenus";
 import ActiveFilterChip from "./ActiveFilterChip";
 import SearchBar from "./SearchBar";
-import { SearchButtonIcon, FilterButtonIcon, TrashIcon } from "./Icons";
+import {
+  SearchButtonIcon,
+  FilterButtonIcon,
+  TrashIcon,
+  PlusIcon,
+} from "./Icons";
 import { useTranslation } from "../../context/TranslationContext";
 
 export default function PopupToolbar({
@@ -131,23 +136,22 @@ export default function PopupToolbar({
       >
         {activeFilters.map((filter, index) => (
           <ActiveFilterChip
-             key={index}
-             filter={filter}
-             onRemoveFilter={onRemoveFilter}
-             onAddFilter={onAddFilter}
-             activeFilters={activeFilters}
-             isDropdownOpen={isFilterDropdownOpen}
-             setIsDropdownOpen={setIsFilterDropdownOpen}
-             dropdownAnchor={dropdownAnchor}
-             setDropdownAnchor={setDropdownAnchor}
-             setActiveFilterMenu={setActiveFilterMenu}
+            key={index}
+            filter={filter}
+            onRemoveFilter={onRemoveFilter}
+            onAddFilter={onAddFilter}
+            activeFilters={activeFilters}
+            isDropdownOpen={isFilterDropdownOpen}
+            setIsDropdownOpen={setIsFilterDropdownOpen}
+            dropdownAnchor={dropdownAnchor}
+            setDropdownAnchor={setDropdownAnchor}
+            setActiveFilterMenu={setActiveFilterMenu}
           />
         ))}
 
         <div style={{ position: "relative" }}>
-          <button
-            type="button"
-            disabled={allFiltersApplied}
+          <s-clickable-chip
+            disabled={allFiltersApplied ? "" : undefined}
             onClick={(e) => {
               if (allFiltersApplied) return;
               e.stopPropagation();
@@ -155,22 +159,10 @@ export default function PopupToolbar({
               setActiveFilterMenu("main");
               setIsFilterDropdownOpen(!isFilterDropdownOpen);
             }}
-            style={{
-              background: "#F4F6F8",
-              border: "none",
-              borderRadius: "16px",
-              padding: "5px 12px",
-              fontSize: "13px",
-              cursor: allFiltersApplied ? "not-allowed" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "4px",
-              color: "#6D7175",
-              opacity: allFiltersApplied ? 0.6 : 1,
-            }}
           >
             {t("storeVerification.addFilter")}
-          </button>
+            <PlusIcon style={{ marginLeft: "4px" }} />
+          </s-clickable-chip>
 
           {isFilterDropdownOpen && dropdownAnchor === "add" && (
             <DropdownContainer onClick={(e) => e.stopPropagation()}>

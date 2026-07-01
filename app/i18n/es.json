@@ -115,7 +115,7 @@
     "searchByPopupName": "Buscar por nombre de pop-up",
     "searchAndFilters": "Búsqueda y filtros",
     "deleteAllPopups": "Eliminar todos los pop-ups",
-    "addFilter": "Agregar filtro +",
+    "addFilter": "Agregar filtro",
     "deleteConfirmTitle": "¿Desea eliminar todas las reglas seleccionadas?",
     "deleteConfirmBody": "Si elimina la regla, no podrá revertirla",
     "deleteConfirmSingle": "¿Está seguro de que desea eliminar este pop-up?",

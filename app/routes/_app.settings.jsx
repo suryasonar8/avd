@@ -4,6 +4,7 @@ import { authenticate } from "../shopify.server";
 import { useState, useEffect, useRef } from "react";
 import { Card } from "../components/Card";
 import { SaveBar } from "@shopify/app-bridge-react";
+import { useTranslation } from "../context/TranslationContext";
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
@@ -77,8 +78,6 @@ export const action = async ({ request }) => {
 
   return { success: !errors?.length };
 };
-
-import { useTranslation } from "../context/TranslationContext";
 
 const LANGUAGE_MAP = {
   English: "en",
