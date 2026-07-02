@@ -153,7 +153,8 @@ export const PopupSelector = ({
         readOnly
         value={
           selectedPopup
-            ? selectedPopup.config.name || t("translation.popupNumber", { id: selectedPopup.id })
+            ? selectedPopup.config.name ||
+              t("translation.popupNumber", { id: selectedPopup.id })
             : ""
         }
         onClick={() => !isReadOnly && setIsOpen(!isOpen)}
@@ -217,7 +218,8 @@ export const PopupSelector = ({
                   }
                 }}
               >
-                {popup.config.name || t("translation.popupNumber", { id: popup.id })}
+                {popup.config.name ||
+                  t("translation.popupNumber", { id: popup.id })}
               </div>
             ))}
             {filteredPopups.length === 0 && (

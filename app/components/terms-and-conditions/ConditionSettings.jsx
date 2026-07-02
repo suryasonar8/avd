@@ -30,9 +30,7 @@ export default function ConditionSettings({ settings, setSettings }) {
           gap: "10px",
         }}
       >
-        <div
-          style={{ display: "flex", alignItems: "center", gap: "8px" }}
-        >
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <span style={{ fontSize: "13px", fontWeight: 700 }}>
             {t("common.status")}
           </span>
@@ -42,6 +40,7 @@ export default function ConditionSettings({ settings, setSettings }) {
         </div>
         <s-choice-list
           name="status"
+          values={[String(settings.enabled)]}
           onChange={(e) =>
             setSettings({
               ...settings,
@@ -50,8 +49,12 @@ export default function ConditionSettings({ settings, setSettings }) {
           }
           disabled={!canAccess("terms.condition.status")}
         >
-          <s-choice value="true" selected={settings.enabled === true}>{t("common.enabled")}</s-choice>
-          <s-choice value="false" selected={settings.enabled === false}>{t("common.disabled")}</s-choice>
+          <s-choice value="true" selected={settings.enabled === true}>
+            {t("common.enabled")}
+          </s-choice>
+          <s-choice value="false" selected={settings.enabled === false}>
+            {t("common.disabled")}
+          </s-choice>
         </s-choice-list>
       </div>
 
@@ -86,9 +89,7 @@ export default function ConditionSettings({ settings, setSettings }) {
             <span style={{ fontSize: "13px", fontWeight: 700 }}>
               {t("popupEditor.infoTab.displayPages")}
             </span>
-            <span style={{ fontSize: "12px", color: "#6D7175" }}>
-              *
-            </span>
+            <span style={{ fontSize: "12px", color: "#6D7175" }}>*</span>
             {!canAccess("terms.condition.pages") && (
               <Badge text={t("common.premiumPlan")} type="premium" />
             )}
@@ -140,6 +141,7 @@ export default function ConditionSettings({ settings, setSettings }) {
           </div>
           <s-choice-list
             name="trigger"
+            values={[settings.triggerCondition]}
             onChange={(e) =>
               setSettings({
                 ...settings,
@@ -148,13 +150,22 @@ export default function ConditionSettings({ settings, setSettings }) {
             }
             disabled={!canAccess("terms.condition.trigger")}
           >
-            <s-choice value="always" selected={settings.triggerCondition === "always"}>
+            <s-choice
+              value="always"
+              selected={settings.triggerCondition === "always"}
+            >
               {t("storeVerification.triggerOptions.alwaysShow")}
             </s-choice>
-            <s-choice value="logged" selected={settings.triggerCondition === "logged"}>
+            <s-choice
+              value="logged"
+              selected={settings.triggerCondition === "logged"}
+            >
               {t("storeVerification.triggerOptions.loggedCustomers")}
             </s-choice>
-            <s-choice value="not_logged" selected={settings.triggerCondition === "not_logged"}>
+            <s-choice
+              value="not_logged"
+              selected={settings.triggerCondition === "not_logged"}
+            >
               {t("storeVerification.triggerOptions.notLoggedCustomers")}
             </s-choice>
           </s-choice-list>

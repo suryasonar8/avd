@@ -98,7 +98,11 @@ export function ButtonTab({ config, setConfig }) {
         <ColorInput
           label={t("popupEditor.buttonTab.background")}
           disabled={!canAccess("sv.btn.bg")}
-          badge={!canAccess("sv.btn.bg") ? <Badge text={t("common.basicPlanOrHigher")} type="basic" /> : null}
+          badge={
+            !canAccess("sv.btn.bg") ? (
+              <Badge text={t("common.basicPlanOrHigher")} type="basic" />
+            ) : null
+          }
           value={config.button.bgColor}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -110,7 +114,11 @@ export function ButtonTab({ config, setConfig }) {
         <ColorInput
           label={t("popupEditor.backgroundTab.borderColor")}
           disabled={!canAccess("sv.btn.border-color")}
-          badge={!canAccess("sv.btn.border-color") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
+          badge={
+            !canAccess("sv.btn.border-color") ? (
+              <Badge text={t("common.premiumPlan")} type="premium" />
+            ) : null
+          }
           value={config.button.borderColor}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -122,7 +130,11 @@ export function ButtonTab({ config, setConfig }) {
         <NumberInput
           label={t("popupEditor.backgroundTab.borderRadius")}
           disabled={!canAccess("sv.btn.border-radius")}
-          badge={!canAccess("sv.btn.border-radius") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
+          badge={
+            !canAccess("sv.btn.border-radius") ? (
+              <Badge text={t("common.premiumPlan")} type="premium" />
+            ) : null
+          }
           value={config.button.borderRadius}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -134,7 +146,11 @@ export function ButtonTab({ config, setConfig }) {
         <NumberInput
           label={t("popupEditor.backgroundTab.borderWidth")}
           disabled={!canAccess("sv.btn.border-width")}
-          badge={!canAccess("sv.btn.border-width") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
+          badge={
+            !canAccess("sv.btn.border-width") ? (
+              <Badge text={t("common.premiumPlan")} type="premium" />
+            ) : null
+          }
           value={config.button.borderWidth}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -198,17 +214,27 @@ export function ButtonTab({ config, setConfig }) {
 
           <s-choice-list
             name="cancelAction"
+            values={[config.button.cancelAction]}
             onChange={(e) =>
               setConfig((prev) => ({
                 ...prev,
-                button: { ...prev.button, cancelAction: e.currentTarget.values[0] },
+                button: {
+                  ...prev.button,
+                  cancelAction: e.currentTarget.values[0],
+                },
               }))
             }
           >
-            <s-choice value="redirect" selected={config.button.cancelAction === "redirect"}>
+            <s-choice
+              value="redirect"
+              selected={config.button.cancelAction === "redirect"}
+            >
               {t("popupEditor.buttonTab.redirectUrl")}
             </s-choice>
-            <s-choice value="errorMsg" selected={config.button.cancelAction === "errorMsg"}>
+            <s-choice
+              value="errorMsg"
+              selected={config.button.cancelAction === "errorMsg"}
+            >
               {t("popupEditor.buttonTab.showErrorMessage")}
             </s-choice>
           </s-choice-list>
@@ -221,7 +247,10 @@ export function ButtonTab({ config, setConfig }) {
                 onChange={(e) =>
                   setConfig((prev) => ({
                     ...prev,
-                    button: { ...prev.button, redirectUrl: e.currentTarget.value },
+                    button: {
+                      ...prev.button,
+                      redirectUrl: e.currentTarget.value,
+                    },
                   }))
                 }
               />
@@ -279,7 +308,11 @@ export function ButtonTab({ config, setConfig }) {
         <ColorInput
           label={t("popupEditor.buttonTab.background")}
           disabled={!canAccess("sv.cbtn.bg")}
-          badge={!canAccess("sv.cbtn.bg") ? <Badge text={t("common.basicPlanOrHigher")} type="basic" /> : null}
+          badge={
+            !canAccess("sv.cbtn.bg") ? (
+              <Badge text={t("common.basicPlanOrHigher")} type="basic" />
+            ) : null
+          }
           value={config.button.cancelBgColor}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -291,7 +324,11 @@ export function ButtonTab({ config, setConfig }) {
         <ColorInput
           label={t("popupEditor.backgroundTab.borderColor")}
           disabled={!canAccess("sv.cbtn.border-color")}
-          badge={!canAccess("sv.cbtn.border-color") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
+          badge={
+            !canAccess("sv.cbtn.border-color") ? (
+              <Badge text={t("common.premiumPlan")} type="premium" />
+            ) : null
+          }
           value={config.button.cancelBorderColor}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -303,7 +340,11 @@ export function ButtonTab({ config, setConfig }) {
         <NumberInput
           label={t("popupEditor.backgroundTab.borderRadius")}
           disabled={!canAccess("sv.cbtn.border-radius")}
-          badge={!canAccess("sv.cbtn.border-radius") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
+          badge={
+            !canAccess("sv.cbtn.border-radius") ? (
+              <Badge text={t("common.premiumPlan")} type="premium" />
+            ) : null
+          }
           value={config.button.cancelBorderRadius}
           onChange={(val) =>
             setConfig((prev) => ({
@@ -315,7 +356,11 @@ export function ButtonTab({ config, setConfig }) {
         <NumberInput
           label={t("popupEditor.backgroundTab.borderWidth")}
           disabled={!canAccess("sv.cbtn.border-width")}
-          badge={!canAccess("sv.cbtn.border-width") ? <Badge text={t("common.premiumPlan")} type="premium" /> : null}
+          badge={
+            !canAccess("sv.cbtn.border-width") ? (
+              <Badge text={t("common.premiumPlan")} type="premium" />
+            ) : null
+          }
           value={config.button.cancelBorderWidth}
           onChange={(val) =>
             setConfig((prev) => ({

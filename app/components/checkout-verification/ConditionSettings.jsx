@@ -88,11 +88,16 @@ export default function ConditionSettings({ config, onChange }) {
       >
         <s-choice-list
           name="status"
+          values={[config.status]}
           onChange={(e) => handleStatusChange(e.currentTarget.values[0])}
           disabled={!canAccess("checkout.condition.status")}
         >
-          <s-choice value="enabled" selected={config.status === "enabled"}>{t("common.enabled")}</s-choice>
-          <s-choice value="disabled" selected={config.status === "disabled"}>{t("common.disabled")}</s-choice>
+          <s-choice value="enabled" selected={config.status === "enabled"}>
+            {t("common.enabled")}
+          </s-choice>
+          <s-choice value="disabled" selected={config.status === "disabled"}>
+            {t("common.disabled")}
+          </s-choice>
         </s-choice-list>
       </SettingsSection>
 
@@ -106,21 +111,35 @@ export default function ConditionSettings({ config, onChange }) {
       >
         <s-choice-list
           name="target"
+          values={[config.target]}
           onChange={(e) => handleTargetChange(e.currentTarget.values[0])}
           disabled={!canAccess("checkout.condition.target")}
         >
           <s-choice value="always" selected={config.target === "always"}>
             {t("checkoutVerification.conditionAlways")}
-            <s-text slot="details">{t("checkoutVerification.conditionAlwaysDescription")}</s-text>
+            <s-text slot="details">
+              {t("checkoutVerification.conditionAlwaysDescription")}
+            </s-text>
           </s-choice>
 
-          <s-choice value="collection" selected={config.target === "collection"}>
+          <s-choice
+            value="collection"
+            selected={config.target === "collection"}
+          >
             {t("checkoutVerification.specificCollection")}
-            <s-text slot="details">{t("checkoutVerification.specificCollectionDescription")}</s-text>
+            <s-text slot="details">
+              {t("checkoutVerification.specificCollectionDescription")}
+            </s-text>
           </s-choice>
 
           {config.target === "collection" && (
-            <div style={{ marginLeft: "28px", marginTop: "8px", marginBottom: "12px" }}>
+            <div
+              style={{
+                marginLeft: "28px",
+                marginTop: "8px",
+                marginBottom: "12px",
+              }}
+            >
               <s-button
                 onClick={() => !disabled && handleSelectCollections()}
                 disabled={disabled}
@@ -171,7 +190,9 @@ export default function ConditionSettings({ config, onChange }) {
 
           <s-choice value="product" selected={config.target === "product"}>
             {t("checkoutVerification.specificProduct")}
-            <s-text slot="details">{t("checkoutVerification.specificProductDescription")}</s-text>
+            <s-text slot="details">
+              {t("checkoutVerification.specificProductDescription")}
+            </s-text>
           </s-choice>
 
           {config.target === "product" && (

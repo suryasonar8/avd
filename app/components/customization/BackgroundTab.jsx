@@ -182,6 +182,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
           </label>
           <s-choice-list
             name="bgType"
+            values={[config.background.type]}
             onChange={(e) =>
               setConfig({
                 ...config,
@@ -260,7 +261,8 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
               <s-drop-zone
                 accept=".png, .jpg, .jpeg"
                 onChange={(e) => {
-                  const file = e.currentTarget.files?.[0] || e.detail?.files?.[0];
+                  const file =
+                    e.currentTarget.files?.[0] || e.detail?.files?.[0];
                   handleImageUpload(file, "background");
                 }}
                 disabled={localUploading === "background"}
