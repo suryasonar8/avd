@@ -19,21 +19,9 @@ import { Card } from "../components/Card";
 import { Badge } from "../components/Badge";
 import { usePlan } from "../context/PlanContext";
 import { useTranslation } from "../context/TranslationContext";
+import { useIsMounted } from "../hooks/useIsMounted";
 
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+import { MONTH_NAMES } from "../constants/translation";
 
 export const loader = async ({ request, params }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -167,6 +155,7 @@ export default function TranslationSetupPage() {
   const submit = useSubmit();
   const shopify = useAppBridge();
   const { t } = useTranslation();
+  const isClient = useIsMounted();
 
   const [searchParams] = useSearchParams();
   const initialPopupId = searchParams.get("popupId") || "";
@@ -328,6 +317,8 @@ export default function TranslationSetupPage() {
     );
   };
 
+  if (!isClient) return null;
+
   return (
     <div
       style={{
@@ -356,23 +347,30 @@ export default function TranslationSetupPage() {
         }}
       >
         <div>
-          <button
-            onClick={handleBack}
+          <div
             style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              gap: "8px",
-              color: "#6d7175",
-              marginBottom: "16px",
-              fontSize: "14px",
+              gap: "12px",
+              marginBottom: "4px",
             }}
           >
-            ←
-          </button>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <button
+              onClick={handleBack}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#6d7175",
+                fontSize: "20px",
+                padding: 0,
+              }}
+            >
+              ←
+            </button>
             <h1
               style={{
                 fontSize: "24px",
@@ -387,7 +385,9 @@ export default function TranslationSetupPage() {
               <Badge text={t("common.basicPlanOrHigher")} type="basic" />
             )}
           </div>
-          <s-text color="subdued">{t("translation.pageDescription")}</s-text>
+          <div style={{ marginLeft: "32px" }}>
+            <s-text color="subdued">{t("translation.pageDescription")}</s-text>
+          </div>
         </div>
 
         <SaveBar id="translation-save-bar" open={isDirty && !isReadOnly}>
@@ -426,7 +426,7 @@ export default function TranslationSetupPage() {
               </label>
               <div
                 style={{
-                  padding: "10px 14px",
+                  padding: "6px 12px",
                   border: "1px solid #e1e3e5",
                   borderRadius: "8px",
                   background: "white",
@@ -489,7 +489,6 @@ export default function TranslationSetupPage() {
             display: "grid",
             gridTemplateColumns: "300px 1fr",
             gap: "40px",
-            marginBottom: "40px",
           }}
         >
           <s-text>{t("translation.textSectionDescription")}</s-text>
@@ -502,7 +501,7 @@ export default function TranslationSetupPage() {
               onChange={(val) =>
                 setTranslations({ ...translations, heading: val })
               }
-              type="text"
+              type="richtext"
             />
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
@@ -523,7 +522,6 @@ export default function TranslationSetupPage() {
             display: "grid",
             gridTemplateColumns: "300px 1fr",
             gap: "40px",
-            marginBottom: "40px",
           }}
         >
           <s-text>{t("translation.buttonSectionDescription")}</s-text>
@@ -577,7 +575,6 @@ export default function TranslationSetupPage() {
             display: "grid",
             gridTemplateColumns: "300px 1fr",
             gap: "40px",
-            marginBottom: "40px",
           }}
         >
           <s-text>{t("translation.labelSectionDescription")}</s-text>
@@ -586,7 +583,6 @@ export default function TranslationSetupPage() {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "24px",
               }}
             >
               {visibleMonths.map((month) => (

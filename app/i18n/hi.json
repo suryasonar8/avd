@@ -38,7 +38,8 @@
     "selectProducts": "उत्पाद चुनें",
     "noProductsSelected": "कोई उत्पाद चयनित नहीं",
     "changeCollections": "संग्रह बदलें",
-    "changeProducts": "उत्पाद बदलें"
+    "changeProducts": "उत्पाद बदलें",
+    "loading": "लोड हो रहा है..."
   },
   "navigation": {
     "storeVerification": "स्टोर सत्यापन",

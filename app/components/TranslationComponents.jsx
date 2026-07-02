@@ -20,178 +20,146 @@ export const TranslationField = ({
   onChange,
   type = "text",
   disabled = false,
-}) => (
-  <div style={{ marginBottom: "20px" }}>
-    <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
-      <div style={{ flex: 1 }}>
-        <label
-          style={{
-            display: "block",
-            fontSize: "13px",
-            fontWeight: "500",
-            color: "#202223",
-            marginBottom: "8px",
-          }}
-        >
-          {label}
-        </label>
+}) => {
+  return (
+    <div style={{ marginBottom: "20px" }}>
+      <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
+        <div style={{ flex: "1 1 0", minWidth: 0 }}>
+          <label
+            style={{
+              display: "block",
+              fontSize: "13px",
+              fontWeight: "500",
+              color: "#202223",
+              marginBottom: "8px",
+            }}
+          >
+            {label}
+          </label>
+          <div
+            style={{
+              padding: "6px 12px",
+              background: "#f6f6f7",
+              borderRadius: "8px",
+              border: "1px solid #e1e3e5",
+              color: "#6d7175",
+              fontSize: "14px",
+              height: "34px",
+              boxSizing: "border-box",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            {type === "richtext" ? (
+              <div dangerouslySetInnerHTML={{ __html: original || "" }} />
+            ) : (
+              original || ""
+            )}
+          </div>
+        </div>
         <div
           style={{
-            padding: "10px 14px",
-            background: "#f6f6f7",
-            borderRadius: "8px",
-            border: "1px solid #e1e3e5",
-            color: "#6d7175",
-            fontSize: "14px",
-            minHeight: "40px",
+            display: "flex",
+            alignItems: "center",
+            paddingTop: "32px",
+            flex: "0 0 auto",
           }}
         >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7 5L12 10L7 15"
+              stroke="#babec3"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+        <div style={{ flex: "1 1 0", minWidth: 0 }}>
+          <label
+            style={{
+              display: "block",
+              fontSize: "13px",
+              fontWeight: "500",
+              color: "#202223",
+              marginBottom: "8px",
+            }}
+          >
+            {label}
+          </label>
           {type === "richtext" ? (
-            <div dangerouslySetInnerHTML={{ __html: original || "" }} />
+            <div
+              className="custom-editor-container"
+              style={{
+                pointerEvents: disabled ? "none" : "auto",
+                opacity: disabled ? 0.7 : 1,
+              }}
+            >
+              <RichTextEditor value={value} onChange={(e) => onChange(e)} />
+            </div>
           ) : (
-            original || ""
+            <s-text-field
+              value={value}
+              disabled={disabled}
+              onChange={(e) => onChange(e.currentTarget.value)}
+            />
           )}
         </div>
       </div>
-      <div
-        style={{ display: "flex", alignItems: "center", paddingTop: "32px" }}
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M7 5L12 10L7 15"
-            stroke="#babec3"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
-      <div style={{ flex: 1 }}>
-        <label
-          style={{
-            display: "block",
-            fontSize: "13px",
-            fontWeight: "500",
-            color: "#202223",
-            marginBottom: "8px",
-          }}
-        >
-          {label}
-        </label>
-        {type === "richtext" ? (
-          <div
-            className="custom-editor-container"
-            style={{
-              pointerEvents: disabled ? "none" : "auto",
-              opacity: disabled ? 0.7 : 1,
-            }}
-          >
-            {typeof document !== "undefined" ? (
-              <RichTextEditor value={value} onChange={(e) => onChange(e)} />
-            ) : (
-              <div style={{ height: "100px", background: "#fafafa" }} />
-            )}
-          </div>
-        ) : (
-          <s-text-field
-            value={value}
-            disabled={disabled}
-            onChange={(e) => onChange(e.currentTarget.value)}
-          />
-        )}
-      </div>
     </div>
-  </div>
-);
+  );
+};
 
-export const PopupSelector = ({
-  popups,
+export const PopupList = ({
+  displayPopups,
   selectedPopupId,
   onSelect,
-  isReadOnly,
+  setIsOpen,
+  setSearchTerm,
+  isLoading,
+  t,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const dropdownRef = useRef(null);
-  const { t } = useTranslation();
-
-  const filteredPopups = useMemo(() => {
-    if (!searchTerm) return popups;
-    return popups.filter((p) =>
-      (p.config.name || p.handle || "")
-        .toString()
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()),
-    );
-  }, [popups, searchTerm]);
-
-  const selectedPopup = useMemo(
-    () => popups.find((p) => p.id.toString() === selectedPopupId.toString()),
-    [popups, selectedPopupId],
-  );
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
-    <div style={{ position: "relative" }} ref={dropdownRef}>
-      <s-text-field
-        placeholder={t("translation.selectPopup")}
-        readOnly
-        value={
-          selectedPopup
-            ? selectedPopup.config.name ||
-              t("translation.popupNumber", { id: selectedPopup.id })
-            : ""
-        }
-        onClick={() => !isReadOnly && setIsOpen(!isOpen)}
-        disabled={isReadOnly}
-      />
-
-      {isOpen && (
-        <div
-          style={{
-            position: "absolute",
-            top: "100%",
-            left: 0,
-            right: 0,
-            background: "white",
-            border: "1px solid #e1e3e5",
-            borderRadius: "8px",
-            marginTop: "4px",
-            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-            zIndex: 10,
-            padding: "8px",
-          }}
-        >
-          <div style={{ marginBottom: "8px" }}>
-            <s-text-field
-              placeholder={t("translation.searchPopups")}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.currentTarget.value)}
-              autoFocus
-            />
-          </div>
+    <div
+      style={{
+        position: "absolute",
+        top: "100%",
+        left: 0,
+        right: 0,
+        background: "white",
+        border: "1px solid #e1e3e5",
+        borderRadius: "8px",
+        marginTop: "4px",
+        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+        zIndex: 10,
+        padding: "8px",
+      }}
+    >
+      <div
+        style={{
+          maxHeight: "400px",
+          overflowY: "auto",
+        }}
+      >
+        {isLoading ? (
           <div
             style={{
-              maxHeight: "200px",
-              overflowY: "auto",
+              padding: "8px 12px",
+              fontSize: "13px",
+              color: "#6d7175",
             }}
           >
-            {filteredPopups.map((popup) => (
+            {t("common.loading", "Loading...")}
+          </div>
+        ) : (
+          <>
+            {displayPopups.map((popup) => (
               <div
                 key={popup.id}
                 onClick={() => {
@@ -222,7 +190,7 @@ export const PopupSelector = ({
                   t("translation.popupNumber", { id: popup.id })}
               </div>
             ))}
-            {filteredPopups.length === 0 && (
+            {displayPopups.length === 0 && (
               <div
                 style={{
                   padding: "8px 12px",
@@ -233,8 +201,94 @@ export const PopupSelector = ({
                 {t("translation.noPopupsFound")}
               </div>
             )}
-          </div>
-        </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export const PopupSelector = ({
+  popups,
+  selectedPopupId,
+  onSelect,
+  isReadOnly,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const dropdownRef = useRef(null);
+  const { t } = useTranslation();
+
+  const displayPopups = useMemo(() => {
+    if (!searchTerm) return popups;
+
+    return popups.filter((p) => {
+      const displayName =
+        p.config.name || t("translation.popupNumber", { id: p.id });
+      const searchableText = (
+        displayName +
+        " " +
+        (p.handle || "") +
+        " " +
+        p.id
+      ).toLowerCase();
+      return searchableText.includes(searchTerm.toLowerCase());
+    });
+  }, [searchTerm, popups, t]);
+
+  const selectedPopup = useMemo(() => {
+    return popups.find((p) => p.id.toString() === selectedPopupId.toString());
+  }, [popups, selectedPopupId]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+        setSearchTerm("");
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const displayValue = isOpen
+    ? searchTerm
+    : selectedPopup
+      ? selectedPopup.config.name ||
+        t("translation.popupNumber", { id: selectedPopup.id })
+      : "";
+
+  return (
+    <div style={{ position: "relative" }} ref={dropdownRef}>
+      <s-search-field
+        placeholder={
+          isOpen ? t("translation.searchPopups") : t("translation.selectPopup")
+        }
+        value={displayValue}
+        onClick={() => {
+          if (!isReadOnly && !isOpen) {
+            setIsOpen(true);
+            setSearchTerm("");
+          }
+        }}
+        onChange={(e) => {
+          if (!isOpen) setIsOpen(true);
+          setSearchTerm(e.currentTarget.value);
+        }}
+        disabled={isReadOnly}
+        autoComplete="off"
+      />
+
+      {isOpen && (
+        <PopupList
+          displayPopups={displayPopups}
+          selectedPopupId={selectedPopupId}
+          onSelect={onSelect}
+          setIsOpen={setIsOpen}
+          setSearchTerm={setSearchTerm}
+          isLoading={false}
+          t={t}
+        />
       )}
     </div>
   );

@@ -38,7 +38,8 @@
     "selectProducts": "Select Products",
     "noProductsSelected": "No products selected",
     "changeCollections": "Change collections",
-    "changeProducts": "Change products"
+    "changeProducts": "Change products",
+    "loading": "Loading..."
   },
   "navigation": {
     "storeVerification": "Store Verification",

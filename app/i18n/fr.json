@@ -38,7 +38,8 @@
     "selectProducts": "Sélectionner des produits",
     "noProductsSelected": "Aucun produit sélectionné",
     "changeCollections": "Modifier les collections",
-    "changeProducts": "Modifier les produits"
+    "changeProducts": "Modifier les produits",
+    "loading": "Chargement..."
   },
   "navigation": {
     "storeVerification": "Vérification du magasin",
