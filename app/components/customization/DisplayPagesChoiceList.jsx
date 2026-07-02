@@ -60,7 +60,7 @@ export function DisplayPagesChoiceList({ config, setConfig }) {
             }}
           >
             <label style={{ fontSize: "12px", fontWeight: "600" }}>
-              {t("popupEditor.infoTab.selectedCollections")}
+              {t("common.selectedCollections")}
             </label>
             <s-button
               onClick={async () => {
@@ -85,7 +85,7 @@ export function DisplayPagesChoiceList({ config, setConfig }) {
                 }
               }}
             >
-              {t("popupEditor.infoTab.selectCollections")}
+              {t("common.selectCollections")}
             </s-button>
           </div>
           <div
@@ -140,7 +140,7 @@ export function DisplayPagesChoiceList({ config, setConfig }) {
             ))}
             {(config.selectedCollections || []).length === 0 && (
               <p style={{ fontSize: "12px", color: "#6D7175" }}>
-                {t("popupEditor.infoTab.noCollectionsSelected")}
+                {t("common.noCollectionsSelected")}
               </p>
             )}
           </div>
@@ -167,7 +167,7 @@ export function DisplayPagesChoiceList({ config, setConfig }) {
             }}
           >
             <label style={{ fontSize: "12px", fontWeight: "600" }}>
-              {t("popupEditor.infoTab.selectedProducts")}
+              {t("common.selectedProducts")}
             </label>
             <s-button
               onClick={async () => {
@@ -192,7 +192,7 @@ export function DisplayPagesChoiceList({ config, setConfig }) {
                 }
               }}
             >
-              {t("popupEditor.infoTab.selectProducts")}
+              {t("common.selectProducts")}
             </s-button>
           </div>
           <div
@@ -247,7 +247,7 @@ export function DisplayPagesChoiceList({ config, setConfig }) {
             ))}
             {(config.selectedProducts || []).length === 0 && (
               <p style={{ fontSize: "12px", color: "#6D7175" }}>
-                {t("popupEditor.infoTab.noProductsSelected")}
+                {t("common.noProductsSelected")}
               </p>
             )}
           </div>

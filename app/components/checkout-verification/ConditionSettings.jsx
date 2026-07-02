@@ -4,6 +4,7 @@ import SettingsSection from "./SettingsSection";
 import { Badge } from "../Badge";
 import { usePlan } from "../../context/PlanContext";
 import { useTranslation } from "../../context/TranslationContext";
+import { RadioOption } from "../customization/RadioOption";
 
 export default function ConditionSettings({ config, onChange }) {
   const { canAccess } = usePlan();
@@ -86,19 +87,24 @@ export default function ConditionSettings({ config, onChange }) {
           ) : null
         }
       >
-        <s-choice-list
-          name="status"
-          values={[config.status]}
-          onChange={(e) => handleStatusChange(e.currentTarget.values[0])}
-          disabled={!canAccess("checkout.condition.status")}
-        >
-          <s-choice value="enabled" selected={config.status === "enabled"}>
-            {t("common.enabled")}
-          </s-choice>
-          <s-choice value="disabled" selected={config.status === "disabled"}>
-            {t("common.disabled")}
-          </s-choice>
-        </s-choice-list>
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <RadioOption
+            label={t("common.enabled")}
+            name="status"
+            value="enabled"
+            selected={config.status === "enabled"}
+            disabled={!canAccess("checkout.condition.status")}
+            onChange={handleStatusChange}
+          />
+          <RadioOption
+            label={t("common.disabled")}
+            name="status"
+            value="disabled"
+            selected={config.status === "disabled"}
+            disabled={!canAccess("checkout.condition.status")}
+            onChange={handleStatusChange}
+          />
+        </div>
       </SettingsSection>
 
       <SettingsSection
@@ -109,52 +115,60 @@ export default function ConditionSettings({ config, onChange }) {
           ) : null
         }
       >
-        <s-choice-list
-          name="target"
-          values={[config.target]}
-          onChange={(e) => handleTargetChange(e.currentTarget.values[0])}
-          disabled={!canAccess("checkout.condition.target")}
-        >
-          <s-choice value="always" selected={config.target === "always"}>
-            {t("checkoutVerification.conditionAlways")}
-            <s-text slot="details">
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {/* Always */}
+          <div>
+            <RadioOption
+              label={t("checkoutVerification.conditionAlways")}
+              name="target"
+              value="always"
+              selected={config.target === "always"}
+              disabled={disabled}
+              onChange={handleTargetChange}
+            />
+            <p style={{ margin: "4px 0 0 26px", fontSize: "12px", color: "#6D7175" }}>
               {t("checkoutVerification.conditionAlwaysDescription")}
-            </s-text>
-          </s-choice>
+            </p>
+          </div>
 
-          <s-choice
-            value="collection"
-            selected={config.target === "collection"}
-          >
-            {t("checkoutVerification.specificCollection")}
-            <s-text slot="details">
+          {/* Specific Collections */}
+          <div>
+            <RadioOption
+              label={t("checkoutVerification.specificCollection")}
+              name="target"
+              value="collection"
+              selected={config.target === "collection"}
+              disabled={disabled}
+              onChange={handleTargetChange}
+            />
+            <p style={{ margin: "4px 0 0 26px", fontSize: "12px", color: "#6D7175" }}>
               {t("checkoutVerification.specificCollectionDescription")}
-            </s-text>
-          </s-choice>
-
-          {config.target === "collection" && (
-            <div
-              style={{
-                marginLeft: "28px",
-                marginTop: "8px",
-                marginBottom: "12px",
-              }}
-            >
-              <s-button
-                onClick={() => !disabled && handleSelectCollections()}
-                disabled={disabled}
-              >
-                {(config.selectedCollections || []).length > 0
-                  ? t("checkoutVerification.changeCollections")
-                  : t("checkoutVerification.selectCollections")}
-              </s-button>
-              {(config.selectedCollections || []).length > 0 && (
+            </p>
+            {config.target === "collection" && (
+              <div style={{ marginTop: "12px", paddingLeft: "26px" }}>
                 <div
                   style={{
-                    marginTop: "8px",
                     display: "flex",
-                    flexDirection: "column",
-                    gap: "4px",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "8px",
+                  }}
+                >
+                  <label style={{ fontSize: "12px", fontWeight: "600" }}>
+                    {t("common.selectedCollections")}
+                  </label>
+                  <s-button
+                    onClick={() => !disabled && handleSelectCollections()}
+                    disabled={disabled}
+                  >
+                    {t("common.selectCollections")}
+                  </s-button>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "8px",
                   }}
                 >
                   {(config.selectedCollections || []).map((id, i) => (
@@ -163,55 +177,75 @@ export default function ConditionSettings({ config, onChange }) {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "6px 10px",
-                        background: "#F1F2F4",
-                        borderRadius: "6px",
-                        fontSize: "13px",
+                        gap: "4px",
+                        padding: "4px 8px",
+                        background: "#F1F1F1",
+                        borderRadius: "4px",
+                        fontSize: "12px",
                       }}
                     >
-                      <span>
-                        {config._collectionTitles && config._collectionTitles[i]
-                          ? config._collectionTitles[i]
-                          : id.replace("gid://shopify/Collection/", "#")}
-                      </span>
-                      <s-button
-                        variant="plain"
-                        onClick={() => removeCollection(id)}
+                      {(config._collectionTitles || [])[i] ||
+                        id.replace("gid://shopify/Collection/", "#")}
+                      <span
+                        onClick={() => !disabled && removeCollection(id)}
+                        style={{
+                          cursor: disabled ? "not-allowed" : "pointer",
+                          color: "#6D7175",
+                          fontWeight: "bold",
+                        }}
                       >
-                        ✕
-                      </s-button>
+                        ×
+                      </span>
                     </div>
                   ))}
+                  {(config.selectedCollections || []).length === 0 && (
+                    <p style={{ fontSize: "12px", color: "#6D7175" }}>
+                      {t("common.noCollectionsSelected")}
+                    </p>
+                  )}
                 </div>
-              )}
-            </div>
-          )}
+              </div>
+            )}
+          </div>
 
-          <s-choice value="product" selected={config.target === "product"}>
-            {t("checkoutVerification.specificProduct")}
-            <s-text slot="details">
+          {/* Specific Products */}
+          <div>
+            <RadioOption
+              label={t("checkoutVerification.specificProduct")}
+              name="target"
+              value="product"
+              selected={config.target === "product"}
+              disabled={disabled}
+              onChange={handleTargetChange}
+            />
+            <p style={{ margin: "4px 0 0 26px", fontSize: "12px", color: "#6D7175" }}>
               {t("checkoutVerification.specificProductDescription")}
-            </s-text>
-          </s-choice>
-
-          {config.target === "product" && (
-            <div style={{ marginLeft: "28px", marginTop: "8px" }}>
-              <s-button
-                onClick={() => !disabled && handleSelectProducts()}
-                disabled={disabled}
-              >
-                {(config.selectedProducts || []).length > 0
-                  ? t("checkoutVerification.changeProducts")
-                  : t("checkoutVerification.selectProducts")}
-              </s-button>
-              {(config.selectedProducts || []).length > 0 && (
+            </p>
+            {config.target === "product" && (
+              <div style={{ marginTop: "12px", paddingLeft: "26px" }}>
                 <div
                   style={{
-                    marginTop: "8px",
                     display: "flex",
-                    flexDirection: "column",
-                    gap: "4px",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "8px",
+                  }}
+                >
+                  <label style={{ fontSize: "12px", fontWeight: "600" }}>
+                    {t("common.selectedProducts")}
+                  </label>
+                  <s-button
+                    onClick={() => !disabled && handleSelectProducts()}
+                    disabled={disabled}
+                  >
+                    {t("common.selectProducts")}
+                  </s-button>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "8px",
                   }}
                 >
                   {(config.selectedProducts || []).map((id, i) => (
@@ -220,32 +254,37 @@ export default function ConditionSettings({ config, onChange }) {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "6px 10px",
-                        background: "#F1F2F4",
-                        borderRadius: "6px",
-                        fontSize: "13px",
+                        gap: "4px",
+                        padding: "4px 8px",
+                        background: "#F1F1F1",
+                        borderRadius: "4px",
+                        fontSize: "12px",
                       }}
                     >
-                      <span>
-                        {config._productTitles && config._productTitles[i]
-                          ? config._productTitles[i]
-                          : id.replace("gid://shopify/Product/", "#")}
-                      </span>
-                      <s-button
-                        variant="plain"
+                      {(config._productTitles || [])[i] ||
+                        id.replace("gid://shopify/Product/", "#")}
+                      <span
                         onClick={() => !disabled && removeProduct(id)}
-                        disabled={disabled}
+                        style={{
+                          cursor: disabled ? "not-allowed" : "pointer",
+                          color: "#6D7175",
+                          fontWeight: "bold",
+                        }}
                       >
-                        ✕
-                      </s-button>
+                        ×
+                      </span>
                     </div>
                   ))}
+                  {(config.selectedProducts || []).length === 0 && (
+                    <p style={{ fontSize: "12px", color: "#6D7175" }}>
+                      {t("common.noProductsSelected")}
+                    </p>
+                  )}
                 </div>
-              )}
-            </div>
-          )}
-        </s-choice-list>
+              </div>
+            )}
+          </div>
+        </div>
       </SettingsSection>
     </>
   );
