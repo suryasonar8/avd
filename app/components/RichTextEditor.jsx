@@ -12,6 +12,7 @@ import {
 } from "react-simple-wysiwyg";
 import { useState, useRef, useEffect } from "react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
+import { Badge } from "./Badge";
 
 const useClickOutside = (ref, handler) => {
   useEffect(() => {
@@ -23,8 +24,34 @@ const useClickOutside = (ref, handler) => {
   }, [ref, handler]);
 };
 
-const FontFamilyPicker = () => {
+const PlanBadge = ({ show, plan }) => {
+  if (!show) return null;
+  const isPremium = plan === "premium";
+  const text = isPremium ? "Premium plan or higher" : "Basic plan or higher";
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        bottom: "100%",
+        left: "50%",
+        transform: "translateX(-50%)",
+        paddingBottom: "6px",
+        zIndex: 100,
+        display: "flex",
+      }}
+    >
+      <div style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.05)", borderRadius: "20px" }}>
+        <Badge text={text} type={plan} />
+      </div>
+    </div>
+  );
+};
+
+
+const FontFamilyPicker = ({ locked }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showBadge, setShowBadge] = useState(false);
   const { $el } = useEditorState();
   const [currentFont, setCurrentFont] = useState("Arial");
   const containerRef = useRef(null);
@@ -42,14 +69,20 @@ const FontFamilyPicker = () => {
   };
 
   return (
-    <div ref={containerRef} style={{ position: "relative" }}>
+    <div 
+      ref={containerRef} 
+      style={{ position: "relative" }}
+      onMouseEnter={() => locked && setShowBadge(true)}
+      onMouseLeave={() => locked && setShowBadge(false)}
+    >
+      <PlanBadge show={showBadge} plan="premium" />
       <button
         type="button"
         className="rsw-btn"
         title="Font family"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => setIsOpen(!isOpen)}
-        style={{ padding: "0 6px", gap: "2px" }}
+        onClick={() => !locked && setIsOpen(!isOpen)}
+        style={{ padding: "0 6px", gap: "2px", opacity: locked ? 0.6 : 1 }}
       >
         <span>A</span>
         <span style={{ fontSize: "8px", opacity: 0.5 }}>▼</span>
@@ -76,8 +109,9 @@ const FontFamilyPicker = () => {
   );
 };
 
-const ColorPickerButton = () => {
+const ColorPickerButton = ({ locked }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showBadge, setShowBadge] = useState(false);
   const [color, setColor] = useState("#000000");
   const { $el } = useEditorState();
   const containerRef = useRef(null);
@@ -98,6 +132,7 @@ const ColorPickerButton = () => {
   };
 
   const toggleOpen = () => {
+    if (locked) return;
     if (!isOpen) {
       const sel = window.getSelection();
       if (sel.rangeCount > 0) {
@@ -108,14 +143,20 @@ const ColorPickerButton = () => {
   };
 
   return (
-    <div ref={containerRef} style={{ position: "relative" }}>
+    <div 
+      ref={containerRef} 
+      style={{ position: "relative" }}
+      onMouseEnter={() => locked && setShowBadge(true)}
+      onMouseLeave={() => locked && setShowBadge(false)}
+    >
+      <PlanBadge show={showBadge} plan="basic" />
       <button
         type="button"
         className="rsw-btn"
         title="Text color"
         onMouseDown={(e) => e.preventDefault()}
         onClick={toggleOpen}
-        style={{ padding: "0 8px" }}
+        style={{ padding: "0 8px", opacity: locked ? 0.6 : 1 }}
       >
         <div
           style={{
@@ -166,8 +207,9 @@ const ColorPickerButton = () => {
   );
 };
 
-const FontSizePicker = () => {
+const FontSizePicker = ({ locked }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showBadge, setShowBadge] = useState(false);
   const { $el } = useEditorState();
   const [currentSize, setCurrentSize] = useState("16");
   const containerRef = useRef(null);
@@ -193,14 +235,20 @@ const FontSizePicker = () => {
   };
 
   return (
-    <div ref={containerRef} style={{ position: "relative" }}>
+    <div 
+      ref={containerRef} 
+      style={{ position: "relative" }}
+      onMouseEnter={() => locked && setShowBadge(true)}
+      onMouseLeave={() => locked && setShowBadge(false)}
+    >
+      <PlanBadge show={showBadge} plan="basic" />
       <button
         type="button"
         className="rsw-btn"
         title="Font size"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => setIsOpen(!isOpen)}
-        style={{ padding: "0 6px", gap: "2px" }}
+        onClick={() => !locked && setIsOpen(!isOpen)}
+        style={{ padding: "0 6px", gap: "2px", opacity: locked ? 0.6 : 1 }}
       >
         <span>{currentSize}</span>
         <span style={{ fontSize: "8px", opacity: 0.5 }}>▼</span>
@@ -249,23 +297,28 @@ const BtnClearFormat = () => {
   );
 };
 
-const EditorToolbar = () => (
-  <Toolbar>
-    <BtnBold />
-    <BtnItalic />
-    <BtnUnderline />
-    <Separator />
-    <BtnNumberedList />
-    <BtnBulletList />
-    <Separator />
-    <FontFamilyPicker />
-    <ColorPickerButton />
-    <FontSizePicker />
-    <BtnClearFormat />
-  </Toolbar>
-);
+const EditorToolbar = ({ planLevel = "free" }) => {
+  const basicLocked = planLevel === "free";
+  const premiumLocked = planLevel === "free" || planLevel === "basic";
 
-export const RichTextEditor = ({ label, value, onChange }) => (
+  return (
+    <Toolbar>
+      <BtnBold />
+      <BtnItalic />
+      <BtnUnderline />
+      <Separator />
+      <BtnNumberedList />
+      <BtnBulletList />
+      <Separator />
+      <FontFamilyPicker locked={premiumLocked} />
+      <ColorPickerButton locked={basicLocked} />
+      <FontSizePicker locked={basicLocked} />
+      <BtnClearFormat />
+    </Toolbar>
+  );
+};
+
+export const RichTextEditor = ({ label, value, onChange, planLevel = "free" }) => (
   <div style={{ marginBottom: "16px" }}>
     <style>{`
       .rsw-editor {
@@ -377,7 +430,7 @@ export const RichTextEditor = ({ label, value, onChange }) => (
     )}
     <EditorProvider>
       <Editor value={value} onChange={(e) => onChange(e.target.value)}>
-        <EditorToolbar />
+        <EditorToolbar planLevel={planLevel} />
       </Editor>
     </EditorProvider>
   </div>
