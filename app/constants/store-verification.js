@@ -3,18 +3,27 @@ import { DISPLAY_PAGES } from "./display-pages";
 export const APP_EMBED_BLOCK_TYPE = "age-verification-dialog";
 
 export const DEFAULT_STORE_CONFIG = {
-    name: "My Pop-up",
+    name: "",
     status: "Enabled",
     method: "No input",
     verifyAge: 18,
     dateOrder: "MM,DD,YY",
     pages: DISPLAY_PAGES[0].value,
+    selectedCollections: [],
+    _collectionTitles: [],
+    selectedCollectionHandles: [],
+    selectedProducts: [],
+    _productTitles: [],
+    selectedProductHandles: [],
     trigger: "Always show",
     background: {
         bgType: "Solid color background",
         pageColor: "#FFFFFFD3",
         bgColor: "#000000",
         logo: null,
+        logoId: null,
+        backgroundImage: null,
+        backgroundImageId: null,
         borderColor: "#FFFFFF",
         borderRadius: 0,
         borderWidth: 0,

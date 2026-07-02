@@ -182,7 +182,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
           </label>
           <s-choice-list
             name="bgType"
-            values={[config.background.bgType]}
+            values={[config.background.bgType === "Solid color background" ? "Solid color background" : "Image background"]}
             onChange={(e) => {
               const val = e.currentTarget.values ? e.currentTarget.values[0] : (e.target.value || e.currentTarget.value);
               setConfig({
@@ -202,14 +202,14 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
             </s-choice>
             <s-choice
               value="Image background"
-              selected={config.background.bgType === "Image background"}
+              selected={config.background.bgType !== "Solid color background"}
             >
               {t("popupEditor.backgroundTab.imageBackground")}
             </s-choice>
           </s-choice-list>
         </div>
 
-        {config.background.bgType === "Image background" && (
+        {config.background.bgType !== "Solid color background" && (
           <div>
             <label
               style={{
@@ -271,7 +271,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
             )}
           </div>
         )}
-        {config.background.bgType !== "Image background" && (
+        {config.background.bgType === "Solid color background" && (
           <ColorInput
             label={t("popupEditor.backgroundTab.pageBackgroundColor")}
             required

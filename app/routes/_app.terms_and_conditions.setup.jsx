@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types, jsx-a11y/anchor-is-valid */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLoaderData, useFetcher } from "react-router";
-import { useAppBridge, SaveBar } from "@shopify/app-bridge-react";
+import { useAppBridge } from "@shopify/app-bridge-react";
 import { useTranslation } from "../context/TranslationContext";
 import { authenticate } from "../shopify.server";
 import { TermsService } from "../services/terms.service";
@@ -9,6 +9,7 @@ import { PlanService } from "../services/plan.service";
 import ConditionSettings from "../components/terms-and-conditions/ConditionSettings";
 import CheckboxSettings from "../components/terms-and-conditions/CheckboxSettings";
 import PreviewPanel from "../components/terms-and-conditions/PreviewPanel";
+import { CustomSaveBar } from "../components/CustomSaveBar";
 
 export const loader = async ({ request }) => {
   const { session } = await authenticate.admin(request);
@@ -55,12 +56,6 @@ export default function TermsAndConditionsSetup() {
 
   const isDirty = JSON.stringify(settings) !== JSON.stringify(initialSettings);
 
-  useEffect(() => {
-    if (fetcher.data?.success) {
-      shopify.toast.show(t("common.savedSuccessfully"));
-    }
-  }, [fetcher.data, shopify, t]);
-
   const handleSave = () => {
     fetcher.submit({ settings: JSON.stringify(settings) }, { method: "post" });
   };
@@ -71,16 +66,13 @@ export default function TermsAndConditionsSetup() {
 
   return (
     <div style={{ padding: "24px", fontFamily: "Inter, sans-serif" }}>
-      <SaveBar id="terms-save-bar" open={isDirty}>
-        <button
-          variant="primary"
-          onClick={handleSave}
-          disabled={fetcher.state === "submitting"}
-        >
-          {t("common.save")}
-        </button>
-        <button onClick={handleDiscard}>{t("common.discard")}</button>
-      </SaveBar>
+      <CustomSaveBar
+        id="terms-save-bar"
+        open={isDirty}
+        onSave={handleSave}
+        onDiscard={handleDiscard}
+        state={{ submitting: fetcher.state !== "idle", data: fetcher.data }}
+      />
 
       {/* Header */}
       <div

@@ -173,6 +173,7 @@ export default function StoreVerificationEdit() {
       description={t("popupEditor.editorDescription")}
       saveBarId={`edit-save-bar-${id}`}
       fetcher={fetcher}
+      isSubmitting={fetcher.state !== "idle"}
       shopify={shopify}
     />
   );

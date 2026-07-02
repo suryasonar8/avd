@@ -1,9 +1,9 @@
 import { useFetcher, useLoaderData } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
-import { useState, useEffect, useRef, useMemo } from "react";
-import { SaveBar } from "@shopify/app-bridge-react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "../context/TranslationContext";
+import { CustomSaveBar } from "../components/CustomSaveBar";
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
@@ -105,23 +105,9 @@ export default function SettingsPage() {
   const fetcher = useFetcher();
   const shopify = useAppBridge();
   const { t, changeLocale } = useTranslation();
-  const isSubmitting = useRef(false);
 
   const isDirty =
     JSON.stringify(settings) !== JSON.stringify(initialOtherSettings);
-
-  useEffect(() => {
-    if (fetcher.state !== "idle") {
-      isSubmitting.current = true;
-    }
-
-    if (isSubmitting.current && fetcher.state === "idle") {
-      if (fetcher.data?.success) {
-        shopify.toast.show(t("settings.settingsSaved"));
-        isSubmitting.current = false;
-      }
-    }
-  }, [fetcher.state, fetcher.data, shopify, t]);
 
   const handleSave = () => {
     fetcher.submit(
@@ -138,12 +124,14 @@ export default function SettingsPage() {
 
   return (
     <s-page>
-      <SaveBar id="settings-save-bar" open={isDirty}>
-        <button variant="primary" onClick={handleSave}>
-          {t("common.save")}
-        </button>
-        <button onClick={handleDiscard}>{t("common.discard")}</button>
-      </SaveBar>
+      <CustomSaveBar
+        id="settings-save-bar"
+        open={isDirty}
+        onSave={handleSave}
+        onDiscard={handleDiscard}
+        state={{ submitting: fetcher.state !== "idle", data: fetcher.data }}
+        successMessage={t("settings.settingsSaved")}
+      />
       <div
         style={{
           display: "flex",

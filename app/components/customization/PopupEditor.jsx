@@ -1,14 +1,14 @@
-import { useNavigate, useNavigation } from "react-router";
-import { SaveBar } from "@shopify/app-bridge-react";
-import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { useNavigate } from "react-router";
+import { useTranslation } from "../../context/TranslationContext";
+import { CustomSaveBar } from "../CustomSaveBar";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { InfoTab } from "./InfoTab";
 import { BackgroundTab } from "./BackgroundTab";
 import { TextTab } from "./TextTab";
 import { ButtonTab } from "./ButtonTab";
 import { CSSTab } from "./CSSTab";
 import { Preview } from "./Preview";
-import { DISPLAY_PAGES } from "../../constants/display-pages";
-import { useTranslation } from "../../context/TranslationContext";
+import { DEFAULT_STORE_CONFIG as DEFAULT_CONFIG } from "../../constants/store-verification";
 
 const TAB_COMPONENTS = {
   Info: InfoTab,
@@ -16,55 +16,6 @@ const TAB_COMPONENTS = {
   Text: TextTab,
   Button: ButtonTab,
   CSS: CSSTab,
-};
-
-const DEFAULT_CONFIG = {
-  name: "",
-  status: "Enabled",
-  method: "No input",
-  verifyAge: 18,
-  dateOrder: "MM,DD,YY",
-  pages: DISPLAY_PAGES[0].value,
-  selectedCollections: [],
-  _collectionTitles: [],
-  selectedCollectionHandles: [],
-  selectedProducts: [],
-  _productTitles: [],
-  selectedProductHandles: [],
-  trigger: "Always show",
-  background: {
-    type: "Solid color background",
-    pageColor: "#FFFFFFD9",
-    bgColor: "#000000",
-    logo: null,
-    logoId: null,
-    backgroundImage: null,
-    backgroundImageId: null,
-    borderColor: "#FFFFFF",
-    borderRadius: 0,
-    borderWidth: 0,
-  },
-  text: {
-    heading: "WELCOME TO SHOP",
-    subheading: "You must be at least 18 to visit this site",
-  },
-  button: {
-    submitText: "OK",
-    cancelText: "CANCEL",
-    cancelAction: "redirect",
-    redirectUrl: "https://www.google.com/",
-    errorMsg: "Enter error message",
-    cancelErrorMsg: "Enter error message",
-    bgColor: "#FE4D01",
-    borderColor: "#FFFFFF",
-    borderRadius: 0,
-    borderWidth: 0,
-    cancelBgColor: "#A0A0A0",
-    cancelBorderColor: "#FFFFFF",
-    cancelBorderRadius: 0,
-    cancelBorderWidth: 0,
-  },
-  css: "",
 };
 
 export function PopupEditor({
@@ -77,9 +28,11 @@ export function PopupEditor({
   description,
   saveBarId,
   fetcher,
+  isSubmitting,
   shopify,
 }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("Info");
   const [previewMode, setPreviewMode] = useState("desktop");
 
@@ -122,35 +75,7 @@ export function PopupEditor({
     return sanitize(config) !== sanitize(initialConfig);
   }, [config, initialConfig]);
 
-  const isSubmitting = useRef(false);
 
-  const { t } = useTranslation();
-
-  useEffect(() => {
-    if (fetcher) {
-      if (fetcher.state !== "idle") {
-        isSubmitting.current = true;
-      }
-
-      if (isSubmitting.current && fetcher.state === "idle") {
-        if (fetcher.data?.success) {
-          shopify.toast.show(t("common.savedSuccessfully"));
-          isSubmitting.current = false;
-          if (onSaveSuccess) {
-            onSaveSuccess();
-          }
-        } else if (
-          fetcher.data?.errors ||
-          fetcher.data?.data?.metafieldsSet?.userErrors?.length > 0
-        ) {
-          shopify.toast.show(t("common.errorSaving"), {
-            isError: true,
-          });
-          isSubmitting.current = false;
-        }
-      }
-    }
-  }, [fetcher?.state, fetcher?.data, shopify, onSaveSuccess, fetcher, t]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -196,18 +121,16 @@ export function PopupEditor({
 
   return (
     <s-page>
-      <SaveBar id={saveBarId} open={isDirty}>
-        <button
-          variant="primary"
-          onClick={handleSave}
-          disabled={isUploading || !config.name?.trim()}
-        >
-          {isUploading ? t("common.uploading") : t("common.save")}
-        </button>
-        <button type="button" onClick={handleDiscard}>
-          {t("common.discard")}
-        </button>
-      </SaveBar>
+      <CustomSaveBar
+        id={saveBarId}
+        open={isDirty}
+        onSave={handleSave}
+        onDiscard={handleDiscard}
+        state={{ submitting: isSubmitting, data: fetcher?.data }}
+        disabled={isUploading || !config.name?.trim()}
+        saveLabel={isUploading ? t("common.uploading") : t("common.save")}
+        onSuccess={onSaveSuccess}
+      />
 
       <div
         style={{

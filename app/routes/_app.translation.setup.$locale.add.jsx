@@ -4,9 +4,10 @@ import {
   useSubmit,
   useActionData,
   useSearchParams,
+  useNavigation,
 } from "react-router";
-import { useState, useMemo, useEffect } from "react";
-import { useAppBridge, SaveBar } from "@shopify/app-bridge-react";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { useAppBridge } from "@shopify/app-bridge-react";
 import {
   TranslationField,
   PopupSelector,
@@ -19,6 +20,7 @@ import { Card } from "../components/Card";
 import { Badge } from "../components/Badge";
 import { usePlan } from "../context/PlanContext";
 import { useTranslation } from "../context/TranslationContext";
+import { CustomSaveBar } from "../components/CustomSaveBar";
 import { useIsMounted } from "../hooks/useIsMounted";
 
 import { MONTH_NAMES } from "../constants/translation";
@@ -156,20 +158,11 @@ export default function TranslationSetupPage() {
   const shopify = useAppBridge();
   const { t } = useTranslation();
   const isClient = useIsMounted();
+  const navigation = useNavigation();
 
   const [searchParams] = useSearchParams();
   const initialPopupId = searchParams.get("popupId") || "";
   const [selectedPopupId, setSelectedPopupId] = useState(initialPopupId);
-
-  useEffect(() => {
-    if (actionData?.success) {
-      shopify.toast.show(t("translation.toast.saved"));
-    } else if (actionData?.error || actionData?.errors) {
-      shopify.toast.show(actionData.error || t("translation.toast.error"), {
-        isError: true,
-      });
-    }
-  }, [actionData, shopify, t]);
 
   const [translations, setTranslations] = useState({
     heading: "",
@@ -390,14 +383,15 @@ export default function TranslationSetupPage() {
           </div>
         </div>
 
-        <SaveBar id="translation-save-bar" open={isDirty && !isReadOnly}>
-          <button variant="primary" onClick={handleSave} disabled={isReadOnly}>
-            {t("common.save")}
-          </button>
-          <button type="button" onClick={handleDiscard}>
-            {t("common.discard")}
-          </button>
-        </SaveBar>
+        <CustomSaveBar
+          id="translation-save-bar"
+          open={isDirty && !isReadOnly}
+          onSave={handleSave}
+          onDiscard={handleDiscard}
+          disabled={isReadOnly}
+          state={{ submitting: navigation.state !== "idle", data: actionData }}
+          successMessage={t("translation.toast.saved")}
+        />
       </div>
 
       <div style={{ maxWidth: "1000px" }}>

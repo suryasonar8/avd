@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLoaderData, useFetcher } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
-import { SaveBar } from "@shopify/app-bridge-react";
 import { usePlan } from "../context/PlanContext";
 import { authenticate } from "../shopify.server";
 import { PlanService } from "../services/plan.service";
 import PreviewPanel from "../components/checkout-verification/PreviewPanel";
 import ConditionSettings from "../components/checkout-verification/ConditionSettings";
 import BannerSettings from "../components/checkout-verification/BannerSettings";
+import { CustomSaveBar } from "../components/CustomSaveBar";
 import { CheckoutBannerService } from "../services/checkout-banner.service";
 import { useTranslation } from "../context/TranslationContext";
 
@@ -70,12 +70,6 @@ export default function CheckoutVerificationSetup() {
 
   const isDirty = JSON.stringify(config) !== JSON.stringify(initialConfig);
 
-  useEffect(() => {
-    if (fetcher.data?.success) {
-      shopify.toast.show(t("checkoutVerification.bannerSettingsSaved"));
-    }
-  }, [fetcher.data, shopify, t]);
-
   const handleSave = () => {
     fetcher.submit({ config: JSON.stringify(config) }, { method: "POST" });
   };
@@ -112,16 +106,14 @@ export default function CheckoutVerificationSetup() {
 
   return (
     <s-page>
-      <SaveBar id="checkout-banner-save-bar" open={isDirty}>
-        <button
-          variant="primary"
-          onClick={handleSave}
-          disabled={fetcher.state === "submitting"}
-        >
-          {t("common.save")}
-        </button>
-        <button onClick={handleDiscard}>{t("common.discard")}</button>
-      </SaveBar>
+      <CustomSaveBar
+        id="checkout-banner-save-bar"
+        open={isDirty}
+        onSave={handleSave}
+        onDiscard={handleDiscard}
+        state={{ submitting: fetcher.state !== "idle", data: fetcher.data }}
+        successMessage={t("checkoutVerification.bannerSettingsSaved")}
+      />
 
       <div
         style={{

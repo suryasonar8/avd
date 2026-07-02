@@ -1,4 +1,4 @@
-import { useSubmit, useLoaderData, redirect } from "react-router";
+import { useSubmit, useLoaderData, redirect, useNavigation } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { PlanService } from "../services/plan.service";
@@ -161,6 +161,7 @@ export const action = async ({ request }) => {
 export default function StoreVerificationCustomization() {
   const loaderData = useLoaderData();
   const submit = useSubmit();
+  const navigation = useNavigation();
   const shopify = useAppBridge();
   const { t } = useTranslation();
 
@@ -176,7 +177,7 @@ export default function StoreVerificationCustomization() {
       heading={t("popupEditor.editorHeading")}
       description={t("popupEditor.editorDescription")}
       saveBarId="customization-save-bar"
-      submit={submit}
+      isSubmitting={navigation.state !== "idle"}
       shopify={shopify}
     />
   );
