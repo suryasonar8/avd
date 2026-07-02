@@ -11,7 +11,7 @@ export const DEFAULT_STORE_CONFIG = {
     pages: DISPLAY_PAGES[0].value,
     trigger: "Always show",
     background: {
-        type: "Solid color background",
+        bgType: "Solid color background",
         pageColor: "#FFFFFFD3",
         bgColor: "#000000",
         logo: null,

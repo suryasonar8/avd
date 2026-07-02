@@ -18,7 +18,7 @@ export async function getShopPlan(admin, shop) {
 
     // 2. No cache — default to DEFAULT_PLAN
     //    (Will be replaced with Shopify billing API query later)
-    const plan = PLAN_TYPES.BASIC;
+    const plan = PLAN_TYPES.PREMIUM;
 
     // 3. Cache in DB for next time
     await db.shopPlan.upsert({

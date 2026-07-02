@@ -78,7 +78,7 @@
   {% assign background_border_radius = active_popup.background.borderRadius | default: 0 %}
   {% assign background_image = active_popup.background.backgroundImage %}
   {% assign logo_url = active_popup.background.logo %}
-  {% assign background_type = active_popup.background.type | default: 'Solid color background' %}
+  {% assign background_type = active_popup.background.bgType | default: 'Solid color background' %}
   
   {% assign text_heading = active_popup.text.heading | default: 'Welcome!' %}
   {% assign text_subheading = active_popup.text.subheading | default: 'Please verify your age to enter this site.' %}

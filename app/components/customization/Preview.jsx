@@ -99,7 +99,7 @@ export const Preview = ({
             justifyContent: "center",
             padding: "40px",
             background:
-              config.background.type === "Image background" &&
+              config.background.bgType === "Image background" &&
               config.background.backgroundImage
                 ? `url(${config.background.backgroundImage}) no-repeat center center / cover`
                 : config.background.pageColor,
@@ -183,7 +183,20 @@ export const Preview = ({
                             width: previewMode === "desktop" ? "120px" : "80px",
                           }}
                         >
-                          {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((m) => (
+                          {[
+                            "January",
+                            "February",
+                            "March",
+                            "April",
+                            "May",
+                            "June",
+                            "July",
+                            "August",
+                            "September",
+                            "October",
+                            "November",
+                            "December",
+                          ].map((m) => (
                             <option key={m} value={m}>
                               {t("months." + m.toLowerCase())}
                             </option>
@@ -316,30 +329,30 @@ export const Preview = ({
           </div>
 
           {showBrandMark !== false ? (
-              <button
-                onClick={() => {
-                  setGlobalSettings({
-                    ...globalSettings,
-                    showBrandMark: false,
-                  });
-                  fetcher.submit(
-                    { intent: "toggle_brand_mark", showBrandMark: "false" },
-                    { method: "POST" },
-                  );
-                }}
-                style={{
-                  marginTop: "20px",
-                  background: "none",
-                  border: "none",
-                  color: "#005F99",
-                  textDecoration: "underline",
-                  fontSize: "13px",
-                  fontWeight: "500",
-                  cursor: "pointer",
-                }}
-              >
-                {t("popupEditor.clickToRemoveBrandMark")}
-              </button>
+            <button
+              onClick={() => {
+                setGlobalSettings({
+                  ...globalSettings,
+                  showBrandMark: false,
+                });
+                fetcher.submit(
+                  { intent: "toggle_brand_mark", showBrandMark: "false" },
+                  { method: "POST" },
+                );
+              }}
+              style={{
+                marginTop: "20px",
+                background: "none",
+                border: "none",
+                color: "#005F99",
+                textDecoration: "underline",
+                fontSize: "13px",
+                fontWeight: "500",
+                cursor: "pointer",
+              }}
+            >
+              {t("popupEditor.clickToRemoveBrandMark")}
+            </button>
           ) : (
             <button
               onClick={() => {
