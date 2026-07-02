@@ -46,7 +46,7 @@ function TextInput({
   );
 }
 
-export default function CheckboxSettings({ settings, setSettings }) {
+export default function CheckboxSettings({ termsSettings, setTermsSettings }) {
   const { t } = useTranslation();
   const { canAccess } = usePlan();
 
@@ -62,41 +62,41 @@ export default function CheckboxSettings({ settings, setSettings }) {
       <TextInput
         label={t("termsAndConditions.messageText")}
         required
-        value={settings.checkboxText}
-        onChange={(val) => setSettings({ ...settings, checkboxText: val })}
+        value={termsSettings.checkboxText}
+        onChange={(val) => setTermsSettings({ ...termsSettings, checkboxText: val })}
         maxLength={255}
         disabled={!canAccess("terms.checkbox.text")}
       />
       <TextInput
         label={t("termsAndConditions.keyword")}
         required
-        value={settings.keyword}
-        onChange={(val) => setSettings({ ...settings, keyword: val })}
+        value={termsSettings.keyword}
+        onChange={(val) => setTermsSettings({ ...termsSettings, keyword: val })}
         disabled={!canAccess("terms.checkbox.keyword")}
       />
       <TextInput
         label={t("termsAndConditions.keywordLink")}
-        value={settings.link}
-        onChange={(val) => setSettings({ ...settings, link: val })}
+        value={termsSettings.link}
+        onChange={(val) => setTermsSettings({ ...termsSettings, link: val })}
         subtitle={t("termsAndConditions.keywordLinkSubtitle")}
         disabled={!canAccess("terms.checkbox.link")}
       />
       <NumberInput
         label={t("termsAndConditions.size")}
-        value={settings.size}
-        onChange={(val) => setSettings({ ...settings, size: val })}
+        value={termsSettings.size}
+        onChange={(val) => setTermsSettings({ ...termsSettings, size: val })}
         disabled={!canAccess("terms.checkbox.size")}
       />
       <ColorInput
         label={t("termsAndConditions.color")}
-        value={settings.color}
-        onChange={(val) => setSettings({ ...settings, color: val })}
+        value={termsSettings.color}
+        onChange={(val) => setTermsSettings({ ...termsSettings, color: val })}
         disabled={!canAccess("terms.checkbox.color")}
       />
       <TextInput
         label={t("termsAndConditions.errorMessageOptional")}
-        value={settings.errorMessage}
-        onChange={(val) => setSettings({ ...settings, errorMessage: val })}
+        value={termsSettings.errorMessage}
+        onChange={(val) => setTermsSettings({ ...termsSettings, errorMessage: val })}
         maxLength={255}
         placeholder="Enter error message"
         disabled={!canAccess("terms.checkbox.error")}

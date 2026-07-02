@@ -3,12 +3,12 @@ import { Badge } from "../Badge";
 import { usePlan } from "../../context/PlanContext";
 import { useTranslation } from "../../context/TranslationContext";
 
-export default function ConditionSettings({ settings, setSettings }) {
+export default function ConditionSettings({ termsSettings, setTermsSettings }) {
   const { t } = useTranslation();
   const { canAccess } = usePlan();
 
   const togglePage = (page) => {
-    setSettings((prev) => {
+    setTermsSettings((prev) => {
       const displayPages = prev.displayPages.includes(page)
         ? prev.displayPages.filter((p) => p !== page)
         : [...prev.displayPages, page];
@@ -40,19 +40,19 @@ export default function ConditionSettings({ settings, setSettings }) {
         </div>
         <s-choice-list
           name="status"
-          values={[String(settings.enabled)]}
+          values={[String(termsSettings.enabled)]}
           onChange={(e) =>
-            setSettings({
-              ...settings,
+            setTermsSettings({
+              ...termsSettings,
               enabled: e.currentTarget.values[0] === "true",
             })
           }
           disabled={!canAccess("terms.condition.status")}
         >
-          <s-choice value="true" selected={settings.enabled === true}>
+          <s-choice value="true" selected={termsSettings.enabled === true}>
             {t("common.enabled")}
           </s-choice>
-          <s-choice value="false" selected={settings.enabled === false}>
+          <s-choice value="false" selected={termsSettings.enabled === false}>
             {t("common.disabled")}
           </s-choice>
         </s-choice-list>
@@ -94,13 +94,13 @@ export default function ConditionSettings({ settings, setSettings }) {
           </div>
           <s-checkbox
             label={t("termsAndConditions.productPage")}
-            checked={settings.displayPages.includes("product")}
+            checked={termsSettings.displayPages.includes("product")}
             onChange={() => togglePage("product")}
             disabled={!canAccess("terms.condition.pages")}
           />
           <s-checkbox
             label={t("termsAndConditions.cartPage")}
-            checked={settings.displayPages.includes("cart")}
+            checked={termsSettings.displayPages.includes("cart")}
             onChange={() => togglePage("cart")}
             disabled={!canAccess("terms.condition.pages")}
           />
@@ -139,10 +139,10 @@ export default function ConditionSettings({ settings, setSettings }) {
           </div>
           <s-choice-list
             name="trigger"
-            values={[settings.triggerCondition]}
+            values={[termsSettings.triggerCondition]}
             onChange={(e) =>
-              setSettings({
-                ...settings,
+              setTermsSettings({
+                ...termsSettings,
                 triggerCondition: e.currentTarget.values[0],
               })
             }
@@ -150,19 +150,19 @@ export default function ConditionSettings({ settings, setSettings }) {
           >
             <s-choice
               value="always"
-              selected={settings.triggerCondition === "always"}
+              selected={termsSettings.triggerCondition === "always"}
             >
               {t("storeVerification.triggerOptions.alwaysShow")}
             </s-choice>
             <s-choice
               value="logged"
-              selected={settings.triggerCondition === "logged"}
+              selected={termsSettings.triggerCondition === "logged"}
             >
               {t("storeVerification.triggerOptions.loggedCustomers")}
             </s-choice>
             <s-choice
               value="not_logged"
-              selected={settings.triggerCondition === "not_logged"}
+              selected={termsSettings.triggerCondition === "not_logged"}
             >
               {t("storeVerification.triggerOptions.notLoggedCustomers")}
             </s-choice>

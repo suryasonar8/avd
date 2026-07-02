@@ -8,11 +8,14 @@ export default function PreviewPanel({
   link,
   size,
   color,
-  showBrandMark,
-  setSettings,
+  globalSettings,
+  setGlobalSettings,
+  fetcher,
 }) {
   const [device, setDevice] = useState("desktop");
   const { t } = useTranslation();
+
+  const showBrandMark = globalSettings?.showBrandMark !== false;
 
   const renderText = () => {
     const text = checkboxText || "";
@@ -265,24 +268,61 @@ export default function PreviewPanel({
       </div>
 
       {/* Remove brandmark link */}
-      {showBrandMark !== false && (
-        <div style={{ textAlign: "center" }}>
-          <a
-            href="#"
+      <div style={{ textAlign: "center" }}>
+        {showBrandMark !== false ? (
+          <button
             onClick={(e) => {
               e.preventDefault();
-              setSettings((prev) => ({ ...prev, showBrandMark: false }));
+              if (setGlobalSettings) {
+                setGlobalSettings((prev) => ({ ...prev, showBrandMark: false }));
+              }
+              if (fetcher) {
+                fetcher.submit(
+                  { intent: "toggle_brand_mark", showBrandMark: "false" },
+                  { method: "POST" }
+                );
+              }
             }}
             style={{
+              background: "none",
+              border: "none",
               fontSize: "13px",
               color: "#2C6ECB",
               textDecoration: "none",
+              cursor: "pointer",
+              padding: 0,
             }}
           >
             {t("termsAndConditions.clickToRemoveBrandmark")}
-          </a>
-        </div>
-      )}
+          </button>
+        ) : (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              if (setGlobalSettings) {
+                setGlobalSettings((prev) => ({ ...prev, showBrandMark: true }));
+              }
+              if (fetcher) {
+                fetcher.submit(
+                  { intent: "toggle_brand_mark", showBrandMark: "true" },
+                  { method: "POST" }
+                );
+              }
+            }}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: "13px",
+              color: "#2C6ECB",
+              textDecoration: "none",
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            {t("popupEditor.clickToShowBrandMark")}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

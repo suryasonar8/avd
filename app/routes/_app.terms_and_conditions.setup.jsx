@@ -12,28 +12,94 @@ import PreviewPanel from "../components/terms-and-conditions/PreviewPanel";
 import { CustomSaveBar } from "../components/CustomSaveBar";
 
 export const loader = async ({ request }) => {
-  const { session } = await authenticate.admin(request);
-  const settings = await TermsService.getSettings(session.shop);
+  const { admin, session } = await authenticate.admin(request);
+  const termsSettings = await TermsService.getSettings(session.shop);
 
-  return { settings };
+  // Fetch global settings for Brand Mark
+  const globalSettingsResponse = await admin.graphql(
+    `#graphql
+    query getGlobalSettings {
+      shop {
+        metafield(namespace: "avd", key: "settings") {
+          value
+        }
+      }
+    }`,
+  );
+  const globalSettingsData = await globalSettingsResponse.json();
+  const globalSettingsValue = globalSettingsData.data.shop.metafield?.value;
+  const globalSettings = globalSettingsValue
+    ? JSON.parse(globalSettingsValue)
+    : { showBrandMark: true };
+
+  return { termsSettings, globalSettings };
 };
 
 export const action = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
   const formData = await request.formData();
-  const settingsStr = formData.get("settings");
-  const settings = JSON.parse(settingsStr);
+  const intent = formData.get("intent");
+
+  if (intent === "toggle_brand_mark") {
+    const showBrandMark = formData.get("showBrandMark") === "true";
+
+    const existingResponse = await admin.graphql(
+      `#graphql
+      query getGlobalSettings {
+        shop {
+          metafield(namespace: "avd", key: "settings") {
+            value
+          }
+        }
+      }`,
+    );
+    const existingValue = (await existingResponse.json()).data.shop.metafield
+      ?.value;
+    const existingSettings = existingValue ? JSON.parse(existingValue) : {};
+    const newSettings = { ...existingSettings, showBrandMark };
+
+    const shopResponse = await admin.graphql(`{ shop { id } }`);
+    const shopId = (await shopResponse.json()).data.shop.id;
+
+    await admin.graphql(
+      `#graphql
+      mutation updateSettings($metafields: [MetafieldsSetInput!]!) {
+        metafieldsSet(metafields: $metafields) {
+          metafields { id }
+          userErrors { field message }
+        }
+      }`,
+      {
+        variables: {
+          metafields: [
+            {
+              namespace: "avd",
+              key: "settings",
+              type: "json",
+              ownerId: shopId,
+              value: JSON.stringify(newSettings),
+            },
+          ],
+        },
+      },
+    );
+
+    return { success: true };
+  }
+
+  const settingsStr = formData.get("termsSettings");
+  const termsSettings = JSON.parse(settingsStr);
 
   // Server-side granular gate
   const validation = await PlanService.validateTermsConfig(
     session.shop,
-    settings,
+    termsSettings,
   );
 
   // Use sanitized settings even if isValid is true
-  const finalSettings = validation.sanitized || settings;
+  const finalTermsSettings = validation.sanitized || termsSettings;
 
-  await TermsService.saveSettings(admin, session.shop, finalSettings);
+  await TermsService.saveSettings(admin, session.shop, finalTermsSettings);
 
   return { success: true };
 };
@@ -41,27 +107,30 @@ export const action = async ({ request }) => {
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function TermsAndConditionsSetup() {
   const navigate = useNavigate();
-  const { settings: initialSettings } = useLoaderData();
-  const [settings, setSettings] = useState(initialSettings);
+  const { termsSettings: initialTermsSettings, globalSettings: initialGlobalSettings } = useLoaderData();
+  const [termsSettings, setTermsSettings] = useState(initialTermsSettings);
+  const [globalSettings, setGlobalSettings] = useState(
+    initialGlobalSettings || { showBrandMark: true }
+  );
 
-  // Reset settings when initialSettings changes (e.g. after save or navigation)
+  // Sync global settings when it changes from the server
   useEffect(() => {
-    setSettings(initialSettings);
-  }, [initialSettings]);
+    setGlobalSettings(initialGlobalSettings || { showBrandMark: true });
+  }, [initialGlobalSettings]);
 
   const fetcher = useFetcher();
   const shopify = useAppBridge();
   const [activeTab, setActiveTab] = useState("condition");
   const { t } = useTranslation();
 
-  const isDirty = JSON.stringify(settings) !== JSON.stringify(initialSettings);
+  const isDirty = JSON.stringify(termsSettings) !== JSON.stringify(initialTermsSettings);
 
   const handleSave = () => {
-    fetcher.submit({ settings: JSON.stringify(settings) }, { method: "post" });
+    fetcher.submit({ termsSettings: JSON.stringify(termsSettings) }, { method: "post" });
   };
 
   const handleDiscard = () => {
-    setSettings(initialSettings);
+    setTermsSettings(initialTermsSettings);
   };
 
   return (
@@ -181,21 +250,22 @@ export default function TermsAndConditionsSetup() {
           }}
         >
           {activeTab === "condition" ? (
-            <ConditionSettings settings={settings} setSettings={setSettings} />
+            <ConditionSettings termsSettings={termsSettings} setTermsSettings={setTermsSettings} />
           ) : (
-            <CheckboxSettings settings={settings} setSettings={setSettings} />
+            <CheckboxSettings termsSettings={termsSettings} setTermsSettings={setTermsSettings} />
           )}
         </div>
 
         {/* ─── Right Preview Panel ─── */}
         <PreviewPanel
-          checkboxText={settings.checkboxText}
-          keyword={settings.keyword}
-          link={settings.link}
-          size={settings.size}
-          color={settings.color}
-          showBrandMark={settings.showBrandMark}
-          setSettings={setSettings}
+          checkboxText={termsSettings.checkboxText}
+          keyword={termsSettings.keyword}
+          link={termsSettings.link}
+          size={termsSettings.size}
+          color={termsSettings.color}
+          globalSettings={globalSettings}
+          setGlobalSettings={setGlobalSettings}
+          fetcher={fetcher}
         />
       </div>
 

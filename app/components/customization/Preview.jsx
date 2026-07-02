@@ -89,8 +89,15 @@ export const Preview = ({
           </button>
         </div>
 
+        {/* Custom CSS */}
+        {config.css && (
+          <style dangerouslySetInnerHTML={{ __html: config.css }} />
+        )}
+
         {/* Preview Content */}
         <div
+          id="age-verification-overlay"
+          className="age-verification-overlay"
           style={{
             flex: 1,
             display: "flex",
@@ -106,6 +113,7 @@ export const Preview = ({
           }}
         >
           <div
+            className="age-verification-modal age-verification-content"
             style={{
               width: previewMode === "desktop" ? "100%" : "280px",
               maxWidth: "540px",
@@ -128,18 +136,23 @@ export const Preview = ({
             }}
           >
             {config.background.logo && (
-              <img
-                src={config.background.logo}
-                alt="Logo"
-                style={{
-                  maxWidth: "120px",
-                  maxHeight: "60px",
-                  marginBottom: "20px",
-                  objectFit: "contain",
-                }}
-              />
+              <div
+                className="age-verification-logo"
+                style={{ textAlign: "center", marginBottom: "20px" }}
+              >
+                <img
+                  src={config.background.logo}
+                  alt="Logo"
+                  style={{
+                    maxWidth: "120px",
+                    maxHeight: "60px",
+                    objectFit: "contain",
+                  }}
+                />
+              </div>
             )}
             <h3
+              className="age-verification-heading"
               style={{
                 fontSize: previewMode === "desktop" ? "26px" : "18px",
                 fontWeight: "700",
@@ -149,6 +162,7 @@ export const Preview = ({
               dangerouslySetInnerHTML={{ __html: config.text.heading }}
             />
             <p
+              className="age-verification-subheading"
               style={{
                 fontSize: previewMode === "desktop" ? "15px" : "13px",
                 marginBottom: "30px",
@@ -159,6 +173,7 @@ export const Preview = ({
 
             {config.method === "Birthdate entry" && (
               <div
+                className="age-verification-birthdate"
                 style={{
                   display: "flex",
                   gap: "10px",
@@ -173,6 +188,8 @@ export const Preview = ({
                       return (
                         <select
                           key="month"
+                          id="age-verify-month"
+                          className="age-verify-select"
                           style={{
                             padding: "8px 12px",
                             borderRadius: "6px",
@@ -208,6 +225,8 @@ export const Preview = ({
                       return (
                         <select
                           key="day"
+                          id="age-verify-day"
+                          className="age-verify-select"
                           style={{
                             padding: "8px 12px",
                             borderRadius: "6px",
@@ -230,6 +249,8 @@ export const Preview = ({
                       return (
                         <select
                           key="year"
+                          id="age-verify-year"
+                          className="age-verify-select"
                           style={{
                             padding: "8px 12px",
                             borderRadius: "6px",
@@ -252,6 +273,7 @@ export const Preview = ({
             )}
 
             <div
+              className="age-verification-buttons"
               style={{
                 display: "flex",
                 flexDirection: previewMode === "desktop" ? "row" : "column",
@@ -262,6 +284,8 @@ export const Preview = ({
               }}
             >
               <button
+                id="age-verify-agree"
+                className="age-verify-button agree"
                 style={{
                   background: config.button.bgColor,
                   color: "#FFF",
@@ -279,6 +303,8 @@ export const Preview = ({
                 />
               </button>
               <button
+                id="age-verify-disagree"
+                className="age-verify-button disagree"
                 style={{
                   background: config.button.cancelBgColor,
                   color: "#FFF",
@@ -299,6 +325,7 @@ export const Preview = ({
 
             {showBrandMark && (
               <div
+                className="age-verification-footer"
                 style={{
                   marginTop: previewMode === "desktop" ? "50px" : "30px",
                   fontSize: "11px",
@@ -310,6 +337,7 @@ export const Preview = ({
               >
                 {t("termsAndConditions.protectedBy")}{" "}
                 <span
+                  className="brand-mark"
                   style={{
                     color: "#FFF",
                     display: "flex",
@@ -317,8 +345,14 @@ export const Preview = ({
                     gap: "2px",
                   }}
                 >
-                  <span style={{ color: "#FF5C00", fontSize: "14px" }}>🛡️</span>{" "}
                   <span
+                    className="brand-shield"
+                    style={{ color: "#FF5C00", fontSize: "14px" }}
+                  >
+                    🛡️
+                  </span>{" "}
+                  <span
+                    className="brand-name"
                     style={{ color: "#005F99", textDecoration: "underline" }}
                   >
                     {t("termsAndConditions.avdTrademark")}

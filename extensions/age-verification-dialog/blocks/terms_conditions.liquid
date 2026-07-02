@@ -38,6 +38,12 @@
   {% endif %}
 
   {% if show_by_page and show_by_trigger %}
+    {% assign global_settings = shop.metafields.avd.settings.value %}
+    {% assign show_brandmark = true %}
+    {% if global_settings.showBrandMark == false or global_settings.showBrandMark == 'false' %}
+      {% assign show_brandmark = false %}
+    {% endif %}
+
     <div id="avd-terms-wrapper" style="margin: 15px 0; color: {{ settings.color | default: '#000000' }}; font-size: {{ settings.size | default: 14 }}px; font-family: inherit;">
       <label class="avd-terms-label" style="display: flex; align-items: center; cursor: pointer; gap: 10px; line-height: 1.4;">
         <input type="checkbox" id="avd-terms-checkbox" style="margin: 0; flex-shrink: 0; width: 16px; height: 16px; accent-color: #000;">
@@ -50,6 +56,21 @@
           {% endif %}
         </span>
       </label>
+
+      {% if show_brandmark %}
+      <div style="display: flex; align-items: center; gap: 6px; margin-top: 6px;">
+        <span style="font-size: 11px; color: #6D7175;">Protected by</span>
+        <div style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600;">
+          <div style="width: 16px; height: 16px; border-radius: 4px; background: linear-gradient(135deg,#7C3AED,#EC4899); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="white">
+              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+            </svg>
+          </div>
+          <a href="https://google.com" target="_blank" style="color: #2C6ECB; text-decoration: underline; font-size: 11px; font-weight: 600;">AVD</a>
+        </div>
+      </div>
+      {% endif %}
+
       <div id="avd-terms-error" style="color: #d93025; font-size: 13px; margin-top: 8px; display: none; font-weight: 500;">
         {{ settings.errorMessage | default: 'Please agree to the terms and conditions before proceeding.' }}
       </div>
