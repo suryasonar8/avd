@@ -44,10 +44,11 @@ export const TranslationField = ({
               border: "1px solid #e1e3e5",
               color: "#6d7175",
               fontSize: "14px",
-              height: "34px",
+              minHeight: "34px",
               boxSizing: "border-box",
               display: "flex",
               alignItems: "center",
+              wordBreak: "break-word",
             }}
           >
             {type === "richtext" ? (

@@ -549,20 +549,20 @@ export default function TranslationSetupPage() {
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
               label={t("translation.submitButtonAction")}
-              original={selectedPopup?.config.button?.submitAction}
-              value={translations.submitAction}
+              original={selectedPopup?.config.button?.errorMsg}
+              value={translations.submitErrorMsg}
               onChange={(val) =>
-                setTranslations({ ...translations, submitAction: val })
+                setTranslations({ ...translations, submitErrorMsg: val })
               }
               type="text"
             />
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
               label={t("translation.cancelButtonAction")}
-              original={selectedPopup?.config.button?.cancelAction}
-              value={translations.cancelAction}
+              original={selectedPopup?.config.button?.cancelErrorMsg}
+              value={translations.cancelErrorMsg}
               onChange={(val) =>
-                setTranslations({ ...translations, cancelAction: val })
+                setTranslations({ ...translations, cancelErrorMsg: val })
               }
               type="text"
             />
