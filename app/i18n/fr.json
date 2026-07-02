@@ -299,6 +299,7 @@
     "keyword": "Mot-clé",
     "keywordLink": "Lien vers le mot-clé (Optionnel)",
     "keywordLinkSubtitle": "L'URL sera liée en hypertexte si elle correspond au mot-clé.",
+    "errorMessageOptional": "Message d'erreur (Facultatif)",
     "size": "Taille",
     "color": "Couleur",
     "needMoreCustomization": "Besoin de plus d'options de personnalisation ?",

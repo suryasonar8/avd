@@ -42,6 +42,12 @@ export default function TermsAndConditionsSetup() {
   const navigate = useNavigate();
   const { settings: initialSettings } = useLoaderData();
   const [settings, setSettings] = useState(initialSettings);
+
+  // Reset settings when initialSettings changes (e.g. after save or navigation)
+  useEffect(() => {
+    setSettings(initialSettings);
+  }, [initialSettings]);
+
   const fetcher = useFetcher();
   const shopify = useAppBridge();
   const [activeTab, setActiveTab] = useState("condition");

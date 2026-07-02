@@ -94,7 +94,7 @@ export default function CheckboxSettings({ settings, setSettings }) {
         disabled={!canAccess("terms.checkbox.color")}
       />
       <TextInput
-        label="Error message (Optional)"
+        label={t("termsAndConditions.errorMessageOptional")}
         value={settings.errorMessage}
         onChange={(val) => setSettings({ ...settings, errorMessage: val })}
         maxLength={255}

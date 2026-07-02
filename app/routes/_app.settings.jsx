@@ -280,13 +280,13 @@ export default function SettingsPage() {
                   }
                 >
                   <s-option value="Session only">
-                    {t("settings.rememberVisitorOptions.sessionOnly")}
+                    Session only
                   </s-option>
                   <s-option value="Days">
-                    {t("settings.rememberVisitorOptions.days")}
+                    Days
                   </s-option>
                   <s-option value="Allow visitor to choose">
-                    {t("settings.rememberVisitorOptions.allowVisitorToChoose")}
+                    Allow visitor to choose
                   </s-option>
                 </s-select>
 

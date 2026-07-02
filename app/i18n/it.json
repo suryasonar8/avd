@@ -299,6 +299,7 @@
     "keyword": "Parola chiave",
     "keywordLink": "Link alla parola chiave (Opzionale)",
     "keywordLinkSubtitle": "L'URL verrà collegato come ipertesto se corrisponde alla parola chiave.",
+    "errorMessageOptional": "Messaggio di errore (Opzionale)",
     "size": "Dimensione",
     "color": "Colore",
     "needMoreCustomization": "Hai bisogno di più opzioni di personalizzazione?",

@@ -299,6 +299,7 @@
     "keyword": "Schlüsselwort",
     "keywordLink": "Link zum Schlüsselwort (Optional)",
     "keywordLinkSubtitle": "Die URL wird als Hyperlink angezeigt, wenn sie mit dem Schlüsselwort übereinstimmt.",
+    "errorMessageOptional": "Fehlermeldung (Optional)",
     "size": "Größe",
     "color": "Farbe",
     "needMoreCustomization": "Benötigen Sie weitere Anpassungsoptionen?",

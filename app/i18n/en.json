@@ -299,6 +299,7 @@
     "keyword": "Keyword",
     "keywordLink": "Link to keyword (Optional)",
     "keywordLinkSubtitle": "The URL will be hyperlinked if it matches the keyword.",
+    "errorMessageOptional": "Error message (Optional)",
     "size": "Size",
     "color": "Color",
     "needMoreCustomization": "Need more customization options?",

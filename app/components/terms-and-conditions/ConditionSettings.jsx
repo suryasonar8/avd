@@ -75,14 +75,12 @@ export default function ConditionSettings({ settings, setSettings }) {
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "8px",
           }}
         >
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "6px",
               flexWrap: "wrap",
             }}
           >

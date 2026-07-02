@@ -299,6 +299,7 @@
     "keyword": "Palabra clave",
     "keywordLink": "Enlace a la palabra clave (Opcional)",
     "keywordLinkSubtitle": "La URL se vinculará como hipervínculo si coincide con la palabra clave.",
+    "errorMessageOptional": "Mensaje de error (Opcional)",
     "size": "Tamaño",
     "color": "Color",
     "needMoreCustomization": "¿Necesita más opciones de personalización?",

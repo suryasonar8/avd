@@ -229,8 +229,9 @@
 
       {% if remember_visitor == 'Allow visitor to choose' %}
         <div class="age-verification-remember">
-          <label>
-            <input type="checkbox" id="age-verify-remember-me"> Remember my information for next time.
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; line-height: 1.4;">
+            <input type="checkbox" id="age-verify-remember-me" style="margin: 0; flex-shrink: 0; width: 14px; height: 14px;">
+            <span>Remember my information for next time.</span>
           </label>
         </div>
       {% endif %}

@@ -299,6 +299,7 @@
     "keyword": "कीवर्ड",
     "keywordLink": "कीवर्ड का लिंक (वैकल्पिक)",
     "keywordLinkSubtitle": "यदि URL कीवर्ड से मेल खाता है तो उसे हाइपरलिंक किया जाएगा।",
+    "errorMessageOptional": "त्रुटि संदेश (वैकल्पिक)",
     "size": "आकार",
     "color": "रंग",
     "needMoreCustomization": "अधिक कस्टमाइज़ेशन विकल्प चाहिए?",
