@@ -1,54 +1,59 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DateRangePicker as RSuiteDateRangePicker } from "rsuite";
 import dayjs from "dayjs";
 import { useTranslation } from "../context/TranslationContext";
+import { useIsMounted } from "../hooks/useIsMounted";
 
 export default function DateRangePicker({ value, onChange }) {
+  const mounted = useIsMounted();
   const [isMobile, setIsMobile] = useState(false);
   const { t } = useTranslation();
 
-  const predefinedRanges = [
-    {
-      label: t("dateRangePicker.today"),
-      value: [dayjs().startOf("day").toDate(), dayjs().endOf("day").toDate()],
-    },
-    {
-      label: t("dateRangePicker.yesterday"),
-      value: [
-        dayjs().subtract(1, "day").startOf("day").toDate(),
-        dayjs().subtract(1, "day").endOf("day").toDate(),
-      ],
-    },
-    {
-      label: t("dateRangePicker.last7Days"),
-      value: [
-        dayjs().subtract(6, "day").startOf("day").toDate(),
-        dayjs().endOf("day").toDate(),
-      ],
-    },
-    {
-      label: t("dateRangePicker.last30Days"),
-      value: [
-        dayjs().subtract(29, "day").startOf("day").toDate(),
-        dayjs().endOf("day").toDate(),
-      ],
-    },
-    {
-      label: t("dateRangePicker.lastMonth"),
-      value: [
-        dayjs().subtract(1, "month").startOf("month").toDate(),
-        dayjs().subtract(1, "month").endOf("month").toDate(),
-      ],
-    },
-    {
-      label: t("dateRangePicker.last60Days"),
-      value: [
-        dayjs().subtract(59, "day").startOf("day").toDate(),
-        dayjs().endOf("day").toDate(),
-      ],
-    },
-  ];
+  const predefinedRanges = useMemo(
+    () => [
+      {
+        label: t("dateRangePicker.today"),
+        value: [dayjs().startOf("day").toDate(), dayjs().endOf("day").toDate()],
+      },
+      {
+        label: t("dateRangePicker.yesterday"),
+        value: [
+          dayjs().subtract(1, "day").startOf("day").toDate(),
+          dayjs().subtract(1, "day").endOf("day").toDate(),
+        ],
+      },
+      {
+        label: t("dateRangePicker.last7Days"),
+        value: [
+          dayjs().subtract(6, "day").startOf("day").toDate(),
+          dayjs().endOf("day").toDate(),
+        ],
+      },
+      {
+        label: t("dateRangePicker.last30Days"),
+        value: [
+          dayjs().subtract(29, "day").startOf("day").toDate(),
+          dayjs().endOf("day").toDate(),
+        ],
+      },
+      {
+        label: t("dateRangePicker.lastMonth"),
+        value: [
+          dayjs().subtract(1, "month").startOf("month").toDate(),
+          dayjs().subtract(1, "month").endOf("month").toDate(),
+        ],
+      },
+      {
+        label: t("dateRangePicker.last60Days"),
+        value: [
+          dayjs().subtract(59, "day").startOf("day").toDate(),
+          dayjs().endOf("day").toDate(),
+        ],
+      },
+    ],
+    [t],
+  );
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -82,6 +87,20 @@ export default function DateRangePicker({ value, onChange }) {
     });
   };
 
+  if (!mounted) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          minWidth: 0,
+          height: "36px",
+          background: "#f4f6f8",
+          borderRadius: "4px",
+        }}
+      />
+    );
+  }
+
   return (
     <div style={{ width: "100%", minWidth: 0 }}>
       <RSuiteDateRangePicker
@@ -91,7 +110,7 @@ export default function DateRangePicker({ value, onChange }) {
         format="dd/MM/yyyy"
         character=" - "
         placeholder={t("dateRangePicker.selectDateRange")}
-        placement="auto"
+        placement="bottomEnd"
         shouldDisableDate={(date) => dayjs(date).isAfter(dayjs(), "day")}
         showHeader={false}
         editable={false}
@@ -106,6 +125,7 @@ export default function DateRangePicker({ value, onChange }) {
         popupStyle={{
           marginTop: 8,
           maxWidth: "calc(100vw - 16px)",
+          zIndex: 99999,
         }}
         renderValue={([start, end]) => {
           const startStr = dayjs(start).format("YYYY-MM-DD");

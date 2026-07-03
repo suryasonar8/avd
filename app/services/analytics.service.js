@@ -21,7 +21,7 @@ export const AnalyticsService = {
         const end = endDate ? dayjs(endDate).endOf("day").toDate() : new Date();
         const start = startDate
             ? dayjs(startDate).startOf("day").toDate()
-            : dayjs(end).subtract(7, "day").startOf("day").toDate();
+            : dayjs(end).subtract(6, "day").startOf("day").toDate();
 
         // Use raw SQL to avoid any Prisma client cache issues with groupBy
         const rows = await db.$queryRaw`

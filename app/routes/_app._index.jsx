@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLoaderData, useFetcher } from "react-router";
 import { authenticate } from "../shopify.server";
-import { Card } from "../components/Card";
 import { getAppEmbedStatus } from "../utils/theme.server";
 import { PopupService } from "../services/popup.service";
 import { AnalyticsService } from "../services/analytics.service";
@@ -9,6 +8,7 @@ import { ShopService } from "../services/shop.service";
 import DateRangePicker from "../components/DateRangePicker";
 import { useTranslation } from "../context/TranslationContext";
 import dayjs from "dayjs";
+import { useIsMounted } from "../hooks/useIsMounted";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -68,13 +68,14 @@ export const action = async ({ request }) => {
     shopId,
     "avd",
     "settings",
-    JSON.stringify(settings)
+    JSON.stringify(settings),
   );
 
   return { success: true };
 };
 
 export default function Dashboard() {
+  const isMounted = useIsMounted();
   const {
     shopName,
     shopDomain,
@@ -92,8 +93,8 @@ export default function Dashboard() {
   const { t } = useTranslation();
 
   // Default date range: last 7 days
-  const defaultStartDate = dayjs().subtract(7, "day").format("YYYY-MM-DD");
-  const defaultEndDate = dayjs().subtract(1, "day").format("YYYY-MM-DD");
+  const defaultStartDate = dayjs().subtract(6, "day").format("YYYY-MM-DD");
+  const defaultEndDate = dayjs().format("YYYY-MM-DD");
 
   const [dateRange, setDateRange] = useState({
     startDate: defaultStartDate,
@@ -103,8 +104,8 @@ export default function Dashboard() {
   const getActiveLabel = () => {
     const todayStr = dayjs().format("YYYY-MM-DD");
     const yesterdayStr = dayjs().subtract(1, "day").format("YYYY-MM-DD");
-    const sevenDaysAgoStr = dayjs().subtract(7, "day").format("YYYY-MM-DD");
-    const thirtyDaysAgoStr = dayjs().subtract(30, "day").format("YYYY-MM-DD");
+    const sevenDaysAgoStr = dayjs().subtract(6, "day").format("YYYY-MM-DD");
+    const thirtyDaysAgoStr = dayjs().subtract(29, "day").format("YYYY-MM-DD");
 
     if (dateRange.startDate === todayStr && dateRange.endDate === todayStr) {
       return t("dashboard.dateLabels.today");
@@ -117,13 +118,13 @@ export default function Dashboard() {
     }
     if (
       dateRange.startDate === sevenDaysAgoStr &&
-      dateRange.endDate === yesterdayStr
+      dateRange.endDate === todayStr
     ) {
       return t("dashboard.dateLabels.7days");
     }
     if (
       dateRange.startDate === thirtyDaysAgoStr &&
-      dateRange.endDate === yesterdayStr
+      dateRange.endDate === todayStr
     ) {
       return t("dashboard.dateLabels.30days");
     }
@@ -195,9 +196,9 @@ export default function Dashboard() {
   const appEmbedUrl = `https://admin.shopify.com/store/${storeName}/themes/${themeId}/editor?context=apps&appEmbed=e03e0948951b94a7b424d1a55634d891%2Fage-verification-dialog`;
 
   return (
-    <s-page>
+    <s-page style={{ opacity: isMounted ? 1 : 0 }}>
       {/* Greeting Section */}
-      <div style={{ marginBottom: "32px" }}>
+      <div style={{ marginBottom: "24px" }}>
         <h1
           style={{
             fontSize: "32px",
@@ -214,18 +215,10 @@ export default function Dashboard() {
       </div>
 
       {/* Status Controls Card */}
-      <div
-        style={{
-          background: "#FFFFFF",
-          border: "1px solid #E1E3E5",
-          borderRadius: "12px",
-          marginBottom: "32px",
-          overflow: "hidden",
-        }}
-      >
+      <s-section>
         <div
           style={{
-            padding: "16px 20px",
+            paddingBottom: "16px",
             borderBottom: "1px solid #F1F2F3",
             display: "flex",
             alignItems: "center",
@@ -272,7 +265,7 @@ export default function Dashboard() {
         </div>
         <div
           style={{
-            padding: "16px 20px",
+            paddingTop: "16px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -326,401 +319,403 @@ export default function Dashboard() {
             </a>
           </div>
         </div>
-      </div>
+      </s-section>
 
       {/* Setup guide Card */}
-      <Card title={t("dashboard.setupGuide")}>
-        <div style={{ position: "absolute", right: "20px", top: "20px" }}>
-          <span style={{ cursor: "pointer", color: "#6D7175" }}>•••</span>
-        </div>
-        <div style={{ marginBottom: "20px" }}>
+      <s-section>
+        <s-text>{t("dashboard.setupGuide")}</s-text>
+        <div style={{ padding: "14px" }}>
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
-              fontSize: "13px",
-              color: "#6D7175",
-              marginBottom: "8px",
-            }}
-          >
-            <span>
-              {(popupActive ? 1 : 0) + (isTested ? 1 : 0)}/2{" "}
-              {t("common.completed")}
-            </span>
-          </div>
-          <div
-            style={{
-              height: "8px",
-              background: "#F1F2F3",
-              borderRadius: "4px",
-              overflow: "hidden",
+              alignItems: "center",
+              gap: "12px",
+              marginBottom: "20px",
             }}
           >
             <div
               style={{
-                width:
-                  popupActive && isTested ? "100%" : popupActive ? "50%" : "0%",
-                height: "100%",
-                background: popupActive ? "#202223" : "#E1E3E5",
-                transition: "width 0.4s ease",
-              }}
-            ></div>
-          </div>
-        </div>
-
-        {/* Step 1: Customize — clickable header, expands when activeStep === 0 */}
-        <div
-          style={{
-            background: activeStep === 0 ? "#F6F6F7" : "transparent",
-            borderRadius: "8px",
-            marginBottom: "4px",
-            transition: "background 0.2s ease",
-          }}
-        >
-          {/* Clickable header row */}
-          <div
-            onClick={() => toggleStep(0)}
-            style={{
-              display: "flex",
-              gap: "12px",
-              alignItems: "center",
-              padding: "12px 20px",
-              cursor: "pointer",
-              userSelect: "none",
-            }}
-          >
-            {/* Circle indicator */}
-            {popupActive ? (
-              <div
-                style={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  background: "#202223",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path
-                    d="M2 6l3 3 5-5"
-                    stroke="#fff"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-            ) : (
-              <div
-                style={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  border: "2px dashed #BABFC3",
-                  flexShrink: 0,
-                }}
-              />
-            )}
-            <span
-              style={{
-                fontSize: "14px",
-                fontWeight: "500",
-                color: popupActive ? "#202223" : "#6D7175",
-                flex: 1,
-              }}
-            >
-              {t("dashboard.customizePopup")}
-            </span>
-            {/* Chevron */}
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              style={{
-                transform: activeStep === 0 ? "rotate(180deg)" : "rotate(0deg)",
-                transition: "transform 0.2s ease",
+                fontSize: "13px",
                 color: "#6D7175",
+                whiteSpace: "nowrap",
               }}
             >
-              <path
-                d="M4 6l4 4 4-4"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+              <span>
+                {(popupActive ? 1 : 0) + (isTested ? 1 : 0)}/2{" "}
+                {t("common.completed")}
+              </span>
+            </div>
+            <div
+              style={{
+                flex: 1,
+                height: "8px",
+                background: "#F1F2F3",
+                borderRadius: "4px",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  width:
+                    popupActive && isTested
+                      ? "100%"
+                      : popupActive
+                        ? "50%"
+                        : "0%",
+                  height: "100%",
+                  background: popupActive ? "#202223" : "#E1E3E5",
+                  transition: "width 0.4s ease",
+                }}
+              ></div>
+            </div>
           </div>
 
-          {/* Expandable body */}
-          {activeStep === 0 && (
-            <div style={{ padding: "4px 20px 20px 52px" }}>
-              <p
-                style={{
-                  fontSize: "13px",
-                  color: "#6D7175",
-                  margin: "0 0 16px 0",
-                }}
-              >
-                {t("dashboard.customizePopupDescription")}
-              </p>
-              <s-button
-                variant="primary"
-                href="/store_verification/customization"
-              >
-                {t("dashboard.customize")}
-              </s-button>
-            </div>
-          )}
-        </div>
-
-        {/* Step 2: Test the Popup — clickable header, expands when activeStep === 1 */}
-        <div
-          style={{
-            background: activeStep === 1 ? "#F6F6F7" : "transparent",
-            borderRadius: "8px",
-            marginBottom: "4px",
-            transition: "background 0.2s ease",
-          }}
-        >
-          {/* Clickable header row */}
+          {/* Step 1: Customize — clickable header, expands when activeStep === 0 */}
           <div
-            onClick={() => toggleStep(1)}
             style={{
-              display: "flex",
-              gap: "12px",
-              alignItems: "center",
-              padding: "12px 20px",
-              cursor: "pointer",
-              userSelect: "none",
+              background: activeStep === 0 ? "#F6F6F7" : "transparent",
+              borderRadius: "8px",
+              marginBottom: "4px",
+              transition: "background 0.2s ease",
             }}
           >
-            {/* Circle indicator */}
-            {isTested ? (
-              <div
+            {/* Clickable header row */}
+            <div
+              onClick={() => toggleStep(0)}
+              style={{
+                display: "flex",
+                gap: "12px",
+                alignItems: "center",
+                padding: "12px 20px",
+                cursor: "pointer",
+                userSelect: "none",
+              }}
+            >
+              {/* Circle indicator */}
+              {popupActive ? (
+                <div
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    borderRadius: "50%",
+                    background: "#202223",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M2 6l3 3 5-5"
+                      stroke="#fff"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    borderRadius: "50%",
+                    border: "2px dashed #BABFC3",
+                    flexShrink: 0,
+                  }}
+                />
+              )}
+              <span
                 style={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  background: "#202223",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: popupActive ? "#202223" : "#6D7175",
+                  flex: 1,
                 }}
               >
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path
-                    d="M2 6l3 3 5-5"
-                    stroke="#fff"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-            ) : (
-              <div
+                {t("dashboard.customizePopup")}
+              </span>
+              {/* Chevron */}
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
                 style={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  border: "2px dashed #BABFC3",
-                  flexShrink: 0,
+                  transform:
+                    activeStep === 0 ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.2s ease",
+                  color: "#6D7175",
                 }}
-              />
+              >
+                <path
+                  d="M4 6l4 4 4-4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            {/* Expandable body */}
+            {activeStep === 0 && (
+              <div style={{ padding: "4px 20px 20px 52px" }}>
+                <p
+                  style={{
+                    fontSize: "13px",
+                    color: "#6D7175",
+                    margin: "0 0 16px 0",
+                  }}
+                >
+                  {t("dashboard.customizePopupDescription")}
+                </p>
+                <s-button
+                  variant="primary"
+                  href="/store_verification/customization"
+                >
+                  {t("dashboard.customize")}
+                </s-button>
+              </div>
             )}
-            <span
+          </div>
+
+          {/* Step 2: Test the Popup — clickable header, expands when activeStep === 1 */}
+          <div
+            style={{
+              background: activeStep === 1 ? "#F6F6F7" : "transparent",
+              borderRadius: "8px",
+              marginBottom: "4px",
+              transition: "background 0.2s ease",
+            }}
+          >
+            {/* Clickable header row */}
+            <div
+              onClick={() => toggleStep(1)}
               style={{
-                fontSize: "14px",
-                fontWeight: "500",
-                color: isTested
-                  ? "#202223"
-                  : popupActive
+                display: "flex",
+                gap: "12px",
+                alignItems: "center",
+                padding: "12px 20px",
+                cursor: "pointer",
+                userSelect: "none",
+              }}
+            >
+              {/* Circle indicator */}
+              {isTested ? (
+                <div
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    borderRadius: "50%",
+                    background: "#202223",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M2 6l3 3 5-5"
+                      stroke="#fff"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    borderRadius: "50%",
+                    border: "2px dashed #BABFC3",
+                    flexShrink: 0,
+                  }}
+                />
+              )}
+              <span
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: isTested
                     ? "#202223"
-                    : "#6D7175",
-                flex: 1,
-              }}
-            >
-              {t("dashboard.testPopup")}
-            </span>
-            {/* Chevron */}
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              style={{
-                transform: activeStep === 1 ? "rotate(180deg)" : "rotate(0deg)",
-                transition: "transform 0.2s ease",
-                color: "#6D7175",
-              }}
-            >
-              <path
-                d="M4 6l4 4 4-4"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-
-          {/* Expandable body */}
-          {activeStep === 1 && (
-            <div style={{ padding: "4px 20px 20px 52px" }}>
-              <p
+                    : popupActive
+                      ? "#202223"
+                      : "#6D7175",
+                  flex: 1,
+                }}
+              >
+                {t("dashboard.testPopup")}
+              </span>
+              {/* Chevron */}
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
                 style={{
-                  fontSize: "13px",
+                  transform:
+                    activeStep === 1 ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.2s ease",
                   color: "#6D7175",
-                  margin: "0 0 16px 0",
                 }}
               >
-                {t("dashboard.testPopupDescription")}
-              </p>
-              <s-button
-                variant="primary"
-                loading={isMarkingTested ? "true" : undefined}
-                onClick={() => {
-                  window.open(`https://${shopDomain}`, "_blank");
-                  fetcher.submit(
-                    {
-                      _action: "markTested",
-                      settings: JSON.stringify(settings),
-                    },
-                    { method: "POST" },
-                  );
-                }}
-              >
-                {t("dashboard.testNow")}
-              </s-button>
+                <path
+                  d="M4 6l4 4 4-4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </div>
-          )}
-        </div>
-      </Card>
 
-      {/* Overview Section */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "16px",
-        }}
-      >
-        <h2 style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>
-          {t("dashboard.overview")}{" "}
-          {activeLabel && (
-            <span
+            {/* Expandable body */}
+            {activeStep === 1 && (
+              <div style={{ padding: "4px 20px 20px 52px" }}>
+                <p
+                  style={{
+                    fontSize: "13px",
+                    color: "#6D7175",
+                    margin: "0 0 16px 0",
+                  }}
+                >
+                  {t("dashboard.testPopupDescription")}
+                </p>
+                <s-button
+                  variant="primary"
+                  loading={isMarkingTested ? "true" : undefined}
+                  onClick={() => {
+                    window.open(`https://${shopDomain}`, "_blank");
+                    fetcher.submit(
+                      {
+                        _action: "markTested",
+                        settings: JSON.stringify(settings),
+                      },
+                      { method: "POST" },
+                    );
+                  }}
+                >
+                  {t("dashboard.testNow")}
+                </s-button>
+              </div>
+            )}
+          </div>
+        </div>
+      </s-section>
+
+      <s-section>
+        {/* Overview Section */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "16px",
+          }}
+        >
+          <h2 style={{ fontSize: "16px", fontWeight: "600", margin: 0 }}>
+            {t("dashboard.overview")}{" "}
+          </h2>
+          <div style={{ width: "240px" }}>
+            <DateRangePicker value={dateRange} onChange={setDateRange} />
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: "16px",
+          }}
+        >
+          <div
+            style={{
+              background: "#F6F6F7",
+              padding: "24px",
+              borderRadius: "12px",
+              textAlign: "center",
+            }}
+          >
+            <p
               style={{
-                fontWeight: "normal",
-                color: "#6D7175",
-                fontSize: "14px",
-                marginLeft: "8px",
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "#202223",
+                marginBottom: "8px",
               }}
             >
-              ({activeLabel})
+              {t("dashboard.totalVerification")}
+            </p>
+            <span
+              style={{ fontSize: "48px", fontWeight: "700", color: "#202223" }}
+            >
+              {analyticsFetcher.state !== "idle" ? "…" : (stats?.total ?? 0)}
             </span>
-          )}
-        </h2>
-        <div style={{ width: "240px" }}>
-          <DateRangePicker value={dateRange} onChange={setDateRange} />
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: "16px",
-          marginBottom: "32px",
-        }}
-      >
-        <div
-          style={{
-            background: "#F6F6F7",
-            padding: "24px",
-            borderRadius: "12px",
-            textAlign: "center",
-          }}
-        >
-          <p
+          </div>
+          <div
             style={{
-              fontSize: "12px",
-              fontWeight: "600",
-              color: "#202223",
-              marginBottom: "8px",
+              background: "#F6F6F7",
+              padding: "24px",
+              borderRadius: "12px",
+              textAlign: "center",
             }}
           >
-            {t("dashboard.totalVerification")}
-          </p>
-          <span
-            style={{ fontSize: "48px", fontWeight: "700", color: "#202223" }}
-          >
-            {analyticsFetcher.state !== "idle" ? "…" : (stats?.total ?? 0)}
-          </span>
-        </div>
-        <div
-          style={{
-            background: "#F6F6F7",
-            padding: "24px",
-            borderRadius: "12px",
-            textAlign: "center",
-          }}
-        >
-          <p
+            <p
+              style={{
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "#202223",
+                marginBottom: "8px",
+              }}
+            >
+              {t("dashboard.verified")}
+            </p>
+            <span
+              style={{ fontSize: "48px", fontWeight: "700", color: "#202223" }}
+            >
+              {analyticsFetcher.state !== "idle" ? "…" : (stats?.verified ?? 0)}
+            </span>
+          </div>
+          <div
             style={{
-              fontSize: "12px",
-              fontWeight: "600",
-              color: "#202223",
-              marginBottom: "8px",
+              background: "#F6F6F7",
+              padding: "24px",
+              borderRadius: "12px",
+              textAlign: "center",
             }}
           >
-            {t("dashboard.verified")}
-          </p>
-          <span
-            style={{ fontSize: "48px", fontWeight: "700", color: "#202223" }}
-          >
-            {analyticsFetcher.state !== "idle" ? "…" : (stats?.verified ?? 0)}
-          </span>
+            <p
+              style={{
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "#202223",
+                marginBottom: "8px",
+              }}
+            >
+              {t("dashboard.unverified")}
+            </p>
+            <span
+              style={{ fontSize: "48px", fontWeight: "700", color: "#202223" }}
+            >
+              {analyticsFetcher.state !== "idle"
+                ? "…"
+                : (stats?.unverified ?? 0)}
+            </span>
+          </div>
         </div>
-        <div
-          style={{
-            background: "#F6F6F7",
-            padding: "24px",
-            borderRadius: "12px",
-            textAlign: "center",
-          }}
-        >
-          <p
-            style={{
-              fontSize: "12px",
-              fontWeight: "600",
-              color: "#202223",
-              marginBottom: "8px",
-            }}
-          >
-            {t("dashboard.unverified")}
-          </p>
-          <span
-            style={{ fontSize: "48px", fontWeight: "700", color: "#202223" }}
-          >
-            {analyticsFetcher.state !== "idle" ? "…" : (stats?.unverified ?? 0)}
-          </span>
-        </div>
-      </div>
-
+      </s-section>
       {/* Support Resources Grid */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr 1fr",
           gap: "16px",
-          marginBottom: "32px",
+          marginBottom: "18px",
         }}
       >
         <div
@@ -814,13 +809,13 @@ export default function Dashboard() {
       </div>
 
       {/* FAQ Section */}
-      <Card title={t("dashboard.faq")}>
+      <s-section>
+        <s-text>{t("dashboard.faq")}</s-text>
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             gap: "12px",
-            marginTop: "16px",
           }}
         >
           {faqData.map((item, i) => (
@@ -887,7 +882,7 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
-      </Card>
+      </s-section>
     </s-page>
   );
 }
