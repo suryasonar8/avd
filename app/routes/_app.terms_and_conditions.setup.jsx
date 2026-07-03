@@ -46,7 +46,7 @@ export const action = async ({ request }) => {
       shopId,
       "avd",
       "settings",
-      JSON.stringify(newSettings)
+      JSON.stringify(newSettings),
     );
 
     return { success: true };
@@ -72,10 +72,13 @@ export const action = async ({ request }) => {
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function TermsAndConditionsSetup() {
   const navigate = useNavigate();
-  const { termsSettings: initialTermsSettings, globalSettings: initialGlobalSettings } = useLoaderData();
+  const {
+    termsSettings: initialTermsSettings,
+    globalSettings: initialGlobalSettings,
+  } = useLoaderData();
   const [termsSettings, setTermsSettings] = useState(initialTermsSettings);
   const [globalSettings, setGlobalSettings] = useState(
-    initialGlobalSettings || { showBrandMark: true }
+    initialGlobalSettings || { showBrandMark: true },
   );
 
   // Sync global settings when it changes from the server
@@ -88,10 +91,14 @@ export default function TermsAndConditionsSetup() {
   const [activeTab, setActiveTab] = useState("condition");
   const { t } = useTranslation();
 
-  const isDirty = JSON.stringify(termsSettings) !== JSON.stringify(initialTermsSettings);
+  const isDirty =
+    JSON.stringify(termsSettings) !== JSON.stringify(initialTermsSettings);
 
   const handleSave = () => {
-    fetcher.submit({ termsSettings: JSON.stringify(termsSettings) }, { method: "post" });
+    fetcher.submit(
+      { termsSettings: JSON.stringify(termsSettings) },
+      { method: "post" },
+    );
   };
 
   const handleDiscard = () => {
@@ -215,9 +222,15 @@ export default function TermsAndConditionsSetup() {
           }}
         >
           {activeTab === "condition" ? (
-            <ConditionSettings termsSettings={termsSettings} setTermsSettings={setTermsSettings} />
+            <ConditionSettings
+              termsSettings={termsSettings}
+              setTermsSettings={setTermsSettings}
+            />
           ) : (
-            <CheckboxSettings termsSettings={termsSettings} setTermsSettings={setTermsSettings} />
+            <CheckboxSettings
+              termsSettings={termsSettings}
+              setTermsSettings={setTermsSettings}
+            />
           )}
         </div>
 

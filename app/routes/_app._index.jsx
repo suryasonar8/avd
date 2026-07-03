@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import { useLoaderData, useFetcher } from "react-router";
+import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { getAppEmbedStatus } from "../utils/theme.server";
 import { PopupService } from "../services/popup.service";
 import { AnalyticsService } from "../services/analytics.service";
 import { ShopService } from "../services/shop.service";
 import DateRangePicker from "../components/DateRangePicker";
+import TurnOffModal from "../components/TurnOffModal";
 import { useTranslation } from "../context/TranslationContext";
 import dayjs from "dayjs";
 import { useIsMounted } from "../hooks/useIsMounted";
+import { AppEmbedIcon, AppsIcon } from "../components/store-verification/Icons";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -91,6 +94,7 @@ export default function Dashboard() {
   const fetcher = useFetcher();
   const analyticsFetcher = useFetcher();
   const { t } = useTranslation();
+  const shopify = useAppBridge();
 
   // Default date range: last 7 days
   const defaultStartDate = dayjs().subtract(6, "day").format("YYYY-MM-DD");
@@ -226,7 +230,9 @@ export default function Dashboard() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span style={{ fontSize: "20px" }}>🔲</span>
+            <span style={{ display: "flex", color: "#202223" }}>
+              <AppEmbedIcon />
+            </span>
             <span style={{ fontSize: "14px", fontWeight: "500" }}>
               {t("dashboard.enableAppEmbed")}
             </span>
@@ -272,7 +278,9 @@ export default function Dashboard() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span style={{ fontSize: "20px" }}>🔳</span>
+            <span style={{ display: "flex", color: "#202223" }}>
+              <AppsIcon />
+            </span>
             <span style={{ fontSize: "14px", fontWeight: "500" }}>
               {t("dashboard.appStatus")}
             </span>
@@ -294,13 +302,17 @@ export default function Dashboard() {
               variant="secondary"
               loading={fetcher.state !== "idle" ? "true" : undefined}
               onClick={() => {
-                fetcher.submit(
-                  {
-                    appStatus: (!currentStatus).toString(),
-                    settings: JSON.stringify(settings),
-                  },
-                  { method: "POST" },
-                );
+                if (currentStatus) {
+                  shopify.modal.show("turn-off-modal");
+                } else {
+                  fetcher.submit(
+                    {
+                      appStatus: "true",
+                      settings: JSON.stringify(settings),
+                    },
+                    { method: "POST" },
+                  );
+                }
               }}
             >
               {currentStatus
@@ -883,6 +895,18 @@ export default function Dashboard() {
           ))}
         </div>
       </s-section>
+
+      <TurnOffModal
+        onConfirm={() => {
+          fetcher.submit(
+            {
+              appStatus: "false",
+              settings: JSON.stringify(settings),
+            },
+            { method: "POST" },
+          );
+        }}
+      />
     </s-page>
   );
 }

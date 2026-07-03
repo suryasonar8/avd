@@ -75,8 +75,6 @@ export function PopupEditor({
     return sanitize(config) !== sanitize(initialConfig);
   }, [config, initialConfig]);
 
-
-
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("saved") === "true") {
