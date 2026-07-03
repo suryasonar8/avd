@@ -13,6 +13,8 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 import { Badge } from "./Badge";
+import { usePlan } from "../context/PlanContext";
+import { useNavigate } from "react-router";
 
 const useClickOutside = (ref, handler) => {
   useEffect(() => {
@@ -41,13 +43,17 @@ const PlanBadge = ({ show, plan }) => {
         display: "flex",
       }}
     >
-      <div style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.05)", borderRadius: "20px" }}>
+      <div
+        style={{
+          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+          borderRadius: "20px",
+        }}
+      >
         <Badge text={text} type={plan} />
       </div>
     </div>
   );
 };
-
 
 const FontFamilyPicker = ({ locked }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,6 +61,7 @@ const FontFamilyPicker = ({ locked }) => {
   const { $el } = useEditorState();
   const [currentFont, setCurrentFont] = useState("Arial");
   const containerRef = useRef(null);
+  const navigate = useNavigate();
   useClickOutside(containerRef, () => setIsOpen(false));
 
   const fonts = ["Arial", "Fira Sans", "Poppins", "Inter"];
@@ -68,9 +75,18 @@ const FontFamilyPicker = ({ locked }) => {
     setIsOpen(false);
   };
 
+  const handleClick = (e) => {
+    if (locked) {
+      e.preventDefault();
+      navigate("/pricing");
+    } else {
+      setIsOpen(!isOpen);
+    }
+  };
+
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       style={{ position: "relative" }}
       onMouseEnter={() => locked && setShowBadge(true)}
       onMouseLeave={() => locked && setShowBadge(false)}
@@ -81,7 +97,7 @@ const FontFamilyPicker = ({ locked }) => {
         className="rsw-btn"
         title="Font family"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => !locked && setIsOpen(!isOpen)}
+        onClick={handleClick}
         style={{ padding: "0 6px", gap: "2px", opacity: locked ? 0.6 : 1 }}
       >
         <span>A</span>
@@ -116,6 +132,7 @@ const ColorPickerButton = ({ locked }) => {
   const { $el } = useEditorState();
   const containerRef = useRef(null);
   const [savedSelection, setSavedSelection] = useState(null);
+  const navigate = useNavigate();
   useClickOutside(containerRef, () => setIsOpen(false));
 
   const applyColor = (newColor) => {
@@ -131,8 +148,12 @@ const ColorPickerButton = ({ locked }) => {
     }
   };
 
-  const toggleOpen = () => {
-    if (locked) return;
+  const toggleOpen = (e) => {
+    if (locked) {
+      e.preventDefault();
+      navigate("/pricing");
+      return;
+    }
     if (!isOpen) {
       const sel = window.getSelection();
       if (sel.rangeCount > 0) {
@@ -143,8 +164,8 @@ const ColorPickerButton = ({ locked }) => {
   };
 
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       style={{ position: "relative" }}
       onMouseEnter={() => locked && setShowBadge(true)}
       onMouseLeave={() => locked && setShowBadge(false)}
@@ -213,6 +234,7 @@ const FontSizePicker = ({ locked }) => {
   const { $el } = useEditorState();
   const [currentSize, setCurrentSize] = useState("16");
   const containerRef = useRef(null);
+  const navigate = useNavigate();
   useClickOutside(containerRef, () => setIsOpen(false));
 
   const sizes = [
@@ -234,9 +256,18 @@ const FontSizePicker = ({ locked }) => {
     setIsOpen(false);
   };
 
+  const handleClick = (e) => {
+    if (locked) {
+      e.preventDefault();
+      navigate("/pricing");
+    } else {
+      setIsOpen(!isOpen);
+    }
+  };
+
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       style={{ position: "relative" }}
       onMouseEnter={() => locked && setShowBadge(true)}
       onMouseLeave={() => locked && setShowBadge(false)}
@@ -247,7 +278,7 @@ const FontSizePicker = ({ locked }) => {
         className="rsw-btn"
         title="Font size"
         onMouseDown={(e) => e.preventDefault()}
-        onClick={() => !locked && setIsOpen(!isOpen)}
+        onClick={handleClick}
         style={{ padding: "0 6px", gap: "2px", opacity: locked ? 0.6 : 1 }}
       >
         <span>{currentSize}</span>
@@ -297,9 +328,12 @@ const BtnClearFormat = () => {
   );
 };
 
-const EditorToolbar = ({ planLevel = "free" }) => {
-  const basicLocked = planLevel === "free";
-  const premiumLocked = planLevel === "free" || planLevel === "basic";
+const EditorToolbar = () => {
+  const { plan } = usePlan();
+  const currentPlan = (plan || "FREE").toLowerCase();
+
+  const basicLocked = currentPlan === "free";
+  const premiumLocked = currentPlan === "free" || currentPlan === "basic";
 
   return (
     <Toolbar>
@@ -318,7 +352,7 @@ const EditorToolbar = ({ planLevel = "free" }) => {
   );
 };
 
-export const RichTextEditor = ({ label, value, onChange, planLevel = "free" }) => (
+export const RichTextEditor = ({ label, value, onChange }) => (
   <div style={{ marginBottom: "16px" }}>
     <style>{`
       .rsw-editor {
@@ -411,7 +445,7 @@ export const RichTextEditor = ({ label, value, onChange, planLevel = "free" }) =
       }
 
       /* ── Color picker size ── */
-      .react-colorful {
+      .rsw-popup .react-colorful {
         width: 200px !important;
         height: 160px !important;
       }
@@ -430,7 +464,7 @@ export const RichTextEditor = ({ label, value, onChange, planLevel = "free" }) =
     )}
     <EditorProvider>
       <Editor value={value} onChange={(e) => onChange(e.target.value)}>
-        <EditorToolbar planLevel={planLevel} />
+        <EditorToolbar />
       </Editor>
     </EditorProvider>
   </div>
