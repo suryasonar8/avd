@@ -399,7 +399,20 @@
       "a3": "Absolut. Sie können jederzeit zwischen den Plänen wechseln. Bei einer Herabstufung kann der nicht genutzte Anteil Ihres Abrechnungszeitraums von Shopify gutgeschrieben werden.",
       "q4": "4. Werden meine Einstellungen gespeichert, wenn ich die App deinstalliere?",
       "a4": "Wenn Sie die App deinstallieren, werden Ihre Einstellungen nicht beibehalten. Wir empfehlen, auf den kostenlosen Plan herabzustufen, anstatt zu deinstallieren, wenn Sie planen, in Zukunft zurückzukehren."
-    }
+    },
+    "basicFeatures": [
+      "1 anpassbares Pop-up: Text, Größe, Farbe",
+      "Pop-up auf bestimmten Seiten anzeigen",
+      "1 übersetzte Sprache",
+      "Info-Banner",
+      "24/7 Live-Chat-Support"
+    ],
+    "premiumFeatures": [
+      "Unbegrenzte Pop-ups mit erweiterter Anpassung",
+      "Unbegrenzte übersetzte Sprachen",
+      "Allgemeine Geschäftsbedingungen: Produkt- & Warenkorbseite",
+      "24/7 Live-Chat-Support (VIP-Priorität)"
+    ]
   },
   "settings": {
     "pageTitle": "Einstellungen",

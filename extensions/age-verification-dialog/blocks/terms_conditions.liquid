@@ -8,7 +8,15 @@
   {% endif %}
 {% endif %}
 
-{% if settings.enabled %}
+{% assign global_settings = shop.metafields.avd.settings.value %}
+{% assign current_plan = global_settings.plan | default: 'basic' %}
+
+{% assign has_access = false %}
+{% if current_plan == 'premium' %}
+  {% assign has_access = true %}
+{% endif %}
+
+{% if settings.enabled and has_access %}
   {% assign show_by_page = false %}
   {% assign current_page = request.page_type | default: template.name %}
   
@@ -38,7 +46,6 @@
   {% endif %}
 
   {% if show_by_page and show_by_trigger %}
-    {% assign global_settings = shop.metafields.avd.settings.value %}
     {% assign show_brandmark = true %}
     {% if global_settings.showBrandMark == false or global_settings.showBrandMark == 'false' %}
       {% assign show_brandmark = false %}

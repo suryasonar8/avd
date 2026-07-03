@@ -399,7 +399,20 @@
       "a3": "Por supuesto. Puede cambiar entre planes en cualquier momento. Al bajar de plan, Shopify puede acreditar la porción no utilizada de su ciclo de facturación.",
       "q4": "4. ¿Se guardarán mis configuraciones si desinstalo la aplicación?",
       "a4": "Si desinstala la aplicación, sus configuraciones no se conservarán. Recomendamos cambiar al plan gratuito en lugar de desinstalar si planea volver en el futuro."
-    }
+    },
+    "basicFeatures": [
+      "1 pop-up personalizable: texto, tamaño, color",
+      "Mostrar un pop-up en páginas específicas",
+      "1 idioma traducido",
+      "Banner de información",
+      "Soporte por chat en vivo 24/7"
+    ],
+    "premiumFeatures": [
+      "Pop-ups ilimitados con personalización avanzada",
+      "Idiomas traducidos ilimitados",
+      "Términos y condiciones: página de producto y carrito",
+      "Soporte por chat en vivo 24/7 (prioridad VIP)"
+    ]
   },
   "settings": {
     "pageTitle": "Configuración",

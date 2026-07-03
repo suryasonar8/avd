@@ -3,6 +3,7 @@ import { authenticate } from "../shopify.server";
 import { TermsService } from "../services/terms.service";
 import PricingBanner from "../components/PricingBanner";
 import { useTranslation } from "../context/TranslationContext";
+import { usePlan } from "../context/PlanContext";
 
 export const loader = async ({ request }) => {
   const { session } = await authenticate.admin(request);
@@ -17,8 +18,11 @@ export default function TermsAndConditions() {
   const navigate = useNavigate();
   const { settings } = useLoaderData();
   const { t } = useTranslation();
+  const { canAccess } = usePlan();
 
-  const isEnabled = settings?.enabled || false;
+  const isEnabled = canAccess("terms.condition.status")
+    ? settings?.enabled || false
+    : false;
 
   return (
     <s-page>

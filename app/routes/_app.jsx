@@ -3,7 +3,7 @@ import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate } from "../shopify.server";
 import { PlanProvider } from "../context/PlanContext";
 import { TranslationProvider } from "../context/TranslationContext";
-import { getShopPlan, buildAccessMap } from "../services/plan.service";
+import { getShopPlan, buildAccessMap, PlanService } from "../services/plan.service";
 import { loadTranslations } from "../i18n/i18n";
 import { useTranslation } from "../context/TranslationContext";
 import { ShopService } from "../services/shop.service";
@@ -35,14 +35,33 @@ export const loader = async ({ request }) => {
   try {
     const shopData = await ShopService.getMetafield(admin, "avd", "settings");
     const metafieldValue = shopData?.metafield?.value;
+    let settings = {};
     if (metafieldValue) {
-      const settings = JSON.parse(metafieldValue);
+      settings = JSON.parse(metafieldValue);
       console.log("[i18n] Loaded settings from metafield:", settings);
       if (settings.adminLanguage) {
         locale = LANGUAGE_MAP[settings.adminLanguage] || "en";
       }
     }
     console.log("[i18n] Loader resolved locale:", locale);
+
+    // Sync plan to global settings for theme extensions
+    if (settings.plan !== plan) {
+      const newSettings = { ...settings, plan };
+      const shopId = await ShopService.getShopId(admin);
+      await ShopService.updateMetafield(
+        admin,
+        shopId,
+        "avd",
+        "settings",
+        JSON.stringify(newSettings)
+      );
+      console.log("[plan] Synced plan to avd.settings:", plan);
+
+      // Enforce plan limits on all gated features
+      await PlanService.enforcePlanLimits(admin, session.shop);
+      console.log("[plan] Enforced plan limits for:", plan);
+    }
   } catch (e) {
     // Fall back to English if settings can't be loaded
     console.warn("[i18n] Could not load admin language setting:", e.message);

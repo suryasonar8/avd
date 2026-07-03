@@ -399,7 +399,20 @@
       "a3": "Absolutely. You can switch between plans at any time. When you downgrade, any unused portion of your billing cycle may be credited back to you by Shopify.",
       "q4": "4. Will my settings be saved if I uninstall the app?",
       "a4": "If you uninstall the app, your settings will not be preserved. We recommend downgrading to the free plan instead of uninstalling if you plan to return in the future."
-    }
+    },
+    "basicFeatures": [
+      "1 customizable pop-up: text, size, color",
+      "Show a pop-up on specific pages",
+      "1 translated language",
+      "Info banner",
+      "24/7 Live chat support"
+    ],
+    "premiumFeatures": [
+      "Unlimited pop-ups with advanced customization",
+      "Unlimited translated languages",
+      "Terms & conditions: product & cart page",
+      "24/7 Live chat support (VIP priority)"
+    ]
   },
   "settings": {
     "pageTitle": "Settings",

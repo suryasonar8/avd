@@ -399,7 +399,20 @@
       "a3": "Assolutamente. Puoi passare da un piano all'altro in qualsiasi momento. In caso di downgrade, la parte non utilizzata del ciclo di fatturazione potrebbe essere accreditata da Shopify.",
       "q4": "4. Le mie impostazioni verranno salvate se disinstallo l'app?",
       "a4": "Se disinstalli l'app, le tue impostazioni non verranno conservate. Ti consigliamo di passare al piano gratuito invece di disinstallare se prevedi di tornare in futuro."
-    }
+    },
+    "basicFeatures": [
+      "1 pop-up personalizzabile: testo, dimensioni, colore",
+      "Mostra un pop-up su pagine specifiche",
+      "1 lingua tradotta",
+      "Banner informativo",
+      "Assistenza via chat dal vivo 24/7"
+    ],
+    "premiumFeatures": [
+      "Pop-up illimitati con personalizzazione avanzata",
+      "Lingue tradotte illimitate",
+      "Termini e condizioni: pagina del prodotto e del carrello",
+      "Assistenza via chat dal vivo 24/7 (priorità VIP)"
+    ]
   },
   "settings": {
     "pageTitle": "Impostazioni",

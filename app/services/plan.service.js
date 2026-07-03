@@ -3,6 +3,9 @@ import { PLANS, FEATURES, LIMITS, PLAN_TYPES } from "../constants/features";
 import { DEFAULT_STORE_CONFIG } from "../constants/store-verification";
 import { DEFAULT_CHECKOUT_CONFIG } from "../constants/checkout-verification";
 import { DEFAULT_TERMS_CONFIG } from "../constants/terms-and-conditions";
+import { PopupService } from "./popup.service";
+import { CheckoutBannerService } from "./checkout-banner.service";
+import { TermsService } from "./terms.service";
 
 /**
  * Get the current plan for a shop.
@@ -181,5 +184,46 @@ export const PlanService = {
         enforce("terms.checkbox.error", !!sanitized.errorMessage && sanitized.errorMessage !== DEFAULT_TERMS_CONFIG.errorMessage, () => sanitized.errorMessage = DEFAULT_TERMS_CONFIG.errorMessage);
 
         return { isValid: true, errors: [], sanitized };
+    },
+
+    /**
+     * Enforce plan limits on all gated features.
+     * Sanitizes and re-saves configurations if they exceed current plan limits.
+     */
+    async enforcePlanLimits(admin, shop) {
+        // 1. Popups
+        const activePopups = await db.popup.findMany({ where: { shop, isActive: true } });
+        for (const popup of activePopups) {
+            const config = JSON.parse(popup.config);
+            const { sanitized } = await this.validatePopupConfig(shop, config);
+            if (JSON.stringify(config) !== JSON.stringify(sanitized)) {
+                await PopupService.savePopup(shop, popup.id, sanitized);
+                const updatedPopup = await db.popup.findUnique({
+                    where: { id: popup.id },
+                    include: { translations: true },
+                });
+                await PopupService.syncToShopify(admin, shop, updatedPopup);
+            }
+        }
+
+        // 2. Checkout Banner
+        const checkoutBanner = await CheckoutBannerService.getBanner(shop);
+        if (checkoutBanner) {
+            const { id, ...configOnly } = checkoutBanner;
+            const { sanitized } = await this.validateCheckoutConfig(shop, configOnly);
+            if (JSON.stringify(configOnly) !== JSON.stringify(sanitized)) {
+                await CheckoutBannerService.saveBanner(admin, shop, sanitized);
+            }
+        }
+
+        // 3. Terms & Conditions
+        const termsSettings = await TermsService.getSettings(shop);
+        if (termsSettings) {
+            const { id, ...configOnly } = termsSettings;
+            const { sanitized } = await this.validateTermsConfig(shop, configOnly);
+            if (JSON.stringify(configOnly) !== JSON.stringify(sanitized)) {
+                await TermsService.saveSettings(admin, shop, sanitized);
+            }
+        }
     }
 };

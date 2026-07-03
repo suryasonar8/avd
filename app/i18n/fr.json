@@ -399,7 +399,20 @@
       "a3": "Absolument. Vous pouvez changer de forfait à tout moment. Lors d'une rétrogradation, la portion non utilisée de votre cycle de facturation peut être créditée par Shopify.",
       "q4": "4. Mes paramètres seront-ils sauvegardés si je désinstalle l'application ?",
       "a4": "Si vous désinstallez l'application, vos paramètres ne seront pas conservés. Nous recommandons de rétrograder vers le forfait gratuit plutôt que de désinstaller si vous envisagez de revenir à l'avenir."
-    }
+    },
+    "basicFeatures": [
+      "1 pop-up personnalisable : texte, taille, couleur",
+      "Afficher un pop-up sur des pages spécifiques",
+      "1 langue traduite",
+      "Bannière d'information",
+      "Assistance par chat en direct 24h/24 et 7j/7"
+    ],
+    "premiumFeatures": [
+      "Pop-ups illimités avec personnalisation avancée",
+      "Langues traduites illimitées",
+      "Conditions générales : page produit et panier",
+      "Assistance par chat en direct 24h/24 et 7j/7 (priorité VIP)"
+    ]
   },
   "settings": {
     "pageTitle": "Paramètres",
