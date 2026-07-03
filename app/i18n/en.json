@@ -181,7 +181,7 @@
       "birthdateEntry": "Birthdate entry",
       "verifyAge": "Verify age",
       "dateOrder": "Date order",
-      "dateOrderHelpText": "This format displays the date as May-01-2024.",
+      "dateOrderHelpText": "This format displays the date as {{date}}.",
       "condition": "Condition",
       "displayPages": "Display page(s)",
       "addCustomUrl": "Add custom URL",

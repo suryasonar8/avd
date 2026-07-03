@@ -181,7 +181,7 @@
       "birthdateEntry": "जन्मतिथि प्रविष्टि",
       "verifyAge": "आयु सत्यापित करें",
       "dateOrder": "तिथि क्रम",
-      "dateOrderHelpText": "यह प्रारूप तिथि को मई-01-2024 के रूप में प्रदर्शित करता है।",
+      "dateOrderHelpText": "यह प्रारूप तिथि को {{date}} के रूप में प्रदर्शित करता है।",
       "condition": "शर्त",
       "displayPages": "प्रदर्शन पेज",
       "addCustomUrl": "कस्टम URL जोड़ें",

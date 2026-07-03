@@ -181,7 +181,7 @@
       "birthdateEntry": "Geburtsdatumseingabe",
       "verifyAge": "Alter verifizieren",
       "dateOrder": "Datumsreihenfolge",
-      "dateOrderHelpText": "Dieses Format zeigt das Datum als Mai-01-2024 an.",
+      "dateOrderHelpText": "Dieses Format zeigt das Datum als {{date}} an.",
       "condition": "Bedingung",
       "displayPages": "Anzeigeseite(n)",
       "addCustomUrl": "Benutzerdefinierte URL hinzufügen",

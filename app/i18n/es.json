@@ -181,7 +181,7 @@
       "birthdateEntry": "Entrada de fecha de nacimiento",
       "verifyAge": "Verificar edad",
       "dateOrder": "Orden de fecha",
-      "dateOrderHelpText": "Este formato muestra la fecha como May-01-2024.",
+      "dateOrderHelpText": "Este formato muestra la fecha como {{date}}.",
       "condition": "Condición",
       "displayPages": "Página(s) de visualización",
       "addCustomUrl": "Agregar URL personalizada",

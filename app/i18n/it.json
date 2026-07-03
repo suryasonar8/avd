@@ -181,7 +181,7 @@
       "birthdateEntry": "Inserimento data di nascita",
       "verifyAge": "Verifica età",
       "dateOrder": "Ordine della data",
-      "dateOrderHelpText": "Questo formato visualizza la data come Mag-01-2024.",
+      "dateOrderHelpText": "Questo formato visualizza la data come {{date}}.",
       "condition": "Condizione",
       "displayPages": "Pagina/e di visualizzazione",
       "addCustomUrl": "Aggiungi URL personalizzato",

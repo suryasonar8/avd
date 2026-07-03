@@ -8,6 +8,22 @@ export function InfoTab({ config, setConfig }) {
   const { canAccess } = usePlan();
   const { t } = useTranslation();
 
+  const getExampleDate = (order) => {
+    let month = t("months.may");
+    if (month === "Maggio") month = "Mag";
+    else if (month === "Mayo") month = "May";
+
+    switch (order) {
+      case "DD,MM,YY":
+        return `01-${month}-2024`;
+      case "YY,MM,DD":
+        return `2024-${month}-01`;
+      case "MM,DD,YY":
+      default:
+        return `${month}-01-2024`;
+    }
+  };
+
   return (
     <>
       <div
@@ -163,7 +179,9 @@ export function InfoTab({ config, setConfig }) {
                   marginTop: "4px",
                 }}
               >
-                {t("popupEditor.infoTab.dateOrderHelpText")}
+                {t("popupEditor.infoTab.dateOrderHelpText", {
+                  date: getExampleDate(config.dateOrder),
+                })}
               </p>
             </div>
           </>
@@ -209,10 +227,7 @@ export function InfoTab({ config, setConfig }) {
           >
             {t("popupEditor.infoTab.displayPages")}
           </label>
-          <DisplayPagesChoiceList
-            config={config}
-            setConfig={setConfig}
-          />
+          <DisplayPagesChoiceList config={config} setConfig={setConfig} />
         </div>
 
         <div>

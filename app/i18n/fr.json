@@ -181,7 +181,7 @@
       "birthdateEntry": "Saisie de la date de naissance",
       "verifyAge": "Vérifier l'âge",
       "dateOrder": "Ordre de la date",
-      "dateOrderHelpText": "Ce format affiche la date comme Mai-01-2024.",
+      "dateOrderHelpText": "Ce format affiche la date comme {{date}}.",
       "condition": "Condition",
       "displayPages": "Page(s) d'affichage",
       "addCustomUrl": "Ajouter une URL personnalisée",
