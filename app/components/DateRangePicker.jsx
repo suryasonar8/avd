@@ -3,10 +3,8 @@ import { useState, useEffect, useMemo } from "react";
 import { DateRangePicker as RSuiteDateRangePicker } from "rsuite";
 import dayjs from "dayjs";
 import { useTranslation } from "../context/TranslationContext";
-import { useIsMounted } from "../hooks/useIsMounted";
 
 export default function DateRangePicker({ value, onChange }) {
-  const mounted = useIsMounted();
   const [isMobile, setIsMobile] = useState(false);
   const { t } = useTranslation();
 
@@ -86,20 +84,6 @@ export default function DateRangePicker({ value, onChange }) {
       endDate: dayjs(end).format("YYYY-MM-DD"),
     });
   };
-
-  if (!mounted) {
-    return (
-      <div
-        style={{
-          width: "100%",
-          minWidth: 0,
-          height: "36px",
-          background: "#f4f6f8",
-          borderRadius: "4px",
-        }}
-      />
-    );
-  }
 
   return (
     <div style={{ width: "100%", minWidth: 0 }}>

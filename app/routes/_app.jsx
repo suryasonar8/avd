@@ -7,6 +7,7 @@ import { getShopPlan, buildAccessMap } from "../services/plan.service";
 import { loadTranslations } from "../i18n/i18n";
 import { useTranslation } from "../context/TranslationContext";
 import { ShopService } from "../services/shop.service";
+import { useState, useEffect } from "react";
 
 const LANGUAGE_MAP = {
   English: "en",
@@ -74,11 +75,17 @@ function AppNav() {
 
 export default function App() {
   const { plan, access, translations, locale } = useLoaderData();
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
   return (
     <TranslationProvider translations={translations} locale={locale}>
       <AppNav />
       <PlanProvider plan={plan} access={access}>
-        <Outlet />
+        {isMounted ? <Outlet /> : null}
       </PlanProvider>
     </TranslationProvider>
   );

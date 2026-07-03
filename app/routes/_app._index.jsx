@@ -10,7 +10,6 @@ import DateRangePicker from "../components/DateRangePicker";
 import TurnOffModal from "../components/TurnOffModal";
 import { useTranslation } from "../context/TranslationContext";
 import dayjs from "dayjs";
-import { useIsMounted } from "../hooks/useIsMounted";
 import { AppEmbedIcon, AppsIcon } from "../components/store-verification/Icons";
 
 export const loader = async ({ request }) => {
@@ -78,7 +77,6 @@ export const action = async ({ request }) => {
 };
 
 export default function Dashboard() {
-  const isMounted = useIsMounted();
   const {
     shopName,
     shopDomain,
@@ -200,7 +198,7 @@ export default function Dashboard() {
   const appEmbedUrl = `https://admin.shopify.com/store/${storeName}/themes/${themeId}/editor?context=apps&appEmbed=e03e0948951b94a7b424d1a55634d891%2Fage-verification-dialog`;
 
   return (
-    <s-page style={{ opacity: isMounted ? 1 : 0 }}>
+    <s-page>
       {/* Greeting Section */}
       <div style={{ marginBottom: "24px" }}>
         <h1

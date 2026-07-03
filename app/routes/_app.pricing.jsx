@@ -8,7 +8,6 @@ import {
   PRICING_FAQ_KEYS,
 } from "../constants/pricing";
 import { PLAN_TYPES } from "../constants/features";
-import { useIsMounted } from "../hooks/useIsMounted";
 import DiscountModal from "../components/DiscountModal";
 
 export const loader = async ({ request }) => {
@@ -17,7 +16,6 @@ export const loader = async ({ request }) => {
 };
 
 export default function PlansPage() {
-  const isMounted = useIsMounted();
   const [billing, setBilling] = useState("yearly");
   const [openFaq, setOpenFaq] = useState(null);
   const [showCompare, setShowCompare] = useState(false);
@@ -27,10 +25,6 @@ export default function PlansPage() {
   const [hoveredPremiumBtn, setHoveredPremiumBtn] = useState(false);
   const { t } = useTranslation();
   const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
-
-  if (!isMounted) {
-    return null;
-  }
 
   const basicMonthly = billing === "yearly" ? 2.99 : 3.99;
   const premiumMonthly = billing === "yearly" ? 6.75 : 8.99;

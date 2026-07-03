@@ -22,7 +22,6 @@ import { Badge } from "../components/Badge";
 import { usePlan } from "../context/PlanContext";
 import { useTranslation } from "../context/TranslationContext";
 import { CustomSaveBar } from "../components/CustomSaveBar";
-import { useIsMounted } from "../hooks/useIsMounted";
 
 import { MONTH_NAMES } from "../constants/translation";
 
@@ -146,7 +145,6 @@ export default function TranslationSetupPage() {
   const submit = useSubmit();
   const shopify = useAppBridge();
   const { t } = useTranslation();
-  const isClient = useIsMounted();
   const navigation = useNavigation();
 
   const [searchParams] = useSearchParams();
@@ -298,8 +296,6 @@ export default function TranslationSetupPage() {
       { method: "POST" },
     );
   };
-
-  if (!isClient) return null;
 
   return (
     <div
