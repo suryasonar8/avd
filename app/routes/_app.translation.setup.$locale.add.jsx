@@ -15,6 +15,7 @@ import {
 import { authenticate } from "../shopify.server";
 import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
+import { StoreLanguageService } from "../services/store-language.service";
 import db from "../db.server";
 import { Card } from "../components/Card";
 import { Badge } from "../components/Badge";
@@ -33,19 +34,7 @@ export const loader = async ({ request, params }) => {
   const popups = await PopupService.getPopupsForTranslation(session.shop);
 
   // 2. Fetch shop locales
-  const response = await admin.graphql(
-    `#graphql
-    query getLanguages {
-      shopLocales {
-        locale
-        name
-        published
-      }
-    }`,
-  );
-
-  const data = await response.json();
-  const shopLocales = data.data?.shopLocales || [];
+  const shopLocales = await StoreLanguageService.getStoreLanguages(admin);
   const language = shopLocales.find((lang) => lang.locale === locale);
   const currentLanguage = language?.name || locale;
   const isPublished = language?.published || false;

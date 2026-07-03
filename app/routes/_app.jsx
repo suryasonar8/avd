@@ -6,6 +6,7 @@ import { TranslationProvider } from "../context/TranslationContext";
 import { getShopPlan, buildAccessMap } from "../services/plan.service";
 import { loadTranslations } from "../i18n/i18n";
 import { useTranslation } from "../context/TranslationContext";
+import { ShopService } from "../services/shop.service";
 
 const LANGUAGE_MAP = {
   English: "en",
@@ -31,18 +32,8 @@ export const loader = async ({ request }) => {
   // Load admin language from shop settings
   let locale = "en";
   try {
-    const settingsResponse = await admin.graphql(
-      `#graphql
-      query getSettings {
-        shop {
-          metafield(namespace: "avd", key: "settings") {
-            value
-          }
-        }
-      }`,
-    );
-    const settingsData = await settingsResponse.json();
-    const metafieldValue = settingsData.data.shop.metafield?.value;
+    const shopData = await ShopService.getMetafield(admin, "avd", "settings");
+    const metafieldValue = shopData?.metafield?.value;
     if (metafieldValue) {
       const settings = JSON.parse(metafieldValue);
       console.log("[i18n] Loaded settings from metafield:", settings);

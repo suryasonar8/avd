@@ -4,22 +4,13 @@ import { authenticate } from "../shopify.server";
 import { useState, useMemo } from "react";
 import { useTranslation } from "../context/TranslationContext";
 import { CustomSaveBar } from "../components/CustomSaveBar";
+import { ShopService } from "../services/shop.service";
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
 
-  const response = await admin.graphql(
-    `#graphql
-    query getSettings {
-      shop {
-        metafield(namespace: "avd", key: "settings") {
-          value
-        }
-      }
-    }`,
-  );
-  const data = await response.json();
-  const metafieldValue = data.data.shop.metafield?.value;
+  const shop = await ShopService.getMetafield(admin, "avd", "settings");
+  const metafieldValue = shop?.metafield?.value;
 
   const settings = metafieldValue
     ? JSON.parse(metafieldValue)
@@ -40,39 +31,14 @@ export const action = async ({ request }) => {
   const settingsStr = formData.get("settings");
   const settings = JSON.parse(settingsStr);
 
-  const response = await admin.graphql(
-    `#graphql
-    mutation metafieldUpsert($metafields: [MetafieldsSetInput!]!) {
-      metafieldsSet(metafields: $metafields) {
-        metafields {
-          id
-          namespace
-          key
-          value
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }`,
-    {
-      variables: {
-        metafields: [
-          {
-            namespace: "avd",
-            key: "settings",
-            type: "json",
-            ownerId: (await (await admin.graphql(`{ shop { id } }`)).json())
-              .data.shop.id,
-            value: JSON.stringify(settings),
-          },
-        ],
-      },
-    },
+  const shopId = await ShopService.getShopId(admin);
+  const responseData = await ShopService.updateMetafield(
+    admin,
+    shopId,
+    "avd",
+    "settings",
+    JSON.stringify(settings)
   );
-
-  const responseData = await response.json();
   const errors = responseData.data?.metafieldsSet?.userErrors;
 
   return { success: !errors?.length };

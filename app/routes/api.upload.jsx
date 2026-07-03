@@ -1,4 +1,5 @@
 import { authenticate } from "../shopify.server";
+import { FileService } from "../services/file.service";
 
 export const action = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
@@ -10,75 +11,30 @@ export const action = async ({ request }) => {
     const mimeType = formData.get("mimeType");
     const filesize = formData.get("filesize");
 
-    const response = await admin.graphql(
-      `#graphql
-      mutation stagedUploadsCreate($input: [StagedUploadInput!]!) {
-        stagedUploadsCreate(input: $input) {
-          stagedTargets {
-            url
-            resourceUrl
-            parameters {
-              name
-              value
-            }
-          }
-          userErrors {
-            field
-            message
-          }
-        }
-      }`,
+    const stagedUploads = await FileService.createStagedUploads(admin, [
       {
-        variables: {
-          input: [
-            {
-              filename,
-              mimeType,
-              resource: "IMAGE",
-              fileSize: filesize,
-              httpMethod: "POST",
-            },
-          ],
-        },
+        filename,
+        mimeType,
+        resource: "IMAGE",
+        fileSize: filesize,
+        httpMethod: "POST",
       },
-    );
-
-    const responseData = await response.json();
-    return responseData.data.stagedUploadsCreate;
+    ]);
+    return stagedUploads;
   }
 
   if (intent === "create_file") {
     const stagedUploadPath = formData.get("stagedUploadPath");
     const filename = formData.get("filename");
 
-    const response = await admin.graphql(
-      `#graphql
-      mutation fileCreate($files: [FileCreateInput!]!) {
-        fileCreate(files: $files) {
-          files {
-            id
-            fileStatus
-          }
-          userErrors {
-            field
-            message
-          }
-        }
-      }`,
+    const responseData = await FileService.createFile(admin, [
       {
-        variables: {
-          files: [
-            {
-              originalSource: stagedUploadPath,
-              contentType: "IMAGE",
-              alt: filename,
-            },
-          ],
-        },
+        originalSource: stagedUploadPath,
+        contentType: "IMAGE",
+        alt: filename,
       },
-    );
+    ]);
 
-    const responseData = await response.json();
     const userErrors = responseData.data?.fileCreate?.userErrors;
 
     if (userErrors && userErrors.length > 0) {
@@ -92,57 +48,8 @@ export const action = async ({ request }) => {
     }
 
     // Polling for file readiness
-    let file = null;
-    let attempts = 0;
-    const maxAttempts = 10;
-    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-    while (attempts < maxAttempts) {
-      const pollResponse = await admin.graphql(
-        `#graphql
-        query getFile($id: ID!) {
-          node(id: $id) {
-            ... on MediaImage {
-              id
-              fileStatus
-              image {
-                url
-              }
-            }
-          }
-        }`,
-        { variables: { id: fileId } },
-      );
-
-      const pollData = await pollResponse.json();
-      file = pollData.data.node;
-
-      if (file && file.fileStatus === "READY") {
-        break;
-      }
-
-      if (file && file.fileStatus === "FAILED") {
-        return {
-          success: false,
-          errors: [{ message: "File processing failed on Shopify" }],
-        };
-      }
-
-      await delay(1000);
-      attempts++;
-    }
-
-    if (!file || file.fileStatus !== "READY") {
-      return {
-        success: false,
-        errors: [{ message: "File processing timed out" }],
-      };
-    }
-
-    return {
-      success: true,
-      file,
-    };
+    const pollResult = await FileService.pollFileStatus(admin, fileId);
+    return pollResult;
   }
 
   if (intent === "delete_file") {
@@ -151,25 +58,7 @@ export const action = async ({ request }) => {
       return { success: false, errors: [{ message: "Missing fileId" }] };
     }
 
-    const response = await admin.graphql(
-      `#graphql
-      mutation fileDelete($fileIds: [ID!]!) {
-        fileDelete(fileIds: $fileIds) {
-          deletedFileIds
-          userErrors {
-            field
-            message
-          }
-        }
-      }`,
-      {
-        variables: {
-          fileIds: [fileId],
-        },
-      },
-    );
-
-    const responseData = await response.json();
+    const responseData = await FileService.deleteFile(admin, [fileId]);
     const userErrors = responseData.data?.fileDelete?.userErrors;
 
     if (userErrors && userErrors.length > 0) {

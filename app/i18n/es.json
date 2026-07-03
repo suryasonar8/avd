@@ -14,8 +14,6 @@
     "off": "Apagado",
     "edit": "Editar",
     "uploading": "Subiendo...",
-    "addImage": "Agregar imagen",
-    "acceptsFormats": "Acepta .png, .jpg",
     "basicPlanOrHigher": "Plan Básico o superior",
     "premiumPlan": "Plan Premium",
     "unlimited": "Ilimitado",
@@ -24,7 +22,6 @@
     "savedSuccessfully": "Guardado exitosamente",
     "errorSaving": "Error al guardar: revise la terminal para más detalles",
     "saveOrDiscardWarning": "Por favor guarde o descarte sus cambios antes de salir",
-    "uploadFailed": "Error al subir",
     "guideline": "Guía",
     "selected": "seleccionado(s)",
     "completed": "completado(s)",
@@ -37,8 +34,6 @@
     "selectedProducts": "Productos seleccionados",
     "selectProducts": "Seleccionar productos",
     "noProductsSelected": "Sin productos seleccionados",
-    "changeCollections": "Cambiar colecciones",
-    "changeProducts": "Cambiar productos",
     "loading": "Cargando..."
   },
   "navigation": {
@@ -344,8 +339,7 @@
     "buttonSectionDescription": "Personalice las etiquetas de los campos de entrada y botones.",
     "labelSectionDescription": "Personalice las etiquetas de los meses según sus preferencias o requisitos de idioma.",
     "toast": {
-      "saved": "Traducciones guardadas exitosamente",
-      "error": "Error al guardar las traducciones"
+      "saved": "Traducciones guardadas exitosamente"
     },
     "pleaseSelectPopup": "Por favor seleccione un pop-up primero",
     "upgradeNow": "Actualizar ahora",
@@ -380,19 +374,6 @@
     "premiumDescription": "Control total con pop-ups ilimitados y soporte multilingüe",
     "basicFeaturesHeader": "Todo en el plan Gratis, más:",
     "premiumFeaturesHeader": "Todo en el plan Básico, más:",
-    "basicFeatures": [
-      "1 pop-up personalizable: texto, tamaño, color",
-      "Mostrar un pop-up en páginas específicas",
-      "1 idioma traducido",
-      "Banner de información",
-      "Soporte por chat en vivo 24/7"
-    ],
-    "premiumFeatures": [
-      "Pop-ups ilimitados con personalización avanzada",
-      "Idiomas traducidos ilimitados",
-      "Términos y condiciones: página de producto y carrito",
-      "Soporte por chat en vivo 24/7 (prioridad VIP)"
-    ],
     "compareFeatures": {
       "popup": "Pop-up",
       "popupCustomization": "Personalización de pop-up",
@@ -433,11 +414,7 @@
     "adminLanguageHindi": "हिन्दी",
     "adminLanguageHelpText": "Los idiomas seleccionados se traducirán inmediatamente.",
     "rememberVisitor": "Recordar visitante",
-    "rememberVisitorOptions": {
-      "sessionOnly": "Solo sesión",
-      "days": "Días",
-      "allowVisitorToChoose": "Permitir al visitante elegir"
-    },
+    "rememberVisitorOptions": {},
     "enterNumberOfDays": "Ingrese el número de días",
     "settingsSaved": "Configuración guardada"
   },
@@ -455,7 +432,5 @@
     "november": "Noviembre",
     "december": "Diciembre"
   },
-  "richTextEditor": {
-    "clearFormatting": "Limpiar formato"
-  }
+  "richTextEditor": {}
 }

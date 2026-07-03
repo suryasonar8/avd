@@ -14,8 +14,6 @@
     "off": "बंद",
     "edit": "संपादित करें",
     "uploading": "अपलोड हो रहा है...",
-    "addImage": "छवि जोड़ें",
-    "acceptsFormats": ".png, .jpg स्वीकार करता है",
     "basicPlanOrHigher": "बेसिक प्लान या उच्चतर",
     "premiumPlan": "प्रीमियम प्लान",
     "unlimited": "असीमित",
@@ -24,7 +22,6 @@
     "savedSuccessfully": "सफलतापूर्वक सहेजा गया",
     "errorSaving": "सहेजने में त्रुटि: विवरण के लिए टर्मिनल जांचें",
     "saveOrDiscardWarning": "कृपया पेज छोड़ने से पहले अपने बदलाव सहेजें या रद्द करें",
-    "uploadFailed": "अपलोड विफल",
     "guideline": "मार्गदर्शिका",
     "selected": "चयनित",
     "completed": "पूर्ण",
@@ -37,8 +34,6 @@
     "selectedProducts": "चयनित उत्पाद",
     "selectProducts": "उत्पाद चुनें",
     "noProductsSelected": "कोई उत्पाद चयनित नहीं",
-    "changeCollections": "संग्रह बदलें",
-    "changeProducts": "उत्पाद बदलें",
     "loading": "लोड हो रहा है..."
   },
   "navigation": {
@@ -344,8 +339,7 @@
     "buttonSectionDescription": "इनपुट फ़ील्ड और बटन के लेबल कस्टमाइज़ करें।",
     "labelSectionDescription": "अपनी प्राथमिकताओं या भाषा आवश्यकताओं के अनुसार महीनों के लेबल कस्टमाइज़ करें।",
     "toast": {
-      "saved": "अनुवाद सफलतापूर्वक सहेजे गए",
-      "error": "अनुवाद सहेजने में त्रुटि"
+      "saved": "अनुवाद सफलतापूर्वक सहेजे गए"
     },
     "pleaseSelectPopup": "कृपया पहले एक पॉप-अप चुनें",
     "upgradeNow": "अभी अपग्रेड करें",
@@ -380,19 +374,6 @@
     "premiumDescription": "असीमित पॉप-अप और बहुभाषी सहायता के साथ पूर्ण नियंत्रण",
     "basicFeaturesHeader": "निःशुल्क (Free) में सब कुछ, साथ ही:",
     "premiumFeaturesHeader": "बेसिक में सब कुछ, साथ ही:",
-    "basicFeatures": [
-      "1 अनुकूलन योग्य पॉप-अप: टेक्स्ट, आकार, रंग",
-      "विशिष्ट पृष्ठों पर एक पॉप-अप दिखाएं",
-      "1 अनुवादित भाषा",
-      "सूचना बैनर",
-      "24/7 लाइव चैट सहायता"
-    ],
-    "premiumFeatures": [
-      "उन्नत अनुकूलन के साथ असीमित पॉप-अप",
-      "असीमित अनुवादित भाषाएँ",
-      "नियम और शर्तें: उत्पाद और कार्ट पेज",
-      "24/7 लाइव चैट सहायता (VIP प्राथमिकता)"
-    ],
     "compareFeatures": {
       "popup": "पॉप-अप",
       "popupCustomization": "पॉप-अप अनुकूलन",
@@ -433,11 +414,7 @@
     "adminLanguageHindi": "हिन्दी",
     "adminLanguageHelpText": "चयनित भाषाओं का तुरंत अनुवाद किया जाएगा।",
     "rememberVisitor": "विज़िटर को याद रखें",
-    "rememberVisitorOptions": {
-      "sessionOnly": "केवल सत्र",
-      "days": "दिन",
-      "allowVisitorToChoose": "विज़िटर को चुनने दें"
-    },
+    "rememberVisitorOptions": {},
     "enterNumberOfDays": "दिनों की संख्या दर्ज करें",
     "settingsSaved": "सेटिंग्स सहेजी गईं"
   },
@@ -455,7 +432,5 @@
     "november": "नवंबर",
     "december": "दिसंबर"
   },
-  "richTextEditor": {
-    "clearFormatting": "फ़ॉर्मेटिंग साफ़ करें"
-  }
+  "richTextEditor": {}
 }

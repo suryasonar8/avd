@@ -1,5 +1,6 @@
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
+import { ShopService } from "../services/shop.service";
 
 export const action = async ({ request }) => {
   const { shop, session, topic, admin } = await authenticate.webhook(request);
@@ -27,33 +28,12 @@ export const action = async ({ request }) => {
       ];
 
       for (const def of defsToCleanup) {
-        const defCheckResponse = await admin.graphql(
-          `#graphql
-          query findDef($namespace: String!, $key: String!) {
-            metafieldDefinitions(first: 1, ownerType: SHOP, namespace: $namespace, key: $key) {
-              edges {
-                node { id }
-              }
-            }
-          }
-          `,
-          { variables: def },
-        );
-        const defCheckData = await defCheckResponse.json();
+        const defCheckData = await ShopService.getMetafieldDefinitions(admin, def.namespace, def.key);
         const defId =
           defCheckData.data?.metafieldDefinitions?.edges?.[0]?.node?.id;
 
         if (defId) {
-          await admin.graphql(
-            `#graphql
-            mutation deleteDef($id: ID!) {
-              metafieldDefinitionDelete(id: $id, deleteAllAssociatedMetafields: true) {
-                deletedDefinitionId
-                userErrors { field message }
-              }
-            }`,
-            { variables: { id: defId } },
-          );
+          await ShopService.deleteMetafieldDefinition(admin, defId, true);
           console.log(
             `Deleted metafield definition ${def.namespace}.${def.key} for ${shop}`,
           );

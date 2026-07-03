@@ -5,6 +5,7 @@ import { usePlan } from "../context/PlanContext";
 import { Modal } from "../components/Modal";
 import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
+import { StoreLanguageService } from "../services/store-language.service";
 import PricingBanner from "../components/PricingBanner";
 import { useTranslation } from "../context/TranslationContext";
 
@@ -13,19 +14,7 @@ export const loader = async ({ request }) => {
   const shopDomain = session.shop.replace(".myshopify.com", "");
 
   // Fetch shop locales
-  const languagesResponse = await admin.graphql(
-    `#graphql
-    query getLanguages {
-      shopLocales {
-        locale
-        name
-        primary
-        published
-      }
-    }`,
-  );
-  const languagesData = await languagesResponse.json();
-  const shopLocales = languagesData.data?.shopLocales || [];
+  const shopLocales = await StoreLanguageService.getStoreLanguages(admin);
   const primaryLocale =
     shopLocales.find((lang) => lang.primary)?.locale || "en";
 

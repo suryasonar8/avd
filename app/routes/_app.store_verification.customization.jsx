@@ -3,6 +3,7 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
+import { ShopService } from "../services/shop.service";
 import { PopupEditor } from "../components/customization/PopupEditor";
 import { useTranslation } from "../context/TranslationContext";
 
@@ -10,18 +11,8 @@ export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
 
   // Fetch global settings for Brand Mark
-  const globalSettingsResponse = await admin.graphql(
-    `#graphql
-    query getGlobalSettings {
-      shop {
-        metafield(namespace: "avd", key: "settings") {
-          value
-        }
-      }
-    }`,
-  );
-  const globalSettingsData = await globalSettingsResponse.json();
-  const globalSettingsValue = globalSettingsData.data.shop.metafield?.value;
+  const shop = await ShopService.getMetafield(admin, "avd", "settings");
+  const globalSettingsValue = shop?.metafield?.value;
   const globalSettings = globalSettingsValue
     ? JSON.parse(globalSettingsValue)
     : { showBrandMark: true };
@@ -88,45 +79,19 @@ export const action = async ({ request }) => {
   if (intent === "toggle_brand_mark") {
     const showBrandMark = formData.get("showBrandMark") === "true";
 
-    const existingResponse = await admin.graphql(
-      `#graphql
-      query getGlobalSettings {
-        shop {
-          metafield(namespace: "avd", key: "settings") {
-            value
-          }
-        }
-      }`,
-    );
-    const existingValue = (await existingResponse.json()).data.shop.metafield
-      ?.value;
+    const shopData = await ShopService.getMetafield(admin, "avd", "settings");
+    const existingValue = shopData?.metafield?.value;
     const existingSettings = existingValue ? JSON.parse(existingValue) : {};
     const newSettings = { ...existingSettings, showBrandMark };
 
-    const shopResponse = await admin.graphql(`{ shop { id } }`);
-    const shopId = (await shopResponse.json()).data.shop.id;
+    const shopId = await ShopService.getShopId(admin);
 
-    await admin.graphql(
-      `#graphql
-      mutation updateSettings($metafields: [MetafieldsSetInput!]!) {
-        metafieldsSet(metafields: $metafields) {
-          metafields { id }
-          userErrors { field message }
-        }
-      }`,
-      {
-        variables: {
-          metafields: [
-            {
-              namespace: "avd",
-              key: "settings",
-              type: "json",
-              ownerId: shopId,
-              value: JSON.stringify(newSettings),
-            },
-          ],
-        },
-      },
+    await ShopService.updateMetafield(
+      admin,
+      shopId,
+      "avd",
+      "settings",
+      JSON.stringify(newSettings)
     );
 
     return { success: true };

@@ -5,6 +5,7 @@ import { Card } from "../components/Card";
 import { getAppEmbedStatus } from "../utils/theme.server";
 import { PopupService } from "../services/popup.service";
 import { AnalyticsService } from "../services/analytics.service";
+import { ShopService } from "../services/shop.service";
 import DateRangePicker from "../components/DateRangePicker";
 import { useTranslation } from "../context/TranslationContext";
 import dayjs from "dayjs";
@@ -19,38 +20,7 @@ export const loader = async ({ request }) => {
   const analytics = await AnalyticsService.getStats(session.shop, null, null);
 
   // Fetch shop and theme data
-  const shopDataResponse = await admin.graphql(
-    `#graphql
-    query getShopData {
-      shop {
-        name
-        id
-        myshopifyDomain
-        metafield(namespace: "avd", key: "settings") {
-          value
-        }
-      }
-      themes(first: 10, roles: [MAIN]) {
-        nodes {
-          id
-          name
-          files(filenames: ["config/settings_data.json"]) {
-            nodes {
-              filename
-              body {
-                ... on OnlineStoreThemeFileBodyText {
-                  content
-                }
-              }
-            }
-          }
-        }
-      }
-    }`,
-  );
-  const shopData = await shopDataResponse.json();
-  const shop = shopData.data.shop;
-  const mainTheme = shopData.data.themes.nodes[0];
+  const { shop, mainTheme } = await ShopService.getDashboardData(admin);
   const themeId = mainTheme?.id.split("/").pop();
 
   // Check app embed status from theme settings_data.json
@@ -91,38 +61,14 @@ export const action = async ({ request }) => {
     settings = { ...currentSettings, appStatus: newStatus };
   }
 
-  const shopResponse = await admin.graphql(`{ shop { id } }`);
-  const shopData = await shopResponse.json();
+  const shopId = await ShopService.getShopId(admin);
 
-  await admin.graphql(
-    `#graphql
-    mutation metafieldUpsert($metafields: [MetafieldsSetInput!]!) {
-      metafieldsSet(metafields: $metafields) {
-        metafields {
-          id
-          namespace
-          key
-          value
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }`,
-    {
-      variables: {
-        metafields: [
-          {
-            namespace: "avd",
-            key: "settings",
-            type: "json",
-            ownerId: shopData.data.shop.id,
-            value: JSON.stringify(settings),
-          },
-        ],
-      },
-    },
+  await ShopService.updateMetafield(
+    admin,
+    shopId,
+    "avd",
+    "settings",
+    JSON.stringify(settings)
   );
 
   return { success: true };

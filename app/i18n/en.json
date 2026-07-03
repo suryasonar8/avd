@@ -14,8 +14,6 @@
     "off": "Off",
     "edit": "Edit",
     "uploading": "Uploading...",
-    "addImage": "Add image",
-    "acceptsFormats": "Accepts .png, .jpg",
     "basicPlanOrHigher": "Basic plan or higher",
     "premiumPlan": "Premium plan",
     "unlimited": "Unlimited",
@@ -24,7 +22,6 @@
     "savedSuccessfully": "Saved successfully",
     "errorSaving": "Error saving: check terminal for details",
     "saveOrDiscardWarning": "Please save or discard your changes before leaving",
-    "uploadFailed": "Upload failed",
     "guideline": "Guideline",
     "selected": "selected",
     "completed": "completed",
@@ -37,8 +34,6 @@
     "selectedProducts": "Selected Products",
     "selectProducts": "Select Products",
     "noProductsSelected": "No products selected",
-    "changeCollections": "Change collections",
-    "changeProducts": "Change products",
     "loading": "Loading..."
   },
   "navigation": {
@@ -344,8 +339,7 @@
     "buttonSectionDescription": "Customize labels for input fields and buttons.",
     "labelSectionDescription": "Customize the labels used for months to match your preferences or language requirements.",
     "toast": {
-      "saved": "Translations saved successfully",
-      "error": "Error saving translations"
+      "saved": "Translations saved successfully"
     },
     "pleaseSelectPopup": "Please select a pop-up first",
     "upgradeNow": "Upgrade now",
@@ -380,19 +374,6 @@
     "premiumDescription": "Full control with unlimited pop-ups and multilingual support",
     "basicFeaturesHeader": "Everything in Free, plus:",
     "premiumFeaturesHeader": "Everything in Basic, plus:",
-    "basicFeatures": [
-      "1 customizable pop-up: text, size, color",
-      "Show a pop-up on specific pages",
-      "1 translated language",
-      "Info banner",
-      "24/7 Live chat support"
-    ],
-    "premiumFeatures": [
-      "Unlimited pop-ups with advanced customization",
-      "Unlimited translated languages",
-      "Terms & conditions: product & cart page",
-      "24/7 Live chat support (VIP priority)"
-    ],
     "compareFeatures": {
       "popup": "Pop-up",
       "popupCustomization": "Pop-up customization",
@@ -433,11 +414,7 @@
     "adminLanguageHindi": "हिन्दी",
     "adminLanguageHelpText": "Selected languages will be translated immediately.",
     "rememberVisitor": "Remember visitor",
-    "rememberVisitorOptions": {
-      "sessionOnly": "Session only",
-      "days": "Days",
-      "allowVisitorToChoose": "Allow visitor to choose"
-    },
+    "rememberVisitorOptions": {},
     "enterNumberOfDays": "Enter number of days",
     "settingsSaved": "Settings saved"
   },
@@ -455,7 +432,5 @@
     "november": "November",
     "december": "December"
   },
-  "richTextEditor": {
-    "clearFormatting": "Clear formatting"
-  }
+  "richTextEditor": {}
 }

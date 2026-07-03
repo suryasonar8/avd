@@ -92,18 +92,6 @@ export default function CheckoutVerificationSetup() {
     }
   };
 
-  const tabStyle = (tab) => ({
-    padding: "8px 24px",
-    fontSize: "14px",
-    fontWeight: 600,
-    cursor: "pointer",
-    border: "none",
-    borderRadius: "10px",
-    background: activeTab === tab ? "#E0E0E0" : "transparent",
-    color: "#202223",
-    transition: "all 0.2s ease",
-  });
-
   return (
     <s-page>
       <CustomSaveBar
