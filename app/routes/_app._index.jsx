@@ -11,6 +11,7 @@ import TurnOffModal from "../components/TurnOffModal";
 import { useTranslation } from "../context/TranslationContext";
 import dayjs from "dayjs";
 import { AppEmbedIcon, AppsIcon } from "../components/store-verification/Icons";
+import PageHeader from "../components/PageHeader";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -200,21 +201,10 @@ export default function Dashboard() {
   return (
     <s-page>
       {/* Greeting Section */}
-      <div style={{ marginBottom: "24px" }}>
-        <h1
-          style={{
-            fontSize: "32px",
-            fontWeight: "700",
-            color: "#202223",
-            margin: "0 0 8px 0",
-          }}
-        >
-          {t("dashboard.greeting", { shopName })}
-        </h1>
-        <p style={{ fontSize: "16px", color: "#6D7175", margin: 0 }}>
-          {t("dashboard.welcome")}
-        </p>
-      </div>
+      <PageHeader
+        title={t("dashboard.greeting", { shopName })}
+        description={t("dashboard.welcome")}
+      />
 
       {/* Status Controls Card */}
       <s-section>

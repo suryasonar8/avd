@@ -7,6 +7,7 @@ import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
 import { StoreLanguageService } from "../services/store-language.service";
 import PricingBanner from "../components/PricingBanner";
+import PageHeader from "../components/PageHeader";
 import { useTranslation } from "../context/TranslationContext";
 
 export const loader = async ({ request }) => {
@@ -94,20 +95,11 @@ export default function TranslationPage() {
   return (
     <s-page>
       {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          marginBottom: "32px",
-        }}
-      >
-        <div>
-          <s-heading>{t("translation.pageTitle")}</s-heading>
-          <s-text>{t("translation.pageDescription")}</s-text>
-        </div>
-        <s-button>{t("translation.refreshData")}</s-button>
-      </div>
+      <PageHeader
+        title={t("translation.pageTitle")}
+        description={t("translation.pageDescription")}
+        actionButton={<s-button>{t("translation.refreshData")}</s-button>}
+      />
       {/* Free Plan Limit Banner */}
       <PricingBanner text={t("translation.upgradePromo")} />
       {/* Default Language Card */}

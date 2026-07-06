@@ -2,6 +2,7 @@ import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 import { TermsService } from "../services/terms.service";
 import PricingBanner from "../components/PricingBanner";
+import PageHeader from "../components/PageHeader";
 import { useTranslation } from "../context/TranslationContext";
 import { usePlan } from "../context/PlanContext";
 
@@ -26,34 +27,10 @@ export default function TermsAndConditions() {
 
   return (
     <s-page>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginBottom: "32px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            marginBottom: "4px",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "20px",
-              fontWeight: "700",
-              margin: 0,
-              color: "#1A1C1D",
-            }}
-          >
-            {t("termsAndConditions.pageTitle")}
-          </h2>
-          <s-text>{t("termsAndConditions.setupDescription")}</s-text>
-        </div>
-      </div>
+      <PageHeader
+        title={t("termsAndConditions.pageTitle")}
+        description={t("termsAndConditions.setupDescription")}
+      />
       {/* Free Plan Limit Banner */}
       <PricingBanner text={t("termsAndConditions.bannerPromo")} />
 

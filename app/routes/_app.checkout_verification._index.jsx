@@ -1,6 +1,7 @@
 import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 import PricingBanner from "../components/PricingBanner";
+import PageHeader from "../components/PageHeader";
 import { useTranslation } from "../context/TranslationContext";
 
 import { CheckoutBannerService } from "../services/checkout-banner.service";
@@ -28,31 +29,7 @@ export default function CheckoutVerification() {
 
   return (
     <s-page>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginBottom: "32px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "20px",
-              fontWeight: "700",
-              margin: 0,
-              color: "#1A1C1D",
-            }}
-          >
-            {t("checkoutVerification.pageTitle")}
-          </h2>
-        </div>
-      </div>
+      <PageHeader title={t("checkoutVerification.pageTitle")} />
       <PricingBanner text={t("checkoutVerification.bannerPromo")} />
 
       <s-section>

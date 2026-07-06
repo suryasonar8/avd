@@ -9,6 +9,7 @@ import {
 } from "../constants/pricing";
 import { PLAN_TYPES } from "../constants/features";
 import DiscountModal from "../components/DiscountModal";
+import PageHeader from "../components/PageHeader";
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
@@ -31,33 +32,7 @@ export default function PlansPage() {
 
   return (
     <s-page>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginBottom: "32px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "4px",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "20px",
-              fontWeight: "700",
-              margin: 0,
-              color: "#1A1C1D",
-            }}
-          >
-            Pricing
-          </h2>
-        </div>
-      </div>
+      <PageHeader title="Pricing" />
       <s-section>
         {/* Discount code trigger link */}
         <div

@@ -4,6 +4,7 @@ import { authenticate } from "../shopify.server";
 import { useState, useMemo } from "react";
 import { useTranslation } from "../context/TranslationContext";
 import { CustomSaveBar } from "../components/CustomSaveBar";
+import PageHeader from "../components/PageHeader";
 import { ShopService } from "../services/shop.service";
 
 export const loader = async ({ request }) => {
@@ -98,33 +99,7 @@ export default function SettingsPage() {
         state={{ submitting: fetcher.state !== "idle", data: fetcher.data }}
         successMessage={t("settings.settingsSaved")}
       />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginBottom: "32px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "4px",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "20px",
-              fontWeight: "700",
-              margin: 0,
-              color: "#1A1C1D",
-            }}
-          >
-            {t("settings.pageTitle")}
-          </h2>
-        </div>
-      </div>
+      <PageHeader title={t("settings.pageTitle")} />
 
       <div
         style={{

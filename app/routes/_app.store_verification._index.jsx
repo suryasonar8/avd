@@ -10,6 +10,7 @@ import CreatePopupCard from "../components/store-verification/CreatePopupCard";
 import PopupToolbar from "../components/store-verification/PopupToolbar";
 import PopupTable from "../components/store-verification/PopupTable";
 import DeleteConfirmModal from "../components/store-verification/DeleteConfirmModal";
+import PageHeader from "../components/PageHeader";
 
 export const loader = async ({ request }) => {
   const { session } = await authenticate.admin(request);
@@ -194,31 +195,7 @@ export default function AppPage() {
 
   return (
     <s-page>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginBottom: "32px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "20px",
-              fontWeight: "700",
-              margin: 0,
-              color: "#1A1C1D",
-            }}
-          >
-            {t("storeVerification.pageHeading")}
-          </h2>
-        </div>
-      </div>
+      <PageHeader title={t("storeVerification.pageHeading")} />
       {plan === PLAN_TYPES.FREE && (
         <PricingBanner
           text={t("storeVerification.freePlanBanner.description", {
