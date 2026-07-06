@@ -23,15 +23,6 @@ export const loader = async ({ request, params }) => {
     ? JSON.parse(globalSettingsValue)
     : { showBrandMark: true };
 
-  // Server-side gating
-  const hasAccess = await PlanService.hasAccess(
-    session.shop,
-    "store-verification.customization",
-  );
-  if (!hasAccess) {
-    return redirect("/pricing");
-  }
-
   return { settings: popup, globalSettings };
 };
 
@@ -41,18 +32,6 @@ export const action = async ({ request, params }) => {
   const { id } = params;
   const formData = await request.formData();
   const intent = formData.get("intent");
-
-  // Server-side gating
-  const hasAccess = await PlanService.hasAccess(
-    shop,
-    "store-verification.customization",
-  );
-  if (!hasAccess) {
-    return {
-      success: false,
-      errors: [{ message: "Basic plan required for customization" }],
-    };
-  }
 
   if (intent === "toggle_brand_mark") {
     const showBrandMark = formData.get("showBrandMark") === "true";
@@ -70,7 +49,7 @@ export const action = async ({ request, params }) => {
       shopId,
       "avd",
       "settings",
-      JSON.stringify(newSettings)
+      JSON.stringify(newSettings),
     );
     return {
       success: !updateData.data.metafieldsSet.userErrors?.length,
