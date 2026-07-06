@@ -92,14 +92,7 @@ export default function TranslationPage() {
   };
 
   return (
-    <div
-      style={{
-        padding: "40px",
-        background: "#f6f6f7",
-        minHeight: "100vh",
-        fontFamily: "Inter, -apple-system, system-ui, sans-serif",
-      }}
-    >
+    <s-page>
       {/* Header */}
       <div
         style={{
@@ -410,6 +403,6 @@ export default function TranslationPage() {
           </div>
         </div>
       </Modal>
-    </div>
+    </s-page>
   );
 }

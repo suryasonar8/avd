@@ -298,14 +298,7 @@ export default function TranslationSetupPage() {
   };
 
   return (
-    <div
-      style={{
-        padding: "40px",
-        background: "#f6f6f7",
-        minHeight: "100vh",
-        fontFamily: "Inter, -apple-system, system-ui, sans-serif",
-      }}
-    >
+    <s-page>
       <style>{`
         .custom-editor-container {
           margin-bottom: 20px;
@@ -623,6 +616,6 @@ export default function TranslationSetupPage() {
           </s-text>
         </div>
       </div>
-    </div>
+    </s-page>
   );
 }
