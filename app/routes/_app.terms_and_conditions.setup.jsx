@@ -11,6 +11,7 @@ import ConditionSettings from "../components/terms-and-conditions/ConditionSetti
 import CheckboxSettings from "../components/terms-and-conditions/CheckboxSettings";
 import PreviewPanel from "../components/terms-and-conditions/PreviewPanel";
 import { CustomSaveBar } from "../components/CustomSaveBar";
+import PageFooter from "../components/PageFooter";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -248,19 +249,7 @@ export default function TermsAndConditionsSetup() {
       </div>
 
       {/* Footer */}
-      <div
-        style={{
-          textAlign: "center",
-          marginTop: "28px",
-          fontSize: "13px",
-          color: "#6D7175",
-        }}
-      >
-        {t("common.needHelp")}{" "}
-        <a href="#" style={{ color: "#2C6ECB", textDecoration: "none" }}>
-          {t("common.ourDocumentGuideline")}
-        </a>
-      </div>
+      <PageFooter />
     </div>
   );
 }

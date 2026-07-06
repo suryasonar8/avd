@@ -17,6 +17,7 @@ import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
 import { StoreLanguageService } from "../services/store-language.service";
 import db from "../db.server";
+import PageFooter from "../components/PageFooter";
 import { Card } from "../components/Card";
 import { Badge } from "../components/Badge";
 import { usePlan } from "../context/PlanContext";
@@ -603,18 +604,7 @@ export default function TranslationSetupPage() {
           </Card>
         </div>
 
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: "40px",
-            paddingBottom: "40px",
-          }}
-        >
-          <s-text>
-            {t("common.needHelp")}{" "}
-            <s-link href="#">{t("common.ourDocumentGuideline")}</s-link>
-          </s-text>
-        </div>
+        <PageFooter />
       </div>
     </s-page>
   );

@@ -12,6 +12,7 @@ import { useTranslation } from "../context/TranslationContext";
 import dayjs from "dayjs";
 import { AppEmbedIcon, AppsIcon } from "../components/store-verification/Icons";
 import PageHeader from "../components/PageHeader";
+import PageFooter from "../components/PageFooter";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -895,6 +896,7 @@ export default function Dashboard() {
           );
         }}
       />
+      <PageFooter />
     </s-page>
   );
 }

@@ -10,6 +10,7 @@ import {
 import { PLAN_TYPES } from "../constants/features";
 import DiscountModal from "../components/DiscountModal";
 import PageHeader from "../components/PageHeader";
+import PageFooter from "../components/PageFooter";
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
@@ -776,6 +777,7 @@ export default function PlansPage() {
           console.log("Discount code applied:", code);
         }}
       />
+      <PageFooter />
     </s-page>
   );
 }

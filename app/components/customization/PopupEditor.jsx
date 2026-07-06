@@ -8,6 +8,7 @@ import { TextTab } from "./TextTab";
 import { ButtonTab } from "./ButtonTab";
 import { CSSTab } from "./CSSTab";
 import { Preview } from "./Preview";
+import PageFooter from "../PageFooter";
 import { DEFAULT_STORE_CONFIG as DEFAULT_CONFIG } from "../../constants/store-verification";
 
 const TAB_COMPONENTS = {
@@ -231,6 +232,7 @@ export function PopupEditor({
           setGlobalSettings={setLocalGlobalSettings}
         />
       </div>
+      <PageFooter />
     </s-page>
   );
 }

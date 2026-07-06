@@ -7,6 +7,7 @@ import { PlanService } from "../services/plan.service";
 import PreviewPanel from "../components/checkout-verification/PreviewPanel";
 import ConditionSettings from "../components/checkout-verification/ConditionSettings";
 import BannerSettings from "../components/checkout-verification/BannerSettings";
+import PageFooter from "../components/PageFooter";
 import { CustomSaveBar } from "../components/CustomSaveBar";
 import { CheckoutBannerService } from "../services/checkout-banner.service";
 import { useTranslation } from "../context/TranslationContext";
@@ -210,6 +211,7 @@ export default function CheckoutVerificationSetup() {
         {/* Right Panel */}
         <PreviewPanel config={config} />
       </div>
+      <PageFooter />
     </s-page>
   );
 }

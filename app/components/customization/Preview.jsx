@@ -397,14 +397,6 @@ export const Preview = ({
         </div>
       </div>
 
-      <div style={{ textAlign: "center", padding: "12px" }}>
-        <p style={{ color: "#6D7175", fontSize: "13px" }}>
-          {t("common.needHelp")}{" "}
-          <a href="#" style={{ color: "#005F99", textDecoration: "none" }}>
-            {t("common.ourDocumentGuideline")}
-          </a>
-        </p>
-      </div>
     </div>
   );
 };

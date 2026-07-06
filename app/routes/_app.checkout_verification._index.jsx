@@ -2,6 +2,7 @@ import { useNavigate, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 import PricingBanner from "../components/PricingBanner";
 import PageHeader from "../components/PageHeader";
+import PageFooter from "../components/PageFooter";
 import { useTranslation } from "../context/TranslationContext";
 
 import { CheckoutBannerService } from "../services/checkout-banner.service";
@@ -83,6 +84,7 @@ export default function CheckoutVerification() {
           </div>
         </s-stack>
       </s-section>
+      <PageFooter />
     </s-page>
   );
 }

@@ -8,6 +8,7 @@ import { PopupService } from "../services/popup.service";
 import { StoreLanguageService } from "../services/store-language.service";
 import PricingBanner from "../components/PricingBanner";
 import PageHeader from "../components/PageHeader";
+import PageFooter from "../components/PageFooter";
 import { useTranslation } from "../context/TranslationContext";
 
 export const loader = async ({ request }) => {
@@ -395,6 +396,7 @@ export default function TranslationPage() {
           </div>
         </div>
       </Modal>
+      <PageFooter />
     </s-page>
   );
 }

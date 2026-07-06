@@ -3,6 +3,7 @@ import { authenticate } from "../shopify.server";
 import { TermsService } from "../services/terms.service";
 import PricingBanner from "../components/PricingBanner";
 import PageHeader from "../components/PageHeader";
+import PageFooter from "../components/PageFooter";
 import { useTranslation } from "../context/TranslationContext";
 import { usePlan } from "../context/PlanContext";
 
@@ -159,17 +160,7 @@ export default function TermsAndConditions() {
       </s-section>
 
       {/* Footer help text */}
-      <div
-        style={{
-          textAlign: "center",
-          marginTop: "16px",
-          fontSize: "13px",
-          color: "#6d7175",
-        }}
-      >
-        {t("common.needHelp")}{" "}
-        <s-link href="#">{t("common.ourDocumentGuideline")}</s-link>
-      </div>
+      <PageFooter />
     </s-page>
   );
 }

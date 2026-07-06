@@ -5,6 +5,7 @@ import { useState, useMemo } from "react";
 import { useTranslation } from "../context/TranslationContext";
 import { CustomSaveBar } from "../components/CustomSaveBar";
 import PageHeader from "../components/PageHeader";
+import PageFooter from "../components/PageFooter";
 import { ShopService } from "../services/shop.service";
 
 export const loader = async ({ request }) => {
@@ -237,18 +238,7 @@ export default function SettingsPage() {
             </s-section>
           </div>
 
-          <div style={{ marginTop: "24px", textAlign: "left" }}>
-            <p style={{ fontSize: "13px", color: "#6D7175" }}>
-              {t("common.needHelp")}{" "}
-              <a
-                href="#"
-                style={{ color: "#005BD3", textDecoration: "none" }}
-                onClick={(e) => e.preventDefault()}
-              >
-                {t("common.ourDocumentGuideline")}
-              </a>
-            </p>
-          </div>
+          <PageFooter align="left" />
         </div>
       </div>
     </s-page>

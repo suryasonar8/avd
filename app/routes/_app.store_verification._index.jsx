@@ -11,6 +11,7 @@ import PopupToolbar from "../components/store-verification/PopupToolbar";
 import PopupTable from "../components/store-verification/PopupTable";
 import DeleteConfirmModal from "../components/store-verification/DeleteConfirmModal";
 import PageHeader from "../components/PageHeader";
+import PageFooter from "../components/PageFooter";
 
 export const loader = async ({ request }) => {
   const { session } = await authenticate.admin(request);
@@ -356,6 +357,7 @@ export default function AppPage() {
 
       {/* Bulk Delete Confirmation Modal */}
       <DeleteConfirmModal ref={deleteModalRef} onConfirm={handleDeleteSubmit} />
+      <PageFooter />
     </s-page>
   );
 }
