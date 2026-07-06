@@ -12,6 +12,7 @@ import CheckboxSettings from "../components/terms-and-conditions/CheckboxSetting
 import PreviewPanel from "../components/terms-and-conditions/PreviewPanel";
 import { CustomSaveBar } from "../components/CustomSaveBar";
 import PageFooter from "../components/PageFooter";
+import PageHeader from "../components/PageHeader";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -107,7 +108,7 @@ export default function TermsAndConditionsSetup() {
   };
 
   return (
-    <div style={{ padding: "24px", fontFamily: "Inter, sans-serif" }}>
+    <s-page>
       <CustomSaveBar
         id="terms-save-bar"
         open={isDirty}
@@ -117,47 +118,11 @@ export default function TermsAndConditionsSetup() {
       />
 
       {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "6px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <button
-            onClick={() => navigate("/terms_and_conditions")}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "18px",
-              color: "#202223",
-              padding: 0,
-              lineHeight: 1,
-            }}
-            aria-label={t("common.close")}
-          >
-            ←
-          </button>
-          <h1
-            style={{
-              margin: 0,
-              fontSize: "20px",
-              fontWeight: 700,
-              color: "#202223",
-            }}
-          >
-            {t("termsAndConditions.setupTitle")}
-          </h1>
-        </div>
-      </div>
-      <p
-        style={{ margin: "0 0 20px 28px", fontSize: "13px", color: "#6D7175" }}
-      >
-        {t("termsAndConditions.setupDescription")}
-      </p>
+      <PageHeader
+        title={t("termsAndConditions.setupTitle")}
+        description={t("termsAndConditions.setupDescription")}
+        backAction={() => navigate("/terms_and_conditions")}
+      />
 
       {fetcher.data?.errors && (
         <div
@@ -250,6 +215,6 @@ export default function TermsAndConditionsSetup() {
 
       {/* Footer */}
       <PageFooter />
-    </div>
+    </s-page>
   );
 }

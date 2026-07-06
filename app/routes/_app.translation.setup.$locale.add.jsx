@@ -23,6 +23,7 @@ import { Badge } from "../components/Badge";
 import { usePlan } from "../context/PlanContext";
 import { useTranslation } from "../context/TranslationContext";
 import { CustomSaveBar } from "../components/CustomSaveBar";
+import PageHeader from "../components/PageHeader";
 
 import { MONTH_NAMES } from "../constants/translation";
 
@@ -310,68 +311,25 @@ export default function TranslationSetupPage() {
         }
       `}</style>
       {/* Header */}
-      <div
-        style={{
-          marginBottom: "32px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-        }}
-      >
-        <div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              marginBottom: "4px",
-            }}
-          >
-            <button
-              onClick={handleBack}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#6d7175",
-                fontSize: "20px",
-                padding: 0,
-              }}
-            >
-              ←
-            </button>
-            <h1
-              style={{
-                fontSize: "24px",
-                fontWeight: "700",
-                margin: 0,
-                color: "#202223",
-              }}
-            >
-              {currentLanguage}
-            </h1>
-            {!canAccess("translation.unlimited") && (
-              <Badge text={t("common.basicPlanOrHigher")} type="basic" />
-            )}
-          </div>
-          <div style={{ marginLeft: "32px" }}>
-            <s-text color="subdued">{t("translation.pageDescription")}</s-text>
-          </div>
-        </div>
-
-        <CustomSaveBar
-          id="translation-save-bar"
-          open={isDirty && !isReadOnly}
-          onSave={handleSave}
-          onDiscard={handleDiscard}
-          disabled={isReadOnly}
-          state={{ submitting: navigation.state !== "idle", data: actionData }}
-          successMessage={t("translation.toast.saved")}
-        />
-      </div>
+      <CustomSaveBar
+        id="translation-save-bar"
+        open={isDirty && !isReadOnly}
+        onSave={handleSave}
+        onDiscard={handleDiscard}
+        disabled={isReadOnly}
+        state={{ submitting: navigation.state !== "idle", data: actionData }}
+        successMessage={t("translation.toast.saved")}
+      />
+      <PageHeader
+        title={currentLanguage}
+        description={t("translation.pageDescription")}
+        backAction={handleBack}
+        badge={
+          !canAccess("translation.unlimited") && (
+            <Badge text={t("common.basicPlanOrHigher")} type="basic" />
+          )
+        }
+      />
 
       <div style={{ maxWidth: "1000px" }}>
         {/* Info Section */}

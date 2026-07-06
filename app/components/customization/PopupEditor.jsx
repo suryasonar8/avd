@@ -9,6 +9,7 @@ import { ButtonTab } from "./ButtonTab";
 import { CSSTab } from "./CSSTab";
 import { Preview } from "./Preview";
 import PageFooter from "../PageFooter";
+import PageHeader from "../PageHeader";
 import { DEFAULT_STORE_CONFIG as DEFAULT_CONFIG } from "../../constants/store-verification";
 
 const TAB_COMPONENTS = {
@@ -131,58 +132,11 @@ export function PopupEditor({
         onSuccess={onSaveSuccess}
       />
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginBottom: "32px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "4px",
-          }}
-        >
-          <button
-            onClick={handleBack}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "20px",
-              padding: "4px",
-              display: "flex",
-              alignItems: "center",
-              color: "#1A1C1D",
-            }}
-            aria-label={t("common.close")}
-          >
-            ←
-          </button>
-          <h2
-            style={{
-              fontSize: "26px",
-              fontWeight: "700",
-              margin: 0,
-              color: "#1A1C1D",
-            }}
-          >
-            {heading}
-          </h2>
-        </div>
-        <p
-          style={{
-            fontSize: "14px",
-            color: "#6D7175",
-            margin: "0 0 0 36px",
-          }}
-        >
-          {description}
-        </p>
-      </div>
+      <PageHeader
+        title={heading}
+        description={description}
+        backAction={handleBack}
+      />
 
       {/* Tabs */}
       <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>

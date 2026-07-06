@@ -11,6 +11,7 @@ import PageFooter from "../components/PageFooter";
 import { CustomSaveBar } from "../components/CustomSaveBar";
 import { CheckoutBannerService } from "../services/checkout-banner.service";
 import { useTranslation } from "../context/TranslationContext";
+import PageHeader from "../components/PageHeader";
 
 const DEFAULT_CONFIG = {
   status: "disabled",
@@ -104,48 +105,10 @@ export default function CheckoutVerificationSetup() {
         successMessage={t("checkoutVerification.bannerSettingsSaved")}
       />
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginBottom: "32px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "4px",
-          }}
-        >
-          <button
-            onClick={handleBack}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "20px",
-              padding: "4px",
-              display: "flex",
-              alignItems: "center",
-              color: "#1A1C1D",
-            }}
-          >
-            ←
-          </button>
-          <h2
-            style={{
-              fontSize: "26px",
-              fontWeight: "700",
-              margin: 0,
-              color: "#1A1C1D",
-            }}
-          >
-            {t("checkoutVerification.configuration")}
-          </h2>
-        </div>
-      </div>
+      <PageHeader
+        title={t("checkoutVerification.configuration")}
+        backAction={handleBack}
+      />
 
       {/* Tabs */}
       <div
