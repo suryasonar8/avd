@@ -31,7 +31,7 @@ export default function PreviewPanel({ config }) {
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#444"
+              stroke={device === "mobile" ? "#444" : "#ffffff"}
               strokeWidth="2"
             >
               <rect x="2" y="3" width="20" height="14" rx="2" />
@@ -48,7 +48,7 @@ export default function PreviewPanel({ config }) {
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#444"
+              stroke={device === "mobile" ? "#ffffff" : "#444"}
               strokeWidth="2"
             >
               <rect x="5" y="2" width="14" height="20" rx="2" />
@@ -193,7 +193,9 @@ export default function PreviewPanel({ config }) {
                       }}
                     >
                       <s-select disabled>
-                        <s-option value={t("checkoutVerification.preview.vietnam")}>
+                        <s-option
+                          value={t("checkoutVerification.preview.vietnam")}
+                        >
                           {t("checkoutVerification.preview.vietnam")}
                         </s-option>
                       </s-select>

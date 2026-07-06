@@ -38,55 +38,39 @@ export const Preview = ({
             background: "#FFF",
           }}
         >
-          <button
+          <s-button
             onClick={() => setPreviewMode("desktop")}
-            style={{
-              background: previewMode === "desktop" ? "#E1E3E5" : "transparent",
-              border: "none",
-              borderRadius: "6px",
-              padding: "6px 10px",
-              cursor: "pointer",
-              fontSize: "18px",
-            }}
-            title={t("popupEditor.desktopPreview")}
+            variant={previewMode === "desktop" ? "primary" : "secondary"}
           >
             <svg
               width="20"
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#444"
+              stroke={previewMode === "mobile" ? "#444" : "#ffffff"}
               strokeWidth="2"
             >
               <rect x="2" y="3" width="20" height="14" rx="2" />
               <line x1="8" y1="21" x2="16" y2="21" />
               <line x1="12" y1="17" x2="12" y2="21" />
             </svg>
-          </button>
-          <button
+          </s-button>
+          <s-button
             onClick={() => setPreviewMode("mobile")}
-            style={{
-              background: previewMode === "mobile" ? "#E1E3E5" : "transparent",
-              border: "none",
-              borderRadius: "6px",
-              padding: "6px 10px",
-              cursor: "pointer",
-              fontSize: "18px",
-            }}
-            title={t("popupEditor.mobilePreview")}
+            variant={previewMode === "mobile" ? "primary" : "secondary"}
           >
             <svg
               width="20"
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#444"
+              stroke={previewMode === "mobile" ? "#ffffff" : "#444"}
               strokeWidth="2"
             >
               <rect x="5" y="2" width="14" height="20" rx="2" />
               <line x1="12" y1="18" x2="12.01" y2="18" />
             </svg>
-          </button>
+          </s-button>
         </div>
 
         {/* Custom CSS */}
