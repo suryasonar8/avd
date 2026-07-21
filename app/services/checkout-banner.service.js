@@ -1,4 +1,5 @@
 import db from "../db.server";
+import { ensureMetafieldDefinition } from "../utils/metafield.server";
 
 /**
  * CheckoutBannerService — encapsulates all checkout banner CRUD and Shopify sync logic.
@@ -121,56 +122,12 @@ export const CheckoutBannerService = {
      * Ensure the `avd:checkout_banner` metafield definition exists.
      */
     async ensureDefinitionsExist(admin) {
-        const defCheck = await admin.graphql(
-            `#graphql
-      query {
-        metafieldDefinitions(
-          first: 1,
-          ownerType: SHOP,
-          namespace: "avd",
-          key: "checkout_banner"
-        ) {
-          edges {
-            node {
-              id
-              type { name }
-            }
-          }
-        }
-      }`,
-        );
-        const defData = await defCheck.json();
-        const existingDef = defData?.data?.metafieldDefinitions?.edges?.[0]?.node;
-
-        if (!existingDef) {
-            // Create the definition
-            const defCreate = await admin.graphql(
-                `#graphql
-        mutation {
-          metafieldDefinitionCreate(definition: {
-            name: "Checkout Banner"
-            namespace: "avd"
-            key: "checkout_banner"
-            type: "json"
+        await ensureMetafieldDefinition(admin, {
+            namespace: "avd",
+            key: "checkout_banner",
+            name: "Checkout Banner",
+            type: "json",
             description: "Configuration for the checkout age verification banner"
-            ownerType: SHOP
-          }) {
-            createdDefinition { id }
-            userErrors { field message }
-          }
-        }`,
-            );
-            const defCreateData = await defCreate.json();
-            if (defCreateData?.data?.metafieldDefinitionCreate?.userErrors?.length) {
-                console.error(
-                    "Metafield definition creation failed:",
-                    JSON.stringify(
-                        defCreateData.data.metafieldDefinitionCreate.userErrors,
-                        null,
-                        2,
-                    ),
-                );
-            }
-        }
+        });
     },
 };

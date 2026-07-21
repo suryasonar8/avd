@@ -1,4 +1,5 @@
 import db from "../db.server";
+import { ensureMetafieldDefinition } from "../utils/metafield.server";
 
 /**
  * PopupService — encapsulates all popup CRUD, translation, and Shopify sync logic.
@@ -275,63 +276,13 @@ export const PopupService = {
      * Ensure the `avd:active_popup` metafield definition exists as JSON type.
      */
     async ensureDefinitionsExist(admin) {
-        const defCheck = await admin.graphql(
-            `#graphql
-      query {
-        metafieldDefinitions(
-          first: 1,
-          ownerType: SHOP,
-          namespace: "avd",
-          key: "active_popup"
-        ) {
-          edges {
-            node {
-              id
-              type { name }
-            }
-          }
-        }
-      }`,
-        );
-        const defData = await defCheck.json();
-        const existingDef = defData?.data?.metafieldDefinitions?.edges?.[0]?.node;
-
-        if (!existingDef) {
-            // Create the definition
-            const defCreate = await admin.graphql(
-                `#graphql
-        mutation {
-          metafieldDefinitionCreate(definition: {
-            name: "Active Popup"
-            namespace: "avd"
-            key: "active_popup"
-            type: "json"
+        await ensureMetafieldDefinition(admin, {
+            namespace: "avd",
+            key: "active_popup",
+            name: "Active Popup",
+            type: "json",
             description: "JSON config of the currently active popup"
-            ownerType: SHOP
-          }) {
-            createdDefinition { id }
-            userErrors { field message }
-          }
-        }`,
-            );
-            const defCreateData = await defCreate.json();
-            if (defCreateData?.data?.metafieldDefinitionCreate?.userErrors?.length) {
-                console.error(
-                    "Metafield definition creation failed:",
-                    JSON.stringify(
-                        defCreateData.data.metafieldDefinitionCreate.userErrors,
-                        null,
-                        2,
-                    ),
-                );
-            }
-        } else if (existingDef.type?.name !== "json") {
-            // Definition exists but wrong type — need to delete and recreate
-            console.warn(
-                `Metafield definition avd:active_popup has type "${existingDef.type?.name}", expected "json". ` +
-                "You may need to manually delete the old definition in Shopify admin.",
-            );
-        }
+        });
     },
 
     /**
@@ -364,16 +315,6 @@ export const PopupService = {
     },
 
     // ─── TRANSLATIONS ───────────────────────────────────────
-
-    /**
-     * Get all translations for a popup (by DB row id).
-     */
-    async getTranslations(popupDbId) {
-        return db.translation.findMany({
-            where: { popupId: popupDbId },
-        });
-    },
-
     /**
      * Get all translations for a popup by its DB id.
      */

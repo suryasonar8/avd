@@ -1,4 +1,5 @@
 import db from "../db.server";
+import { ensureMetafieldDefinition } from "../utils/metafield.server";
 import { DEFAULT_TERMS_CONFIG } from "../constants/terms-and-conditions";
 
 /**
@@ -140,55 +141,12 @@ export const TermsService = {
    * Ensure the `avd:terms_settings` metafield definition exists.
    */
   async ensureDefinitionsExist(admin) {
-    const defCheck = await admin.graphql(
-      `#graphql
-      query {
-        metafieldDefinitions(
-          first: 1,
-          ownerType: SHOP,
-          namespace: "avd",
-          key: "terms_settings"
-        ) {
-          edges {
-            node {
-              id
-            }
-          }
-        }
-      }`,
-    );
-    const defData = await defCheck.json();
-    const existingDef = defData?.data?.metafieldDefinitions?.edges?.[0]?.node;
-
-    if (!existingDef) {
-      // Create the definition
-      const defCreate = await admin.graphql(
-        `#graphql
-        mutation {
-          metafieldDefinitionCreate(definition: {
-            name: "Terms and Conditions Settings"
-            namespace: "avd"
-            key: "terms_settings"
-            type: "json"
-            description: "Configuration for terms and conditions checkbox"
-            ownerType: SHOP
-          }) {
-            createdDefinition { id }
-            userErrors { field message }
-          }
-        }`,
-      );
-      const defCreateData = await defCreate.json();
-      if (defCreateData?.data?.metafieldDefinitionCreate?.userErrors?.length) {
-        console.error(
-          "Metafield definition creation failed:",
-          JSON.stringify(
-            defCreateData.data.metafieldDefinitionCreate.userErrors,
-            null,
-            2,
-          ),
-        );
-      }
-    }
+    await ensureMetafieldDefinition(admin, {
+      namespace: "avd",
+      key: "terms_settings",
+      name: "Terms and Conditions Settings",
+      type: "json",
+      description: "Configuration for terms and conditions checkbox"
+    });
   },
 };

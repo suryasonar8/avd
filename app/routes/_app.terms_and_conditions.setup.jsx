@@ -6,7 +6,7 @@ import { useTranslation } from "../context/TranslationContext";
 import { authenticate } from "../shopify.server";
 import { TermsService } from "../services/terms.service";
 import { PlanService } from "../services/plan.service";
-import { ShopService } from "../services/shop.service";
+import { SettingsService } from "../services/settings.service";
 import ConditionSettings from "../components/terms-and-conditions/ConditionSettings";
 import CheckboxSettings from "../components/terms-and-conditions/CheckboxSettings";
 import PreviewPanel from "../components/terms-and-conditions/PreviewPanel";
@@ -18,12 +18,9 @@ export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
   const termsSettings = await TermsService.getSettings(session.shop);
 
-  // Fetch global settings for Brand Mark
-  const shop = await ShopService.getMetafield(admin, "avd", "settings");
-  const globalSettingsValue = shop?.metafield?.value;
-  const globalSettings = globalSettingsValue
-    ? JSON.parse(globalSettingsValue)
-    : { showBrandMark: true };
+  // Fetch global settings for Brand Mark from DB
+  const dbSettings = await SettingsService.getSettings(session.shop);
+  const globalSettings = { showBrandMark: dbSettings.showBrandMark };
 
   return { termsSettings, globalSettings };
 };
@@ -36,22 +33,14 @@ export const action = async ({ request }) => {
   if (intent === "toggle_brand_mark") {
     const showBrandMark = formData.get("showBrandMark") === "true";
 
-    const shopData = await ShopService.getMetafield(admin, "avd", "settings");
-    const existingValue = shopData?.metafield?.value;
-    const existingSettings = existingValue ? JSON.parse(existingValue) : {};
-    const newSettings = { ...existingSettings, showBrandMark };
+    // Use SettingsService to save to DB first, then sync to metafield
+    const dbSettings = await SettingsService.getSettings(session.shop);
+    const result = await SettingsService.updateSettings(admin, session.shop, {
+      ...dbSettings,
+      showBrandMark,
+    });
 
-    const shopId = await ShopService.getShopId(admin);
-
-    await ShopService.updateMetafield(
-      admin,
-      shopId,
-      "avd",
-      "settings",
-      JSON.stringify(newSettings),
-    );
-
-    return { success: true };
+    return { success: result.success };
   }
 
   const settingsStr = formData.get("termsSettings");

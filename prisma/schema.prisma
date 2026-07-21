@@ -34,12 +34,16 @@ model Session {
 }
 
 model AppSettings {
-  id          Int      @id @default(autoincrement())
-  shop        String   @unique
-  minAge      Int      @default(18)
-  redirectUrl String   @default("https://www.google.com")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  shop            String   @unique
+  minAge          Int      @default(18)
+  redirectUrl     String   @default("https://www.google.com")
+  showBrandMark   Boolean  @default(true)
+  adminLanguage   String   @default("English")
+  rememberVisitor String   @default("Session only")
+  rememberDays    Int      @default(30)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model ShopPlan {

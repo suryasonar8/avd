@@ -25,6 +25,7 @@ CREATE TABLE "AppSettings" (
     "shop" TEXT NOT NULL,
     "minAge" INTEGER NOT NULL DEFAULT 18,
     "redirectUrl" TEXT NOT NULL DEFAULT 'https://www.google.com',
+    "showBrandMark" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL
 );

@@ -3,7 +3,7 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
-import { ShopService } from "../services/shop.service";
+import { SettingsService } from "../services/settings.service";
 import { PopupEditor } from "../components/customization/PopupEditor";
 import { useTranslation } from "../context/TranslationContext";
 
@@ -16,12 +16,9 @@ export const loader = async ({ request, params }) => {
     throw new Response("Not Found", { status: 404 });
   }
 
-  // Fetch global settings for Brand Mark
-  const shop = await ShopService.getMetafield(admin, "avd", "settings");
-  const globalSettingsValue = shop?.metafield?.value;
-  const globalSettings = globalSettingsValue
-    ? JSON.parse(globalSettingsValue)
-    : { showBrandMark: true };
+  // Fetch global settings for Brand Mark from DB
+  const dbSettings = await SettingsService.getSettings(session.shop);
+  const globalSettings = { showBrandMark: dbSettings.showBrandMark };
 
   return { settings: popup, globalSettings };
 };
@@ -35,25 +32,17 @@ export const action = async ({ request, params }) => {
 
   if (intent === "toggle_brand_mark") {
     const showBrandMark = formData.get("showBrandMark") === "true";
-    // Fetch existing settings to merge them
-    const shopData = await ShopService.getMetafield(admin, "avd", "settings");
-    const existingValue = shopData?.metafield?.value;
-    const existingSettings = existingValue ? JSON.parse(existingValue) : {};
 
-    const newSettings = { ...existingSettings, showBrandMark };
+    // Use SettingsService to save to DB first, then sync to metafield
+    const currentSettings = await SettingsService.getSettings(shop);
+    const result = await SettingsService.updateSettings(admin, shop, {
+      ...currentSettings,
+      showBrandMark,
+    });
 
-    const shopId = await ShopService.getShopId(admin);
-
-    const updateData = await ShopService.updateMetafield(
-      admin,
-      shopId,
-      "avd",
-      "settings",
-      JSON.stringify(newSettings),
-    );
     return {
-      success: !updateData.data.metafieldsSet.userErrors?.length,
-      globalSettings: newSettings,
+      success: result.success,
+      globalSettings: { showBrandMark },
     };
   }
 

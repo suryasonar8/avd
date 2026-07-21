@@ -7,14 +7,18 @@ import { CustomSaveBar } from "../components/CustomSaveBar";
 import PageHeader from "../components/PageHeader";
 import PageFooter from "../components/PageFooter";
 import { ShopService } from "../services/shop.service";
+import { SettingsService } from "../services/settings.service";
+import { LANGUAGE_MAP } from "../constants/languages";
 
 export const loader = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
+  const shopDomain = session.shop;
 
-  const shop = await ShopService.getMetafield(admin, "avd", "settings");
-  const metafieldValue = shop?.metafield?.value;
-
-  const settings = metafieldValue
+  // We fetch settings from the metafield for the JSON blob to ensure we get adminLanguage, etc.
+  const shopData = await ShopService.getMetafield(admin, "avd", "settings");
+  const metafieldValue = shopData?.metafield?.value;
+  
+  const metafieldSettings = metafieldValue
     ? JSON.parse(metafieldValue)
     : {
         adminLanguage: "English",
@@ -24,35 +28,28 @@ export const loader = async ({ request }) => {
         redirectUrl: "https://www.google.com",
       };
 
+  // Fetch DB settings
+  const dbSettings = await SettingsService.getSettings(shopDomain);
+
+  // Merge them (DB settings take precedence for keys they share)
+  const settings = {
+    ...metafieldSettings,
+    ...dbSettings,
+  };
+
   return { settings };
 };
 
 export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   const formData = await request.formData();
   const settingsStr = formData.get("settings");
   const settings = JSON.parse(settingsStr);
+  const shopDomain = session.shop;
 
-  const shopId = await ShopService.getShopId(admin);
-  const responseData = await ShopService.updateMetafield(
-    admin,
-    shopId,
-    "avd",
-    "settings",
-    JSON.stringify(settings)
-  );
-  const errors = responseData.data?.metafieldsSet?.userErrors;
+  const result = await SettingsService.updateSettings(admin, shopDomain, settings);
 
-  return { success: !errors?.length };
-};
-
-const LANGUAGE_MAP = {
-  English: "en",
-  Deutsch: "de",
-  Français: "fr",
-  Italiano: "it",
-  Español: "es",
-  हिन्दी: "hi",
+  return { success: result.success };
 };
 
 export default function SettingsPage() {

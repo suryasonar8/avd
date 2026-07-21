@@ -8,22 +8,8 @@ import { loadTranslations } from "../i18n/i18n";
 import { useTranslation } from "../context/TranslationContext";
 import { ShopService } from "../services/shop.service";
 import { useState, useEffect } from "react";
+import { LANGUAGE_MAP } from "../constants/languages";
 
-const LANGUAGE_MAP = {
-  English: "en",
-  Deutsch: "de",
-  Français: "fr",
-  Italiano: "it",
-  Español: "es",
-  हिन्दी: "hi",
-  Hindi: "hi",
-  en: "en",
-  de: "de",
-  fr: "fr",
-  it: "it",
-  es: "es",
-  hi: "hi",
-};
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);

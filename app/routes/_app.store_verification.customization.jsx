@@ -3,19 +3,16 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { PlanService } from "../services/plan.service";
 import { PopupService } from "../services/popup.service";
-import { ShopService } from "../services/shop.service";
+import { SettingsService } from "../services/settings.service";
 import { PopupEditor } from "../components/customization/PopupEditor";
 import { useTranslation } from "../context/TranslationContext";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
 
-  // Fetch global settings for Brand Mark
-  const shop = await ShopService.getMetafield(admin, "avd", "settings");
-  const globalSettingsValue = shop?.metafield?.value;
-  const globalSettings = globalSettingsValue
-    ? JSON.parse(globalSettingsValue)
-    : { showBrandMark: true };
+  // Fetch global settings for Brand Mark from DB
+  const dbSettings = await SettingsService.getSettings(session.shop);
+  const globalSettings = { showBrandMark: dbSettings.showBrandMark };
 
   // Server-side gating
   const hasAccess = await PlanService.hasAccess(
@@ -79,22 +76,14 @@ export const action = async ({ request }) => {
   if (intent === "toggle_brand_mark") {
     const showBrandMark = formData.get("showBrandMark") === "true";
 
-    const shopData = await ShopService.getMetafield(admin, "avd", "settings");
-    const existingValue = shopData?.metafield?.value;
-    const existingSettings = existingValue ? JSON.parse(existingValue) : {};
-    const newSettings = { ...existingSettings, showBrandMark };
+    // Use SettingsService to save to DB first, then sync to metafield
+    const dbSettings = await SettingsService.getSettings(shop);
+    const result = await SettingsService.updateSettings(admin, shop, {
+      ...dbSettings,
+      showBrandMark,
+    });
 
-    const shopId = await ShopService.getShopId(admin);
-
-    await ShopService.updateMetafield(
-      admin,
-      shopId,
-      "avd",
-      "settings",
-      JSON.stringify(newSettings)
-    );
-
-    return { success: true };
+    return { success: result.success };
   }
 
   const configStr = formData.get("config");
