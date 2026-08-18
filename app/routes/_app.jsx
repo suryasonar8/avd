@@ -24,12 +24,10 @@ export const loader = async ({ request }) => {
     let settings = {};
     if (metafieldValue) {
       settings = JSON.parse(metafieldValue);
-      console.log("[i18n] Loaded settings from metafield:", settings);
       if (settings.adminLanguage) {
         locale = LANGUAGE_MAP[settings.adminLanguage] || "en";
       }
     }
-    console.log("[i18n] Loader resolved locale:", locale);
 
     // Sync plan to global settings for theme extensions
     if (settings.plan !== plan) {
@@ -42,11 +40,9 @@ export const loader = async ({ request }) => {
         "settings",
         JSON.stringify(newSettings)
       );
-      console.log("[plan] Synced plan to avd.settings:", plan);
 
       // Enforce plan limits on all gated features
       await PlanService.enforcePlanLimits(admin, session.shop);
-      console.log("[plan] Enforced plan limits for:", plan);
     }
   } catch (e) {
     // Fall back to English if settings can't be loaded

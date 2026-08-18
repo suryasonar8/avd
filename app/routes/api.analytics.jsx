@@ -2,17 +2,11 @@ import { authenticate } from "../shopify.server";
 import { AnalyticsService } from "../services/analytics.service";
 
 export const action = async ({ request }) => {
-  // Authenticate via App Proxy (called from storefront)
-  let shop;
-  try {
-    const { session, shop: proxyShop } =
-      await authenticate.public.appProxy(request);
-    shop = proxyShop || session?.shop;
-  } catch (error) {
-    console.error("App Proxy authentication failed:", error);
-    const url = new URL(request.url);
-    shop = url.searchParams.get("shop");
-  }
+  // Authenticate via App Proxy (called from storefront) — signature is
+  // verified by the SDK; do not fall back to an unsigned shop param.
+  const { session, shop: proxyShop } =
+    await authenticate.public.appProxy(request);
+  const shop = proxyShop || session?.shop;
 
   if (!shop) {
     return Response.json({ error: "Missing shop parameter" }, { status: 400 });
@@ -34,22 +28,12 @@ export const action = async ({ request }) => {
  * GET /api/analytics?shop=...&startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
  *
  * Called from the admin dashboard (authenticated context).
- * Uses admin session to derive shop — ignores the shop query param for security.
+ * Uses admin session to derive shop — the shop query param is ignored.
  */
 export const loader = async ({ request }) => {
   // Authenticate as admin (this is called from the embedded admin app)
-  let shop;
-  try {
-    const { session } = await authenticate.admin(request);
-    shop = session.shop;
-  } catch {
-    const url = new URL(request.url);
-    shop = url.searchParams.get("shop");
-  }
-
-  if (!shop) {
-    return Response.json({ error: "Missing shop parameter" }, { status: 400 });
-  }
+  const { session } = await authenticate.admin(request);
+  const shop = session.shop;
 
   const url = new URL(request.url);
   const startDate = url.searchParams.get("startDate") || null;
