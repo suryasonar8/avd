@@ -1,5 +1,6 @@
 import db from "../db.server";
 import { ensureMetafieldDefinition } from "../utils/metafield.server";
+import { ShopService } from "./shop.service";
 
 export const SettingsService = {
   async getSettings(shop) {
@@ -61,6 +62,14 @@ export const SettingsService = {
     // Ensure definitions exist
     await this.ensureDefinitionsExist(admin);
 
+    // Merge onto the existing metafield value instead of overwriting it wholesale,
+    // since other parts of the app (appStatus, tested, plan) store fields in the
+    // same metafield that aren't tracked by SettingsService.
+    const existing = await ShopService.getMetafield(admin, "avd", "settings");
+    const existingValue = existing?.metafield?.value;
+    const existingSettings = existingValue ? JSON.parse(existingValue) : {};
+    const mergedSettings = { ...existingSettings, ...newSettings };
+
     const result = await admin.graphql(
       `#graphql
       mutation updateSettings($metafields: [MetafieldsSetInput!]!) {
@@ -77,7 +86,7 @@ export const SettingsService = {
               key: "settings",
               type: "json",
               ownerId: shopId,
-              value: JSON.stringify(newSettings),
+              value: JSON.stringify(mergedSettings),
             },
           ],
         },
