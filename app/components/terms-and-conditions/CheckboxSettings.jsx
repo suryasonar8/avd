@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types, jsx-a11y/anchor-is-valid */
-import { Card } from "../Card";
 import { ColorInput } from "../ColorInput";
 import { NumberInput } from "../NumberInput";
 import { Badge } from "../Badge";
@@ -51,14 +50,25 @@ export default function CheckboxSettings({ termsSettings, setTermsSettings }) {
   const { canAccess } = usePlan();
 
   return (
-    <Card
-      title={t("termsAndConditions.message")}
-      badge={
-        !canAccess("terms.checkbox.text") ? (
-          <Badge text={t("common.premiumPlan")} type="premium" />
-        ) : null
-      }
+    <div
+      style={{
+        background: "#fff",
+        border: "1px solid #E1E3E5",
+        borderRadius: "10px",
+        padding: "16px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
+      }}
     >
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "8px" }}>
+        <span style={{ fontSize: "13px", fontWeight: 700 }}>
+          {t("termsAndConditions.message")}
+        </span>
+        {!canAccess("terms.checkbox.text") && (
+          <Badge text={t("common.premiumPlan")} type="premium" />
+        )}
+      </div>
       <TextInput
         label={t("termsAndConditions.messageText")}
         required
@@ -106,6 +116,6 @@ export default function CheckboxSettings({ termsSettings, setTermsSettings }) {
         {t("termsAndConditions.needMoreCustomization")}{" "}
         <s-link href="#">{t("termsAndConditions.contactUs")}</s-link>
       </s-text>
-    </Card>
+    </div>
   );
 }

@@ -87,9 +87,9 @@
 }
 
 .age-verification-footer {
-  margin-top: 50px;
+  margin-top: 20px;
   font-size: 11px;
-  color: #FFF;
+  color: #999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -97,7 +97,6 @@
 }
 
 .brand-mark {
-  color: #FFF;
   display: flex;
   align-items: center;
   gap: 2px;
@@ -109,7 +108,7 @@
 }
 
 .brand-name {
-  color: #FFF;
+  color: #005F99;
   text-decoration: underline;
 }
 
@@ -144,7 +143,7 @@
   }
 
   .age-verification-footer {
-    margin-top: 30px;
+    margin-top: 20px;
   }
 }
 

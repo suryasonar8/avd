@@ -134,8 +134,18 @@ export default function PopupToolbar({
               setIsFilterDropdownOpen(!isFilterDropdownOpen);
             }}
           >
-            {t("storeVerification.addFilter")}
-            <PlusIcon style={{ marginLeft: "4px" }} />
+            <span
+              style={{
+                display: "inline-flex",
+
+                alignItems: "center",
+
+                gap: "4px",
+              }}
+            >
+              {t("storeVerification.addFilter")}
+              <PlusIcon />
+            </span>
           </s-clickable-chip>
 
           {isFilterDropdownOpen && dropdownAnchor === "add" && (

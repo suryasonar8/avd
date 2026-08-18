@@ -228,6 +228,7 @@ export default function SettingsPage() {
                           rememberDays: parseInt(e.currentTarget.value) || 0,
                         })
                       }
+                      suffix="day(s)"
                     />
                   </div>
                 )}

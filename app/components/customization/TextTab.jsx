@@ -18,7 +18,7 @@ export function TextTab({ config, setConfig }) {
         }}
       >
         <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-          {t("popupEditor.textTab.popupHeading")}
+          <strong>{t("popupEditor.textTab.popupHeading")}</strong>
         </s-text>
         <s-divider></s-divider>
         <RichTextEditor
@@ -45,7 +45,7 @@ export function TextTab({ config, setConfig }) {
         }}
       >
         <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-          {t("popupEditor.textTab.popupSubHeading")}
+          <strong>{t("popupEditor.textTab.popupSubHeading")}</strong>
         </s-text>
         <s-divider></s-divider>
         <RichTextEditor

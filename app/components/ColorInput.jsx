@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { HexAlphaColorPicker } from "react-colorful";
 
 export const ColorInput = ({
@@ -10,22 +10,6 @@ export const ColorInput = ({
   disabled,
 }) => {
   const [showPicker, setShowPicker] = useState(false);
-  const pickerRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (pickerRef.current && !pickerRef.current.contains(event.target)) {
-        setShowPicker(false);
-      }
-    };
-
-    if (showPicker && !disabled) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showPicker, disabled]);
 
   return (
     <div
@@ -75,7 +59,6 @@ export const ColorInput = ({
 
       {showPicker && (
         <div
-          ref={pickerRef}
           style={{
             zIndex: 10,
             marginTop: "12px",

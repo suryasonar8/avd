@@ -39,7 +39,7 @@ export function InfoTab({ config, setConfig }) {
         }}
       >
         <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-          {t("popupEditor.infoTab.popupInfo")}
+          <strong>{t("popupEditor.infoTab.popupInfo")}</strong>
         </s-text>
         <s-divider></s-divider>
 
@@ -55,7 +55,7 @@ export function InfoTab({ config, setConfig }) {
               style={{
                 display: "block",
                 fontSize: "13px",
-                fontWeight: "600",
+                fontWeight: "bold",
                 marginBottom: "8px",
               }}
             >
@@ -76,8 +76,18 @@ export function InfoTab({ config, setConfig }) {
           </div>
 
           <div>
+            <label
+              style={{
+                display: "block",
+                fontSize: "13px",
+                fontWeight: "bold",
+                marginBottom: "8px",
+              }}
+            >
+              {t("popupEditor.infoTab.name")}{" "}
+              <span style={{ color: "red" }}>*</span>
+            </label>
             <s-text-field
-              label={t("popupEditor.infoTab.name")}
               required
               value={config.name}
               placeholder={t("popupEditor.infoTab.enterPopupName")}
@@ -103,7 +113,7 @@ export function InfoTab({ config, setConfig }) {
             style={{
               display: "block",
               fontSize: "13px",
-              fontWeight: "600",
+              fontWeight: "bold",
               marginBottom: "8px",
             }}
           >
@@ -134,18 +144,31 @@ export function InfoTab({ config, setConfig }) {
         {config.method === "Birthdate entry" && (
           <>
             <div>
-              <s-number-field
-                label={t("popupEditor.infoTab.verifyAge")}
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "13px",
+                  fontWeight: "bold",
+                  marginBottom: "8px",
+                }}
+              >
+                {t("popupEditor.infoTab.verifyAge")}
+              </label>
+              <s-select
                 value={String(config.verifyAge || 18)}
-                min="0"
-                max="120"
                 onChange={(e) =>
                   setConfig((prev) => ({
                     ...prev,
                     verifyAge: parseInt(e.currentTarget.value) || 0,
                   }))
                 }
-              />
+              >
+                {Array.from({ length: 100 }, (_, i) => i + 1).map((age) => (
+                  <s-option key={age} value={String(age)}>
+                    {age}
+                  </s-option>
+                ))}
+              </s-select>
             </div>
 
             <div>
@@ -153,7 +176,7 @@ export function InfoTab({ config, setConfig }) {
                 style={{
                   display: "block",
                   fontSize: "13px",
-                  fontWeight: "600",
+                  fontWeight: "bold",
                   marginBottom: "8px",
                 }}
               >
@@ -208,7 +231,7 @@ export function InfoTab({ config, setConfig }) {
           }}
         >
           <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-            {t("popupEditor.infoTab.condition")}
+            <strong>{t("popupEditor.infoTab.condition")}</strong>
           </s-text>
           {!canAccess("sv.info.pages.home") ? (
             <Badge text={t("common.basicPlanOrHigher")} type="basic" />
@@ -221,7 +244,7 @@ export function InfoTab({ config, setConfig }) {
             style={{
               display: "block",
               fontSize: "13px",
-              fontWeight: "600",
+              fontWeight: "bold",
               marginBottom: "8px",
             }}
           >
@@ -235,7 +258,7 @@ export function InfoTab({ config, setConfig }) {
             style={{
               display: "block",
               fontSize: "13px",
-              fontWeight: "600",
+              fontWeight: "bold",
               marginBottom: "8px",
             }}
           >

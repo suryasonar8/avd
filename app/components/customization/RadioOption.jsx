@@ -24,15 +24,16 @@ const radioStyles = {
   input: {
     appearance: "none",
     WebkitAppearance: "none",
-    width: "18px",
-    height: "18px",
-    border: "2px solid #8c9196",
+    width: "16px",
+    height: "16px",
+    border: "1px solid #8c9196",
     borderRadius: "50%",
     margin: 0,
     cursor: "pointer",
     flexShrink: 0,
     position: "relative",
     backgroundColor: "#fff",
+    boxSizing: "border-box",
   },
 };
 
@@ -48,9 +49,9 @@ export function RadioOption({ label, name = "radio-group", value, selected, disa
         onChange={() => onChange(value)}
         style={{
           ...radioStyles.input,
-          borderColor: selected ? "#303030" : "#8c9196",
-          backgroundColor: selected ? "#303030" : "#fff",
-          boxShadow: selected ? "inset 0 0 0 3px #fff" : "none",
+          border: selected ? "5px solid #303030" : "1px solid #8c9196",
+          backgroundColor: "#fff",
+          boxShadow: "none",
           cursor: disabled ? "not-allowed" : "pointer",
           opacity: disabled ? 0.5 : 1,
         }}

@@ -165,7 +165,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
         }}
       >
         <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-          {t("popupEditor.backgroundTab.popupBackground")}
+          <strong>{t("popupEditor.backgroundTab.popupBackground")}</strong>
         </s-text>
         <s-divider></s-divider>
 
@@ -174,7 +174,6 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
             style={{
               display: "block",
               fontSize: "13px",
-              fontWeight: "600",
               marginBottom: "8px",
             }}
           >
@@ -182,9 +181,15 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
           </label>
           <s-choice-list
             name="bgType"
-            values={[config.background.bgType === "Solid color background" ? "Solid color background" : "Image background"]}
+            values={[
+              config.background.bgType === "Solid color background"
+                ? "Solid color background"
+                : "Image background",
+            ]}
             onChange={(e) => {
-              const val = e.currentTarget.values ? e.currentTarget.values[0] : (e.target.value || e.currentTarget.value);
+              const val = e.currentTarget.values
+                ? e.currentTarget.values[0]
+                : e.target.value || e.currentTarget.value;
               setConfig({
                 ...config,
                 background: {
@@ -215,7 +220,6 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
               style={{
                 display: "block",
                 fontSize: "13px",
-                fontWeight: "600",
                 marginBottom: "8px",
               }}
             >
@@ -315,7 +319,6 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
             <label
               style={{
                 fontSize: "13px",
-                fontWeight: "600",
                 opacity: canAccess("sv.bg.logo") ? 1 : 0.5,
               }}
             >
@@ -399,7 +402,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
           }}
         >
           <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-            {t("popupEditor.backgroundTab.borderSetting")}
+            <strong>{t("popupEditor.backgroundTab.borderSetting")}</strong>
           </s-text>
           {!canAccess("sv.bg.border-color") ? (
             <Badge text={t("common.premiumPlan")} type="premium" />

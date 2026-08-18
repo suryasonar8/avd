@@ -44,17 +44,7 @@ export function CSSTab({ config, setConfig }) {
           opacity: hasAccess ? 1 : 0.6,
         }}
       >
-        <div
-          style={{
-            padding: "8px 12px",
-            background: "#F9FAFB",
-            borderBottom: "1px solid #CBCFD2",
-            fontSize: "12px",
-            color: "#6D7175",
-          }}
-        >
-          1
-        </div>
+
         <textarea
           value={config.css}
           disabled={!hasAccess}

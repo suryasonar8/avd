@@ -311,7 +311,7 @@ export const Preview = ({
               <div
                 className="age-verification-footer"
                 style={{
-                  marginTop: previewMode === "desktop" ? "50px" : "30px",
+                  marginTop: "20px",
                   fontSize: "11px",
                   color: "#999",
                   display: "flex",
@@ -323,7 +323,6 @@ export const Preview = ({
                 <span
                   className="brand-mark"
                   style={{
-                    color: "#FFF",
                     display: "flex",
                     alignItems: "center",
                     gap: "2px",

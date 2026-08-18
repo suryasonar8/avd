@@ -23,7 +23,7 @@ export function ButtonTab({ config, setConfig }) {
         }}
       >
         <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-          {t("popupEditor.buttonTab.submitButton")}
+          <strong>{t("popupEditor.buttonTab.submitButton")}</strong>
         </s-text>
         <s-divider></s-divider>
         <RichTextEditor
@@ -50,13 +50,14 @@ export function ButtonTab({ config, setConfig }) {
         }}
       >
         <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-          {t("popupEditor.buttonTab.submitButtonAction")}
+          <strong>{t("popupEditor.buttonTab.submitButtonAction")}</strong>
         </s-text>
         <s-divider></s-divider>
         <div>
           <s-text-field
             label={t("popupEditor.buttonTab.errorMessage")}
             value={config.button.errorMsg || ""}
+            placeholder="Enter error message"
             maxLength={255}
             onChange={(e) =>
               setConfig((prev) => ({
@@ -92,7 +93,7 @@ export function ButtonTab({ config, setConfig }) {
         }}
       >
         <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-          {t("popupEditor.buttonTab.buttonStyle")}
+          <strong>{t("popupEditor.buttonTab.buttonStyle")}</strong>
         </s-text>
         <s-divider></s-divider>
         <ColorInput
@@ -174,7 +175,7 @@ export function ButtonTab({ config, setConfig }) {
         }}
       >
         <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-          {t("popupEditor.buttonTab.cancelButton")}
+          <strong>{t("popupEditor.buttonTab.cancelButton")}</strong>
         </s-text>
         <s-divider></s-divider>
         <RichTextEditor
@@ -201,7 +202,7 @@ export function ButtonTab({ config, setConfig }) {
         }}
       >
         <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-          {t("popupEditor.buttonTab.cancelButtonAction")}
+          <strong>{t("popupEditor.buttonTab.cancelButtonAction")}</strong>
         </s-text>
         <s-divider></s-divider>
 
@@ -262,6 +263,7 @@ export function ButtonTab({ config, setConfig }) {
               <s-text-field
                 label={t("popupEditor.buttonTab.errorMessage")}
                 value={config.button.cancelErrorMsg || ""}
+                placeholder="Enter error message"
                 maxLength={255}
                 onChange={(e) =>
                   setConfig((prev) => ({
@@ -302,7 +304,7 @@ export function ButtonTab({ config, setConfig }) {
         }}
       >
         <s-text variant="headingMd" as="h2" style={{ margin: 0 }}>
-          {t("popupEditor.buttonTab.cancelButtonStyle")}
+          <strong>{t("popupEditor.buttonTab.cancelButtonStyle")}</strong>
         </s-text>
         <s-divider></s-divider>
         <ColorInput

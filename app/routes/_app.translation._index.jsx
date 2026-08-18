@@ -295,7 +295,7 @@ export default function TranslationPage() {
               <div
                 style={{
                   textAlign: "center",
-                  padding: "60px 0 0 0",
+                  padding: "60px 0",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",

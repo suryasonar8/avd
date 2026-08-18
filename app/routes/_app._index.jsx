@@ -244,7 +244,9 @@ export default function Dashboard() {
               onClick={() => window.open(appEmbedUrl, "_blank")}
             >
               <span style={{ marginRight: "4px" }}>🔗</span>{" "}
-              {t("dashboard.activeAppEmbed")}
+              {appEmbedEnabled
+                ? t("dashboard.deactivateAppEmbed")
+                : t("dashboard.activeAppEmbed")}
             </s-button>
             <a
               href="#"
