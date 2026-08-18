@@ -1,0 +1,13 @@
+// Production datasource, used only inside the Docker build.
+// The Dockerfile copies this over prisma/schema/schema.prisma before
+// `prisma generate`/`db push` run, so the models in prisma/schema/models.prisma
+// are shared as-is between dev (sqlite) and prod (postgresql) — only this
+// generator/datasource block differs.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}

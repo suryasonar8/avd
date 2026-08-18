@@ -29,12 +29,12 @@ const DeleteConfirmModal = forwardRef(function DeleteConfirmModal(
 
   const titleText =
     mode === "single"
-      ? t("common.delete")
+      ? t("storeVerification.deleteRuleTitle") || "Delete rule"
       : t("storeVerification.deleteConfirmTitle");
 
   const bodyText =
     mode === "single"
-      ? t("storeVerification.deleteConfirmSingle")
+      ? t("storeVerification.deleteConfirmBody")
       : t("storeVerification.deleteConfirmBody");
 
   return (

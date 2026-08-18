@@ -108,6 +108,7 @@
     "searchAndFilters": "Suche & Filter",
     "deleteAllPopups": "Alle Pop-ups löschen",
     "addFilter": "Filter hinzufügen",
+    "deleteRuleTitle": "Regel löschen",
     "deleteConfirmTitle": "Möchten Sie alle ausgewählten Regeln löschen",
     "deleteConfirmBody": "Wenn Sie die Regel löschen, können Sie sie nicht wiederherstellen",
     "deleteConfirmSingle": "Sind Sie sicher, dass Sie dieses Pop-up löschen möchten?",

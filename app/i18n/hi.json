@@ -108,6 +108,7 @@
     "searchAndFilters": "खोज और फ़िल्टर",
     "deleteAllPopups": "सभी पॉप-अप हटाएं",
     "addFilter": "फ़िल्टर जोड़ें",
+    "deleteRuleTitle": "नियम हटाएं",
     "deleteConfirmTitle": "क्या आप सभी चयनित नियमों को हटाना चाहते हैं",
     "deleteConfirmBody": "यदि आप नियम हटाते हैं, तो आप इसे वापस नहीं ला सकते",
     "deleteConfirmSingle": "क्या आप वाकई इस पॉप-अप को हटाना चाहते हैं?",

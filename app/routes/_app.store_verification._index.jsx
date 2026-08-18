@@ -56,13 +56,16 @@ export default function AppPage() {
   ]);
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteMode, setDeleteMode] = useState("all");
+  const [singleDeleteId, setSingleDeleteId] = useState(null);
 
   const handleEdit = (id) => {
     navigate(`/store_verification/${id}`);
   };
 
   const handleDelete = (id) => {
-    fetcher.submit({ action: "delete", id }, { method: "POST" });
+    setSingleDeleteId(id);
+    setDeleteMode("single");
+    deleteModalRef.current?.open("single");
   };
 
   const handleAddFilter = (type, value) => {
@@ -100,6 +103,16 @@ export default function AppPage() {
   };
 
   const handleDeleteSubmit = () => {
+    if (deleteMode === "single") {
+      if (!singleDeleteId) return;
+      fetcher.submit(
+        { action: "delete", id: singleDeleteId },
+        { method: "POST" },
+      );
+      setSingleDeleteId(null);
+      return;
+    }
+
     const idsToDelete =
       deleteMode === "selected" ? selectedIds : popups.map((p) => p.id);
     if (idsToDelete.length === 0) return;
@@ -107,7 +120,9 @@ export default function AppPage() {
       { action: "delete_bulk", ids: JSON.stringify(idsToDelete) },
       { method: "POST" },
     );
-    setSelectedIds([]);
+    if (deleteMode === "selected") {
+      setSelectedIds([]);
+    }
   };
 
   // Helper for relative time formatting
