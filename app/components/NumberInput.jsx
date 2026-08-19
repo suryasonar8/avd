@@ -23,7 +23,7 @@ export const NumberInput = ({
     <div style={{ maxWidth: "240px" }}>
       <s-text-field
         type="number"
-        value={value.toString()}
+        value={(value ?? "").toString()}
         disabled={disabled}
         suffix={suffix}
         onChange={(e) => onChange(parseInt(e.currentTarget.value) || 0)}

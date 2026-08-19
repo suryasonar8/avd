@@ -85,6 +85,11 @@
       "yesterday": "gestern",
       "7days": "7 Tage",
       "30days": "30 Tage"
+    },
+    "turnOffModal": {
+      "title": "Altersverifizierung deaktivieren",
+      "body": "Wenn Sie diese Funktion deaktivieren, kann die Altersverifizierung auf Ihrer Website keine Warnungen für minderjährige Besucher mehr anzeigen.",
+      "turnOff": "Deaktivieren"
     }
   },
   "dateRangePicker": {
@@ -420,7 +425,12 @@
       "Unbegrenzte übersetzte Sprachen",
       "Allgemeine Geschäftsbedingungen: Produkt- & Warenkorbseite",
       "24/7 Live-Chat-Support (VIP-Priorität)"
-    ]
+    ],
+    "discountModal": {
+      "title": "Rabattcode einlösen",
+      "label": "Rabattcode",
+      "apply": "Anwenden"
+    }
   },
   "settings": {
     "pageTitle": "Einstellungen",

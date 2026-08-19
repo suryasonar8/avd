@@ -85,6 +85,11 @@
       "yesterday": "yesterday",
       "7days": "7 days",
       "30days": "30 days"
+    },
+    "turnOffModal": {
+      "title": "Turn off Age Verification",
+      "body": "If you disable this feature, Age Verification will not be able to display warnings on your website to underage visitors.",
+      "turnOff": "Turn off"
     }
   },
   "dateRangePicker": {
@@ -420,7 +425,12 @@
       "Unlimited translated languages",
       "Terms & conditions: product & cart page",
       "24/7 Live chat support (VIP priority)"
-    ]
+    ],
+    "discountModal": {
+      "title": "Apply your discount code",
+      "label": "Discount code",
+      "apply": "Apply"
+    }
   },
   "settings": {
     "pageTitle": "Settings",

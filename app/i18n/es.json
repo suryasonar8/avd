@@ -85,6 +85,11 @@
       "yesterday": "ayer",
       "7days": "7 días",
       "30days": "30 días"
+    },
+    "turnOffModal": {
+      "title": "Desactivar verificación de edad",
+      "body": "Si desactiva esta función, la verificación de edad no podrá mostrar advertencias a los visitantes menores de edad en su sitio web.",
+      "turnOff": "Desactivar"
     }
   },
   "dateRangePicker": {
@@ -420,7 +425,12 @@
       "Idiomas traducidos ilimitados",
       "Términos y condiciones: página de producto y carrito",
       "Soporte por chat en vivo 24/7 (prioridad VIP)"
-    ]
+    ],
+    "discountModal": {
+      "title": "Aplica tu código de descuento",
+      "label": "Código de descuento",
+      "apply": "Aplicar"
+    }
   },
   "settings": {
     "pageTitle": "Configuración",

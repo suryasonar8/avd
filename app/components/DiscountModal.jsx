@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useTranslation } from "../context/TranslationContext";
 
 export default function DiscountModal({ isOpen, onClose, onApply }) {
+  const { t } = useTranslation();
   const [discountCode, setDiscountCode] = useState("");
 
   if (!isOpen) return null;
@@ -65,7 +67,7 @@ export default function DiscountModal({ isOpen, onClose, onApply }) {
               margin: 0,
             }}
           >
-            Apply your discount code
+            {t("pricing.discountModal.title")}
           </h3>
           <button
             onClick={handleClose}
@@ -107,7 +109,7 @@ export default function DiscountModal({ isOpen, onClose, onApply }) {
               marginBottom: "8px",
             }}
           >
-            Discount code
+            {t("pricing.discountModal.label")}
           </label>
           <input
             id="discount-code-input"
@@ -158,7 +160,7 @@ export default function DiscountModal({ isOpen, onClose, onApply }) {
               transition: "background-color 0.2s",
             }}
           >
-            Apply
+            {t("pricing.discountModal.apply")}
           </button>
         </div>
       </div>

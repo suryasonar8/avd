@@ -14,8 +14,6 @@ export const loader = async ({ request }) => {
   return { settings };
 };
 
-export const action = async ({ request }) => {};
-
 export default function TermsAndConditions() {
   const navigate = useNavigate();
   const { settings } = useLoaderData();

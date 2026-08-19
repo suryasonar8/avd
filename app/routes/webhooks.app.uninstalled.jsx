@@ -15,6 +15,7 @@ export const action = async ({ request }) => {
       await db.termsSettings.deleteMany({ where: { shop } });
       await db.checkoutBanner.deleteMany({ where: { shop } });
       await db.analyticsEvent.deleteMany({ where: { shop } });
+      await db.appSettings.deleteMany({ where: { shop } });
       console.log(`Deleted ${deletedPopups.count} popups from DB for ${shop}`);
 
       // 2. Cleanup Metafield Definitions (this deletes definition and values)

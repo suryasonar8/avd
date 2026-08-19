@@ -85,6 +85,11 @@
       "yesterday": "hier",
       "7days": "7 jours",
       "30days": "30 jours"
+    },
+    "turnOffModal": {
+      "title": "Désactiver la vérification d'âge",
+      "body": "Si vous désactivez cette fonctionnalité, la vérification d'âge ne pourra plus afficher d'avertissements aux visiteurs mineurs sur votre site.",
+      "turnOff": "Désactiver"
     }
   },
   "dateRangePicker": {
@@ -420,7 +425,12 @@
       "Langues traduites illimitées",
       "Conditions générales : page produit et panier",
       "Assistance par chat en direct 24h/24 et 7j/7 (priorité VIP)"
-    ]
+    ],
+    "discountModal": {
+      "title": "Appliquer votre code de réduction",
+      "label": "Code de réduction",
+      "apply": "Appliquer"
+    }
   },
   "settings": {
     "pageTitle": "Paramètres",

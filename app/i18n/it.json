@@ -85,6 +85,11 @@
       "yesterday": "ieri",
       "7days": "7 giorni",
       "30days": "30 giorni"
+    },
+    "turnOffModal": {
+      "title": "Disattiva verifica dell'età",
+      "body": "Se disattivi questa funzione, la verifica dell'età non potrà più mostrare avvisi ai visitatori minorenni sul tuo sito web.",
+      "turnOff": "Disattiva"
     }
   },
   "dateRangePicker": {
@@ -420,7 +425,12 @@
       "Lingue tradotte illimitate",
       "Termini e condizioni: pagina del prodotto e del carrello",
       "Assistenza via chat dal vivo 24/7 (priorità VIP)"
-    ]
+    ],
+    "discountModal": {
+      "title": "Applica il tuo codice sconto",
+      "label": "Codice sconto",
+      "apply": "Applica"
+    }
   },
   "settings": {
     "pageTitle": "Impostazioni",

@@ -8,9 +8,9 @@ export default function TurnOffModal({ onConfirm }) {
   return (
     <ui-modal id="turn-off-modal">
       <div style={{ padding: "20px" }}>
-        If you disable this feature, Age Verification will not be able to display warnings on your website to underage visitors.
+        {t("dashboard.turnOffModal.body")}
       </div>
-      <ui-title-bar title="Turn off Age Verification">
+      <ui-title-bar title={t("dashboard.turnOffModal.title")}>
         <button
           variant="primary"
           onClick={() => {
@@ -18,7 +18,7 @@ export default function TurnOffModal({ onConfirm }) {
             if (onConfirm) onConfirm();
           }}
         >
-          Turn off
+          {t("dashboard.turnOffModal.turnOff")}
         </button>
         <button onClick={() => shopify.modal.hide("turn-off-modal")}>
           {t("common.cancel")}
