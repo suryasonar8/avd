@@ -54,8 +54,13 @@ export const action = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
   const formData = await request.formData();
   const actionType = formData.get("_action");
-  const currentSettingsStr = formData.get("settings");
-  const currentSettings = JSON.parse(currentSettingsStr || "{}");
+
+  // Re-fetch the metafield fresh instead of trusting the client's snapshot,
+  // since other parts of the app (settings page, plan sync) write to the
+  // same "avd/settings" metafield and the client copy can be stale.
+  const shopData = await ShopService.getMetafield(admin, "avd", "settings");
+  const existingValue = shopData?.metafield?.value;
+  const currentSettings = existingValue ? JSON.parse(existingValue) : {};
 
   let settings;
   if (actionType === "markTested") {
