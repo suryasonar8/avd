@@ -22,7 +22,6 @@ export const Preview = ({
           border: "1px solid #E1E3E5",
           display: "flex",
           flexDirection: "column",
-          minHeight: "600px",
           position: "relative",
           overflow: "hidden",
         }}
@@ -88,7 +87,7 @@ export const Preview = ({
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            padding: "40px",
+            padding: "16px",
             background:
               config.background.bgType === "Image background" &&
               config.background.backgroundImage
@@ -109,12 +108,12 @@ export const Preview = ({
               alignItems: "center",
               justifyContent: "center",
               padding: "30px",
+              boxSizing: "border-box",
               textAlign: "center",
-              boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
               position: "relative",
               borderRadius:
                 previewMode === "mobile"
-                  ? "20px"
+                  ? `${config.background.borderRadius}px`
                   : `${config.background.borderRadius}px`,
               border: `${config.background.borderWidth}px solid ${config.background.borderColor}`,
             }}
@@ -122,7 +121,7 @@ export const Preview = ({
             {config.background.logo && (
               <div
                 className="age-verification-logo"
-                style={{ textAlign: "center", marginBottom: "20px" }}
+                style={{ textAlign: "center" }}
               >
                 <img
                   src={config.background.logo}
@@ -140,7 +139,7 @@ export const Preview = ({
               style={{
                 fontSize: previewMode === "desktop" ? "26px" : "18px",
                 fontWeight: "700",
-                marginBottom: "20px",
+                marginTop: 0,
                 letterSpacing: "0.5px",
               }}
               dangerouslySetInnerHTML={{ __html: config.text.heading }}
@@ -344,58 +343,56 @@ export const Preview = ({
               </div>
             )}
           </div>
-
-          {showBrandMark !== false ? (
-            <button
-              onClick={() => {
-                setGlobalSettings({
-                  ...globalSettings,
-                  showBrandMark: false,
-                });
-                fetcher.submit(
-                  { intent: "toggle_brand_mark", showBrandMark: "false" },
-                  { method: "POST" },
-                );
-              }}
-              style={{
-                marginTop: "20px",
-                background: "none",
-                border: "none",
-                color: "#005F99",
-                textDecoration: "underline",
-                fontSize: "13px",
-                fontWeight: "500",
-                cursor: "pointer",
-              }}
-            >
-              {t("popupEditor.clickToRemoveBrandMark")}
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                setGlobalSettings({ ...globalSettings, showBrandMark: true });
-                fetcher.submit(
-                  { intent: "toggle_brand_mark", showBrandMark: "true" },
-                  { method: "POST" },
-                );
-              }}
-              style={{
-                marginTop: "20px",
-                background: "none",
-                border: "none",
-                color: "#005F99",
-                textDecoration: "underline",
-                fontSize: "13px",
-                fontWeight: "500",
-                cursor: "pointer",
-              }}
-            >
-              {t("popupEditor.clickToShowBrandMark")}
-            </button>
-          )}
         </div>
+        {showBrandMark !== false ? (
+          <button
+            onClick={() => {
+              setGlobalSettings({
+                ...globalSettings,
+                showBrandMark: false,
+              });
+              fetcher.submit(
+                { intent: "toggle_brand_mark", showBrandMark: "false" },
+                { method: "POST" },
+              );
+            }}
+            style={{
+              margin: "12px",
+              background: "none",
+              border: "none",
+              color: "#005F99",
+              textDecoration: "underline",
+              fontSize: "13px",
+              fontWeight: "500",
+              cursor: "pointer",
+            }}
+          >
+            {t("popupEditor.clickToRemoveBrandMark")}
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              setGlobalSettings({ ...globalSettings, showBrandMark: true });
+              fetcher.submit(
+                { intent: "toggle_brand_mark", showBrandMark: "true" },
+                { method: "POST" },
+              );
+            }}
+            style={{
+              margin: "12px",
+              background: "none",
+              border: "none",
+              color: "#005F99",
+              textDecoration: "underline",
+              fontSize: "13px",
+              fontWeight: "500",
+              cursor: "pointer",
+            }}
+          >
+            {t("popupEditor.clickToShowBrandMark")}
+          </button>
+        )}
       </div>
-
     </div>
   );
 };
