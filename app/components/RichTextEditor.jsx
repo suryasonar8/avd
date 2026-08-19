@@ -181,8 +181,8 @@ const ColorPickerButton = ({ locked }) => {
       >
         <div
           style={{
-            width: "16px",
-            height: "16px",
+            width: "14px",
+            height: "14px",
             borderRadius: "50%",
             border: "1px dashed #CBCFD2",
             background: color || "transparent",
@@ -353,7 +353,7 @@ const EditorToolbar = () => {
 };
 
 export const RichTextEditor = ({ label, value, onChange }) => (
-  <div style={{ marginBottom: "16px" }}>
+  <div>
     <style>{`
       .rsw-editor {
         border: 1px solid #CBCFD2 !important;
@@ -364,7 +364,7 @@ export const RichTextEditor = ({ label, value, onChange }) => (
       .rsw-toolbar {
         display: flex !important;
         align-items: center !important;
-        padding: 4px 6px !important;
+        padding: 2px 4px !important;
         border-bottom: 1px solid #CBCFD2 !important;
         background: #F6F6F7 !important;
         gap: 0px !important;
@@ -374,15 +374,15 @@ export const RichTextEditor = ({ label, value, onChange }) => (
         background: transparent !important;
         border: none !important;
         cursor: pointer !important;
-        padding: 0 6px !important;
+        padding: 0 4px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         color: #202223 !important;
-        font-size: 14px !important;
+        font-size: 13px !important;
         font-weight: 700 !important;
         width: auto !important;
-        height: 32px !important;
+        height: 28px !important;
         border-radius: 4px !important;
         transition: background 0.1s !important;
         outline: none !important;
@@ -412,7 +412,7 @@ export const RichTextEditor = ({ label, value, onChange }) => (
 
       .rsw-separator {
         width: 1px !important;
-        height: 20px !important;
+        height: 16px !important;
         background: #CBCFD2 !important;
         margin: 0 4px !important;
       }

@@ -332,13 +332,18 @@
     "select": "Seleziona",
     "languageLimitReached": "Limite lingue raggiunto. Aggiorna il piano.",
     "addLanguage": "Aggiungi lingua",
+    "popup": "Pop-up",
     "selectPopup": "Seleziona pop-up",
     "searchPopups": "Cerca pop-up...",
     "noPopupsFound": "Nessun pop-up trovato",
     "popupNumber": "Pop-up #{{id}}",
+    "infoSectionTitle": "Informazioni",
     "infoSectionDescription": "Seleziona il pop-up per il quale visualizzare la traduzione.",
+    "textSectionTitle": "Testo",
     "textSectionDescription": "Personalizza il testo dei campi di input nel modulo di traduzione.",
+    "buttonSectionTitle": "Pulsante",
     "buttonSectionDescription": "Personalizza le etichette dei campi di input e dei pulsanti.",
+    "labelSectionTitle": "Etichetta",
     "labelSectionDescription": "Personalizza le etichette dei mesi in base alle tue preferenze o esigenze linguistiche.",
     "toast": {
       "saved": "Traduzioni salvate con successo"

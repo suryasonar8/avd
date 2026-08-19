@@ -332,13 +332,18 @@
     "select": "Sélectionner",
     "languageLimitReached": "Limite de langues atteinte. Veuillez mettre à niveau.",
     "addLanguage": "Ajouter une langue",
+    "popup": "Pop-up",
     "selectPopup": "Sélectionner un pop-up",
     "searchPopups": "Rechercher des pop-ups...",
     "noPopupsFound": "Aucun pop-up trouvé",
     "popupNumber": "Pop-up #{{id}}",
+    "infoSectionTitle": "Informations",
     "infoSectionDescription": "Sélectionnez le pop-up pour lequel afficher la traduction.",
+    "textSectionTitle": "Texte",
     "textSectionDescription": "Personnalisez le texte des champs de saisie dans le formulaire de traduction.",
+    "buttonSectionTitle": "Bouton",
     "buttonSectionDescription": "Personnalisez les libellés des champs de saisie et des boutons.",
+    "labelSectionTitle": "Étiquette",
     "labelSectionDescription": "Personnalisez les libellés des mois selon vos préférences ou exigences linguistiques.",
     "toast": {
       "saved": "Traductions enregistrées avec succès"

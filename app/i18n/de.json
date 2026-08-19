@@ -332,13 +332,18 @@
     "select": "Auswählen",
     "languageLimitReached": "Sprachlimit erreicht. Bitte upgraden.",
     "addLanguage": "Sprache hinzufügen",
+    "popup": "Pop-up",
     "selectPopup": "Pop-up auswählen",
     "searchPopups": "Pop-ups suchen...",
     "noPopupsFound": "Keine Pop-ups gefunden",
     "popupNumber": "Popup #{{id}}",
+    "infoSectionTitle": "Informationen",
     "infoSectionDescription": "Wählen Sie das Pop-up aus, für das die Übersetzung angezeigt werden soll.",
+    "textSectionTitle": "Text",
     "textSectionDescription": "Passen Sie den Text der Eingabefelder im Übersetzungsformular an.",
+    "buttonSectionTitle": "Schaltfläche",
     "buttonSectionDescription": "Passen Sie die Beschriftungen für Eingabefelder und Schaltflächen an.",
+    "labelSectionTitle": "Beschriftung",
     "labelSectionDescription": "Passen Sie die Monatsnamen an Ihre Präferenzen oder Sprachanforderungen an.",
     "toast": {
       "saved": "Übersetzungen erfolgreich gespeichert"

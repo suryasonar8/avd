@@ -336,12 +336,22 @@ export default function TranslationSetupPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "300px 1fr",
+            gridTemplateColumns: "240px 1fr",
             gap: "40px",
-            marginBottom: "40px",
           }}
         >
-          <s-text>{t("translation.infoSectionDescription")}</s-text>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+            }}
+          >
+            <s-text variant="headingMd" as="h2">
+              <strong>{t("translation.infoSectionTitle")}</strong>
+            </s-text>
+            <s-text>{t("translation.infoSectionDescription")}</s-text>
+          </div>
           <Card>
             <div style={{ marginBottom: "20px" }}>
               <label
@@ -401,7 +411,7 @@ export default function TranslationSetupPage() {
                   marginBottom: "8px",
                 }}
               >
-                {t("translation.selectPopup")}{" "}
+                {t("translation.popup")}{" "}
                 <span style={{ color: "#d72c0d" }}>*</span>
               </label>
               <PopupSelector
@@ -418,11 +428,22 @@ export default function TranslationSetupPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "300px 1fr",
+            gridTemplateColumns: "240px 1fr",
             gap: "40px",
           }}
         >
-          <s-text>{t("translation.textSectionDescription")}</s-text>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+            }}
+          >
+            <s-text variant="headingMd" as="h2">
+              <strong>{t("translation.textSectionTitle")}</strong>
+            </s-text>
+            <s-text>{t("translation.textSectionDescription")}</s-text>
+          </div>
           <Card>
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
@@ -451,11 +472,22 @@ export default function TranslationSetupPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "300px 1fr",
+            gridTemplateColumns: "240px 1fr",
             gap: "40px",
           }}
         >
-          <s-text>{t("translation.buttonSectionDescription")}</s-text>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "19px",
+            }}
+          >
+            <s-text variant="headingMd" as="h2">
+              <strong>{t("translation.buttonSectionTitle")}</strong>
+            </s-text>
+            <s-text>{t("translation.buttonSectionDescription")}</s-text>
+          </div>
           <Card>
             <TranslationField
               disabled={isReadOnly || !selectedPopupId}
@@ -504,16 +536,28 @@ export default function TranslationSetupPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "300px 1fr",
+            gridTemplateColumns: "240px 1fr",
             gap: "40px",
           }}
         >
-          <s-text>{t("translation.labelSectionDescription")}</s-text>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+            }}
+          >
+            <s-text variant="headingMd" as="h2">
+              <strong>{t("translation.labelSectionTitle")}</strong>
+            </s-text>
+            <s-text>{t("translation.labelSectionDescription")}</s-text>
+          </div>
           <Card>
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
+                gap: "10px",
               }}
             >
               {visibleMonths.map((month) => (
@@ -521,9 +565,7 @@ export default function TranslationSetupPage() {
                   key={month}
                   label={t("translation.monthLabel")}
                   original={
-                    selectedPopupId
-                      ? t("months." + month.toLowerCase())
-                      : t("translation.monthLabel")
+                    selectedPopupId ? t("months." + month.toLowerCase()) : month
                   }
                   value={translations.months[month]}
                   disabled={isReadOnly || !selectedPopupId}
@@ -540,16 +582,14 @@ export default function TranslationSetupPage() {
               ))}
 
               {visibleMonths.length < 12 && (
-                <div>
+                <div style={{ marginTop: "6px" }}>
                   <s-button
                     onClick={() => {
-                      if (isReadOnly) return;
                       const nextMonth = MONTH_NAMES[visibleMonths.length];
                       if (nextMonth) {
                         setVisibleMonths([...visibleMonths, nextMonth]);
                       }
                     }}
-                    disabled={isReadOnly || !selectedPopupId}
                   >
                     <span style={{ fontSize: "18px", fontWeight: "400" }}>
                       +

@@ -332,13 +332,18 @@
     "select": "Select",
     "languageLimitReached": "Language limit reached. Please upgrade.",
     "addLanguage": "Add language",
+    "popup": "Pop-up",
     "selectPopup": "Select pop-up",
     "searchPopups": "Search pop-ups...",
     "noPopupsFound": "No pop-ups found",
     "popupNumber": "Popup #{{id}}",
+    "infoSectionTitle": "Information",
     "infoSectionDescription": "Select the pop-up used to display the translation for.",
+    "textSectionTitle": "Text",
     "textSectionDescription": "Customize the input field text in the Translation form.",
+    "buttonSectionTitle": "Button",
     "buttonSectionDescription": "Customize labels for input fields and buttons.",
+    "labelSectionTitle": "Label",
     "labelSectionDescription": "Customize the labels used for months to match your preferences or language requirements.",
     "toast": {
       "saved": "Translations saved successfully"

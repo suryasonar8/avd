@@ -22,8 +22,8 @@ export const TranslationField = ({
   disabled = false,
 }) => {
   return (
-    <div style={{ marginBottom: "20px" }}>
-      <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
+    <div>
+      <div style={{ display: "flex", gap: "6px", alignItems: "flex-start" }}>
         <div style={{ flex: "1 1 0", minWidth: 0 }}>
           <label
             style={{
@@ -75,7 +75,7 @@ export const TranslationField = ({
           >
             <path
               d="M7 5L12 10L7 15"
-              stroke="#babec3"
+              stroke="black"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"

@@ -332,13 +332,18 @@
     "select": "चुनें",
     "languageLimitReached": "भाषा सीमा पूरी हो गई। कृपया अपग्रेड करें।",
     "addLanguage": "भाषा जोड़ें",
+    "popup": "पॉप-अप",
     "selectPopup": "पॉप-अप चुनें",
     "searchPopups": "पॉप-अप खोजें...",
     "noPopupsFound": "कोई पॉप-अप नहीं मिला",
     "popupNumber": "पॉपअप #{{id}}",
+    "infoSectionTitle": "जानकारी",
     "infoSectionDescription": "वह पॉप-अप चुनें जिसके लिए अनुवाद प्रदर्शित करना है।",
+    "textSectionTitle": "पाठ",
     "textSectionDescription": "अनुवाद फ़ॉर्म में इनपुट फ़ील्ड टेक्स्ट को कस्टमाइज़ करें।",
+    "buttonSectionTitle": "बटन",
     "buttonSectionDescription": "इनपुट फ़ील्ड और बटन के लेबल कस्टमाइज़ करें।",
+    "labelSectionTitle": "लेबल",
     "labelSectionDescription": "अपनी प्राथमिकताओं या भाषा आवश्यकताओं के अनुसार महीनों के लेबल कस्टमाइज़ करें।",
     "toast": {
       "saved": "अनुवाद सफलतापूर्वक सहेजे गए"
