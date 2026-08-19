@@ -29,7 +29,7 @@ export default function PreviewPanel({
           key={i}
           href={link}
           onClick={(e) => e.preventDefault()}
-          style={{ color: "#2C6ECB", textDecoration: "underline" }}
+          style={{ color: "inherit", textDecoration: "underline" }}
         >
           {part}
         </a>
@@ -171,7 +171,7 @@ export default function PreviewPanel({
           <div
             style={{
               display: "flex",
-              alignItems: "flex-start",
+              alignItems: "center",
               gap: "8px",
               marginTop: "4px",
             }}
@@ -179,7 +179,6 @@ export default function PreviewPanel({
             <input
               type="checkbox"
               style={{
-                marginTop: "2px",
                 width: "14px",
                 height: "14px",
                 flexShrink: 0,

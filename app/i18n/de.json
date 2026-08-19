@@ -308,7 +308,7 @@
     "desktop": "Desktop",
     "mobile": "Mobil",
     "defaults": {
-      "checkboxText": "Ich verstehe und stimme den Allgemeinen Geschäftsbedingungen zu."
+      "checkboxText": "Ich akzeptiere die allgemeinen Geschäftsbedingungen."
     }
   },
   "translation": {

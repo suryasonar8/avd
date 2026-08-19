@@ -308,7 +308,7 @@
     "desktop": "Bureau",
     "mobile": "Mobile",
     "defaults": {
-      "checkboxText": "Je comprends et j'accepte les conditions générales."
+      "checkboxText": "J'accepte les conditions générales."
     }
   },
   "translation": {

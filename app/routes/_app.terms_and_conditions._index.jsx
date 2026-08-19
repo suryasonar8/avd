@@ -54,36 +54,48 @@ export default function TermsAndConditions() {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <rect
-                x="8"
-                y="30"
-                width="32"
-                height="26"
-                rx="4"
+              {/* Box body */}
+              <path
+                d="M12 28L32 38L52 28V48L32 58L12 48V28Z"
                 stroke="#222"
                 strokeWidth="3"
-                fill="none"
+                strokeLinejoin="round"
+              />
+              {/* Box flaps */}
+              <path
+                d="M12 28L32 18L52 28"
+                stroke="#222"
+                strokeWidth="3"
+                strokeLinejoin="round"
               />
               <path
-                d="M16 30V22a16 16 0 0 1 32 0v8"
+                d="M32 38V58"
                 stroke="#222"
                 strokeWidth="3"
-                strokeLinecap="round"
+                strokeLinejoin="round"
               />
+              {/* Badge */}
               <circle
-                cx="48"
-                cy="20"
+                cx="22"
+                cy="18"
                 r="12"
                 fill="white"
                 stroke="#222"
-                strokeWidth="2"
+                strokeWidth="3"
               />
               <path
-                d="M43 20l4 4 7-7"
+                d="M17 18l3 3 6-6"
+                stroke="#222"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* Sparks */}
+              <path
+                d="M22 1v3M9 6l2 2M35 6l-2 2"
                 stroke="#222"
                 strokeWidth="2.5"
                 strokeLinecap="round"
-                strokeLinejoin="round"
               />
             </svg>
           </div>

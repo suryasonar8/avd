@@ -308,7 +308,7 @@
     "desktop": "Desktop",
     "mobile": "Mobile",
     "defaults": {
-      "checkboxText": "I understand and agree to the terms and conditions."
+      "checkboxText": "I accept the terms and conditions."
     }
   },
   "translation": {

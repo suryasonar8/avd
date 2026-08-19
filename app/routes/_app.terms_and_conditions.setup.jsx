@@ -72,6 +72,11 @@ export default function TermsAndConditionsSetup() {
     initialGlobalSettings || { showBrandMark: true },
   );
 
+  // Reset terms settings when initialTermsSettings changes (e.g. after save)
+  useEffect(() => {
+    setTermsSettings(initialTermsSettings);
+  }, [initialTermsSettings]);
+
   // Sync global settings when it changes from the server
   useEffect(() => {
     setGlobalSettings(initialGlobalSettings || { showBrandMark: true });

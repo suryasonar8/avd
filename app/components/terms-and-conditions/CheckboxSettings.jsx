@@ -114,7 +114,9 @@ export default function CheckboxSettings({ termsSettings, setTermsSettings }) {
 
       <s-text>
         {t("termsAndConditions.needMoreCustomization")}{" "}
-        <s-link href="#">{t("termsAndConditions.contactUs")}</s-link>
+        <s-link href="#">
+          <p style={{ color: "#2C6ECB", margin: 0, display: "inline" }}>{t("termsAndConditions.contactUs")}</p>
+        </s-link>
       </s-text>
     </div>
   );

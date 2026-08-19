@@ -308,7 +308,7 @@
     "desktop": "Escritorio",
     "mobile": "Móvil",
     "defaults": {
-      "checkboxText": "Entiendo y acepto los términos y condiciones."
+      "checkboxText": "Acepto los términos y condiciones."
     }
   },
   "translation": {

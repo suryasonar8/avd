@@ -308,7 +308,7 @@
     "desktop": "Desktop",
     "mobile": "Mobile",
     "defaults": {
-      "checkboxText": "Comprendo e accetto i termini e le condizioni."
+      "checkboxText": "Accetto i termini e le condizioni."
     }
   },
   "translation": {
