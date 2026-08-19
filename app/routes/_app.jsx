@@ -41,6 +41,10 @@ export const loader = async ({ request }) => {
         JSON.stringify(newSettings)
       );
 
+      // Sync computed feature-access booleans for theme extensions to
+      // consume (see PlanService.syncEntitlements for details).
+      await PlanService.syncEntitlements(admin, shopId, access);
+
       // Enforce plan limits on all gated features
       await PlanService.enforcePlanLimits(admin, session.shop);
     }

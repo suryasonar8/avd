@@ -6,6 +6,8 @@ import { DEFAULT_TERMS_CONFIG } from "../constants/terms-and-conditions";
 import { PopupService } from "./popup.service";
 import { CheckoutBannerService } from "./checkout-banner.service";
 import { TermsService } from "./terms.service";
+import { ShopService } from "./shop.service";
+import { ensureMetafieldDefinition } from "../utils/metafield.server";
 
 /**
  * Get the current plan for a shop.
@@ -63,6 +65,36 @@ export function buildAccessMap(currentPlan) {
 export const PlanService = {
     getShopPlan,
     buildAccessMap,
+
+    /**
+     * Sync computed feature-access booleans to the avd.entitlements metafield
+     * so theme app extensions can gate features without duplicating plan-tier
+     * comparison logic in Liquid. `features.js` stays the single source of
+     * truth for which plan unlocks what.
+     *
+     * TODO: once billing is wired up, also call this from the
+     * APP_SUBSCRIPTIONS_UPDATE webhook handler so entitlements update
+     * immediately on upgrade/downgrade instead of waiting for the next
+     * admin page load to pick up the drift.
+     */
+    async syncEntitlements(admin, shopId, access) {
+        await ensureMetafieldDefinition(admin, {
+            namespace: "avd",
+            key: "entitlements",
+            name: "Plan Entitlements",
+            type: "json",
+            description: "Computed feature-access booleans for the shop's current plan, consumed by theme app extensions",
+        });
+
+        return ShopService.updateMetafield(
+            admin,
+            shopId,
+            "avd",
+            "entitlements",
+            JSON.stringify(access)
+        );
+    },
+
     async hasAccess(shop, featureKey) {
         // 1. Get the plan (will use DB cache if available)
         const plan = await getShopPlan(null, shop);

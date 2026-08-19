@@ -9,12 +9,14 @@
 {% endif %}
 
 {% assign global_settings = shop.metafields.avd.settings.value %}
-{% assign current_plan = global_settings.plan | default: 'basic' %}
 
-{% assign has_access = false %}
-{% if current_plan == 'premium' %}
-  {% assign has_access = true %}
-{% endif %}
+{% comment %}
+  Feature access is computed server-side (PlanService.buildAccessMap) from
+  app/constants/features.js and synced here as booleans, so this file never
+  duplicates plan-tier comparison logic.
+{% endcomment %}
+{% assign entitlements = shop.metafields.avd.entitlements.value %}
+{% assign has_access = entitlements['terms.condition.status'] %}
 
 {% if settings.enabled and has_access %}
   {% assign show_by_page = false %}
