@@ -29,10 +29,18 @@ export const loader = async ({ request }) => {
       }
     }
 
+    const shopId = await ShopService.getShopId(admin);
+
+    // Sync computed feature-access booleans for theme extensions to consume
+    // on every load — not just when the plan changes — so a shop whose
+    // stored plan already matches (e.g. it hasn't changed since this synced
+    // metafield was introduced) still gets `avd.entitlements` created.
+    // (see PlanService.syncEntitlements for details).
+    await PlanService.syncEntitlements(admin, shopId, access);
+
     // Sync plan to global settings for theme extensions
     if (settings.plan !== plan) {
       const newSettings = { ...settings, plan };
-      const shopId = await ShopService.getShopId(admin);
       await ShopService.updateMetafield(
         admin,
         shopId,
@@ -40,10 +48,6 @@ export const loader = async ({ request }) => {
         "settings",
         JSON.stringify(newSettings)
       );
-
-      // Sync computed feature-access booleans for theme extensions to
-      // consume (see PlanService.syncEntitlements for details).
-      await PlanService.syncEntitlements(admin, shopId, access);
 
       // Enforce plan limits on all gated features
       await PlanService.enforcePlanLimits(admin, session.shop);

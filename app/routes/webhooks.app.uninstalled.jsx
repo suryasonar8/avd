@@ -26,6 +26,7 @@ export const action = async ({ request }) => {
         { namespace: "avd", key: "active_popup" },
         { namespace: "avd", key: "checkout_banner" },
         { namespace: "avd", key: "terms_settings" },
+        { namespace: "avd", key: "entitlements" },
       ];
 
       for (const def of defsToCleanup) {
