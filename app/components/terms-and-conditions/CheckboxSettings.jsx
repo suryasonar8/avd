@@ -16,7 +16,7 @@ function TextInput({
   disabled,
 }) {
   return (
-    <div style={{ marginBottom: "16px", opacity: disabled ? 0.6 : 1 }}>
+    <div style={{ opacity: disabled ? 0.6 : 1 }}>
       <s-text-field
         label={label}
         required={required}
@@ -61,7 +61,14 @@ export default function CheckboxSettings({ termsSettings, setTermsSettings }) {
         gap: "12px",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "8px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          flexWrap: "wrap",
+        }}
+      >
         <span style={{ fontSize: "13px", fontWeight: 700 }}>
           {t("termsAndConditions.message")}
         </span>
@@ -69,11 +76,16 @@ export default function CheckboxSettings({ termsSettings, setTermsSettings }) {
           <Badge text={t("common.premiumPlan")} type="premium" />
         )}
       </div>
+
+      <s-divider></s-divider>
+
       <TextInput
         label={t("termsAndConditions.messageText")}
         required
         value={termsSettings.checkboxText}
-        onChange={(val) => setTermsSettings({ ...termsSettings, checkboxText: val })}
+        onChange={(val) =>
+          setTermsSettings({ ...termsSettings, checkboxText: val })
+        }
         maxLength={255}
         disabled={!canAccess("terms.checkbox.text")}
       />
@@ -106,7 +118,9 @@ export default function CheckboxSettings({ termsSettings, setTermsSettings }) {
       <TextInput
         label={t("termsAndConditions.errorMessageOptional")}
         value={termsSettings.errorMessage}
-        onChange={(val) => setTermsSettings({ ...termsSettings, errorMessage: val })}
+        onChange={(val) =>
+          setTermsSettings({ ...termsSettings, errorMessage: val })
+        }
         maxLength={255}
         placeholder="Enter error message"
         disabled={!canAccess("terms.checkbox.error")}
@@ -115,7 +129,9 @@ export default function CheckboxSettings({ termsSettings, setTermsSettings }) {
       <s-text>
         {t("termsAndConditions.needMoreCustomization")}{" "}
         <s-link href="#">
-          <p style={{ color: "#2C6ECB", margin: 0, display: "inline" }}>{t("termsAndConditions.contactUs")}</p>
+          <p style={{ color: "#2C6ECB", margin: 0, display: "inline" }}>
+            {t("termsAndConditions.contactUs")}
+          </p>
         </s-link>
       </s-text>
     </div>

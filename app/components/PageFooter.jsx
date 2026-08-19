@@ -4,8 +4,8 @@ export default function PageFooter({ align = "center" }) {
   const { t } = useTranslation();
 
   return (
-    <div style={{ marginTop: "24px", textAlign: align }}>
-      <p style={{ fontSize: "13px", color: "#6D7175" }}>
+    <div style={{ textAlign: align }}>
+      <p style={{ margin: 0, fontSize: "13px", color: "#6D7175" }}>
         {t("common.needHelp")}{" "}
         <a
           href="#"

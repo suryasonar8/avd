@@ -6,7 +6,7 @@ export const NumberInput = ({
   suffix = "px",
   disabled,
 }) => (
-  <div style={{ marginBottom: "16px", opacity: disabled ? 0.6 : 1 }}>
+  <div style={{ opacity: disabled ? 0.6 : 1 }}>
     <div
       style={{
         display: "flex",

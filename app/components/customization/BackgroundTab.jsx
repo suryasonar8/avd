@@ -174,7 +174,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
             style={{
               display: "block",
               fontSize: "13px",
-              marginBottom: "8px",
+              marginBottom: "2px",
             }}
           >
             {t("popupEditor.backgroundTab.type")}
@@ -304,10 +304,7 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
             })
           }
         />
-        <div
-          style={{ marginBottom: "8px" }}
-          disabled={!canAccess("sv.bg.logo")}
-        >
+        <div disabled={!canAccess("sv.bg.logo")}>
           <div
             style={{
               display: "flex",

@@ -139,7 +139,7 @@ export function DisplayPagesChoiceList({ config, setConfig }) {
               </div>
             ))}
             {(config.selectedCollections || []).length === 0 && (
-              <p style={{ fontSize: "12px", color: "#6D7175" }}>
+              <p style={{ fontSize: "12px", color: "#6D7175", margin: 0 }}>
                 {t("common.noCollectionsSelected")}
               </p>
             )}
@@ -246,7 +246,7 @@ export function DisplayPagesChoiceList({ config, setConfig }) {
               </div>
             ))}
             {(config.selectedProducts || []).length === 0 && (
-              <p style={{ fontSize: "12px", color: "#6D7175" }}>
+              <p style={{ fontSize: "12px", color: "#6D7175", margin: 0 }}>
                 {t("common.noProductsSelected")}
               </p>
             )}
@@ -264,12 +264,11 @@ export function DisplayPagesChoiceList({ config, setConfig }) {
       />
 
       {config.pages === "Custom" && (
-        <div style={{ marginBottom: "8px", paddingLeft: "26px" }}>
+        <div style={{ paddingLeft: "26px" }}>
           <div
             style={{
               display: "flex",
               gap: "8px",
-              marginBottom: "8px",
               alignItems: "flex-end",
             }}
           >

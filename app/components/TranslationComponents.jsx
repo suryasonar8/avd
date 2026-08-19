@@ -105,11 +105,11 @@ export const TranslationField = ({
               <RichTextEditor value={value} onChange={(e) => onChange(e)} />
             </div>
           ) : (
-            <s-text-field
-              value={value}
-              disabled={disabled}
-              onChange={(e) => onChange(e.currentTarget.value)}
-            />
+              <s-text-field
+                value={value}
+                disabled={disabled}
+                onChange={(e) => onChange(e.currentTarget.value)}
+              />
           )}
         </div>
       </div>

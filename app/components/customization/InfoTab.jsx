@@ -56,7 +56,7 @@ export function InfoTab({ config, setConfig }) {
                 display: "block",
                 fontSize: "13px",
                 fontWeight: "bold",
-                marginBottom: "8px",
+                marginBottom: "2px",
               }}
             >
               {t("popupEditor.infoTab.status")}
@@ -81,7 +81,7 @@ export function InfoTab({ config, setConfig }) {
                 display: "block",
                 fontSize: "13px",
                 fontWeight: "bold",
-                marginBottom: "8px",
+                marginBottom: "2px",
               }}
             >
               {t("popupEditor.infoTab.name")}{" "}
@@ -101,6 +101,7 @@ export function InfoTab({ config, setConfig }) {
                 fontSize: "11px",
                 color: "#6D7175",
                 marginTop: "4px",
+                marginBottom: 0,
               }}
             >
               {t("popupEditor.infoTab.nameHelpText")}
@@ -114,7 +115,7 @@ export function InfoTab({ config, setConfig }) {
               display: "block",
               fontSize: "13px",
               fontWeight: "bold",
-              marginBottom: "8px",
+              marginBottom: "2px",
             }}
           >
             {t("popupEditor.infoTab.method")}
@@ -149,7 +150,7 @@ export function InfoTab({ config, setConfig }) {
                   display: "block",
                   fontSize: "13px",
                   fontWeight: "bold",
-                  marginBottom: "8px",
+                  marginBottom: "2px",
                 }}
               >
                 {t("popupEditor.infoTab.verifyAge")}
@@ -177,7 +178,7 @@ export function InfoTab({ config, setConfig }) {
                   display: "block",
                   fontSize: "13px",
                   fontWeight: "bold",
-                  marginBottom: "8px",
+                  marginBottom: "2px",
                 }}
               >
                 {t("popupEditor.infoTab.dateOrder")}
@@ -200,6 +201,7 @@ export function InfoTab({ config, setConfig }) {
                   fontSize: "11px",
                   color: "#6D7175",
                   marginTop: "4px",
+                  marginBottom: 0,
                 }}
               >
                 {t("popupEditor.infoTab.dateOrderHelpText", {
@@ -239,13 +241,13 @@ export function InfoTab({ config, setConfig }) {
         </div>
         <s-divider></s-divider>
 
-        <div style={{ marginBottom: "16px" }}>
+        <div>
           <label
             style={{
               display: "block",
               fontSize: "13px",
               fontWeight: "bold",
-              marginBottom: "8px",
+              marginBottom: "2px",
             }}
           >
             {t("popupEditor.infoTab.displayPages")}
@@ -259,7 +261,7 @@ export function InfoTab({ config, setConfig }) {
               display: "block",
               fontSize: "13px",
               fontWeight: "bold",
-              marginBottom: "8px",
+              marginBottom: "2px",
             }}
           >
             {t("popupEditor.infoTab.triggerCondition")}

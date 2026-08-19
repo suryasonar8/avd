@@ -4,6 +4,7 @@ import { NumberInput } from "../NumberInput";
 import { RichTextEditor } from "../RichTextEditor";
 import { usePlan } from "../../context/PlanContext";
 import { useTranslation } from "../../context/TranslationContext";
+import { RadioOption } from "./RadioOption";
 
 export function ButtonTab({ config, setConfig }) {
   const { canAccess } = usePlan();
@@ -66,17 +67,6 @@ export function ButtonTab({ config, setConfig }) {
               }))
             }
           />
-          <p
-            style={{
-              fontSize: "12px",
-              color: "#6D7175",
-              marginTop: "4px",
-              textAlign: "right",
-              marginBottom: 0,
-            }}
-          >
-            {(config.button.errorMsg || "").length}/255
-          </p>
         </div>
       </div>
 
@@ -208,86 +198,85 @@ export function ButtonTab({ config, setConfig }) {
 
         <div>
           <p
-            style={{ fontSize: "13px", color: "#6D7175", marginBottom: "12px" }}
+            style={{
+              fontSize: "13px",
+              color: "#6D7175",
+              marginTop: 0,
+              marginBottom: "10px",
+            }}
           >
             {t("popupEditor.buttonTab.ifVisitorClicksCancel")}
           </p>
 
-          <s-choice-list
-            name="cancelAction"
-            values={[config.button.cancelAction]}
-            onChange={(e) =>
-              setConfig((prev) => ({
-                ...prev,
-                button: {
-                  ...prev.button,
-                  cancelAction: e.currentTarget.values[0],
-                },
-              }))
-            }
-          >
-            <s-choice
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            <RadioOption
+              label={t("popupEditor.buttonTab.redirectUrl")}
+              name="cancelAction"
               value="redirect"
               selected={config.button.cancelAction === "redirect"}
-            >
-              {t("popupEditor.buttonTab.redirectUrl")}
-            </s-choice>
-            <s-choice
+              onChange={(val) =>
+                setConfig((prev) => ({
+                  ...prev,
+                  button: {
+                    ...prev.button,
+                    cancelAction: val,
+                  },
+                }))
+              }
+            />
+
+            {config.button.cancelAction === "redirect" && (
+              <div style={{ paddingLeft: "26px", marginBottom: "8px" }}>
+                <s-text-field
+                  value={config.button.redirectUrl || ""}
+                  onChange={(e) =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      button: {
+                        ...prev.button,
+                        redirectUrl: e.currentTarget.value,
+                      },
+                    }))
+                  }
+                />
+              </div>
+            )}
+
+            <RadioOption
+              label={t("popupEditor.buttonTab.showErrorMessage")}
+              name="cancelAction"
               value="errorMsg"
               selected={config.button.cancelAction === "errorMsg"}
-            >
-              {t("popupEditor.buttonTab.showErrorMessage")}
-            </s-choice>
-          </s-choice-list>
+              onChange={(val) =>
+                setConfig((prev) => ({
+                  ...prev,
+                  button: {
+                    ...prev.button,
+                    cancelAction: val,
+                  },
+                }))
+              }
+            />
 
-          {config.button.cancelAction === "redirect" && (
-            <div style={{ marginTop: "12px" }}>
-              <s-text-field
-                label={t("popupEditor.buttonTab.redirectUrl")}
-                value={config.button.redirectUrl || ""}
-                onChange={(e) =>
-                  setConfig((prev) => ({
-                    ...prev,
-                    button: {
-                      ...prev.button,
-                      redirectUrl: e.currentTarget.value,
-                    },
-                  }))
-                }
-              />
-            </div>
-          )}
-
-          {config.button.cancelAction === "errorMsg" && (
-            <div style={{ marginTop: "12px" }}>
-              <s-text-field
-                label={t("popupEditor.buttonTab.errorMessage")}
-                value={config.button.cancelErrorMsg || ""}
-                placeholder="Enter error message"
-                maxLength={255}
-                onChange={(e) =>
-                  setConfig((prev) => ({
-                    ...prev,
-                    button: {
-                      ...prev.button,
-                      cancelErrorMsg: e.currentTarget.value,
-                    },
-                  }))
-                }
-              />
-              <p
-                style={{
-                  fontSize: "12px",
-                  color: "#6D7175",
-                  marginTop: "4px",
-                  textAlign: "right",
-                  marginBottom: 0,
-                }}
-              >
-                {(config.button.cancelErrorMsg || "").length}/255
-              </p>
-            </div>
-          )}
+            {config.button.cancelAction === "errorMsg" && (
+              <div style={{ paddingLeft: "26px", marginBottom: "8px" }}>
+                <s-text-field
+                  value={config.button.cancelErrorMsg || ""}
+                  placeholder="Enter error message"
+                  maxLength={255}
+                  onChange={(e) =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      button: {
+                        ...prev.button,
+                        cancelErrorMsg: e.currentTarget.value,
+                      },
+                    }))
+                  }
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

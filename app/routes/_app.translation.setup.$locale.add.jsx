@@ -303,7 +303,6 @@ export default function TranslationSetupPage() {
     <s-page>
       <style>{`
         .custom-editor-container {
-          margin-bottom: 20px;
         }
         .rsw-ce {
            background: black !important;
@@ -353,73 +352,84 @@ export default function TranslationSetupPage() {
             <s-text>{t("translation.infoSectionDescription")}</s-text>
           </div>
           <Card>
-            <div style={{ marginBottom: "20px" }}>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "13px",
-                  fontWeight: "500",
-                  color: "#202223",
-                  marginBottom: "8px",
-                }}
-              >
-                {t("common.status")}
-              </label>
-              <div
-                style={{
-                  padding: "6px 12px",
-                  border: "1px solid #e1e3e5",
-                  borderRadius: "8px",
-                  background: "white",
-                  color: "#6d7175",
-                  fontSize: "14px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                {!canAccess("translation.unlimited") ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      width: "100%",
-                    }}
-                  >
-                    <span style={{ color: "#202223" }}>
-                      {t("translation.upgradeNow")}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+              }}
+            >
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "13px",
+                    fontWeight: "500",
+                    color: "#202223",
+                    marginBottom: "8px",
+                  }}
+                >
+                  {t("common.status")}
+                </label>
+                <div
+                  style={{
+                    padding: "6px 12px",
+                    border: "1px solid #e1e3e5",
+                    borderRadius: "8px",
+                    background: "white",
+                    color: "#6d7175",
+                    fontSize: "14px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  {!canAccess("translation.unlimited") ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        width: "100%",
+                      }}
+                    >
+                      <span style={{ color: "#202223" }}>
+                        {t("translation.upgradeNow")}
+                      </span>
+                      <Badge
+                        text={t("common.basicPlanOrHigher")}
+                        type="basic"
+                      />
+                    </div>
+                  ) : (
+                    <span>
+                      {isPublished
+                        ? t("translation.published")
+                        : t("translation.unpublished")}
                     </span>
-                    <Badge text={t("common.basicPlanOrHigher")} type="basic" />
-                  </div>
-                ) : (
-                  <span>
-                    {isPublished
-                      ? t("translation.published")
-                      : t("translation.unpublished")}
-                  </span>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "13px",
-                  fontWeight: "500",
-                  color: "#202223",
-                  marginBottom: "8px",
-                }}
-              >
-                {t("translation.popup")}{" "}
-                <span style={{ color: "#d72c0d" }}>*</span>
-              </label>
-              <PopupSelector
-                popups={popups}
-                selectedPopupId={selectedPopupId}
-                onSelect={setSelectedPopupId}
-                isReadOnly={isReadOnly}
-              />
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "13px",
+                    fontWeight: "500",
+                    color: "#202223",
+                    marginBottom: "8px",
+                  }}
+                >
+                  {t("translation.popup")}{" "}
+                  <span style={{ color: "#d72c0d" }}>*</span>
+                </label>
+                <PopupSelector
+                  popups={popups}
+                  selectedPopupId={selectedPopupId}
+                  onSelect={setSelectedPopupId}
+                  isReadOnly={isReadOnly}
+                />
+              </div>
             </div>
           </Card>
         </div>
@@ -445,26 +455,34 @@ export default function TranslationSetupPage() {
             <s-text>{t("translation.textSectionDescription")}</s-text>
           </div>
           <Card>
-            <TranslationField
-              disabled={isReadOnly || !selectedPopupId}
-              label={t("translation.popupHeadingLabel")}
-              original={selectedPopup?.config.text?.heading}
-              value={translations.heading}
-              onChange={(val) =>
-                setTranslations({ ...translations, heading: val })
-              }
-              type="richtext"
-            />
-            <TranslationField
-              disabled={isReadOnly || !selectedPopupId}
-              label={t("translation.popupSubheadingLabel")}
-              original={selectedPopup?.config.text?.subheading}
-              value={translations.subheading}
-              onChange={(val) =>
-                setTranslations({ ...translations, subheading: val })
-              }
-              type="richtext"
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+              }}
+            >
+              <TranslationField
+                disabled={isReadOnly || !selectedPopupId}
+                label={t("translation.popupHeadingLabel")}
+                original={selectedPopup?.config.text?.heading}
+                value={translations.heading}
+                onChange={(val) =>
+                  setTranslations({ ...translations, heading: val })
+                }
+                type="richtext"
+              />
+              <TranslationField
+                disabled={isReadOnly || !selectedPopupId}
+                label={t("translation.popupSubheadingLabel")}
+                original={selectedPopup?.config.text?.subheading}
+                value={translations.subheading}
+                onChange={(val) =>
+                  setTranslations({ ...translations, subheading: val })
+                }
+                type="richtext"
+              />
+            </div>
           </Card>
         </div>
 
@@ -489,46 +507,54 @@ export default function TranslationSetupPage() {
             <s-text>{t("translation.buttonSectionDescription")}</s-text>
           </div>
           <Card>
-            <TranslationField
-              disabled={isReadOnly || !selectedPopupId}
-              label={t("translation.submitButtonLabel")}
-              original={selectedPopup?.config.button?.submitText}
-              value={translations.submitLabel}
-              onChange={(val) =>
-                setTranslations({ ...translations, submitLabel: val })
-              }
-              type="richtext"
-            />
-            <TranslationField
-              disabled={isReadOnly || !selectedPopupId}
-              label={t("translation.cancelButtonLabel")}
-              original={selectedPopup?.config.button?.cancelText}
-              value={translations.cancelLabel}
-              onChange={(val) =>
-                setTranslations({ ...translations, cancelLabel: val })
-              }
-              type="richtext"
-            />
-            <TranslationField
-              disabled={isReadOnly || !selectedPopupId}
-              label={t("translation.submitButtonAction")}
-              original={selectedPopup?.config.button?.errorMsg}
-              value={translations.submitErrorMsg}
-              onChange={(val) =>
-                setTranslations({ ...translations, submitErrorMsg: val })
-              }
-              type="text"
-            />
-            <TranslationField
-              disabled={isReadOnly || !selectedPopupId}
-              label={t("translation.cancelButtonAction")}
-              original={selectedPopup?.config.button?.cancelErrorMsg}
-              value={translations.cancelErrorMsg}
-              onChange={(val) =>
-                setTranslations({ ...translations, cancelErrorMsg: val })
-              }
-              type="text"
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+              }}
+            >
+              <TranslationField
+                disabled={isReadOnly || !selectedPopupId}
+                label={t("translation.submitButtonLabel")}
+                original={selectedPopup?.config.button?.submitText}
+                value={translations.submitLabel}
+                onChange={(val) =>
+                  setTranslations({ ...translations, submitLabel: val })
+                }
+                type="richtext"
+              />
+              <TranslationField
+                disabled={isReadOnly || !selectedPopupId}
+                label={t("translation.cancelButtonLabel")}
+                original={selectedPopup?.config.button?.cancelText}
+                value={translations.cancelLabel}
+                onChange={(val) =>
+                  setTranslations({ ...translations, cancelLabel: val })
+                }
+                type="richtext"
+              />
+              <TranslationField
+                disabled={isReadOnly || !selectedPopupId}
+                label={t("translation.submitButtonAction")}
+                original={selectedPopup?.config.button?.errorMsg}
+                value={translations.submitErrorMsg}
+                onChange={(val) =>
+                  setTranslations({ ...translations, submitErrorMsg: val })
+                }
+                type="text"
+              />
+              <TranslationField
+                disabled={isReadOnly || !selectedPopupId}
+                label={t("translation.cancelButtonAction")}
+                original={selectedPopup?.config.button?.cancelErrorMsg}
+                value={translations.cancelErrorMsg}
+                onChange={(val) =>
+                  setTranslations({ ...translations, cancelErrorMsg: val })
+                }
+                type="text"
+              />
+            </div>
           </Card>
         </div>
 

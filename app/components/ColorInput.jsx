@@ -14,7 +14,6 @@ export const ColorInput = ({
   return (
     <div
       style={{
-        marginBottom: "16px",
         position: "relative",
         opacity: disabled ? 0.6 : 1,
       }}

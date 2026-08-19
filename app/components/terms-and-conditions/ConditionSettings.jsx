@@ -27,7 +27,6 @@ export default function ConditionSettings({ termsSettings, setTermsSettings }) {
           padding: "16px",
           display: "flex",
           flexDirection: "column",
-          gap: "10px",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -106,20 +105,13 @@ export default function ConditionSettings({ termsSettings, setTermsSettings }) {
           />
         </div>
 
-        <hr
-          style={{
-            border: "none",
-            borderTop: "1px solid #E1E3E5",
-            margin: "4px 0",
-          }}
-        />
+        <s-divider></s-divider>
 
         {/* Trigger condition */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "8px",
           }}
         >
           <div
