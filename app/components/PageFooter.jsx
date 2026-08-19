@@ -5,7 +5,7 @@ export default function PageFooter({ align = "center" }) {
 
   return (
     <div style={{ textAlign: align }}>
-      <p style={{ margin: 0, fontSize: "13px", color: "#6D7175" }}>
+      <p style={{ margin: "6px", fontSize: "13px", color: "#6D7175" }}>
         {t("common.needHelp")}{" "}
         <a
           href="#"

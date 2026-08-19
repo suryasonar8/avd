@@ -7,10 +7,10 @@ export default function SettingsSection({ title, badge, children, disabled }) {
         background: "#fff",
         border: "1px solid #E1E3E5",
         borderRadius: "12px",
-        padding: "20px",
+        padding: "16px",
         display: "flex",
         flexDirection: "column",
-        gap: "16px",
+        gap: "6px",
         opacity: disabled ? 0.6 : 1,
       }}
     >

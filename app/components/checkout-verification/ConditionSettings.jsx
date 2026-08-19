@@ -87,7 +87,7 @@ export default function ConditionSettings({ config, onChange }) {
           ) : null
         }
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <RadioOption
             label={t("common.enabled")}
             name="status"
@@ -115,7 +115,7 @@ export default function ConditionSettings({ config, onChange }) {
           ) : null
         }
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           {/* Always */}
           <div>
             <RadioOption
@@ -126,7 +126,13 @@ export default function ConditionSettings({ config, onChange }) {
               disabled={disabled}
               onChange={handleTargetChange}
             />
-            <p style={{ margin: "4px 0 0 26px", fontSize: "12px", color: "#6D7175" }}>
+            <p
+              style={{
+                margin: "0 0 0 26px",
+                fontSize: "12px",
+                color: "#6D7175",
+              }}
+            >
               {t("checkoutVerification.conditionAlwaysDescription")}
             </p>
           </div>
@@ -141,7 +147,13 @@ export default function ConditionSettings({ config, onChange }) {
               disabled={disabled}
               onChange={handleTargetChange}
             />
-            <p style={{ margin: "4px 0 0 26px", fontSize: "12px", color: "#6D7175" }}>
+            <p
+              style={{
+                margin: "0 0 0 26px",
+                fontSize: "12px",
+                color: "#6D7175",
+              }}
+            >
               {t("checkoutVerification.specificCollectionDescription")}
             </p>
             {config.target === "collection" && (
@@ -218,7 +230,13 @@ export default function ConditionSettings({ config, onChange }) {
               disabled={disabled}
               onChange={handleTargetChange}
             />
-            <p style={{ margin: "4px 0 0 26px", fontSize: "12px", color: "#6D7175" }}>
+            <p
+              style={{
+                margin: "0 0 0 26px",
+                fontSize: "12px",
+                color: "#6D7175",
+              }}
+            >
               {t("checkoutVerification.specificProductDescription")}
             </p>
             {config.target === "product" && (
