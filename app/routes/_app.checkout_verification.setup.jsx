@@ -110,31 +110,7 @@ export default function CheckoutVerificationSetup() {
         backAction={handleBack}
       />
 
-      {/* Tabs */}
-      <div
-        style={{
-          display: "flex",
-          background: "transparent",
-          padding: "4px",
-          borderRadius: "12px",
-          marginBottom: "24px",
-          width: "fit-content",
-          gap: "8px",
-        }}
-      >
-        <s-button
-          variant={activeTab === "condition" ? "primary" : "secondary"}
-          onClick={() => setActiveTab("condition")}
-        >
-          {t("checkoutVerification.tabCondition")}
-        </s-button>
-        <s-button
-          variant={activeTab === "banner" ? "primary" : "secondary"}
-          onClick={() => setActiveTab("banner")}
-        >
-          {t("checkoutVerification.tabBanner")}
-        </s-button>
-      </div>
+
       {fetcher.data?.errors && (
         <div style={{ marginBottom: "24px" }}>
           <s-banner tone="critical">
@@ -164,6 +140,51 @@ export default function CheckoutVerificationSetup() {
             gap: "16px",
           }}
         >
+          {/* Tabs */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              background: "transparent",
+              marginBottom: "0px",
+              gap: "8px",
+              width: "100%",
+            }}
+          >
+            <button
+              onClick={() => setActiveTab("condition")}
+              style={{
+                flex: 1,
+                padding: "6px 0",
+                borderRadius: "8px",
+                border: "none",
+                background: activeTab === "condition" ? "#E1E3E5" : "transparent",
+                color: activeTab === "condition" ? "#1A1C1D" : "#6D7175",
+                fontWeight: "500",
+                fontSize: "13px",
+                cursor: "pointer",
+              }}
+            >
+              {t("checkoutVerification.tabCondition")}
+            </button>
+            <button
+              onClick={() => setActiveTab("banner")}
+              style={{
+                flex: 1,
+                padding: "6px 0",
+                borderRadius: "8px",
+                border: "none",
+                background: activeTab === "banner" ? "#E1E3E5" : "transparent",
+                color: activeTab === "banner" ? "#1A1C1D" : "#6D7175",
+                fontWeight: "500",
+                fontSize: "13px",
+                cursor: "pointer",
+              }}
+            >
+              {t("checkoutVerification.tabBanner")}
+            </button>
+          </div>
+
           {activeTab === "condition" ? (
             <ConditionSettings config={config} onChange={handleConfigChange} />
           ) : (
@@ -172,7 +193,9 @@ export default function CheckoutVerificationSetup() {
         </div>
 
         {/* Right Panel */}
-        <PreviewPanel config={config} />
+        <div style={{ position: "sticky", top: "20px", flex: 1 }}>
+          <PreviewPanel config={config} />
+        </div>
       </div>
       <PageFooter />
     </s-page>

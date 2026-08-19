@@ -138,31 +138,6 @@ export default function TermsAndConditionsSetup() {
         </div>
       )}
 
-      <div
-        style={{
-          display: "flex",
-          background: "transparent",
-          padding: "4px",
-          borderRadius: "12px",
-          marginBottom: "24px",
-          width: "fit-content",
-          gap: "8px",
-        }}
-      >
-        <s-button
-          variant={activeTab === "condition" ? "primary" : "secondary"}
-          onClick={() => setActiveTab("condition")}
-        >
-          {t("checkoutVerification.tabCondition")}
-        </s-button>
-        <s-button
-          variant={activeTab === "checkbox" ? "primary" : "secondary"}
-          onClick={() => setActiveTab("checkbox")}
-        >
-          {t("termsAndConditions.tabBanner")}
-        </s-button>
-      </div>
-
       {/* Body */}
       <div
         style={{
@@ -181,6 +156,53 @@ export default function TermsAndConditionsSetup() {
             gap: "12px",
           }}
         >
+          {/* Tabs */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              background: "transparent",
+              marginBottom: "0px",
+              gap: "8px",
+              width: "100%",
+            }}
+          >
+            <button
+              onClick={() => setActiveTab("condition")}
+              style={{
+                flex: 1,
+                padding: "6px 0",
+                borderRadius: "8px",
+                border: "none",
+                background:
+                  activeTab === "condition" ? "#E1E3E5" : "transparent",
+                color: activeTab === "condition" ? "#1A1C1D" : "#6D7175",
+                fontWeight: "500",
+                fontSize: "13px",
+                cursor: "pointer",
+              }}
+            >
+              {t("checkoutVerification.tabCondition")}
+            </button>
+            <button
+              onClick={() => setActiveTab("checkbox")}
+              style={{
+                flex: 1,
+                padding: "6px 0",
+                borderRadius: "8px",
+                border: "none",
+                background:
+                  activeTab === "checkbox" ? "#E1E3E5" : "transparent",
+                color: activeTab === "checkbox" ? "#1A1C1D" : "#6D7175",
+                fontWeight: "500",
+                fontSize: "13px",
+                cursor: "pointer",
+              }}
+            >
+              {t("termsAndConditions.tabBanner")}
+            </button>
+          </div>
+
           {activeTab === "condition" ? (
             <ConditionSettings
               termsSettings={termsSettings}
@@ -195,16 +217,18 @@ export default function TermsAndConditionsSetup() {
         </div>
 
         {/* ─── Right Preview Panel ─── */}
-        <PreviewPanel
-          checkboxText={termsSettings.checkboxText}
-          keyword={termsSettings.keyword}
-          link={termsSettings.link}
-          size={termsSettings.size}
-          color={termsSettings.color}
-          globalSettings={globalSettings}
-          setGlobalSettings={setGlobalSettings}
-          fetcher={fetcher}
-        />
+        <div style={{ position: "sticky", top: "20px", flex: 1 }}>
+          <PreviewPanel
+            checkboxText={termsSettings.checkboxText}
+            keyword={termsSettings.keyword}
+            link={termsSettings.link}
+            size={termsSettings.size}
+            color={termsSettings.color}
+            globalSettings={globalSettings}
+            setGlobalSettings={setGlobalSettings}
+            fetcher={fetcher}
+          />
+        </div>
       </div>
 
       {/* Footer */}

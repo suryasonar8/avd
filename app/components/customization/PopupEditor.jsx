@@ -165,6 +165,7 @@ export function PopupEditor({
           display: "grid",
           gridTemplateColumns: "minmax(350px, 400px) 1fr",
           gap: "24px",
+          alignItems: "start",
         }}
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -177,14 +178,21 @@ export function PopupEditor({
           )}
         </div>
 
-        <Preview
-          config={config}
-          setConfig={setConfig}
-          previewMode={previewMode}
-          setPreviewMode={setPreviewMode}
-          globalSettings={localGlobalSettings}
-          setGlobalSettings={setLocalGlobalSettings}
-        />
+        <div
+          style={{
+            position: "sticky",
+            top: "20px",
+          }}
+        >
+          <Preview
+            config={config}
+            setConfig={setConfig}
+            previewMode={previewMode}
+            setPreviewMode={setPreviewMode}
+            globalSettings={localGlobalSettings}
+            setGlobalSettings={setLocalGlobalSettings}
+          />
+        </div>
       </div>
       <PageFooter />
     </s-page>
