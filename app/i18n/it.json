@@ -346,7 +346,8 @@
     "labelSectionTitle": "Etichetta",
     "labelSectionDescription": "Personalizza le etichette dei mesi in base alle tue preferenze o esigenze linguistiche.",
     "toast": {
-      "saved": "Traduzioni salvate con successo"
+      "saved": "Traduzioni salvate con successo",
+      "updated": "Aggiornato"
     },
     "pleaseSelectPopup": "Per favore seleziona prima un pop-up",
     "upgradeNow": "Aggiorna ora",

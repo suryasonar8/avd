@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, useLoaderData } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useLoaderData, useRevalidator } from "react-router";
 import { authenticate } from "../shopify.server";
 import { usePlan } from "../context/PlanContext";
 import { Modal } from "../components/Modal";
@@ -49,11 +49,22 @@ export default function TranslationPage() {
     limit,
   } = useLoaderData();
   const navigate = useNavigate();
+  const revalidator = useRevalidator();
   const { plan } = usePlan();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const { t } = useTranslation();
   const canAddLanguage = translatedLanguages.length < limit;
+  const isRefreshingRef = useRef(false);
+
+  useEffect(() => {
+    if (isRefreshingRef.current && revalidator.state === "idle") {
+      isRefreshingRef.current = false;
+      if (typeof shopify !== "undefined") {
+        shopify.toast.show(t("translation.toast.updated"));
+      }
+    }
+  }, [revalidator.state, t]);
 
   const languages = [
     { label: t("translation.select"), value: "" },
@@ -85,6 +96,11 @@ export default function TranslationPage() {
     }
   };
 
+  const handleRefresh = () => {
+    isRefreshingRef.current = true;
+    revalidator.revalidate();
+  };
+
   const handleRedirect = () => {
     // Redirect to Shopify Admin language settings
     window.open(
@@ -99,7 +115,14 @@ export default function TranslationPage() {
       <PageHeader
         title={t("translation.pageTitle")}
         description={t("translation.pageDescription")}
-        actionButton={<s-button>{t("translation.refreshData")}</s-button>}
+        actionButton={
+          <s-button
+            onClick={handleRefresh}
+            loading={revalidator.state === "loading"}
+          >
+            {t("translation.refreshData")}
+          </s-button>
+        }
       />
       {/* Free Plan Limit Banner */}
       <PricingBanner text={t("translation.upgradePromo")} />
@@ -124,7 +147,9 @@ export default function TranslationPage() {
               }}
             >
               <s-heading>
-                {t("translation.defaultLanguage", { language: primaryLocaleName })}
+                {t("translation.defaultLanguage", {
+                  language: primaryLocaleName,
+                })}
               </s-heading>
               <s-text color="subdued">
                 {t("translation.defaultLanguageDesc")}
@@ -198,8 +223,8 @@ export default function TranslationPage() {
                   <tbody>
                     {translatedLanguages.map((item) => {
                       const langName =
-                        shopLocales.find((l) => l.locale === item.locale)?.name ||
-                        item.locale;
+                        shopLocales.find((l) => l.locale === item.locale)
+                          ?.name || item.locale;
                       return (
                         <tr
                           key={item.locale}
@@ -213,7 +238,9 @@ export default function TranslationPage() {
                                 gap: "8px",
                               }}
                             >
-                              <span style={{ fontWeight: "500" }}>{langName}</span>
+                              <span style={{ fontWeight: "500" }}>
+                                {langName}
+                              </span>
                               <span
                                 style={{
                                   fontSize: "11px",
@@ -279,9 +306,8 @@ export default function TranslationPage() {
                 </table>
                 <div
                   style={{
-                    padding: "24px 0 0 0",
+                    padding: "16px 0 0 0",
                     textAlign: "center",
-                    marginTop: "16px",
                   }}
                 >
                   <s-button onClick={handleAddLanguage} variant="primary">

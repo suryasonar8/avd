@@ -346,7 +346,8 @@
     "labelSectionTitle": "Étiquette",
     "labelSectionDescription": "Personnalisez les libellés des mois selon vos préférences ou exigences linguistiques.",
     "toast": {
-      "saved": "Traductions enregistrées avec succès"
+      "saved": "Traductions enregistrées avec succès",
+      "updated": "Mis à jour"
     },
     "pleaseSelectPopup": "Veuillez d'abord sélectionner un pop-up",
     "upgradeNow": "Mettre à niveau maintenant",

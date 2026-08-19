@@ -346,7 +346,8 @@
     "labelSectionTitle": "Beschriftung",
     "labelSectionDescription": "Passen Sie die Monatsnamen an Ihre Präferenzen oder Sprachanforderungen an.",
     "toast": {
-      "saved": "Übersetzungen erfolgreich gespeichert"
+      "saved": "Übersetzungen erfolgreich gespeichert",
+      "updated": "Aktualisiert"
     },
     "pleaseSelectPopup": "Bitte wählen Sie zuerst ein Pop-up aus",
     "upgradeNow": "Jetzt upgraden",
