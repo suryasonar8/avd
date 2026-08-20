@@ -48,12 +48,12 @@ export const CheckoutBannerService = {
      * If status is disabled, deletes the metafield value.
      */
     async syncToShopify(admin, shop, config) {
-        await this.ensureDefinitionsExist(admin);
-
         const shopResponse = await admin.graphql(`{ shop { id } }`);
         const shopId = (await shopResponse.json()).data.shop.id;
 
         if (config.status === "enabled") {
+            await this.ensureDefinitionsExist(admin);
+
             // Upsert Metafield Value
             const result = await admin.graphql(
                 `#graphql
@@ -67,7 +67,7 @@ export const CheckoutBannerService = {
                     variables: {
                         metafields: [
                             {
-                                namespace: "avd",
+                                namespace: "$app:avd",
                                 key: "checkout_banner",
                                 type: "json",
                                 ownerId: shopId,
@@ -99,7 +99,7 @@ export const CheckoutBannerService = {
                         metafields: [
                             {
                                 ownerId: shopId,
-                                namespace: "avd",
+                                namespace: "$app:avd",
                                 key: "checkout_banner",
                             },
                         ],
@@ -123,7 +123,7 @@ export const CheckoutBannerService = {
      */
     async ensureDefinitionsExist(admin) {
         await ensureMetafieldDefinition(admin, {
-            namespace: "avd",
+            namespace: "$app:avd",
             key: "checkout_banner",
             name: "Checkout Banner",
             type: "json",

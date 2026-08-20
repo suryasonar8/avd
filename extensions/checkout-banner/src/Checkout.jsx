@@ -22,11 +22,11 @@ function Extension() {
   const appMetafields = useAppMetafields();
 
   const bannerMetafield = useMemo(() => {
-    return appMetafields.find(
-      (m) =>
-        m.metafield.namespace === "avd" &&
-        m.metafield.key === "checkout_banner",
-    );
+    // useAppMetafields() only ever returns metafields this extension declared
+    // in shopify.extension.toml, so matching on key is enough — no need to
+    // also compare namespace (whose exact resolved string format for the
+    // $app: reserved namespace isn't guaranteed here).
+    return appMetafields.find((m) => m.metafield.key === "checkout_banner");
   }, [appMetafields]);
 
   useEffect(() => {

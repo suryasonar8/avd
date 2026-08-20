@@ -15,7 +15,7 @@ export const loader = async ({ request }) => {
   const shopDomain = session.shop;
 
   // We fetch settings from the metafield for the JSON blob to ensure we get adminLanguage, etc.
-  const shopData = await ShopService.getMetafield(admin, "avd", "settings");
+  const shopData = await ShopService.getMetafield(admin, "$app:avd", "settings");
   const metafieldValue = shopData?.metafield?.value;
   
   const metafieldSettings = metafieldValue

@@ -34,7 +34,7 @@ api_access = true
 # https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration#metafields
 
 [[extensions.metafields]]
-namespace = "avd"
+namespace = "$app:avd"
 key = "checkout_banner"
 
 # Defines settings that will be collected from merchants installing

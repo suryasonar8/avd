@@ -1,4 +1,4 @@
-{% assign settings = shop.metafields.avd.terms_settings.value %}
+{% assign settings = shop.metafields['$app:avd']['terms_settings'].value %}
 
 {% if request.design_mode %}
   {% if settings == blank %}
@@ -8,14 +8,14 @@
   {% endif %}
 {% endif %}
 
-{% assign global_settings = shop.metafields.avd.settings.value %}
+{% assign global_settings = shop.metafields['$app:avd']['settings'].value %}
 
 {% comment %}
   Feature access is computed server-side (PlanService.buildAccessMap) from
   app/constants/features.js and synced here as booleans, so this file never
   duplicates plan-tier comparison logic.
 {% endcomment %}
-{% assign entitlements = shop.metafields.avd.entitlements.value %}
+{% assign entitlements = shop.metafields['$app:avd']['entitlements'].value %}
 {% assign has_access = entitlements['terms.condition.status'] %}
 
 {% if settings.enabled and has_access %}

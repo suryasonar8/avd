@@ -47,7 +47,7 @@ export const TermsService = {
 
   /**
    * Publish the terms settings config as a JSON metafield.
-   * If enabled is false, deletes the metafield definition.
+   * If enabled is false, clears the metafield value (definition is kept).
    */
   async syncToShopify(admin, shop, config) {
     const shopResponse = await admin.graphql(`{ shop { id } }`);
@@ -68,7 +68,7 @@ export const TermsService = {
           variables: {
             metafields: [
               {
-                namespace: "avd",
+                namespace: "$app:avd",
                 key: "terms_settings",
                 type: "json",
                 ownerId: shopId,
@@ -86,55 +86,36 @@ export const TermsService = {
         return { success: false, errors };
       }
     } else {
-      // Delete Metafield Definition as requested by user
-      await this.deleteDefinition(admin);
-    }
-
-    return { success: true };
-  },
-
-  /**
-   * Delete the `avd:terms_settings` metafield definition.
-   */
-  async deleteDefinition(admin) {
-    const defCheck = await admin.graphql(
-      `#graphql
-      query {
-        metafieldDefinitions(
-          first: 1,
-          ownerType: SHOP,
-          namespace: "avd",
-          key: "terms_settings"
-        ) {
-          edges {
-            node {
-              id
-            }
-          }
-        }
-      }`,
-    );
-    const defData = await defCheck.json();
-    const existingDefId = defData?.data?.metafieldDefinitions?.edges?.[0]?.node?.id;
-
-    if (existingDefId) {
       const deleteResult = await admin.graphql(
         `#graphql
-        mutation deleteDefinition($id: ID!) {
-          metafieldDefinitionDelete(id: $id, deleteAllAssociatedMetafields: true) {
-            deletedDefinitionId
+        mutation deleteTerms($metafields: [MetafieldIdentifierInput!]!) {
+          metafieldsDelete(metafields: $metafields) {
+            deletedMetafields { key namespace ownerId }
             userErrors { field message }
           }
         }`,
         {
-          variables: { id: existingDefId },
+          variables: {
+            metafields: [
+              {
+                ownerId: shopId,
+                namespace: "$app:avd",
+                key: "terms_settings",
+              },
+            ],
+          },
         },
       );
+
       const deleteData = await deleteResult.json();
-      if (deleteData?.data?.metafieldDefinitionDelete?.userErrors?.length) {
-        console.error("Failed to delete metafield definition:", JSON.stringify(deleteData.data.metafieldDefinitionDelete.userErrors, null, 2));
+      const deleteErrors = deleteData?.data?.metafieldsDelete?.userErrors;
+      if (deleteErrors && deleteErrors.length > 0) {
+        console.error("Failed to clear terms settings metafield:", JSON.stringify(deleteErrors, null, 2));
+        return { success: false, errors: deleteErrors };
       }
     }
+
+    return { success: true };
   },
 
   /**
@@ -142,7 +123,7 @@ export const TermsService = {
    */
   async ensureDefinitionsExist(admin) {
     await ensureMetafieldDefinition(admin, {
-      namespace: "avd",
+      namespace: "$app:avd",
       key: "terms_settings",
       name: "Terms and Conditions Settings",
       type: "json",

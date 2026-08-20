@@ -252,8 +252,8 @@ export const PopupService = {
                 variables: {
                     metafields: [
                         {
-                            namespace: "avd",
-                            key: "active_popup",
+                            namespace: "$app:avd",
+                            key: "active_popup_config",
                             type: "json",
                             ownerId: shopId,
                             value: JSON.stringify(config),
@@ -273,12 +273,12 @@ export const PopupService = {
     },
 
     /**
-     * Ensure the `avd:active_popup` metafield definition exists as JSON type.
+     * Ensure the `avd:active_popup_config` metafield definition exists as JSON type.
      */
     async ensureDefinitionsExist(admin) {
         await ensureMetafieldDefinition(admin, {
-            namespace: "avd",
-            key: "active_popup",
+            namespace: "$app:avd",
+            key: "active_popup_config",
             name: "Active Popup",
             type: "json",
             description: "JSON config of the currently active popup"
@@ -305,8 +305,8 @@ export const PopupService = {
                     metafields: [
                         {
                             ownerId: shopId,
-                            namespace: "avd",
-                            key: "active_popup",
+                            namespace: "$app:avd",
+                            key: "active_popup_config",
                         },
                     ],
                 },

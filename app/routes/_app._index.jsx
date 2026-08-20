@@ -6,6 +6,7 @@ import { getAppEmbedStatus } from "../utils/theme.server";
 import { PopupService } from "../services/popup.service";
 import { AnalyticsService } from "../services/analytics.service";
 import { ShopService } from "../services/shop.service";
+import { SettingsService } from "../services/settings.service";
 import DateRangePicker from "../components/DateRangePicker";
 import TurnOffModal from "../components/TurnOffModal";
 import { useTranslation } from "../context/TranslationContext";
@@ -58,7 +59,7 @@ export const action = async ({ request }) => {
   // Re-fetch the metafield fresh instead of trusting the client's snapshot,
   // since other parts of the app (settings page, plan sync) write to the
   // same "avd/settings" metafield and the client copy can be stale.
-  const shopData = await ShopService.getMetafield(admin, "avd", "settings");
+  const shopData = await ShopService.getMetafield(admin, "$app:avd", "settings");
   const existingValue = shopData?.metafield?.value;
   const currentSettings = existingValue ? JSON.parse(existingValue) : {};
 
@@ -72,10 +73,11 @@ export const action = async ({ request }) => {
 
   const shopId = await ShopService.getShopId(admin);
 
+  await SettingsService.ensureDefinitionsExist(admin);
   await ShopService.updateMetafield(
     admin,
     shopId,
-    "avd",
+    "$app:avd",
     "settings",
     JSON.stringify(settings),
   );

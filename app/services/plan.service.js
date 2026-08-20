@@ -79,7 +79,7 @@ export const PlanService = {
      */
     async syncEntitlements(admin, shopId, access) {
         await ensureMetafieldDefinition(admin, {
-            namespace: "avd",
+            namespace: "$app:avd",
             key: "entitlements",
             name: "Plan Entitlements",
             type: "json",
@@ -89,7 +89,7 @@ export const PlanService = {
         return ShopService.updateMetafield(
             admin,
             shopId,
-            "avd",
+            "$app:avd",
             "entitlements",
             JSON.stringify(access)
         );

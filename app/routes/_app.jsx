@@ -7,6 +7,7 @@ import { getShopPlan, buildAccessMap, PlanService } from "../services/plan.servi
 import { loadTranslations } from "../i18n/i18n";
 import { useTranslation } from "../context/TranslationContext";
 import { ShopService } from "../services/shop.service";
+import { SettingsService } from "../services/settings.service";
 import { useState, useEffect } from "react";
 import { LANGUAGE_MAP } from "../constants/languages";
 
@@ -19,7 +20,7 @@ export const loader = async ({ request }) => {
   // Load admin language from shop settings
   let locale = "en";
   try {
-    const shopData = await ShopService.getMetafield(admin, "avd", "settings");
+    const shopData = await ShopService.getMetafield(admin, "$app:avd", "settings");
     const metafieldValue = shopData?.metafield?.value;
     let settings = {};
     if (metafieldValue) {
@@ -41,10 +42,11 @@ export const loader = async ({ request }) => {
     // Sync plan to global settings for theme extensions
     if (settings.plan !== plan) {
       const newSettings = { ...settings, plan };
+      await SettingsService.ensureDefinitionsExist(admin);
       await ShopService.updateMetafield(
         admin,
         shopId,
-        "avd",
+        "$app:avd",
         "settings",
         JSON.stringify(newSettings)
       );

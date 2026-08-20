@@ -1,8 +1,29 @@
-{% assign settings = shop.metafields.avd.settings.value %}
+{% assign settings = shop.metafields['$app:avd']['settings'].value %}
 {% assign min_age = settings.minAge | default: 18 %}
 {% assign redirect_url = settings.redirectUrl | default: "https://www.google.com" %}
 
-{% assign active_popup = shop.metafields.avd.active_popup.value %}
+{% assign active_popup = shop.metafields['$app:avd']['active_popup_config'].value %}
+
+{% if request.design_mode %}
+  {% assign app_ns_present = false %}
+  {% unless shop.metafields['$app:avd'] == blank %}
+    {% assign app_ns_present = true %}
+  {% endunless %}
+  {% assign settings_blank = true %}
+  {% unless settings == blank %}
+    {% assign settings_blank = false %}
+  {% endunless %}
+  {% assign active_popup_blank = true %}
+  {% unless active_popup == blank %}
+    {% assign active_popup_blank = false %}
+  {% endunless %}
+  <div style="padding: 10px; border: 1px dashed #ccc; background: #f9f9f9; font-size: 12px; font-family: monospace; white-space: pre-wrap;">
+    <strong>Age Verification App — debug:</strong>
+    shop.metafields['$app:avd'] present: {{ app_ns_present }}
+    settings metafield blank: {{ settings_blank }}
+    active_popup metafield blank: {{ active_popup_blank }}
+  </div>
+{% endif %}
 
 {% assign app_status = settings.appStatus %}
 {% if app_status == nil %}

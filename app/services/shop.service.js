@@ -22,7 +22,7 @@ export const ShopService = {
           name
           id
           myshopifyDomain
-          metafield(namespace: "avd", key: "settings") {
+          metafield(namespace: "$app:avd", key: "settings") {
             value
           }
         }

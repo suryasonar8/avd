@@ -22,11 +22,11 @@ export const action = async ({ request }) => {
       // Note: metafieldDefinitionDelete requires write_metafield_definitions or equivalent.
       // Since we kept standard metafield access, this should still work for standard metafields.
       const defsToCleanup = [
-        { namespace: "avd", key: "settings" },
-        { namespace: "avd", key: "active_popup" },
-        { namespace: "avd", key: "checkout_banner" },
-        { namespace: "avd", key: "terms_settings" },
-        { namespace: "avd", key: "entitlements" },
+        { namespace: "$app:avd", key: "settings" },
+        { namespace: "$app:avd", key: "active_popup_config" },
+        { namespace: "$app:avd", key: "checkout_banner" },
+        { namespace: "$app:avd", key: "terms_settings" },
+        { namespace: "$app:avd", key: "entitlements" },
       ];
 
       for (const def of defsToCleanup) {

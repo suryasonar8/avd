@@ -65,7 +65,7 @@ export const SettingsService = {
     // Merge onto the existing metafield value instead of overwriting it wholesale,
     // since other parts of the app (appStatus, tested, plan) store fields in the
     // same metafield that aren't tracked by SettingsService.
-    const existing = await ShopService.getMetafield(admin, "avd", "settings");
+    const existing = await ShopService.getMetafield(admin, "$app:avd", "settings");
     const existingValue = existing?.metafield?.value;
     const existingSettings = existingValue ? JSON.parse(existingValue) : {};
     const mergedSettings = { ...existingSettings, ...newSettings };
@@ -82,7 +82,7 @@ export const SettingsService = {
         variables: {
           metafields: [
             {
-              namespace: "avd",
+              namespace: "$app:avd",
               key: "settings",
               type: "json",
               ownerId: shopId,
@@ -104,7 +104,7 @@ export const SettingsService = {
 
   async ensureDefinitionsExist(admin) {
     await ensureMetafieldDefinition(admin, {
-      namespace: "avd",
+      namespace: "$app:avd",
       key: "settings",
       name: "App Settings",
       type: "json",
