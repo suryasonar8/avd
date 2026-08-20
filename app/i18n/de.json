@@ -312,8 +312,18 @@
     "avdTrademark": "AVD™",
     "desktop": "Desktop",
     "mobile": "Mobil",
+    "checkoutPage": "Checkout-Seite",
+    "checkoutPageDescription": "Stellen Sie sicher, dass Kunden Ihre Bedingungen akzeptieren, bevor sie den Kauf abschließen.",
+    "checkoutSetupTitle": "Allgemeine Geschäftsbedingungen",
+    "checkoutTriggerLabel": "Sie müssen die AGB akzeptieren, um fortzufahren.",
+    "shopifyPlusBadge": "Shopify Plus",
+    "shopifyPlusRequired": "Nur für Shopify Plus verfügbar.",
+    "configuration": "Konfiguration",
+    "configurationDescription": "Passen Sie die Benutzeroberfläche und den Inhalt der allgemeinen Geschäftsbedingungen an.",
+    "goToCheckoutEditor": "Zum Checkout-Editor",
     "defaults": {
-      "checkboxText": "Ich akzeptiere die allgemeinen Geschäftsbedingungen."
+      "checkboxText": "Ich akzeptiere die allgemeinen Geschäftsbedingungen.",
+      "checkoutCheckboxText": "Ich verstehe und akzeptiere die allgemeinen Geschäftsbedingungen."
     }
   },
   "translation": {

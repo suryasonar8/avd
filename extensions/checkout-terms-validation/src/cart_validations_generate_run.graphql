@@ -1,0 +1,23 @@
+query CartValidationsGenerateRunInput {
+  buyerJourney {
+    step
+  }
+  cart {
+    acceptedAttribute: attribute(key: "avd_terms_accepted") {
+      value
+    }
+    errorMessageAttribute: attribute(key: "avd_terms_error_message") {
+      value
+    }
+    buyerIdentity {
+      customer {
+        id
+      }
+    }
+  }
+  shop {
+    metafield(namespace: "$app:avd", key: "checkout_terms_conditions") {
+      value
+    }
+  }
+}

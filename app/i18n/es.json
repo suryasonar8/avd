@@ -312,8 +312,18 @@
     "avdTrademark": "AVD™",
     "desktop": "Escritorio",
     "mobile": "Móvil",
+    "checkoutPage": "Página de pago",
+    "checkoutPageDescription": "Asegúrate de que los clientes acepten tus términos antes de completar la compra.",
+    "checkoutSetupTitle": "Términos y condiciones",
+    "checkoutTriggerLabel": "Debes aceptar los términos y condiciones para continuar.",
+    "shopifyPlusBadge": "Shopify Plus",
+    "shopifyPlusRequired": "Disponible solo en Shopify Plus.",
+    "configuration": "Configuración",
+    "configurationDescription": "Personaliza la interfaz y el contenido de los términos y condiciones.",
+    "goToCheckoutEditor": "Ir al editor de pago",
     "defaults": {
-      "checkboxText": "Acepto los términos y condiciones."
+      "checkboxText": "Acepto los términos y condiciones.",
+      "checkoutCheckboxText": "Entiendo y acepto los términos y condiciones."
     }
   },
   "translation": {

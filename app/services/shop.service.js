@@ -12,6 +12,17 @@ export const ShopService = {
   },
 
   /**
+   * Whether the shop is on a Shopify Plus plan — used to gate the checkout
+   * terms & conditions feature, which relies on Checkout Editor placement
+   * and Checkout Rules that aren't meaningfully usable outside Plus.
+   */
+  async isShopifyPlus(admin) {
+    const response = await admin.graphql(`{ shop { plan { shopifyPlus } } }`);
+    const data = await response.json();
+    return !!data.data.shop.plan.shopifyPlus;
+  },
+
+  /**
    * Get the current app installation ID — the owner ID needed to write
    * app-data metafields (the `app.metafields.*` store read by Liquid's
    * `available_if`), as opposed to `$app:`-namespaced metafields on the

@@ -1,0 +1,4 @@
+{
+  "name": "checkout-terms-validation",
+  "description": "Blocks checkout until the customer accepts the checkout terms and conditions"
+}

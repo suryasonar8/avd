@@ -9,4 +9,8 @@ export const DEFAULT_TERMS_CONFIG = {
     size: 16,
     color: "#000000",
     errorMessage: "",
+    checkout: {
+        enabled: false,
+        triggerCondition: "always",
+    },
 };

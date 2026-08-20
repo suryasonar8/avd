@@ -312,8 +312,18 @@
     "avdTrademark": "AVD™",
     "desktop": "डेस्कटॉप",
     "mobile": "मोबाइल",
+    "checkoutPage": "चेकआउट पेज",
+    "checkoutPageDescription": "सुनिश्चित करें कि ग्राहक खरीदारी पूरी करने से पहले आपकी शर्तें स्वीकार करें।",
+    "checkoutSetupTitle": "नियम और शर्तें",
+    "checkoutTriggerLabel": "जारी रखने के लिए आपको नियम और शर्तें स्वीकार करनी होंगी।",
+    "shopifyPlusBadge": "Shopify Plus",
+    "shopifyPlusRequired": "केवल Shopify Plus पर उपलब्ध है।",
+    "configuration": "कॉन्फ़िगरेशन",
+    "configurationDescription": "नियम और शर्तों का UI और सामग्री अनुकूलित करें।",
+    "goToCheckoutEditor": "चेकआउट एडिटर पर जाएं",
     "defaults": {
-      "checkboxText": "मैं नियम और शर्तें स्वीकार करता हूँ।"
+      "checkboxText": "मैं नियम और शर्तें स्वीकार करता हूँ।",
+      "checkoutCheckboxText": "मैं नियम और शर्तों को समझता/समझती हूँ और स्वीकार करता/करती हूँ।"
     }
   },
   "translation": {

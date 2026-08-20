@@ -236,6 +236,36 @@ export const PlanService = {
     },
 
     /**
+     * Validate checkout terms & conditions config — status and trigger
+     * condition only. The checkbox's message/color/keyword/link/error live in
+     * the Checkout Editor's native block settings (not this app's DB), so
+     * there's nothing else here to gate server-side.
+     */
+    async validateCheckoutTermsConfig(shop, config) {
+        const plan = await getShopPlan(null, shop);
+        const sanitized = { ...config, checkout: { ...config.checkout } };
+
+        const enforce = (featureKey, condition, resetFn) => {
+            if (condition && !hasAccess(plan, featureKey)) {
+                resetFn();
+            }
+        };
+
+        enforce(
+            "terms.checkout.status",
+            sanitized.checkout.enabled === true,
+            () => sanitized.checkout.enabled = DEFAULT_TERMS_CONFIG.checkout.enabled,
+        );
+        enforce(
+            "terms.checkout.trigger",
+            !!sanitized.checkout.triggerCondition && sanitized.checkout.triggerCondition !== DEFAULT_TERMS_CONFIG.checkout.triggerCondition,
+            () => sanitized.checkout.triggerCondition = DEFAULT_TERMS_CONFIG.checkout.triggerCondition,
+        );
+
+        return { isValid: true, errors: [], sanitized };
+    },
+
+    /**
      * Enforce plan limits on all gated features.
      * Sanitizes and re-saves configurations if they exceed current plan limits.
      */
@@ -265,11 +295,12 @@ export const PlanService = {
             }
         }
 
-        // 3. Terms & Conditions
+        // 3. Terms & Conditions (product/cart + checkout placements)
         const termsSettings = await TermsService.getSettings(shop);
         if (termsSettings) {
             const { id, ...configOnly } = termsSettings;
-            const { sanitized } = await this.validateTermsConfig(shop, configOnly);
+            const { sanitized: afterConditionCheck } = await this.validateTermsConfig(shop, configOnly);
+            const { sanitized } = await this.validateCheckoutTermsConfig(shop, afterConditionCheck);
             if (JSON.stringify(configOnly) !== JSON.stringify(sanitized)) {
                 await TermsService.saveSettings(admin, shop, sanitized);
             }

@@ -53,6 +53,8 @@ export const TermsService = {
     const shopResponse = await admin.graphql(`{ shop { id } }`);
     const shopId = (await shopResponse.json()).data.shop.id;
 
+    await this.syncCheckoutToShopify(admin, shopId, config.checkout);
+
     if (config.enabled) {
       await this.ensureDefinitionsExist(admin);
 
@@ -111,6 +113,85 @@ export const TermsService = {
       const deleteErrors = deleteData?.data?.metafieldsDelete?.userErrors;
       if (deleteErrors && deleteErrors.length > 0) {
         console.error("Failed to clear terms settings metafield:", JSON.stringify(deleteErrors, null, 2));
+        return { success: false, errors: deleteErrors };
+      }
+    }
+
+    return { success: true };
+  },
+
+  /**
+   * Publish the checkout status/trigger condition as their own JSON metafield,
+   * separate from `terms_settings`, since the checkout-terms extension reads
+   * only this key — the checkbox's message/color/keyword/link/error live in
+   * the Checkout Editor's native block settings instead, not here.
+   * If disabled, clears the metafield value (definition is kept).
+   */
+  async syncCheckoutToShopify(admin, shopId, checkoutConfig) {
+    if (checkoutConfig?.enabled) {
+      await ensureMetafieldDefinition(admin, {
+        namespace: "$app:avd",
+        key: "checkout_terms_conditions",
+        name: "Checkout Terms and Conditions",
+        type: "json",
+        description: "Status and trigger condition for the checkout terms and conditions checkbox",
+      });
+
+      const result = await admin.graphql(
+        `#graphql
+        mutation updateCheckoutTerms($metafields: [MetafieldsSetInput!]!) {
+          metafieldsSet(metafields: $metafields) {
+            metafields { id }
+            userErrors { field message }
+          }
+        }`,
+        {
+          variables: {
+            metafields: [
+              {
+                namespace: "$app:avd",
+                key: "checkout_terms_conditions",
+                type: "json",
+                ownerId: shopId,
+                value: JSON.stringify(checkoutConfig),
+              },
+            ],
+          },
+        },
+      );
+
+      const data = await result.json();
+      const errors = data?.data?.metafieldsSet?.userErrors;
+      if (errors && errors.length > 0) {
+        console.error("Sync checkout terms to Shopify failed:", JSON.stringify(errors, null, 2));
+        return { success: false, errors };
+      }
+    } else {
+      const deleteResult = await admin.graphql(
+        `#graphql
+        mutation deleteCheckoutTerms($metafields: [MetafieldIdentifierInput!]!) {
+          metafieldsDelete(metafields: $metafields) {
+            deletedMetafields { key namespace ownerId }
+            userErrors { field message }
+          }
+        }`,
+        {
+          variables: {
+            metafields: [
+              {
+                ownerId: shopId,
+                namespace: "$app:avd",
+                key: "checkout_terms_conditions",
+              },
+            ],
+          },
+        },
+      );
+
+      const deleteData = await deleteResult.json();
+      const deleteErrors = deleteData?.data?.metafieldsDelete?.userErrors;
+      if (deleteErrors && deleteErrors.length > 0) {
+        console.error("Failed to clear checkout terms metafield:", JSON.stringify(deleteErrors, null, 2));
         return { success: false, errors: deleteErrors };
       }
     }
