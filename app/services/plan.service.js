@@ -86,6 +86,23 @@ export const PlanService = {
             description: "Computed feature-access booleans for the shop's current plan, consumed by theme app extensions",
         });
 
+        // Boolean mirror of access["terms.condition.status"], read by Liquid's
+        // `available_if` to hide the Terms & Conditions app block from the
+        // theme editor's block picker on non-premium plans. `available_if`
+        // reads app-data metafields (owned by the AppInstallation, via the
+        // `app` object in Liquid) — a different store from the `$app:avd`
+        // shop-resource metafields used above, so this needs its own owner
+        // ID and a plain (non-reserved) namespace.
+        const appInstallationId = await ShopService.getAppInstallationId(admin);
+        await ShopService.updateMetafield(
+            admin,
+            appInstallationId,
+            "avd",
+            "terms_available",
+            String(!!access["terms.condition.status"]),
+            "boolean"
+        );
+
         return ShopService.updateMetafield(
             admin,
             shopId,

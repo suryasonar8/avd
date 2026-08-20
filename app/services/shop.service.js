@@ -12,6 +12,18 @@ export const ShopService = {
   },
 
   /**
+   * Get the current app installation ID — the owner ID needed to write
+   * app-data metafields (the `app.metafields.*` store read by Liquid's
+   * `available_if`), as opposed to `$app:`-namespaced metafields on the
+   * shop resource (read via `shop.metafields['$app:...']`).
+   */
+  async getAppInstallationId(admin) {
+    const response = await admin.graphql(`{ currentAppInstallation { id } }`);
+    const data = await response.json();
+    return data.data.currentAppInstallation.id;
+  },
+
+  /**
    * Get shop data along with main theme and a specific metafield setting.
    */
   async getDashboardData(admin) {
