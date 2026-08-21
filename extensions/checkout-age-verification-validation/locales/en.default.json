@@ -1,0 +1,4 @@
+{
+  "name": "checkout-age-verification-validation",
+  "description": "Blocks checkout until the customer verifies their age"
+}

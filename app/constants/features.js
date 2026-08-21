@@ -51,6 +51,14 @@ export const FEATURES = {
     "checkout.condition.target": PLAN_TYPES.BASIC,
     "checkout.banner.heading": PLAN_TYPES.BASIC,
 
+    // --- Checkout Age Verification (Shopify Plus checkout checkbox) ---
+    "checkout.verification.status": PLAN_TYPES.PREMIUM,
+    "checkout.verification.target": PLAN_TYPES.PREMIUM,
+    "checkout.verification.method": PLAN_TYPES.PREMIUM,
+    "checkout.verification.minAge": PLAN_TYPES.PREMIUM,
+    "checkout.verification.message": PLAN_TYPES.PREMIUM,
+    "checkout.verification.errorMessage": PLAN_TYPES.PREMIUM,
+
     // --- Terms & Conditions (Translation Spec) ---
     "terms.condition.status": PLAN_TYPES.PREMIUM,
     "terms.condition.pages": PLAN_TYPES.PREMIUM,

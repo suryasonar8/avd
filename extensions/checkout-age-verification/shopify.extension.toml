@@ -1,0 +1,37 @@
+# Learn more about configuring your checkout UI extension:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration
+
+# The version of APIs your extension will receive. Learn more:
+# https://shopify.dev/docs/api/usage/versioning
+api_version = "2026-04"
+
+[[extensions]]
+name = "checkout-age-verification"
+handle = "checkout-age-verification"
+type = "ui_extension"
+uid = "f3a7c9e1-5b2d-4e8a-9c1f-7d4b6a2e9f83"
+
+# Controls where in Shopify your extension will be injected,
+# and the file that contains your extension’s source code. Learn more:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/extension-targets-overview
+
+[[extensions.targeting]]
+module = "./src/Checkout.jsx"
+target = "purchase.checkout.block.render"
+
+[extensions.capabilities]
+# Gives your extension access to directly query Shopify’s storefront API.
+# Needed to resolve product → collection membership at runtime for the
+# "specific collection" targeting option (the merchant's selected collection
+# IDs aren't known until the config metafield loads, so this can't be a
+# static input query like the validation Function uses).
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration#api-access
+api_access = true
+
+# Loads the app-owned metafield holding the full config (status, target,
+# selected products/collections, min age, message, error message) — every
+# field is configured from this app's own admin, so unlike checkout-terms
+# there's no split with Checkout Editor native settings here.
+[[extensions.metafields]]
+namespace = "$app:avd"
+key = "checkout_age_verification"

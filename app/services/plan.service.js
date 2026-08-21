@@ -1,10 +1,11 @@
 import db from "../db.server";
 import { PLANS, FEATURES, LIMITS, PLAN_TYPES } from "../constants/features";
 import { DEFAULT_STORE_CONFIG } from "../constants/store-verification";
-import { DEFAULT_CHECKOUT_CONFIG } from "../constants/checkout-verification";
+import { DEFAULT_CHECKOUT_CONFIG, DEFAULT_AGE_VERIFICATION_CONFIG } from "../constants/checkout-verification";
 import { DEFAULT_TERMS_CONFIG } from "../constants/terms-and-conditions";
 import { PopupService } from "./popup.service";
 import { CheckoutBannerService } from "./checkout-banner.service";
+import { CheckoutAgeVerificationService } from "./checkout-age-verification.service";
 import { TermsService } from "./terms.service";
 import { ShopService } from "./shop.service";
 import { ensureMetafieldDefinition } from "../utils/metafield.server";
@@ -210,6 +211,30 @@ export const PlanService = {
     },
 
     /**
+     * Validate checkout age verification config.
+     */
+    async validateCheckoutAgeVerificationConfig(shop, config) {
+        const plan = await getShopPlan(null, shop);
+        const sanitized = { ...config };
+
+        const enforce = (featureKey, condition, resetFn) => {
+            if (condition && !hasAccess(plan, featureKey)) {
+                resetFn();
+            }
+        };
+
+        enforce("checkout.verification.status", sanitized.status === "enabled", () => sanitized.status = DEFAULT_AGE_VERIFICATION_CONFIG.status);
+        enforce("checkout.verification.target", sanitized.target && sanitized.target !== DEFAULT_AGE_VERIFICATION_CONFIG.target, () => sanitized.target = DEFAULT_AGE_VERIFICATION_CONFIG.target);
+        enforce("checkout.verification.method", sanitized.verificationMethod && sanitized.verificationMethod !== DEFAULT_AGE_VERIFICATION_CONFIG.verificationMethod, () => sanitized.verificationMethod = DEFAULT_AGE_VERIFICATION_CONFIG.verificationMethod);
+        enforce("checkout.verification.minAge", sanitized.minAge && sanitized.minAge !== DEFAULT_AGE_VERIFICATION_CONFIG.minAge, () => sanitized.minAge = DEFAULT_AGE_VERIFICATION_CONFIG.minAge);
+        enforce("checkout.verification.message", !!sanitized.message && sanitized.message !== DEFAULT_AGE_VERIFICATION_CONFIG.message, () => sanitized.message = DEFAULT_AGE_VERIFICATION_CONFIG.message);
+        enforce("checkout.verification.message", !!sanitized.dobHeading && sanitized.dobHeading !== DEFAULT_AGE_VERIFICATION_CONFIG.dobHeading, () => sanitized.dobHeading = DEFAULT_AGE_VERIFICATION_CONFIG.dobHeading);
+        enforce("checkout.verification.errorMessage", !!sanitized.errorMessage && sanitized.errorMessage !== DEFAULT_AGE_VERIFICATION_CONFIG.errorMessage, () => sanitized.errorMessage = DEFAULT_AGE_VERIFICATION_CONFIG.errorMessage);
+
+        return { isValid: true, errors: [], sanitized };
+    },
+
+    /**
      * Validate terms & conditions (translation) config.
      */
     async validateTermsConfig(shop, config) {
@@ -303,6 +328,16 @@ export const PlanService = {
             const { sanitized } = await this.validateCheckoutTermsConfig(shop, afterConditionCheck);
             if (JSON.stringify(configOnly) !== JSON.stringify(sanitized)) {
                 await TermsService.saveSettings(admin, shop, sanitized);
+            }
+        }
+
+        // 4. Checkout Age Verification
+        const ageVerificationConfig = await CheckoutAgeVerificationService.getConfig(shop);
+        if (ageVerificationConfig) {
+            const { id, ...configOnly } = ageVerificationConfig;
+            const { sanitized } = await this.validateCheckoutAgeVerificationConfig(shop, configOnly);
+            if (JSON.stringify(configOnly) !== JSON.stringify(sanitized)) {
+                await CheckoutAgeVerificationService.saveConfig(admin, shop, sanitized);
             }
         }
     }

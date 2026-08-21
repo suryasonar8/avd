@@ -1,0 +1,27 @@
+query CartValidationsGenerateRunInput {
+  buyerJourney {
+    step
+  }
+  cart {
+    acceptedAttribute: attribute(key: "avd_age_verified") {
+      value
+    }
+    targetMatchAttribute: attribute(key: "avd_age_target_match") {
+      value
+    }
+    lines {
+      merchandise {
+        ... on ProductVariant {
+          product {
+            id
+          }
+        }
+      }
+    }
+  }
+  shop {
+    metafield(namespace: "$app:avd", key: "checkout_age_verification") {
+      value
+    }
+  }
+}

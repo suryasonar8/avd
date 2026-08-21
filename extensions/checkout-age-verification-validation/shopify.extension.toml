@@ -1,0 +1,17 @@
+api_version = "2026-07"
+
+[[extensions]]
+name = "t:name"
+handle = "checkout-age-verification-validation"
+type = "function"
+uid = "6b1e4d2a-8f3c-4a91-b0d6-2e9a7c5f1d64"
+description = "t:description"
+
+  [[extensions.targeting]]
+  target = "cart.validations.generate.run"
+  input_query = "src/cart_validations_generate_run.graphql"
+  export = "cart-validations-generate-run"
+
+  [extensions.build]
+  command = ""
+  path = "dist/function.wasm"

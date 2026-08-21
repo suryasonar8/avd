@@ -94,6 +94,16 @@ model TermsSettings {
   @@index([shop])
 }
 
+model CheckoutAgeVerification {
+  id        Int      @id @default(autoincrement())
+  shop      String   @unique
+  config    String   // Full JSON config blob
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shop])
+}
+
 model AnalyticsEvent {
   id        Int      @id @default(autoincrement())
   shop      String
