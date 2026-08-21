@@ -118,9 +118,11 @@ export default function CheckoutVerification() {
 
       <div style={{ display: "flex", gap: "16px", alignItems: "stretch" }}>
         {/* Info banner card */}
-        <s-section style={{ flex: 1 }}>
-          <s-stack gap="base">
-            {/* Verify your age banner */}
+        <s-section style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+            <div style={{ flex: 1 }}>
+              <s-stack gap="base">
+                {/* Verify your age banner */}
             <s-banner tone="warning">
               <s-text>{t("checkoutVerification.verifyYourAge")}</s-text>
             </s-banner>
@@ -136,39 +138,47 @@ export default function CheckoutVerification() {
             <s-banner tone="critical">
               <s-text>{t("checkoutVerification.youMustBe18")}</s-text>
             </s-banner>
-
-            <s-divider></s-divider>
-
-            <div>
-              <s-heading>{t("checkoutVerification.infoBanner")}</s-heading>
-              <s-text color="subdued">
-                {t("checkoutVerification.infoBannerDescription")}
-              </s-text>
+              </s-stack>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <s-button
-                variant="secondary"
-                size="slim"
-                onClick={() => navigate("/checkout_verification/setup")}
-              >
-                {t("checkoutVerification.customize")}
-              </s-button>
-              <StatusPill enabled={isEnabled} />
+            <div style={{ marginTop: "auto", paddingTop: "16px" }}>
+              <s-stack gap="base">
+                <s-divider></s-divider>
+
+                <div style={{ minHeight: "84px" }}>
+                  <s-heading>{t("checkoutVerification.infoBanner")}</s-heading>
+                  <s-text color="subdued">
+                    {t("checkoutVerification.infoBannerDescription")}
+                  </s-text>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <s-button
+                    variant="secondary"
+                    size="slim"
+                    onClick={() => navigate("/checkout_verification/setup")}
+                  >
+                    {t("checkoutVerification.customize")}
+                  </s-button>
+                  <StatusPill enabled={isEnabled} />
+                </div>
+              </s-stack>
             </div>
-          </s-stack>
+          </div>
         </s-section>
 
         {/* Checkout verification (age gate) card */}
-        <s-section style={{ flex: 1 }}>
-          <s-stack gap="base">
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <s-section style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+            <div style={{ flex: 1 }}>
+              <s-stack gap="base">
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <span
                 style={{
                   fontSize: "12px",
@@ -235,43 +245,49 @@ export default function CheckoutVerification() {
             <s-text tone="critical" style={{ fontSize: "12px" }}>
               {t("checkoutVerification.ageVerificationError")}
             </s-text>
-
-            <s-divider></s-divider>
-
-            <div>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "8px" }}
-              >
-                <s-heading>
-                  {t("checkoutVerification.ageVerification")}
-                </s-heading>
-                <ShopifyPlusBadge />
-              </div>
-              <s-text color="subdued">
-                {isShopifyPlus
-                  ? t("checkoutVerification.ageVerificationDescription")
-                  : t("checkoutVerification.shopifyPlusRequired")}
-              </s-text>
+              </s-stack>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <s-button
-                variant="secondary"
-                size="slim"
-                disabled={!isShopifyPlus}
-                onClick={() => navigate("/checkout_verification/verification")}
-              >
-                {t("checkoutVerification.customize")}
-              </s-button>
-              <StatusPill enabled={isAgeVerificationEnabled} />
+            <div style={{ marginTop: "auto", paddingTop: "16px" }}>
+              <s-stack gap="base">
+                <s-divider></s-divider>
+
+                <div style={{ minHeight: "84px" }}>
+                  <div
+                    style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                  >
+                    <s-heading>
+                      {t("checkoutVerification.ageVerification")}
+                    </s-heading>
+                    <ShopifyPlusBadge />
+                  </div>
+                  <s-text color="subdued">
+                    {isShopifyPlus
+                      ? t("checkoutVerification.ageVerificationDescription")
+                      : t("checkoutVerification.shopifyPlusRequired")}
+                  </s-text>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <s-button
+                    variant="secondary"
+                    size="slim"
+                    disabled={!isShopifyPlus}
+                    onClick={() => navigate("/checkout_verification/verification")}
+                  >
+                    {t("checkoutVerification.customize")}
+                  </s-button>
+                  <StatusPill enabled={isAgeVerificationEnabled} />
+                </div>
+              </s-stack>
             </div>
-          </s-stack>
+          </div>
         </s-section>
       </div>
 

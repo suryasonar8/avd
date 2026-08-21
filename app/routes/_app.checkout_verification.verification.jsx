@@ -56,6 +56,13 @@ export default function CheckoutAgeVerificationSetup() {
   const shopify = useAppBridge();
 
   const isDirty = JSON.stringify(config) !== JSON.stringify(initialConfig);
+  const isTargetValid =
+    config.target === "collection"
+      ? (config.selectedCollections || []).length > 0
+      : config.target === "product"
+        ? (config.selectedProducts || []).length > 0
+        : true;
+  const canSave = isDirty && isTargetValid;
 
   const handleSave = () => {
     fetcher.submit({ config: JSON.stringify(config) }, { method: "POST" });
@@ -70,7 +77,7 @@ export default function CheckoutAgeVerificationSetup() {
   };
 
   const handleBack = () => {
-    if (isDirty) {
+    if (canSave) {
       shopify.toast.show(t("common.saveOrDiscardWarning"), {
         isError: true,
       });
@@ -83,7 +90,7 @@ export default function CheckoutAgeVerificationSetup() {
     <s-page>
       <CustomSaveBar
         id="checkout-age-verification-save-bar"
-        open={isDirty}
+        open={canSave}
         onSave={handleSave}
         onDiscard={handleDiscard}
         state={{ submitting: fetcher.state !== "idle", data: fetcher.data }}

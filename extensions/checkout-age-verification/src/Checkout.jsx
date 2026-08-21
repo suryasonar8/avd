@@ -111,7 +111,10 @@ function Extension() {
   const method = config.verificationMethod || VERIFICATION_METHODS.CHECKBOX;
   const isDateOfBirth = method === VERIFICATION_METHODS.DATE_OF_BIRTH;
 
-  const message = interpolateAge(config.message || "I'm over 18 years old.", minAge);
+  const message = interpolateAge(
+    config.message || "I'm over 18 years old.",
+    minAge,
+  );
   const dobHeading = config.dobHeading || "Enter your date of birth";
   const errorMessage = interpolateAge(
     config.errorMessage || "You must be 18 years old.",
@@ -238,7 +241,9 @@ function Extension() {
   }, [daysInMonth, day]);
 
   const dobComplete = Boolean(day && month && year);
-  const dobAge = dobComplete ? computeAge(Number(day), Number(month), Number(year)) : null;
+  const dobAge = dobComplete
+    ? computeAge(Number(day), Number(month), Number(year))
+    : null;
   const dobUnderage = dobComplete && dobAge < minAge;
 
   useEffect(() => {
@@ -300,13 +305,13 @@ function Extension() {
 
       {isDateOfBirth && (
         <s-stack direction="block" gap="none">
-          <s-stack direction="inline" gap="small">
+          <s-stack direction="inline" gap="base">
             {/* All three fields turn red via a zero-width-space `error`
                 (a non-empty string is required to trigger the invalid
                 styling) — each already reserves its own native error-line
                 height below itself, so the group's actual bottom edge sits
                 slightly lower than the visible input borders. The shared
-                message below is a separate element with gap="none", so it
+                message below sits in this same gap="none" stack, so it
                 starts right at that same reserved edge — the same tight
                 spacing the native single-field `error` gave us, just
                 spanning the full row instead of one field's column. */}
@@ -351,7 +356,7 @@ function Extension() {
             </s-select>
           </s-stack>
 
-          {dobUnderage && (
+          {!(dobComplete && !dobUnderage) && (
             <s-text tone="critical">{errorMessage}</s-text>
           )}
         </s-stack>
