@@ -52,7 +52,13 @@ function computeAge(day, month, year) {
   return age;
 }
 
-const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
+// Days-in-month, accounting for leap years (Date's day-0-of-next-month trick
+// already folds in the Feb 28/29 leap rule).
+function getDaysInMonth(month, year) {
+  if (!month) return 31;
+  return new Date(year || CURRENT_YEAR, month, 0).getDate();
+}
+
 const MONTHS = [
   "January",
   "February",
@@ -210,6 +216,27 @@ function Extension() {
   const [day, setDay] = useState("");
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
+
+  const daysInMonth = useMemo(
+    () => getDaysInMonth(Number(month), Number(year)),
+    [month, year],
+  );
+  const days = useMemo(
+    () => Array.from({ length: daysInMonth }, (_, i) => i + 1),
+    [daysInMonth],
+  );
+
+  // Selecting a month/year that makes the current day invalid (e.g. Feb 30,
+  // or Feb 29 rolling from a leap year to a non-leap one) must clamp it to
+  // the new last valid day — otherwise the stale value silently rolls into
+  // the next month via Date's overflow normalization and skews the
+  // computed age.
+  useEffect(() => {
+    if (day && Number(day) > daysInMonth) {
+      setDay(String(daysInMonth));
+    }
+  }, [daysInMonth, day]);
+
   const dobComplete = Boolean(day && month && year);
   const dobAge = dobComplete ? computeAge(Number(day), Number(month), Number(year)) : null;
   const dobUnderage = dobComplete && dobAge < minAge;
@@ -290,7 +317,7 @@ function Extension() {
               onChange={(e) => setDay(e.target.value)}
             >
               <s-option value="">DD</s-option>
-              {DAYS.map((d) => (
+              {days.map((d) => (
                 <s-option key={d} value={String(d)}>
                   {String(d).padStart(2, "0")}
                 </s-option>

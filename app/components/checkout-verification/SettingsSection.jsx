@@ -1,6 +1,12 @@
 import { Badge } from "../Badge";
 
-export default function SettingsSection({ title, badge, children, disabled }) {
+export default function SettingsSection({
+  title,
+  badge,
+  children,
+  disabled,
+  divider,
+}) {
   return (
     <div
       style={{
@@ -27,6 +33,7 @@ export default function SettingsSection({ title, badge, children, disabled }) {
         </span>
         {badge && (typeof badge === "string" ? <Badge text={badge} /> : badge)}
       </div>
+      {divider && <s-divider></s-divider>}
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {children}
       </div>

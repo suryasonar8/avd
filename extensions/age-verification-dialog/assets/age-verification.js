@@ -51,6 +51,47 @@
         const method = overlay.getAttribute('data-method') || 'No input';
         const minAge = parseInt(overlay.getAttribute('data-min-age')) || 18;
 
+        // Keep the day dropdown in sync with the selected month/year so an
+        // out-of-range day (e.g. Feb 30, or Feb 29 in a non-leap year)
+        // can never be picked — new Date() would otherwise silently roll
+        // it into the next month and skew the computed age. If the
+        // previously picked day no longer fits, clamp it to the new last
+        // valid day instead of just clearing it.
+        const monthSelect = document.getElementById('age-verify-month');
+        const daySelect = document.getElementById('age-verify-day');
+        const yearSelect = document.getElementById('age-verify-year');
+
+        function daysInMonth(month, year) {
+            if (!month) return 31;
+            return new Date(year || new Date().getFullYear(), month, 0).getDate();
+        }
+
+        function syncDayOptions() {
+            if (!daySelect || !monthSelect) return;
+            const month = parseInt(monthSelect.value, 10);
+            const year = yearSelect ? parseInt(yearSelect.value, 10) : undefined;
+            const max = daysInMonth(month, year);
+            const previousValue = daySelect.value;
+
+            daySelect.innerHTML = '';
+            for (let i = 1; i <= max; i++) {
+                const option = document.createElement('option');
+                option.value = String(i);
+                option.textContent = String(i);
+                daySelect.appendChild(option);
+            }
+
+            if (previousValue) {
+                daySelect.value = Number(previousValue) <= max ? previousValue : String(max);
+            }
+        }
+
+        if (daySelect && monthSelect) {
+            syncDayOptions();
+            monthSelect.addEventListener('change', syncDayOptions);
+            if (yearSelect) yearSelect.addEventListener('change', syncDayOptions);
+        }
+
         if (!getCookie('avd-age-verified')) {
             overlay.style.display = 'flex';
             document.body.style.overflow = 'hidden';
