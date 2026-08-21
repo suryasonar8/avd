@@ -315,7 +315,8 @@
       "free": "KOSTENLOS",
       "estimatedTaxes": "Geschätzte Steuern",
       "total": "Gesamt",
-      "usd": "USD"
+      "usd": "USD",
+      "buyNow": "Jetzt kaufen"
     }
   },
   "termsAndConditions": {

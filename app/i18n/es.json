@@ -315,7 +315,8 @@
       "free": "GRATIS",
       "estimatedTaxes": "Impuestos estimados",
       "total": "Total",
-      "usd": "USD"
+      "usd": "USD",
+      "buyNow": "Comprar ahora"
     }
   },
   "termsAndConditions": {

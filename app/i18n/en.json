@@ -315,7 +315,8 @@
       "free": "FREE",
       "estimatedTaxes": "Estimated taxes",
       "total": "Total",
-      "usd": "USD"
+      "usd": "USD",
+      "buyNow": "Buy now"
     }
   },
   "termsAndConditions": {
