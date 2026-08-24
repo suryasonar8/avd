@@ -209,6 +209,7 @@
       "backgroundColor": "Color de fondo",
       "logoOptional": "Logo (Opcional)",
       "logoImage": "Imagen del logo",
+      "imageCorrupted": "Esta imagen ya no está disponible y no se puede mostrar. Vuelve a subirla.",
       "borderSetting": "Configuración de borde",
       "borderColor": "Color de borde",
       "borderRadius": "Radio de borde",

@@ -15,7 +15,6 @@ export const ColorInput = ({
     <div
       style={{
         position: "relative",
-        opacity: disabled ? 0.6 : 1,
       }}
     >
       <div
@@ -26,12 +25,21 @@ export const ColorInput = ({
           marginBottom: "8px",
         }}
       >
-        <s-text variant="bodyMd" as="label">
-          {label} {required && <span style={{ color: "red" }}>*</span>}
-        </s-text>
+        <span style={{ opacity: disabled ? 0.6 : 1 }}>
+          <s-text variant="bodyMd" as="label">
+            {label} {required && <span style={{ color: "red" }}>*</span>}
+          </s-text>
+        </span>
         {badge}
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+          opacity: disabled ? 0.6 : 1,
+        }}
+      >
         <div
           onClick={() => !disabled && setShowPicker(!showPicker)}
           style={{

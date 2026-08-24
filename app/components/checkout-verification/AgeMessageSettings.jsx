@@ -4,17 +4,20 @@ import {
 } from "../../constants/checkout-verification";
 import SettingsSection from "./SettingsSection";
 import { Badge } from "../Badge";
+import { ShopifyPlusBadge } from "../ShopifyPlusBadge";
 import { usePlan } from "../../context/PlanContext";
 import { useTranslation } from "../../context/TranslationContext";
 
 const AGE_OPTIONS = Array.from({ length: 100 }, (_, i) => i + 1);
 
-export default function AgeMessageSettings({ config, onChange }) {
+export default function AgeMessageSettings({ config, onChange, isShopifyPlus }) {
   const { canAccess } = usePlan();
   const { t } = useTranslation();
-  const hasAccessMinAge = canAccess("checkout.verification.minAge");
-  const hasAccessMessage = canAccess("checkout.verification.message");
-  const hasAccessErrorMessage = canAccess("checkout.verification.errorMessage");
+  const plusRestricted = !isShopifyPlus;
+  const hasAccessMinAge = !plusRestricted && canAccess("checkout.verification.minAge");
+  const hasAccessMessage = !plusRestricted && canAccess("checkout.verification.message");
+  const hasAccessErrorMessage =
+    !plusRestricted && canAccess("checkout.verification.errorMessage");
   const maxLength = AGE_VERIFICATION_TEXT_MAX_LENGTH;
   const isDateOfBirth =
     config.verificationMethod === VERIFICATION_METHODS.DATE_OF_BIRTH;
@@ -57,7 +60,9 @@ export default function AgeMessageSettings({ config, onChange }) {
       <SettingsSection
         title={t("checkoutVerification.minimumAge")}
         badge={
-          !hasAccessMinAge ? (
+          plusRestricted ? (
+            <ShopifyPlusBadge />
+          ) : !hasAccessMinAge ? (
             <Badge text={t("common.premiumPlan")} type="premium" />
           ) : null
         }
@@ -85,7 +90,9 @@ export default function AgeMessageSettings({ config, onChange }) {
             : t("checkoutVerification.checkboxMessage")
         }
         badge={
-          !hasAccessMessage ? (
+          plusRestricted ? (
+            <ShopifyPlusBadge />
+          ) : !hasAccessMessage ? (
             <Badge text={t("common.premiumPlan")} type="premium" />
           ) : null
         }
@@ -123,7 +130,9 @@ export default function AgeMessageSettings({ config, onChange }) {
       <SettingsSection
         title={t("checkoutVerification.errorMessage")}
         badge={
-          !hasAccessErrorMessage ? (
+          plusRestricted ? (
+            <ShopifyPlusBadge />
+          ) : !hasAccessErrorMessage ? (
             <Badge text={t("common.premiumPlan")} type="premium" />
           ) : null
         }

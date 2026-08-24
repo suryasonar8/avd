@@ -209,6 +209,7 @@
       "backgroundColor": "Couleur d'arrière-plan",
       "logoOptional": "Logo (Optionnel)",
       "logoImage": "Image du logo",
+      "imageCorrupted": "Cette image n'est plus disponible et ne peut pas être affichée. Veuillez la télécharger à nouveau.",
       "borderSetting": "Paramètres de bordure",
       "borderColor": "Couleur de bordure",
       "borderRadius": "Rayon de bordure",

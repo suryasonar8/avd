@@ -209,6 +209,7 @@
       "backgroundColor": "पृष्ठभूमि रंग",
       "logoOptional": "लोगो (वैकल्पिक)",
       "logoImage": "लोगो छवि",
+      "imageCorrupted": "यह छवि अब उपलब्ध नहीं है और दिखाई नहीं जा सकती। कृपया इसे फिर से अपलोड करें।",
       "borderSetting": "बॉर्डर सेटिंग",
       "borderColor": "बॉर्डर रंग",
       "borderRadius": "बॉर्डर त्रिज्या",

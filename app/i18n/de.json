@@ -209,6 +209,7 @@
       "backgroundColor": "Hintergrundfarbe",
       "logoOptional": "Logo (Optional)",
       "logoImage": "Logo-Bild",
+      "imageCorrupted": "Dieses Bild ist nicht mehr verfügbar und kann nicht angezeigt werden. Bitte laden Sie es erneut hoch.",
       "borderSetting": "Rahmeneinstellung",
       "borderColor": "Rahmenfarbe",
       "borderRadius": "Rahmenradius",

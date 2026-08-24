@@ -4,6 +4,7 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { PlanService } from "../services/plan.service";
 import { CheckoutAgeVerificationService } from "../services/checkout-age-verification.service";
+import { ShopService } from "../services/shop.service";
 import AgePreviewPanel from "../components/checkout-verification/AgePreviewPanel";
 import AgeConditionSettings from "../components/checkout-verification/AgeConditionSettings";
 import AgeMessageSettings from "../components/checkout-verification/AgeMessageSettings";
@@ -13,10 +14,11 @@ import { useTranslation } from "../context/TranslationContext";
 import PageHeader from "../components/PageHeader";
 
 export const loader = async ({ request }) => {
-  const { session } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   const config = await CheckoutAgeVerificationService.getConfig(session.shop);
+  const isShopifyPlus = await ShopService.isShopifyPlus(admin);
 
-  return { config };
+  return { config, isShopifyPlus };
 };
 
 export const action = async ({ request }) => {
@@ -43,7 +45,7 @@ export const action = async ({ request }) => {
 
 export default function CheckoutAgeVerificationSetup() {
   const navigate = useNavigate();
-  const { config: initialConfig } = useLoaderData();
+  const { config: initialConfig, isShopifyPlus } = useLoaderData();
   const [config, setConfig] = useState(initialConfig);
   const { t } = useTranslation();
 
@@ -175,9 +177,17 @@ export default function CheckoutAgeVerificationSetup() {
           </div>
 
           {activeTab === "condition" ? (
-            <AgeConditionSettings config={config} onChange={handleConfigChange} />
+            <AgeConditionSettings
+              config={config}
+              onChange={handleConfigChange}
+              isShopifyPlus={isShopifyPlus}
+            />
           ) : (
-            <AgeMessageSettings config={config} onChange={handleConfigChange} />
+            <AgeMessageSettings
+              config={config}
+              onChange={handleConfigChange}
+              isShopifyPlus={isShopifyPlus}
+            />
           )}
         </div>
 

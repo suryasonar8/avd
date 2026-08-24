@@ -209,6 +209,7 @@
       "backgroundColor": "Background color",
       "logoOptional": "Logo (Optional)",
       "logoImage": "Logo image",
+      "imageCorrupted": "This image is no longer available and can't be displayed. Please re-upload it.",
       "borderSetting": "Border setting",
       "borderColor": "Border color",
       "borderRadius": "Border radius",

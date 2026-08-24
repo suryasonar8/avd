@@ -16,7 +16,7 @@ import { ensureMetafieldDefinition } from "../utils/metafield.server";
  *
  * TODO: When billing is wired up, uncomment the Shopify API fallback
  * and import the subscription-to-plan mapping from billing.service.js.
- */import { PREMIUM_MONTHLY } from './billing.service';
+ */
 
 export async function getShopPlan(admin, shop) {
     // 1. Try DB cache first (fast, no API call)
@@ -25,7 +25,7 @@ export async function getShopPlan(admin, shop) {
 
     // 2. No cache — default to DEFAULT_PLAN
     //    (Will be replaced with Shopify billing API query later)
-    const plan = PLAN_TYPES.PREMIUM;
+    const plan = PLAN_TYPES.FREE;
 
     // 3. Cache in DB for next time
     await db.shopPlan.upsert({

@@ -11,6 +11,12 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
   const { canAccess } = usePlan();
   const { t } = useTranslation();
   const [localUploading, setLocalUploading] = useState(null); // 'background' or 'logo'
+  // Tracks images whose stored URL failed to load (e.g. the Shopify file was
+  // deleted after an uninstall/reinstall). We prompt the merchant to re-upload.
+  const [brokenImages, setBrokenImages] = useState({
+    background: false,
+    logo: false,
+  });
 
   const handleImageUpload = async (file, type) => {
     if (!file) return;
@@ -73,6 +79,9 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
       const imageUrl = createData.file.image?.url;
       const imageId = createData.file.id;
 
+      // A fresh upload replaces any previously-corrupted image.
+      setBrokenImages((prev) => ({ ...prev, [type]: false }));
+
       if (type === "background") {
         setConfig((prev) => ({
           ...prev,
@@ -109,6 +118,8 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
       type === "background"
         ? config.background.backgroundImageId
         : config.background.logoId;
+
+    setBrokenImages((prev) => ({ ...prev, [type]: false }));
 
     if (type === "background") {
       setConfig((prev) => ({
@@ -226,7 +237,16 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
               {t("popupEditor.backgroundTab.pageBackgroundImage")}
             </label>
 
-            {config.background.backgroundImage ? (
+            {config.background.backgroundImage &&
+            brokenImages.background ? (
+              <CorruptedImageNotice
+                type="background"
+                localUploading={localUploading}
+                onReupload={handleImageUpload}
+                onRemove={removeImage}
+                t={t}
+              />
+            ) : config.background.backgroundImage ? (
               <div
                 style={{
                   border: "1px solid #CBCFD2",
@@ -244,6 +264,9 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                   <img
                     src={config.background.backgroundImage}
                     alt="Background"
+                    onError={() =>
+                      setBrokenImages((prev) => ({ ...prev, background: true }))
+                    }
                     style={{
                       width: "40px",
                       height: "40px",
@@ -326,7 +349,16 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
             )}
           </div>
 
-          {config.background.logo ? (
+          {config.background.logo && brokenImages.logo ? (
+            <CorruptedImageNotice
+              type="logo"
+              localUploading={localUploading}
+              onReupload={handleImageUpload}
+              onRemove={removeImage}
+              disabled={!canAccess("sv.bg.logo")}
+              t={t}
+            />
+          ) : config.background.logo ? (
             <div
               style={{
                 border: "1px solid #CBCFD2",
@@ -344,6 +376,9 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
                 <img
                   src={config.background.logo}
                   alt="Logo"
+                  onError={() =>
+                    setBrokenImages((prev) => ({ ...prev, logo: true }))
+                  }
                   style={{
                     width: "40px",
                     height: "40px",
@@ -447,5 +482,56 @@ export function BackgroundTab({ config, setConfig, setIsUploading }) {
         </div>
       </div>
     </>
+  );
+}
+
+/**
+ * Shown when a stored image URL fails to load (e.g. the underlying Shopify
+ * file was deleted after an uninstall/reinstall). Prompts the merchant to
+ * re-upload instead of showing a broken thumbnail.
+ */
+function CorruptedImageNotice({
+  type,
+  localUploading,
+  onReupload,
+  onRemove,
+  disabled = false,
+  t,
+}) {
+  return (
+    <div
+      style={{
+        border: "1px solid #FFC7C7",
+        borderRadius: "8px",
+        padding: "12px",
+        background: "#FFF4F4",
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <span style={{ fontSize: "16px" }}>⚠️</span>
+        <span style={{ fontSize: "13px", color: "#8E0B21" }}>
+          {t("popupEditor.backgroundTab.imageCorrupted") ||
+            "This image is no longer available and can't be displayed. Please re-upload it."}
+        </span>
+        <s-button
+          variant="plain"
+          onClick={() => onRemove(type)}
+          disabled={disabled}
+        >
+          {t("common.remove")}
+        </s-button>
+      </div>
+      <s-drop-zone
+        accept=".png, .jpg, .jpeg"
+        onChange={(e) => {
+          const file = e.currentTarget.files?.[0] || e.detail?.files?.[0];
+          onReupload(file, type);
+        }}
+        disabled={disabled || localUploading === type}
+      />
+    </div>
   );
 }

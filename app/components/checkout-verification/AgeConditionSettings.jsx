@@ -1,16 +1,22 @@
 import SettingsSection from "./SettingsSection";
 import { Badge } from "../Badge";
+import { ShopifyPlusBadge } from "../ShopifyPlusBadge";
 import { usePlan } from "../../context/PlanContext";
 import { useTranslation } from "../../context/TranslationContext";
 import { RadioOption } from "../customization/RadioOption";
 import { ResourcePickerList } from "../ResourcePickerList";
 import { VERIFICATION_METHODS } from "../../constants/checkout-verification";
 
-export default function AgeConditionSettings({ config, onChange }) {
+export default function AgeConditionSettings({ config, onChange, isShopifyPlus }) {
   const { canAccess } = usePlan();
   const { t } = useTranslation();
-  const disabled = !canAccess("checkout.verification.target");
-  const methodDisabled = !canAccess("checkout.verification.method");
+  const plusRestricted = !isShopifyPlus;
+  const statusAccessDenied = !canAccess("checkout.verification.status");
+  const targetAccessDenied = !canAccess("checkout.verification.target");
+  const methodAccessDenied = !canAccess("checkout.verification.method");
+  const disabled = plusRestricted || targetAccessDenied;
+  const methodDisabled = plusRestricted || methodAccessDenied;
+  const statusDisabled = plusRestricted || statusAccessDenied;
 
   const handleStatusChange = (status) => {
     onChange({ status });
@@ -30,7 +36,9 @@ export default function AgeConditionSettings({ config, onChange }) {
         title={t("checkoutVerification.checkoutInfo")}
         divider
         badge={
-          !canAccess("checkout.verification.status") || methodDisabled ? (
+          plusRestricted ? (
+            <ShopifyPlusBadge />
+          ) : statusAccessDenied || methodAccessDenied ? (
             <Badge text={t("common.premiumPlan")} type="premium" />
           ) : null
         }
@@ -47,7 +55,7 @@ export default function AgeConditionSettings({ config, onChange }) {
               name="verification-status"
               value="enabled"
               selected={config.status === "enabled"}
-              disabled={!canAccess("checkout.verification.status")}
+              disabled={statusDisabled}
               onChange={handleStatusChange}
             />
             <RadioOption
@@ -55,7 +63,7 @@ export default function AgeConditionSettings({ config, onChange }) {
               name="verification-status"
               value="disabled"
               selected={config.status === "disabled"}
-              disabled={!canAccess("checkout.verification.status")}
+              disabled={statusDisabled}
               onChange={handleStatusChange}
             />
           </div>
@@ -120,7 +128,9 @@ export default function AgeConditionSettings({ config, onChange }) {
         title={t("checkoutVerification.condition")}
         divider
         badge={
-          !canAccess("checkout.verification.target") ? (
+          plusRestricted ? (
+            <ShopifyPlusBadge />
+          ) : targetAccessDenied ? (
             <Badge text={t("common.premiumPlan")} type="premium" />
           ) : null
         }

@@ -6,7 +6,7 @@ export const NumberInput = ({
   suffix = "px",
   disabled,
 }) => (
-  <div style={{ opacity: disabled ? 0.6 : 1 }}>
+  <div>
     <div
       style={{
         display: "flex",
@@ -15,12 +15,14 @@ export const NumberInput = ({
         marginBottom: "8px",
       }}
     >
-      <s-text variant="bodyMd" as="label" style={{ fontWeight: "600" }}>
-        {label}
-      </s-text>
+      <span style={{ opacity: disabled ? 0.6 : 1 }}>
+        <s-text variant="bodyMd" as="label" style={{ fontWeight: "600" }}>
+          {label}
+        </s-text>
+      </span>
       {badge}
     </div>
-    <div style={{ maxWidth: "240px" }}>
+    <div style={{ maxWidth: "240px", opacity: disabled ? 0.6 : 1 }}>
       <s-text-field
         type="number"
         value={(value ?? "").toString()}
