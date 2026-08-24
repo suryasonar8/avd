@@ -1,101 +1,51 @@
 (function () {
-    function initAvdTerms() {
-        const checkbox = document.getElementById('avd-terms-checkbox');
-        const errorMsg = document.getElementById('avd-terms-error');
+    // Terms & Conditions gate for the storefront — Add to Cart only.
+    //
+    // The decision is made synchronously from the checkbox when the add-to-cart
+    // form is submitted: we intercept the form's `submit` event (identified by its
+    // stable `/cart/add` action, not a theme-specific button selector) and block it
+    // when the box is unchecked.
+    //
+    // Buy it now / express checkout is intentionally NOT gated: it bypasses the
+    // cart and its own submit event, so it goes straight to checkout. (The former
+    // cart-terms-validation Function was removed because it also blocked Buy it now.)
+    const checkbox = document.getElementById('avd-terms-checkbox');
+    const errorMsg = document.getElementById('avd-terms-error');
+    if (!checkbox) return;
 
-        if (!checkbox) return;
-
-        function validate() {
-            if (!checkbox.checked) {
-                if (errorMsg) errorMsg.style.display = 'block';
-                checkbox.style.outline = '2px solid #d93025';
-                checkbox.style.outlineOffset = '2px';
-                return false;
-            }
-            if (errorMsg) errorMsg.style.display = 'none';
-            checkbox.style.outline = 'none';
-            return true;
-        }
-
-        checkbox.addEventListener('change', function () {
-            if (this.checked) {
-                if (errorMsg) errorMsg.style.display = 'none';
-                checkbox.style.outline = 'none';
-            }
-            updateButtonStyles();
-        });
-
-        const buttonSelectors = [
-            'button[name="add"]',
-            'button.ad-to-cart',
-            '#AddToCart',
-            '.add-to-cart',
-            '.product-form__cart-submit',
-            '.shopify-payment-button__button',
-            '.shopify-payment-button__button--unbranded',
-            'button[name="checkout"]',
-            'input[name="checkout"]',
-            '[href="/checkout"]',
-            '.checkout-button',
-            '.product-form__submit',
-            '[data-testid="Checkout-button"]'
-        ];
-
-        function updateButtonStyles() {
-            const isChecked = checkbox.checked;
-            const buttons = document.querySelectorAll(buttonSelectors.join(','));
-            buttons.forEach(btn => {
-                if (isChecked) {
-                    btn.classList.remove('avd-button-disabled');
-                } else {
-                    btn.classList.add('avd-button-disabled');
-                }
-            });
-        }
-
-        // Periodically check for new buttons (sometimes MutationObserver is overkill or throttled)
-        // Especially for dynamic payment buttons which load late
-        setInterval(updateButtonStyles, 2000);
-
-        // Intercept clicks on buttons (Capturing phase)
-        document.addEventListener('click', function (e) {
-            const target = e.target;
-            if (!target) return;
-
-            const button = target.closest(buttonSelectors.join(','));
-
-            if (button) {
-                if (!validate()) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-
-                    // Scroll to checkbox if error occurs to make it visible
-                    checkbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }
-        }, true);
-
-        // Intercept form submissions (Capturing phase)
-        document.addEventListener('submit', function (e) {
-            const form = e.target;
-            const action = form.getAttribute('action');
-
-            if (action && (action.includes('/cart/add') || action.includes('/checkout') || action === '/cart')) {
-                if (!validate()) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-            }
-        }, true);
-
-        // Initial run
-        updateButtonStyles();
+    function showError() {
+        if (errorMsg) errorMsg.style.display = 'block';
+        checkbox.style.outline = '2px solid #d93025';
+        checkbox.style.outlineOffset = '2px';
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initAvdTerms);
-    } else {
-        initAvdTerms();
+    function clearError() {
+        if (errorMsg) errorMsg.style.display = 'none';
+        checkbox.style.outline = 'none';
     }
+
+    // Start unchecked on every load so acceptance is never remembered.
+    checkbox.checked = false;
+
+    checkbox.addEventListener('change', function () {
+        if (checkbox.checked) clearError();
+    });
+
+    // Block Add to Cart when the box is unchecked. `form.action` always contains
+    // `/cart/add` (a fixed Shopify convention, locale prefixes included), so this
+    // needs no theme button/class selector and the checkbox can live anywhere.
+    document.addEventListener('submit', function (e) {
+        const form = e.target;
+        const action = form && form.getAttribute && form.getAttribute('action');
+        if (!action || action.indexOf('/cart/add') === -1) return;
+
+        if (!checkbox.checked) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            showError();
+            checkbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        // Checked: let the submit proceed normally.
+    }, true);
 })();

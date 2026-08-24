@@ -55,7 +55,7 @@
 
     <div id="avd-terms-wrapper" style="margin: 15px 0; color: {{ settings.color | default: '#000000' }}; font-size: {{ settings.size | default: 14 }}px; font-family: inherit;">
       <label class="avd-terms-label" style="display: flex; align-items: center; cursor: pointer; gap: 8px; line-height: 1.4;">
-        <input type="checkbox" id="avd-terms-checkbox" style="margin: 0; flex-shrink: 0; width: 14px; height: 14px; accent-color: #000;">
+        <input type="checkbox" id="avd-terms-checkbox" autocomplete="off" style="margin: 0; flex-shrink: 0; width: 14px; height: 14px; accent-color: #000;">
         <span>
           {% if settings.keyword != blank and settings.link != blank %}
             {% capture link_tag %}<a href="{{ settings.link }}" target="_blank" style="text-decoration: underline; color: inherit;">{{ settings.keyword }}</a>{% endcapture %}
