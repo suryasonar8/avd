@@ -285,7 +285,7 @@ export default function PreviewPanel({ config }) {
                             style={{ display: "flex", flexDirection: "column" }}
                           >
                             <span style={{ fontSize: "12px", color: "#666" }}>
-                              Country/Region
+                              {t("checkoutVerification.preview.countryRegion")}
                             </span>
                             <span style={{ fontSize: "14px", color: "#333" }}>
                               {t("checkoutVerification.preview.vietnam")}

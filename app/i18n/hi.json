@@ -305,6 +305,7 @@
       "emailPlaceholder": "ईमेल या मोबाइल फ़ोन नंबर",
       "emailOffers": "मुझे समाचार और ऑफ़र ईमेल करें",
       "delivery": "डिलीवरी",
+      "countryRegion": "देश/क्षेत्र",
       "vietnam": "वियतनाम",
       "firstName": "पहला नाम (वैकल्पिक)",
       "lastName": "अंतिम नाम",
@@ -411,6 +412,7 @@
     "addMonth": "जोड़ें"
   },
   "pricing": {
+    "pageTitle": "मूल्य निर्धारण",
     "planTypes": {
       "free": "निःशुल्क",
       "basic": "बेसिक",

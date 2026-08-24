@@ -33,7 +33,7 @@ export default function PlansPage() {
 
   return (
     <s-page>
-      <PageHeader title="Pricing" />
+      <PageHeader title={t("pricing.pageTitle")} />
       <s-section>
         {/* Discount code trigger link */}
         <div
@@ -59,7 +59,7 @@ export default function PlansPage() {
             onMouseEnter={(e) => (e.target.style.color = "#004b87")}
             onMouseLeave={(e) => (e.target.style.color = "#2c6ecb")}
           >
-            Apply your discount code
+            {t("pricing.discountModal.title")}
           </button>
         </div>
 

@@ -77,6 +77,19 @@ export function PopupEditor({
     return sanitize(config) !== sanitize(initialConfig);
   }, [config, initialConfig]);
 
+  const isTargetValid = useMemo(() => {
+    if (config.pages === "Specific collections") {
+      return (config.selectedCollections || []).length > 0;
+    }
+    if (config.pages === "Specific products") {
+      return (config.selectedProducts || []).length > 0;
+    }
+    return true;
+  }, [config.pages, config.selectedCollections, config.selectedProducts]);
+
+  const canSave =
+    isDirty && isTargetValid && !isUploading && !!config.name?.trim();
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("saved") === "true") {
@@ -100,14 +113,14 @@ export function PopupEditor({
   }, [initialConfig, onDiscard]);
 
   const handleBack = useCallback(() => {
-    if (isDirty) {
+    if (canSave) {
       shopify.toast.show(t("common.saveOrDiscardWarning"), {
         isError: true,
       });
     } else {
       navigate("/store_verification");
     }
-  }, [isDirty, navigate, shopify, t]);
+  }, [canSave, navigate, shopify, t]);
 
   const tabs = ["Info", "Background", "Text", "Button", "CSS"];
   const tabTranslationKeys = {
@@ -123,11 +136,11 @@ export function PopupEditor({
     <s-page>
       <CustomSaveBar
         id={saveBarId}
-        open={isDirty}
+        open={canSave}
         onSave={handleSave}
         onDiscard={handleDiscard}
         state={{ submitting: isSubmitting, data: fetcher?.data }}
-        disabled={isUploading || !config.name?.trim()}
+        disabled={isUploading || !config.name?.trim() || !isTargetValid}
         saveLabel={isUploading ? t("common.uploading") : t("common.save")}
         onSuccess={onSaveSuccess}
       />

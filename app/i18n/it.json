@@ -305,6 +305,7 @@
       "emailPlaceholder": "Email o numero di cellulare",
       "emailOffers": "Inviami notizie e offerte via email",
       "delivery": "Consegna",
+      "countryRegion": "Paese/Regione",
       "vietnam": "Vietnam",
       "firstName": "Nome (opzionale)",
       "lastName": "Cognome",
@@ -411,6 +412,7 @@
     "addMonth": "Aggiungi"
   },
   "pricing": {
+    "pageTitle": "Prezzi",
     "planTypes": {
       "free": "Gratuito",
       "basic": "Base",
