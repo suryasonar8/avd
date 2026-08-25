@@ -23,9 +23,12 @@ CREATE TABLE "Session" (
 CREATE TABLE "AppSettings" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "shop" TEXT NOT NULL,
-    "minAge" INTEGER NOT NULL DEFAULT 18,
-    "redirectUrl" TEXT NOT NULL DEFAULT 'https://www.google.com',
     "showBrandMark" BOOLEAN NOT NULL DEFAULT true,
+    "adminLanguage" TEXT NOT NULL DEFAULT 'English',
+    "rememberVisitor" TEXT NOT NULL DEFAULT 'Session only',
+    "rememberDays" INTEGER NOT NULL DEFAULT 30,
+    "appStatus" BOOLEAN NOT NULL DEFAULT true,
+    "tested" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL
 );
@@ -84,6 +87,15 @@ CREATE TABLE "TermsSettings" (
 );
 
 -- CreateTable
+CREATE TABLE "CheckoutAgeVerification" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "shop" TEXT NOT NULL,
+    "config" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "AnalyticsEvent" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "shop" TEXT NOT NULL,
@@ -111,6 +123,12 @@ CREATE UNIQUE INDEX "TermsSettings_shop_key" ON "TermsSettings"("shop");
 
 -- CreateIndex
 CREATE INDEX "TermsSettings_shop_idx" ON "TermsSettings"("shop");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "CheckoutAgeVerification_shop_key" ON "CheckoutAgeVerification"("shop");
+
+-- CreateIndex
+CREATE INDEX "CheckoutAgeVerification_shop_idx" ON "CheckoutAgeVerification"("shop");
 
 -- CreateIndex
 CREATE INDEX "AnalyticsEvent_shop_createdAt_idx" ON "AnalyticsEvent"("shop", "createdAt");
