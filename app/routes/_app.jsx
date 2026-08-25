@@ -7,7 +7,6 @@ import { getShopPlan, buildAccessMap, PlanService } from "../services/plan.servi
 import { loadTranslations } from "../i18n/i18n";
 import { useTranslation } from "../context/TranslationContext";
 import { ShopService } from "../services/shop.service";
-import { SettingsService } from "../services/settings.service";
 import { useState, useEffect } from "react";
 import { LANGUAGE_MAP } from "../constants/languages";
 
@@ -39,21 +38,11 @@ export const loader = async ({ request }) => {
     // (see PlanService.syncEntitlements for details).
     await PlanService.syncEntitlements(admin, shopId, access);
 
-    // Sync plan to global settings for theme extensions
-    if (settings.plan !== plan) {
-      const newSettings = { ...settings, plan };
-      await SettingsService.ensureDefinitionsExist(admin);
-      await ShopService.updateMetafield(
-        admin,
-        shopId,
-        "$app:avd",
-        "settings",
-        JSON.stringify(newSettings)
-      );
-
-      // Enforce plan limits on all gated features
-      await PlanService.enforcePlanLimits(admin, session.shop);
-    }
+    // Enforce plan limits on all gated features — sanitizes and re-syncs any
+    // popup/banner/terms config that exceeds the shop's current plan. Safe to
+    // call on every load: it only writes when a config actually drifts from
+    // what the plan allows (see PlanService.enforcePlanLimits).
+    await PlanService.enforcePlanLimits(admin, session.shop);
   } catch (e) {
     // Fall back to English if settings can't be loaded
     console.warn("[i18n] Could not load admin language setting:", e.message);

@@ -52,35 +52,21 @@ export const loader = async ({ request }) => {
 };
 
 export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   const formData = await request.formData();
   const actionType = formData.get("_action");
 
-  // Re-fetch the metafield fresh instead of trusting the client's snapshot,
-  // since other parts of the app (settings page, plan sync) write to the
-  // same "avd/settings" metafield and the client copy can be stale.
-  const shopData = await ShopService.getMetafield(admin, "$app:avd", "settings");
-  const existingValue = shopData?.metafield?.value;
-  const currentSettings = existingValue ? JSON.parse(existingValue) : {};
-
-  let settings;
   if (actionType === "markTested") {
-    settings = { ...currentSettings, tested: true };
-  } else {
-    const newStatus = formData.get("appStatus") === "true";
-    settings = { ...currentSettings, appStatus: newStatus };
+    await SettingsService.updateSettings(admin, session.shop, {
+      tested: true,
+    });
+    return { success: true };
   }
 
-  const shopId = await ShopService.getShopId(admin);
-
-  await SettingsService.ensureDefinitionsExist(admin);
-  await ShopService.updateMetafield(
-    admin,
-    shopId,
-    "$app:avd",
-    "settings",
-    JSON.stringify(settings),
-  );
+  const newStatus = formData.get("appStatus") === "true";
+  await SettingsService.updateSettings(admin, session.shop, {
+    appStatus: newStatus,
+  });
 
   return { success: true };
 };

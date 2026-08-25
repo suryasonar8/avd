@@ -24,8 +24,6 @@ export const loader = async ({ request }) => {
         adminLanguage: "English",
         rememberVisitor: "Session only",
         rememberDays: 30,
-        minAge: 18,
-        redirectUrl: "https://www.google.com",
       };
 
   // Fetch DB settings

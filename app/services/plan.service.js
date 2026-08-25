@@ -69,10 +69,16 @@ export const PlanService = {
     buildAccessMap,
 
     /**
-     * Sync computed feature-access booleans to the avd.entitlements metafield
-     * so theme app extensions can gate features without duplicating plan-tier
-     * comparison logic in Liquid. `features.js` stays the single source of
-     * truth for which plan unlocks what.
+     * Sync feature-access booleans actually consumed by theme app extensions
+     * to the avd.entitlements metafield, so they can gate rendering without
+     * duplicating plan-tier comparison logic in Liquid. `features.js` stays
+     * the single source of truth for which plan unlocks what.
+     *
+     * Only a handful of `access` keys are ever read by an extension (most
+     * gating — e.g. sv.*, checkout.* — is already enforced server-side by
+     * stripping restricted fields before save, see PlanService.validate*Config),
+     * so this only mirrors the keys extensions actually look up, instead of
+     * the full ~28-key map, to keep the metafield payload minimal.
      *
      * TODO: once billing is wired up, also call this from the
      * APP_SUBSCRIPTIONS_UPDATE webhook handler so entitlements update
@@ -80,12 +86,19 @@ export const PlanService = {
      * admin page load to pick up the drift.
      */
     async syncEntitlements(admin, shopId, access) {
+        // Keys read by an extension — grep the extensions/ tree for
+        // `entitlements[...]` before adding to this list.
+        const CONSUMED_KEYS = ["terms.condition.status"];
+        const entitlements = Object.fromEntries(
+            CONSUMED_KEYS.map((key) => [key, !!access[key]]),
+        );
+
         await ensureMetafieldDefinition(admin, {
             namespace: "$app:avd",
             key: "entitlements",
             name: "Plan Entitlements",
             type: "json",
-            description: "Computed feature-access booleans for the shop's current plan, consumed by theme app extensions",
+            description: "Feature-access booleans consumed by theme app extensions, computed from the shop's current plan",
         });
 
         // Boolean mirror of access["terms.condition.status"], read by Liquid's
@@ -110,7 +123,7 @@ export const PlanService = {
             shopId,
             "$app:avd",
             "entitlements",
-            JSON.stringify(access)
+            JSON.stringify(entitlements)
         );
     },
 

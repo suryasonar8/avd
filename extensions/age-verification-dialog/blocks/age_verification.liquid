@@ -1,8 +1,7 @@
 {% assign settings = shop.metafields['$app:avd']['settings'].value %}
-{% assign min_age = settings.minAge | default: 18 %}
-{% assign redirect_url = settings.redirectUrl | default: "https://www.google.com" %}
 
 {% assign active_popup = shop.metafields['$app:avd']['active_popup_config'].value %}
+{% assign min_age = active_popup.verifyAge | default: 18 %}
 
 {% if request.design_mode %}
   {% assign app_ns_present = false %}
@@ -112,7 +111,7 @@
   {% assign btn_border_radius = active_popup.button.borderRadius | default: 0 %}
   
   {% assign cancel_action = active_popup.button.cancelAction | default: 'redirect' %}
-  {% assign cancel_redirect_url = active_popup.button.redirectUrl | default: redirect_url %}
+  {% assign cancel_redirect_url = active_popup.button.redirectUrl | default: "https://www.google.com" %}
   {% assign cancel_error_msg = active_popup.button.cancelErrorMsg | default: '' %}
   {% assign submit_error_msg = active_popup.button.errorMsg | default: '' %}
   
@@ -185,7 +184,6 @@
 <div id="age-verification-overlay" class="age-verification-overlay" style="display: none;"
      data-min-age="{{ min_age }}"
      data-shop="{{ shop.permanent_domain }}"
-     data-redirect-url="{{ redirect_url }}"
      data-cancel-action="{{ cancel_action }}"
      data-cancel-redirect-url="{{ cancel_redirect_url }}"
      data-cancel-error-msg="{{ cancel_error_msg | escape }}"

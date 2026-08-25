@@ -10,47 +10,47 @@ export const SettingsService = {
     
     if (!settings) {
       return {
-        minAge: 18,
-        redirectUrl: "https://www.google.com",
         showBrandMark: true,
         adminLanguage: "English",
         rememberVisitor: "Session only",
         rememberDays: 30,
+        appStatus: true,
+        tested: false,
       };
     }
-    
+
     return {
-      minAge: settings.minAge,
-      redirectUrl: settings.redirectUrl,
       showBrandMark: settings.showBrandMark,
       adminLanguage: settings.adminLanguage,
       rememberVisitor: settings.rememberVisitor,
       rememberDays: settings.rememberDays,
+      appStatus: settings.appStatus,
+      tested: settings.tested,
     };
   },
 
   async updateSettings(admin, shop, newSettings) {
     // 1. Sync to DB
     const dbUpdateData = {};
-    if (newSettings.minAge !== undefined) dbUpdateData.minAge = parseInt(newSettings.minAge, 10);
-    if (newSettings.redirectUrl !== undefined) dbUpdateData.redirectUrl = newSettings.redirectUrl;
     if (newSettings.showBrandMark !== undefined) dbUpdateData.showBrandMark = newSettings.showBrandMark;
     if (newSettings.adminLanguage !== undefined) dbUpdateData.adminLanguage = newSettings.adminLanguage;
     if (newSettings.rememberVisitor !== undefined) dbUpdateData.rememberVisitor = newSettings.rememberVisitor;
     if (newSettings.rememberDays !== undefined) dbUpdateData.rememberDays = parseInt(newSettings.rememberDays, 10);
+    if (newSettings.appStatus !== undefined) dbUpdateData.appStatus = newSettings.appStatus;
+    if (newSettings.tested !== undefined) dbUpdateData.tested = newSettings.tested;
 
     if (Object.keys(dbUpdateData).length > 0) {
       await db.appSettings.upsert({
         where: { shop },
         update: dbUpdateData,
-        create: { 
+        create: {
           shop,
-          minAge: dbUpdateData.minAge ?? 18,
-          redirectUrl: dbUpdateData.redirectUrl ?? "https://www.google.com",
           showBrandMark: dbUpdateData.showBrandMark ?? true,
           adminLanguage: dbUpdateData.adminLanguage ?? "English",
           rememberVisitor: dbUpdateData.rememberVisitor ?? "Session only",
           rememberDays: dbUpdateData.rememberDays ?? 30,
+          appStatus: dbUpdateData.appStatus ?? true,
+          tested: dbUpdateData.tested ?? false,
         }
       });
     }
@@ -63,7 +63,7 @@ export const SettingsService = {
     await this.ensureDefinitionsExist(admin);
 
     // Merge onto the existing metafield value instead of overwriting it wholesale,
-    // since other parts of the app (appStatus, tested, plan) store fields in the
+    // since other parts of the app (plan) store fields in the
     // same metafield that aren't tracked by SettingsService.
     const existing = await ShopService.getMetafield(admin, "$app:avd", "settings");
     const existingValue = existing?.metafield?.value;
