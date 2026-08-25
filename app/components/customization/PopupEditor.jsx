@@ -84,8 +84,16 @@ export function PopupEditor({
     if (config.pages === "Specific products") {
       return (config.selectedProducts || []).length > 0;
     }
+    if (config.pages === "Specific product tags") {
+      return (config.selectedProductTags || []).length > 0;
+    }
     return true;
-  }, [config.pages, config.selectedCollections, config.selectedProducts]);
+  }, [
+    config.pages,
+    config.selectedCollections,
+    config.selectedProducts,
+    config.selectedProductTags,
+  ]);
 
   const canSave =
     isDirty && isTargetValid && !isUploading && !!config.name?.trim();

@@ -25,7 +25,7 @@ export async function getShopPlan(admin, shop) {
 
     // 2. No cache — default to DEFAULT_PLAN
     //    (Will be replaced with Shopify billing API query later)
-    const plan = PLAN_TYPES.FREE;
+    const plan = PLAN_TYPES.PREMIUM;
 
     // 3. Cache in DB for next time
     await db.shopPlan.upsert({
@@ -155,6 +155,7 @@ export const PlanService = {
         enforce("sv.info.pages.home", sanitized.pages === "Home page", () => sanitized.pages = DEFAULT_STORE_CONFIG.pages);
         enforce("sv.info.pages.collections", sanitized.pages === "Specific collections", () => sanitized.pages = DEFAULT_STORE_CONFIG.pages);
         enforce("sv.info.pages.products", sanitized.pages === "Specific products", () => sanitized.pages = DEFAULT_STORE_CONFIG.pages);
+        enforce("sv.info.pages.tags", sanitized.pages === "Specific product tags", () => sanitized.pages = DEFAULT_STORE_CONFIG.pages);
         enforce("sv.info.pages.custom", sanitized.pages === "Custom", () => sanitized.pages = DEFAULT_STORE_CONFIG.pages);
         enforce("sv.info.trigger.logged", sanitized.trigger === "Logged customers", () => sanitized.trigger = DEFAULT_STORE_CONFIG.trigger);
 

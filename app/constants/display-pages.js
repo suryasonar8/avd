@@ -7,6 +7,7 @@ export const DISPLAY_PAGES = [
     { value: "Home page", labelKey: "displayPages.homePage" },
     { value: "Specific collections", labelKey: "displayPages.specificCollections" },
     { value: "Specific products", labelKey: "displayPages.specificProducts" },
+    { value: "Specific product tags", labelKey: "displayPages.specificProductTags" },
     { value: "Custom", labelKey: "displayPages.custom" },
 ];
 

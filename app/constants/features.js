@@ -21,6 +21,7 @@ export const FEATURES = {
     "sv.info.pages.home": PLAN_TYPES.BASIC,
     "sv.info.pages.collections": PLAN_TYPES.BASIC,
     "sv.info.pages.products": PLAN_TYPES.BASIC,
+    "sv.info.pages.tags": PLAN_TYPES.BASIC,
     "sv.info.pages.custom": PLAN_TYPES.BASIC,
     "sv.info.trigger.logged": PLAN_TYPES.BASIC,
 

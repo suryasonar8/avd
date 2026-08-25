@@ -15,6 +15,7 @@ export const DEFAULT_STORE_CONFIG = {
     selectedProducts: [],
     _productTitles: [],
     selectedProductHandles: [],
+    selectedProductTags: [],
     trigger: "Always show",
     background: {
         bgType: "Solid color background",

@@ -4,6 +4,7 @@ import { useTranslation } from "../../context/TranslationContext";
 import { useState } from "react";
 import { RadioOption } from "./RadioOption";
 import { ResourcePickerList } from "../ResourcePickerList";
+import { TagPickerList } from "./TagPickerList";
 
 export function DisplayPagesChoiceList({ config, setConfig }) {
   const { canAccess } = usePlan();
@@ -88,6 +89,28 @@ export function DisplayPagesChoiceList({ config, setConfig }) {
               selectedProducts: ids,
               _productTitles: titles,
               selectedProductHandles: handles,
+            }))
+          }
+        />
+      )}
+
+      {/* Specific product tags */}
+      <RadioOption
+        label={t("displayPages.specificProductTags")}
+        value="Specific product tags"
+        selected={value === "Specific product tags"}
+        disabled={!canAccess("sv.info.pages.tags")}
+        onChange={handleChange}
+      />
+
+      {config.pages === "Specific product tags" && (
+        <TagPickerList
+          selectedTags={config.selectedProductTags || []}
+          disabled={!canAccess("sv.info.pages.tags")}
+          onChange={({ tags }) =>
+            setConfig((prev) => ({
+              ...prev,
+              selectedProductTags: tags,
             }))
           }
         />

@@ -23,6 +23,25 @@ export const ShopService = {
   },
 
   /**
+   * Get the shop's distinct product tags — used to populate the
+   * "Specific product tags" popup targeting picker.
+   */
+  async getProductTags(admin) {
+    const response = await admin.graphql(
+      `#graphql
+      query getProductTags {
+        productTags(first: 250) {
+          edges {
+            node
+          }
+        }
+      }`,
+    );
+    const data = await response.json();
+    return data.data.productTags.edges.map((edge) => edge.node);
+  },
+
+  /**
    * Get the current app installation ID — the owner ID needed to write
    * app-data metafields (the `app.metafields.*` store read by Liquid's
    * `available_if`), as opposed to `$app:`-namespaced metafields on the

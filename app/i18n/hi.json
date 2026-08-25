@@ -34,6 +34,9 @@
     "selectedProducts": "चयनित उत्पाद",
     "selectProducts": "उत्पाद चुनें",
     "noProductsSelected": "कोई उत्पाद चयनित नहीं",
+    "selectedTags": "चयनित टैग",
+    "selectTags": "टैग चुनें",
+    "noTagsSelected": "कोई टैग चयनित नहीं",
     "loading": "लोड हो रहा है..."
   },
   "navigation": {
@@ -242,6 +245,7 @@
     "homePage": "होम पेज",
     "specificCollections": "विशिष्ट संग्रह",
     "specificProducts": "विशिष्ट उत्पाद",
+    "specificProductTags": "विशिष्ट उत्पाद टैग",
     "custom": "कस्टम"
   },
   "checkoutVerification": {

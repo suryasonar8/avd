@@ -34,6 +34,9 @@
     "selectedProducts": "Produits sélectionnés",
     "selectProducts": "Sélectionner des produits",
     "noProductsSelected": "Aucun produit sélectionné",
+    "selectedTags": "Tags sélectionnés",
+    "selectTags": "Sélectionner des tags",
+    "noTagsSelected": "Aucun tag sélectionné",
     "loading": "Chargement..."
   },
   "navigation": {
@@ -242,6 +245,7 @@
     "homePage": "Page d'accueil",
     "specificCollections": "Collections spécifiques",
     "specificProducts": "Produits spécifiques",
+    "specificProductTags": "Tags de produits spécifiques",
     "custom": "Personnalisé"
   },
   "checkoutVerification": {
