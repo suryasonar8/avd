@@ -6,7 +6,7 @@
 api_version = "2026-04"
 
 [[extensions]]
-name = "checkout-terms"
+name = "checkout-terms-&-conditions"
 handle = "checkout-terms"
 type = "ui_extension"
 uid = "a1c4e6f2-3b5d-4a9e-8f1c-6d2b9e7a5c30"
@@ -39,13 +39,11 @@ key = "checkout_terms_conditions"
   key = "message"
   type = "single_line_text_field"
   name = "Message"
-  description = "The text shown next to the checkbox"
 
   [[extensions.settings.fields]]
   key = "message_color"
   type = "single_line_text_field"
   name = "Message color"
-  description = "Tone of the message banner"
 
     [[extensions.settings.fields.validations]]
     name = "choices"
@@ -55,16 +53,15 @@ key = "checkout_terms_conditions"
   key = "keyword"
   type = "single_line_text_field"
   name = "Keyword"
-  description = "Word or phrase inside the message to hyperlink (optional)"
 
   [[extensions.settings.fields]]
   key = "link"
   type = "single_line_text_field"
-  name = "Link to keyword"
-  description = "URL the keyword links to (optional)"
+  name = "Link to keyword (optional)"
+  description = "Enter URL"
 
   [[extensions.settings.fields]]
   key = "error_message"
   type = "single_line_text_field"
   name = "Error message"
-  description = "Shown when the buyer tries to continue without checking the box"
+  description = "Enter error message"
