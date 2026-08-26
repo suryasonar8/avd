@@ -55,7 +55,20 @@ export const action = async ({ request }) => {
     };
   }
 
-  // Enforce popup creation limits
+  if (intent === "toggle_brand_mark") {
+    const showBrandMark = formData.get("showBrandMark") === "true";
+
+    // Use SettingsService to save to DB first, then sync to metafield
+    const dbSettings = await SettingsService.getSettings(shop);
+    const result = await SettingsService.updateSettings(admin, shop, {
+      ...dbSettings,
+      showBrandMark,
+    });
+
+    return { success: result.success };
+  }
+
+  // Enforce popup creation limits (only applies to actual popup creation below)
   const plan = await PlanService.getShopPlan(admin, shop);
   const limit = PlanService.getPopupLimit(plan);
 
@@ -71,19 +84,6 @@ export const action = async ({ request }) => {
         ],
       };
     }
-  }
-
-  if (intent === "toggle_brand_mark") {
-    const showBrandMark = formData.get("showBrandMark") === "true";
-
-    // Use SettingsService to save to DB first, then sync to metafield
-    const dbSettings = await SettingsService.getSettings(shop);
-    const result = await SettingsService.updateSettings(admin, shop, {
-      ...dbSettings,
-      showBrandMark,
-    });
-
-    return { success: result.success };
   }
 
   const configStr = formData.get("config");
