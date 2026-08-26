@@ -16,6 +16,7 @@ export const action = async ({ request }) => {
       await db.checkoutBanner.deleteMany({ where: { shop } });
       await db.analyticsEvent.deleteMany({ where: { shop } });
       await db.appSettings.deleteMany({ where: { shop } });
+      await db.checkoutAgeVerification.deleteMany({ where: { shop } });
       console.log(`Deleted ${deletedPopups.count} popups from DB for ${shop}`);
 
       // 2. Cleanup Metafield Definitions (this deletes definition and values)
@@ -27,6 +28,7 @@ export const action = async ({ request }) => {
         { namespace: "$app:avd", key: "checkout_banner" },
         { namespace: "$app:avd", key: "terms_settings" },
         { namespace: "$app:avd", key: "entitlements" },
+        { namespace: "$app:avd", key: "checkout_age_verification" },
       ];
 
       for (const def of defsToCleanup) {
