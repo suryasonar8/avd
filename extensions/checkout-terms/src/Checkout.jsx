@@ -19,6 +19,22 @@ export default async () => {
   render(<Extension />, document.body);
 };
 
+// Matches the `choices` validation on the message_color setting field in
+// shopify.extension.toml — narrows the setting's string value to the union
+// s-text's `tone` prop accepts.
+/**
+ * @param {string} value
+ * @returns {value is "info" | "warning" | "success" | "critical"}
+ */
+function isMessageTone(value) {
+  return (
+    value === "info" ||
+    value === "warning" ||
+    value === "success" ||
+    value === "critical"
+  );
+}
+
 function Extension() {
   const appMetafields = useAppMetafields();
   const settings = useSettings();
@@ -62,6 +78,10 @@ function Extension() {
   const message =
     String(settings.message ?? "") ||
     "I understand and agree to the terms and conditions.";
+  const rawMessageColor = String(settings.message_color ?? "");
+  const messageColor = isMessageTone(rawMessageColor)
+    ? rawMessageColor
+    : undefined;
   const keyword = String(settings.keyword ?? "");
   const link = String(settings.link ?? "");
   const errorMessage =
@@ -131,7 +151,9 @@ function Extension() {
   // (target: "$.cart") — this block only needs to render the checkbox.
   return (
     <s-checkbox checked={checked} onChange={handleChange}>
-      <s-text slot="label">{renderMessage()}</s-text>
+      <s-text slot="label" tone={messageColor}>
+        {renderMessage()}
+      </s-text>
     </s-checkbox>
   );
 }
