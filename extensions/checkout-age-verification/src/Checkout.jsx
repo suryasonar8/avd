@@ -1,6 +1,6 @@
 import "@shopify/ui-extensions/preact";
 import { render } from "preact";
-import { useState, useEffect, useMemo } from "preact/hooks";
+import { useState, useEffect, useMemo, useRef } from "preact/hooks";
 import {
   useAppMetafields,
   useCartLines,
@@ -122,17 +122,26 @@ function Extension() {
   );
 
   const [collectionMatch, setCollectionMatch] = useState(false);
+  // Tracks the in-flight checkCollections() request so a slower, older
+  // response can't overwrite the verdict from a newer one once cart
+  // contents change again before the first request resolves.
+  const collectionCheckAbortRef = useRef(null);
 
   useEffect(() => {
     if (config.status === "enabled" && config.target === "collection") {
       checkCollections();
     } else {
+      collectionCheckAbortRef.current?.abort();
       setCollectionMatch(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config, cartLines]);
 
   async function checkCollections() {
+    collectionCheckAbortRef.current?.abort();
+    const controller = new AbortController();
+    collectionCheckAbortRef.current = controller;
+
     const selectedCollectionIds = config.selectedCollections || [];
     if (selectedCollectionIds.length === 0 || !api?.query) {
       setCollectionMatch(false);
@@ -163,6 +172,11 @@ function Extension() {
         { variables: { ids: productIds } },
       );
 
+      // A newer checkCollections() call has since started — this response
+      // is for a cart state that no longer applies, so drop it rather than
+      // clobbering the current (possibly already-updated) verdict.
+      if (controller.signal.aborted) return;
+
       const products = result?.data?.nodes || [];
       const match = products.some((product) => {
         const collectionIds =
@@ -172,6 +186,7 @@ function Extension() {
 
       setCollectionMatch(match);
     } catch (err) {
+      if (controller.signal.aborted) return;
       setCollectionMatch(false);
     }
   }
