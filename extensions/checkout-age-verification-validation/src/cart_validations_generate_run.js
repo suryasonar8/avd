@@ -13,23 +13,6 @@ function defaultErrorMessage(minAge) {
 }
 
 /**
- * The merchant's error message almost always contains the age as a plain
- * number (e.g. "You must be at least 18 years old.") rather than a token —
- * replacing any digit run keeps that number in sync with the minAge
- * dropdown without requiring the merchant to learn a {{minAge}} placeholder.
- * Mirrors the same substitution the checkout-age-verification extension
- * applies to the checkbox message.
- *
- * @param {string} text
- * @param {number} minAge
- */
-function interpolateAge(text, minAge) {
-  return text
-    .replace(/\{\{\s*minAge\s*\}\}/g, String(minAge))
-    .replace(/\d+/g, String(minAge));
-}
-
-/**
  * @param {CartValidationsGenerateRunInput} input
  * @returns {CartValidationsGenerateRunResult}
  */
@@ -65,9 +48,7 @@ export function cartValidationsGenerateRun(input) {
   if (accepted) return noOp;
 
   const minAge = config.minAge || 18;
-  const message = config.errorMessage
-    ? interpolateAge(config.errorMessage, minAge)
-    : defaultErrorMessage(minAge);
+  const message = config.errorMessage || defaultErrorMessage(minAge);
 
   return {
     operations: [

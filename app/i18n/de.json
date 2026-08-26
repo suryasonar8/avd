@@ -303,7 +303,6 @@
     "errorMessage": "Fehlermeldung",
     "errorMessagePlaceholder": "Geben Sie die Nachricht ein, die angezeigt wird, wenn das Alter nicht bestätigt wird",
     "verificationSettingsSaved": "Einstellungen zur Checkout-Verifizierung gespeichert",
-    "minAgeTokenHint": "Die Altersangabe in dieser Nachricht wird automatisch an das oben festgelegte Mindestalter angepasst.",
     "preview": {
       "myStore": "Mein Shop 3",
       "contact": "Kontakt",

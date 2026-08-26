@@ -303,7 +303,6 @@
     "errorMessage": "Messaggio di errore",
     "errorMessagePlaceholder": "Inserisci il messaggio mostrato quando l'acquirente non verifica la propria età",
     "verificationSettingsSaved": "Impostazioni di verifica al checkout salvate",
-    "minAgeTokenHint": "Il numero dell'età in questo messaggio si aggiorna automaticamente in base all'età minima impostata sopra.",
     "preview": {
       "myStore": "Il Mio Negozio 3",
       "contact": "Contatto",

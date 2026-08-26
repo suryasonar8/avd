@@ -7,7 +7,11 @@ import { RadioOption } from "../customization/RadioOption";
 import { ResourcePickerList } from "../ResourcePickerList";
 import { VERIFICATION_METHODS } from "../../constants/checkout-verification";
 
-export default function AgeConditionSettings({ config, onChange, isShopifyPlus }) {
+export default function AgeConditionSettings({
+  config,
+  onChange,
+  isShopifyPlus,
+}) {
   const { canAccess } = usePlan();
   const { t } = useTranslation();
   const plusRestricted = !isShopifyPlus;
@@ -44,9 +48,7 @@ export default function AgeConditionSettings({ config, onChange, isShopifyPlus }
         }
       >
         <div>
-          <span
-            style={{ fontSize: "13px", fontWeight: 600, color: "#202223" }}
-          >
+          <span style={{ fontSize: "13px", fontWeight: 600, color: "#202223" }}>
             {t("checkoutVerification.verificationStatus")}
           </span>
           <div style={{ display: "flex", flexDirection: "column" }}>
@@ -70,9 +72,7 @@ export default function AgeConditionSettings({ config, onChange, isShopifyPlus }
         </div>
 
         <div>
-          <span
-            style={{ fontSize: "13px", fontWeight: 600, color: "#202223" }}
-          >
+          <span style={{ fontSize: "13px", fontWeight: 600, color: "#202223" }}>
             {t("checkoutVerification.verificationMethod")}
           </span>
           <div style={{ display: "flex", flexDirection: "column" }}>
@@ -82,21 +82,13 @@ export default function AgeConditionSettings({ config, onChange, isShopifyPlus }
                 name="verification-method"
                 value={VERIFICATION_METHODS.CHECKBOX}
                 selected={
-                  (config.verificationMethod || VERIFICATION_METHODS.CHECKBOX) ===
+                  (config.verificationMethod ||
+                    VERIFICATION_METHODS.CHECKBOX) ===
                   VERIFICATION_METHODS.CHECKBOX
                 }
                 disabled={methodDisabled}
                 onChange={handleMethodChange}
               />
-              <p
-                style={{
-                  margin: "0 0 0 26px",
-                  fontSize: "12px",
-                  color: "#6D7175",
-                }}
-              >
-                {t("checkoutVerification.methodCheckboxDescription")}
-              </p>
             </div>
 
             <div>
@@ -105,20 +97,12 @@ export default function AgeConditionSettings({ config, onChange, isShopifyPlus }
                 name="verification-method"
                 value={VERIFICATION_METHODS.DATE_OF_BIRTH}
                 selected={
-                  config.verificationMethod === VERIFICATION_METHODS.DATE_OF_BIRTH
+                  config.verificationMethod ===
+                  VERIFICATION_METHODS.DATE_OF_BIRTH
                 }
                 disabled={methodDisabled}
                 onChange={handleMethodChange}
               />
-              <p
-                style={{
-                  margin: "0 0 0 26px",
-                  fontSize: "12px",
-                  color: "#6D7175",
-                }}
-              >
-                {t("checkoutVerification.methodDateOfBirthDescription")}
-              </p>
             </div>
           </div>
         </div>

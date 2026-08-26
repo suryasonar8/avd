@@ -97,21 +97,11 @@ export default function AgePreviewPanel({ config }) {
       setDobDay(String(dobDaysInMonth));
     }
   }, [dobDaysInMonth, dobDay]);
-  // Mirrors the checkout-age-verification extension: the age is almost
-  // always typed as a plain number, so replace any digit run rather than
-  // requiring a {{minAge}} token, keeping this preview in sync with what
-  // the buyer actually sees at checkout.
-  const interpolate = (text) =>
-    text
-      .replace(/\{\{\s*minAge\s*\}\}/g, String(minAge))
-      .replace(/\d+/g, String(minAge));
-  const message = interpolate(
-    config?.message || t("checkoutVerification.verifyAgeCheckboxLabel"),
-  );
+  const message =
+    config?.message || t("checkoutVerification.verifyAgeCheckboxLabel");
   const dobHeading = config?.dobHeading || DEFAULT_DOB_HEADING;
-  const errorMessage = interpolate(
-    config?.errorMessage || t("checkoutVerification.ageVerificationError"),
-  );
+  const errorMessage =
+    config?.errorMessage || t("checkoutVerification.ageVerificationError");
 
   return (
     <s-box inlineSize="100%" style={{ display: "block", flex: 1, minWidth: 0 }}>

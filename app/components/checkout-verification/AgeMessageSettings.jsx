@@ -119,9 +119,6 @@ export default function AgeMessageSettings({ config, onChange, isShopifyPlus }) 
                 onChange={handleMessageChange}
                 suffix={`${message.length}/${maxLength}`}
               />
-              <p style={{ fontSize: "12px", color: "#6D7175", margin: "4px 0 0" }}>
-                {t("checkoutVerification.minAgeTokenHint")}
-              </p>
             </>
           )}
         </div>
@@ -147,9 +144,6 @@ export default function AgeMessageSettings({ config, onChange, isShopifyPlus }) 
             onChange={handleErrorMessageChange}
             suffix={`${errorMessage.length}/${maxLength}`}
           />
-          <p style={{ fontSize: "12px", color: "#6D7175", margin: "4px 0 0" }}>
-            {t("checkoutVerification.minAgeTokenHint")}
-          </p>
         </div>
       </SettingsSection>
     </>

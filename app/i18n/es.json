@@ -303,7 +303,6 @@
     "errorMessage": "Mensaje de error",
     "errorMessagePlaceholder": "Ingresa el mensaje que se muestra cuando el comprador no verifica su edad",
     "verificationSettingsSaved": "Configuración de verificación en el pago guardada",
-    "minAgeTokenHint": "El número de edad en este mensaje se actualiza automáticamente para coincidir con la edad mínima configurada arriba.",
     "preview": {
       "myStore": "Mi Tienda 3",
       "contact": "Contacto",

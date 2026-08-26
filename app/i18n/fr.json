@@ -303,7 +303,6 @@
     "errorMessage": "Message d'erreur",
     "errorMessagePlaceholder": "Saisissez le message affiché lorsque l'acheteur ne vérifie pas son âge",
     "verificationSettingsSaved": "Paramètres de vérification à la caisse enregistrés",
-    "minAgeTokenHint": "Le nombre d'âge dans ce message se met à jour automatiquement pour correspondre à l'âge minimum défini ci-dessus.",
     "preview": {
       "myStore": "Mon Magasin 3",
       "contact": "Contact",

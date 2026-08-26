@@ -30,16 +30,6 @@ const VERIFICATION_METHODS = {
   DATE_OF_BIRTH: "date_of_birth",
 };
 
-// The merchant's message text almost always contains the age as a plain
-// number (e.g. "I'm over 18 years old.") rather than a token — replacing
-// any digit run keeps that number in sync with the minAge dropdown without
-// requiring the merchant to learn or remember a {{minAge}} placeholder.
-function interpolateAge(text, minAge) {
-  return text
-    .replace(/\{\{\s*minAge\s*\}\}/g, String(minAge))
-    .replace(/\d+/g, String(minAge));
-}
-
 function computeAge(day, month, year) {
   const today = new Date();
   const birthDate = new Date(year, month - 1, day);
@@ -111,15 +101,9 @@ function Extension() {
   const method = config.verificationMethod || VERIFICATION_METHODS.CHECKBOX;
   const isDateOfBirth = method === VERIFICATION_METHODS.DATE_OF_BIRTH;
 
-  const message = interpolateAge(
-    config.message || "I'm over 18 years old.",
-    minAge,
-  );
+  const message = config.message || "I'm over 18 years old.";
   const dobHeading = config.dobHeading || "Enter your date of birth";
-  const errorMessage = interpolateAge(
-    config.errorMessage || "You must be 18 years old.",
-    minAge,
-  );
+  const errorMessage = config.errorMessage || "You must be 18 years old.";
 
   const [collectionMatch, setCollectionMatch] = useState(false);
   // Tracks the in-flight checkCollections() request so a slower, older

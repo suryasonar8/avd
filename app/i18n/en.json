@@ -303,7 +303,6 @@
     "errorMessage": "Error message",
     "errorMessagePlaceholder": "Enter the message shown when the buyer doesn't verify their age",
     "verificationSettingsSaved": "Checkout verification settings saved",
-    "minAgeTokenHint": "The age number in this message updates automatically to match the minimum age you set above.",
     "preview": {
       "myStore": "My Store 3",
       "contact": "Contact",
