@@ -169,99 +169,98 @@ export default function TermsAndConditions() {
           </div>
         </s-section>
 
-        {/* Checkout page card */}
-        <s-section style={{ flex: 1 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: "16px",
-              padding: "8px 0 16px",
-            }}
-          >
-            {/* Skeleton text lines */}
-            <div style={{ flex: 1, paddingTop: "8px" }}>
-              <div
-                style={{
-                  height: "14px",
-                  backgroundColor: "#d0d0d0",
-                  borderRadius: "4px",
-                  marginBottom: "10px",
-                  width: "75%",
-                }}
-              />
-              <div
-                style={{
-                  height: "10px",
-                  backgroundColor: "#e0e0e0",
-                  borderRadius: "4px",
-                  width: "100%",
-                }}
-              />
-            </div>
-
-            {/* Cart icon */}
-            <div style={{ flexShrink: 0 }}>
-              <svg
-                width="40"
-                height="40"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#222"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="9" cy="21" r="1.2" />
-                <circle cx="18" cy="21" r="1.2" />
-                <path d="M2.5 2.5h2l2.6 12.6a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6l1.5-7.6H6.1" />
-                <path d="M9 8.5l1.4 1.4L13 7.3" />
-              </svg>
-            </div>
-          </div>
-
-          {/* Checkbox + required error, matching checkout preview */}
-          <s-checkbox
-            id="checkout-accept-terms"
-            checked={false}
-            label={t("termsAndConditions.defaults.checkoutCheckboxText")}
-          />
-          <s-text tone="critical" style={{ fontSize: "12px" }}>
-            {t("termsAndConditions.checkoutTriggerLabel")}
-          </s-text>
-
-          <s-divider></s-divider>
-
-          {/* Checkout page row */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <s-heading>{t("termsAndConditions.checkoutPage")}</s-heading>
-                <ShopifyPlusBadge />
-                {isShopifyPlus && <StatusPill enabled={isCheckoutEnabled} />}
-              </div>
-              <s-text color="subdued">
-                {isShopifyPlus
-                  ? t("termsAndConditions.checkoutPageDescription")
-                  : t("termsAndConditions.shopifyPlusRequired")}
-              </s-text>
-            </div>
-            <s-button
-              variant="secondary"
-              size="slim"
-              disabled={!isShopifyPlus}
-              onClick={() => navigate("/terms_and_conditions/checkout")}
+        {/* Checkout page card — Shopify Plus only */}
+        {isShopifyPlus && (
+          <s-section style={{ flex: 1 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "16px",
+                padding: "8px 0 16px",
+              }}
             >
-              {t("termsAndConditions.customize")}
-            </s-button>
-          </div>
-        </s-section>
+              {/* Skeleton text lines */}
+              <div style={{ flex: 1, paddingTop: "8px" }}>
+                <div
+                  style={{
+                    height: "14px",
+                    backgroundColor: "#d0d0d0",
+                    borderRadius: "4px",
+                    marginBottom: "10px",
+                    width: "75%",
+                  }}
+                />
+                <div
+                  style={{
+                    height: "10px",
+                    backgroundColor: "#e0e0e0",
+                    borderRadius: "4px",
+                    width: "100%",
+                  }}
+                />
+              </div>
+
+              {/* Cart icon */}
+              <div style={{ flexShrink: 0 }}>
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#222"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="9" cy="21" r="1.2" />
+                  <circle cx="18" cy="21" r="1.2" />
+                  <path d="M2.5 2.5h2l2.6 12.6a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6l1.5-7.6H6.1" />
+                  <path d="M9 8.5l1.4 1.4L13 7.3" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Checkbox + required error, matching checkout preview */}
+            <s-checkbox
+              id="checkout-accept-terms"
+              checked={false}
+              label={t("termsAndConditions.defaults.checkoutCheckboxText")}
+            />
+            <s-text tone="critical" style={{ fontSize: "12px" }}>
+              {t("termsAndConditions.checkoutTriggerLabel")}
+            </s-text>
+
+            <s-divider></s-divider>
+
+            {/* Checkout page row */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <s-heading>{t("termsAndConditions.checkoutPage")}</s-heading>
+                  <ShopifyPlusBadge />
+                  <StatusPill enabled={isCheckoutEnabled} />
+                </div>
+                <s-text color="subdued">
+                  {t("termsAndConditions.checkoutPageDescription")}
+                </s-text>
+              </div>
+              <s-button
+                variant="secondary"
+                size="slim"
+                onClick={() => navigate("/terms_and_conditions/checkout")}
+              >
+                {t("termsAndConditions.customize")}
+              </s-button>
+            </div>
+          </s-section>
+        )}
       </div>
 
       {/* Footer help text */}
