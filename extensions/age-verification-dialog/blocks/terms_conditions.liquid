@@ -58,7 +58,15 @@
         <input type="checkbox" id="avd-terms-checkbox" autocomplete="off" style="margin: 0; flex-shrink: 0; width: 14px; height: 14px; accent-color: #000;">
         <span>
           {% if settings.keyword != blank and settings.link != blank %}
-            {% capture link_tag %}<a href="{{ settings.link }}" target="_blank" style="text-decoration: underline; color: inherit;">{{ settings.keyword }}</a>{% endcapture %}
+            {% comment %}
+              Merchants often omit the protocol (e.g. "www.google.com"); without a
+              scheme it's treated as relative to the current page instead of absolute.
+            {% endcomment %}
+            {% assign link_url = settings.link %}
+            {% unless link_url contains '://' or link_url contains 'mailto:' or link_url contains 'tel:' or link_url startswith '//' %}
+              {% assign link_url = 'https://' | append: link_url %}
+            {% endunless %}
+            {% capture link_tag %}<a href="{{ link_url }}" target="_blank" style="text-decoration: underline; color: inherit;">{{ settings.keyword }}</a>{% endcapture %}
             {{ settings.checkboxText | replace: settings.keyword, link_tag }}
           {% else %}
             {{ settings.checkboxText }}

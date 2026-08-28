@@ -83,7 +83,13 @@ function Extension() {
     ? rawMessageColor
     : undefined;
   const keyword = String(settings.keyword ?? "");
-  const link = String(settings.link ?? "");
+  // Merchants often omit the protocol (e.g. "www.google.com"); without a
+  // scheme it's treated as relative to the checkout URL instead of absolute.
+  const rawLink = String(settings.link ?? "");
+  const link =
+    rawLink && !/^([a-z][a-z0-9+.-]*:|\/\/)/i.test(rawLink)
+      ? `https://${rawLink}`
+      : rawLink;
   const errorMessage =
     String(settings.error_message ?? "") ||
     "You must accept the terms and conditions to continue.";
