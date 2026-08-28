@@ -163,6 +163,7 @@ export function DisplayPagesChoiceList({ config, setConfig }) {
                 alignItems: "center",
                 gap: "8px",
                 padding: "6px 12px",
+                marginTop: "4px",
                 background: "#F1F1F1",
                 borderRadius: "4px",
                 fontSize: "12px",

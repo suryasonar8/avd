@@ -352,7 +352,7 @@ const EditorToolbar = () => {
   );
 };
 
-export const RichTextEditor = ({ label, value, onChange }) => (
+export const RichTextEditor = ({ label, value, onChange, disabled = false }) => (
   <div>
     <style>{`
       .rsw-editor {
@@ -360,6 +360,18 @@ export const RichTextEditor = ({ label, value, onChange }) => (
         border-radius: 8px !important;
         overflow: visible !important;
         background: white !important;
+      }
+      .rsw-editor.rsw-editor-disabled {
+        background: #f6f6f7 !important;
+        cursor: not-allowed !important;
+      }
+      .rsw-editor-disabled .rsw-toolbar {
+        pointer-events: none !important;
+        opacity: 0.5 !important;
+      }
+      .rsw-editor-disabled .rsw-ce {
+        cursor: not-allowed !important;
+        color: #6d7175 !important;
       }
       .rsw-toolbar {
         display: flex !important;
@@ -463,7 +475,14 @@ export const RichTextEditor = ({ label, value, onChange }) => (
       </label>
     )}
     <EditorProvider>
-      <Editor value={value} onChange={(e) => onChange(e.target.value)}>
+      <Editor
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        containerProps={{
+          className: disabled ? "rsw-editor-disabled" : undefined,
+        }}
+      >
         <EditorToolbar />
       </Editor>
     </EditorProvider>

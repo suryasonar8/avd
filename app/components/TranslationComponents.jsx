@@ -95,14 +95,12 @@ export const TranslationField = ({
             {label}
           </label>
           {type === "richtext" ? (
-            <div
-              className="custom-editor-container"
-              style={{
-                pointerEvents: disabled ? "none" : "auto",
-                opacity: disabled ? 0.7 : 1,
-              }}
-            >
-              <RichTextEditor value={value} onChange={(e) => onChange(e)} />
+            <div className="custom-editor-container">
+              <RichTextEditor
+                value={value}
+                onChange={(e) => onChange(e)}
+                disabled={disabled}
+              />
             </div>
           ) : (
               <s-text-field
