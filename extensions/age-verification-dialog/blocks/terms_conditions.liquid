@@ -63,7 +63,7 @@
               scheme it's treated as relative to the current page instead of absolute.
             {% endcomment %}
             {% assign link_url = settings.link %}
-            {% unless link_url contains '://' or link_url contains 'mailto:' or link_url contains 'tel:' or link_url startswith '//' %}
+            {% unless link_url contains '://' or link_url contains 'mailto:' or link_url contains 'tel:' or link_url contains '//' %}
               {% assign link_url = 'https://' | append: link_url %}
             {% endunless %}
             {% capture link_tag %}<a href="{{ link_url }}" target="_blank" style="text-decoration: underline; color: inherit;">{{ settings.keyword }}</a>{% endcapture %}
