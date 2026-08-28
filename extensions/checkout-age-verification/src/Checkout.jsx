@@ -104,6 +104,9 @@ function Extension() {
   const message = config.message || "I'm over 18 years old.";
   const dobHeading = config.dobHeading || "Enter your date of birth";
   const errorMessage = config.errorMessage || "You must be 18 years old.";
+  const dayLabel = "Day";
+  const monthLabel = "Month";
+  const yearLabel = "Year";
 
   const [collectionMatch, setCollectionMatch] = useState(false);
   // Tracks the in-flight checkCollections() request so a slower, older
@@ -284,11 +287,6 @@ function Extension() {
     return null;
   }
 
-  // The actual "you didn't verify your age" error at the pay attempt is
-  // enforced and rendered by Shopify itself from
-  // checkout-age-verification-validation's returned error (target:
-  // "$.cart") — the inline error below (date-of-birth mode only) is just
-  // earlier, friendlier feedback while the buyer is still filling the form.
   return (
     <s-stack direction="block" gap="small">
       {isDateOfBirth ? (
@@ -303,21 +301,11 @@ function Extension() {
       )}
 
       {isDateOfBirth && (
-        <s-stack direction="block" gap="none">
-          <s-stack direction="inline" gap="base">
-            {/* All three fields turn red via a zero-width-space `error`
-                (a non-empty string is required to trigger the invalid
-                styling) — each already reserves its own native error-line
-                height below itself, so the group's actual bottom edge sits
-                slightly lower than the visible input borders. The shared
-                message below sits in this same gap="none" stack, so it
-                starts right at that same reserved edge — the same tight
-                spacing the native single-field `error` gave us, just
-                spanning the full row instead of one field's column. */}
+        <s-stack gap="small">
+          <s-grid gridTemplateColumns="1fr 1fr 1fr" gap="base">
             <s-select
-              label="Day"
+              label={dayLabel}
               value={day}
-              error={dobUnderage ? "​" : undefined}
               onChange={(e) => setDay(e.target.value)}
             >
               <s-option value="">DD</s-option>
@@ -328,9 +316,8 @@ function Extension() {
               ))}
             </s-select>
             <s-select
-              label="Month"
+              label={monthLabel}
               value={month}
-              error={dobUnderage ? "​" : undefined}
               onChange={(e) => setMonth(e.target.value)}
             >
               <s-option value="">MM</s-option>
@@ -341,9 +328,8 @@ function Extension() {
               ))}
             </s-select>
             <s-select
-              label="Year"
+              label={yearLabel}
               value={year}
-              error={dobUnderage ? "​" : undefined}
               onChange={(e) => setYear(e.target.value)}
             >
               <s-option value="">YYYY</s-option>
@@ -353,8 +339,7 @@ function Extension() {
                 </s-option>
               ))}
             </s-select>
-          </s-stack>
-
+          </s-grid>
           {!(dobComplete && !dobUnderage) && (
             <s-text tone="critical">{errorMessage}</s-text>
           )}

@@ -7,8 +7,18 @@ import {
 } from "../../constants/checkout-verification";
 
 const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 // Days-in-month, accounting for leap years (Date's day-0-of-next-month trick
@@ -18,7 +28,8 @@ function getDaysInMonth(month, year) {
   return new Date(year || new Date().getFullYear(), month, 0).getDate();
 }
 
-// Interactive dropdown that looks exactly like the original mock
+// Compact dropdown with the label sitting above the value inside the same
+// bordered box, matching the checkout field's floating-label look.
 function MockDropdown({ label, placeholder, options = [], value, onChange }) {
   const selectedLabel = options.find((opt) => opt.value === value)?.label;
 
@@ -37,10 +48,18 @@ function MockDropdown({ label, placeholder, options = [], value, onChange }) {
     >
       <div>
         <div style={{ fontSize: "12px", color: "#6D7175" }}>{label}</div>
-        <div style={{ fontSize: "14px", color: "#1A1C1D" }}>{selectedLabel || placeholder}</div>
+        <div style={{ fontSize: "14px", color: "#1A1C1D" }}>
+          {selectedLabel || placeholder}
+        </div>
       </div>
-      <svg viewBox="0 0 20 20" style={{ width: "20px", height: "20px", fill: "#6D7175" }}>
-        <path fillRule="evenodd" d="M5.72 8.47a.75.75 0 0 1 1.06 0L10 11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-3.75 3.75a.75.75 0 0 1-1.06 0L5.72 9.53a.75.75 0 0 1 0-1.06Z" />
+      <svg
+        viewBox="0 0 20 20"
+        style={{ width: "20px", height: "20px", fill: "#6D7175" }}
+      >
+        <path
+          fillRule="evenodd"
+          d="M5.72 8.47a.75.75 0 0 1 1.06 0L10 11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-3.75 3.75a.75.75 0 0 1-1.06 0L5.72 9.53a.75.75 0 0 1 0-1.06Z"
+        />
       </svg>
       <select
         value={value}
@@ -54,18 +73,13 @@ function MockDropdown({ label, placeholder, options = [], value, onChange }) {
           opacity: 0,
           cursor: "pointer",
           appearance: "none",
-          padding: "2px 12px",
         }}
       >
-        <option value="" disabled hidden style={{ padding: "2px 12px" }}>
+        <option value="" disabled hidden>
           {placeholder}
         </option>
         {options.map((opt) => (
-          <option
-            key={opt.value}
-            value={opt.value}
-            style={{ padding: "2px 12px" }}
-          >
+          <option key={opt.value} value={opt.value}>
             {opt.label}
           </option>
         ))}
@@ -422,96 +436,75 @@ export default function AgePreviewPanel({ config }) {
                       </div>
                     </div>
 
-                    {/* Age Verification Section */}
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "12px",
-                      }}
-                    >
+                    {/* Age Verification Section — mirrors the checkout
+                        extension's markup (extensions/checkout-age-verification/
+                        src/Checkout.jsx) so the preview matches what buyers
+                        actually see. */}
+                    <s-stack direction="block" gap="small">
                       {isDateOfBirth ? (
-                        <s-text weight="bold">{dobHeading}</s-text>
+                        <s-text type="strong">{dobHeading}</s-text>
                       ) : (
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "12px",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontSize: "12px",
-                              color: "#8a2846",
-                              backgroundColor: "#fce4ec",
-                              border: "1px solid #f5c2d6",
-                              borderRadius: "4px",
-                              padding: "1px 7px",
-                              flexShrink: 0,
-                            }}
+                        <s-stack>
+                          <s-stack
+                            direction="inline"
+                            gap="small"
+                            alignItems="center"
                           >
-                            {`${minAge}+`}
-                          </span>
-                          <div
-                            style={{
-                              flex: 1,
-                              border: "1px solid #2c6ecb",
-                              borderRadius: "8px",
-                              padding: "8px 12px",
-                            }}
-                          >
+                            <s-badge tone="critical">{`${minAge}+`}</s-badge>
                             <s-checkbox checked={false} label={message} />
-                          </div>
-                        </div>
+                          </s-stack>
+                          <s-text tone="critical">{errorMessage}</s-text>
+                        </s-stack>
                       )}
 
                       {isDateOfBirth && (
-                        <div style={{ display: "flex", gap: "12px" }}>
-                          <MockDropdown
-                            label={t("checkoutVerification.day")}
-                            placeholder={t(
-                              "checkoutVerification.dayPlaceholder",
-                            )}
-                            options={dobDayOptions}
-                            value={dobDay}
-                            onChange={(e) => setDobDay(e.target.value)}
-                          />
-                          <MockDropdown
-                            label={t("checkoutVerification.month")}
-                            placeholder={t(
-                              "checkoutVerification.monthPlaceholder",
-                            )}
-                            options={MONTHS.map((m, i) => ({
-                              value: String(i + 1),
-                              label: m,
-                            }))}
-                            value={dobMonth}
-                            onChange={(e) => setDobMonth(e.target.value)}
-                          />
-                          <MockDropdown
-                            label={t("checkoutVerification.year")}
-                            placeholder={t(
-                              "checkoutVerification.yearPlaceholder",
-                            )}
-                            options={Array.from({ length: 100 }, (_, i) => {
-                              const year = new Date().getFullYear() - i;
-                              return { value: String(year), label: String(year) };
-                            })}
-                            value={dobYear}
-                            onChange={(e) => setDobYear(e.target.value)}
-                          />
-                        </div>
+                        <s-stack gap="small">
+                          <div style={{ display: "flex", gap: "12px" }}>
+                            <MockDropdown
+                              label={t("checkoutVerification.day")}
+                              placeholder={t(
+                                "checkoutVerification.dayPlaceholder",
+                              )}
+                              options={dobDayOptions}
+                              value={dobDay}
+                              onChange={(e) => setDobDay(e.target.value)}
+                            />
+                            <MockDropdown
+                              label={t("checkoutVerification.month")}
+                              placeholder={t(
+                                "checkoutVerification.monthPlaceholder",
+                              )}
+                              options={MONTHS.map((m, i) => ({
+                                value: String(i + 1),
+                                label: m,
+                              }))}
+                              value={dobMonth}
+                              onChange={(e) => setDobMonth(e.target.value)}
+                            />
+                            <MockDropdown
+                              label={t("checkoutVerification.year")}
+                              placeholder={t(
+                                "checkoutVerification.yearPlaceholder",
+                              )}
+                              options={Array.from({ length: 100 }, (_, i) => {
+                                const year = new Date().getFullYear() - i;
+                                return {
+                                  value: String(year),
+                                  label: String(year),
+                                };
+                              })}
+                              value={dobYear}
+                              onChange={(e) => setDobYear(e.target.value)}
+                            />
+                          </div>
+                          <s-text tone="critical">{errorMessage}</s-text>
+                        </s-stack>
                       )}
+                    </s-stack>
 
-                      <s-text tone="critical" style={{ fontSize: "12px" }}>
-                        {errorMessage}
-                      </s-text>
-
-                      <s-button variant="primary" style={{ width: "100%" }}>
-                        {t("checkoutVerification.preview.buyNow")}
-                      </s-button>
-                    </div>
+                    <s-button variant="primary" style={{ width: "100%" }}>
+                      {t("checkoutVerification.preview.buyNow")}
+                    </s-button>
                   </div>
                 </div>
 
